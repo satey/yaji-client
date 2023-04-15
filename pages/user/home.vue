@@ -60,7 +60,7 @@
                         <view class="text-gray-500">{{ $u.date(item.createtime, 'hh:MM') }}</view>
                         <view class="mt-4" @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}</view>
                         <view v-if="item.images" class="flex mt-4">
-                            <u-album :urls="item.images"></u-album>
+                            <u-album :urls="item.images.split(',')" multipleSize="150" rowCount="3"></u-album>
                         </view>
                         <view class="flex mt-4">
                             <view class="flex items-center border border-solid border-gray-100 p-2 rounded-full mr-2" v-for="(tag, index) in item.tags" :key="index" :item="tag">

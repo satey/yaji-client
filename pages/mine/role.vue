@@ -45,7 +45,7 @@
                 <text class="text-white opacity-50">选择穿越到的朝代，以便给你创建角色。</text>
             </view>
             <view class="flex flex-col mt-4" style="height: 600rpx; overflow-y: scroll;">
-                <view class="flex items-center p-2 rounded-lg mt-4" v-for="(item, index) in listRoleDynasty" :key="index" :item="item" :class="dynasty.id === item.id ? 'bg-white text-rose-500' : 'text-white'" @click="changeDynasty(item)">
+                <view class="flex items-center p-2 rounded-lg mt-4" v-for="(item, index) in listRoleDynasty" :key="index" :item="item" :class="dynasty.id === item.id ? 'bg-white text-rose-500' : 'text-white'" @click="handleChangeDynasty(item)">
                     <view class="flex-1">{{ item.dynasty }}</view>
                     <view class="text-sm opacity-50">{{ $tools.erayear(item.startyear) + ' - ' + $tools.erayear(item.endyear) }}</view>
                 </view>
@@ -61,7 +61,7 @@
             <view class="w-full text-center">
                 <view class="text-4xl font-bold mt-4">获得角色</view>
                 <view class="text-left text-gray-500 mt-4">恭喜，你穿越成为了：</view>
-                <view class="pt-4 text-left bg-gray-200 mt-4 rounded" style="height: 400rpx; overflow-y: scroll;">
+                <view class="p-4 text-left bg-gray-200 mt-4 rounded" style="height: 400rpx; overflow-y: scroll;">
                     <view class="flex flex-direction-row flex-col-bottom">
                         <view class="flex-1"><text class="text-xl mr-4">{{ role.realname }}</text> {{ role.dynasty }}</view>
                         <view class="text-gray-500 ml-4">名望：{{ role.level * 100 }}</view>
@@ -140,13 +140,13 @@ export default {
             that.showUserRole = false
             that.showDynasty = true
         },
-        changeDynasty(obj) {
+        handleChangeDynasty(obj) {
             let that = this
             that.dynasty = obj
         },
         handleMatch() {
             let that = this
-            if (!that.dynasy) {
+            if (!that.dynasty) {
                 that.$u.toast('请选择朝代')
                 return false
             }
@@ -155,7 +155,7 @@ export default {
                 return false
             }
             let data = {
-                dynasty: that.dynastydynasty
+                dynasty: that.dynasty.dynasty
             }
             that.$api('role.match', data).then(res => {
                 if (res.code === 1) {
@@ -176,11 +176,13 @@ export default {
             let data = {
                 role_id: that.role.id
             }
-            that.$api('user.bindrole', data).then(rs => {
+            that.showRole = false
+            that.$api('user.bindrole', data).then(res => {
                 if (res.code === 1) {
                     that.$u.route('/pages/index/index')
                 } else {
                     that.$u.toast(res.msg)
+                    that.$u.route('/pages/index/index')
                 }
             })
         },

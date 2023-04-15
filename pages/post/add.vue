@@ -27,7 +27,7 @@
                 </view>
             </view>
             <view class="mt-4" v-if="form.images">
-                <u-album :urls="form.images" multipleSize="150" rowCount="3"></u-album>
+                <u-album :urls="form.images.split(',')" multipleSize="150" rowCount="3"></u-album>
             </view>
             <view v-if="form.audio" @click="handlePlayAudio()" class="mt-4 flex items-center justify-center rounded w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
                 <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>

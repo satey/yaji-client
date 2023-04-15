@@ -10,7 +10,7 @@
         <view class="px-10 py-20">
             <view class="text-2xl text-white">注册登录</view>
             <view class="bg-white p-4 rounded-full mt-8">
-                <u-input v-model="form.mobile" :focus="true" placeholder="请输入手机号" type="number" maxlength="11" @input="mobileInput('mobile')">
+                <u-input v-model="form.mobile" :focus="true" placeholder="请输入手机号" type="number" maxlength="11" @input="handleInput('mobile')">
                     <text slot="prefix" class="text-2xl pr-2 mr-4 border-right">+86</text>
                 </u-input>
             </view>
@@ -27,7 +27,7 @@
             </view>
             <view class="flex" style="position: absolute; bottom: 100rpx; text-align: center;">
                 <u-checkbox-group>
-                    <u-checkbox @change="changeProtocol" size="28" shape="circle" inactiveColor="#ffffff" activeColor="#ff6897"></u-checkbox>
+                    <u-checkbox @change="handleAgree" size="28" shape="circle" inactiveColor="#ffffff" activeColor="#ff6897"></u-checkbox>
                 </u-checkbox-group>
                 <view class="text-sm leading-none text-white opacity-50">
                     <text>阅读并同意</text>
@@ -63,11 +63,11 @@ export default {
     mounted() { },
     methods: {
         ...mapActions(['getUserInfo']),
-        mobileInput(key) {
+        handleInput(key) {
             let that = this
             that.isMobileEnd = that.$u.test.mobile(that.form.mobile)
         },
-        changeProtocol(e) {
+        handleAgree(e) {
             let that = this
             that.protocol = e
             console.log(that.protocol)
@@ -124,12 +124,23 @@ export default {
             that.$api('user.smslogin', data).then(res => {
                 if (res.code === 1) {
                     uni.setStorageSync('token', res.data.token)
-                    that.getUserInfo(res.data.token)
+                    that.getUserInfo(res.data.token).then(() => {
+                        if (!that.userInfo.role_id) {
+                            console.log('no')
+                            that.$u.route('/pages/auth/s1')
+                        } else {
+                            console.log('ok')
+                            that.$u.route('/pages/index/index')
+                        }
+                    })
+                    console.log(that.userInfo)
                     if (!that.userInfo.role_id) {
-                        that.$u.route('/pages/aut/s1')
-                        return
+                        console.log('no')
+                        that.$u.route('/pages/auth/s1')
+                    } else {
+                        console.log('ok')
+                        that.$u.route('/pages/index/index')
                     }
-                    that.$u.route('/pages/index/index')
                 } else {
                     that.$u.toast(res.msg)
                 }

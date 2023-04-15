@@ -13,13 +13,13 @@
                 <text class="text-white opacity-50 text-sm">性别确定后将不可更改，请慎重选择。</text>
             </view>
             <view class="flex justify-around mt-10">
-                <view class="flex flex-col items-center" @click="changeGender('male')">
+                <view class="flex flex-col items-center" @click="handleChangeGender('male')">
                     <u-avatar size="168" src="/static/avatar-male.png"></u-avatar>
                     <u-radio-group v-model="gender">
                         <u-radio name="male" size="28" shape="circle" customStyle="margin-top: 20rpx;" inactiveColor="#ffffff" activeColor="#ff6897"></u-radio>
                     </u-radio-group>
                 </view>
-                <view class="flex flex-col items-center" @click="changeGender('female')">
+                <view class="flex flex-col items-center" @click="handleChangeGender('female')">
                     <u-avatar size="168" src="/static/avatar-female.png"></u-avatar>
                     <u-radio-group v-model="gender">
                         <u-radio name="female" size="28" shape="circle" customStyle="margin-top: 20rpx;" inactiveColor="#ffffff" activeColor="#ff6897"></u-radio>
@@ -49,7 +49,7 @@ export default {
     },
     mounted() { },
     methods: {
-        changeGender(value) {
+        handleChangeGender(value) {
             let that = this
             that.gender = value
             that.form.gender = that.gender === 'male' ? 1 : 2
