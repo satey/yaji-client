@@ -9,13 +9,13 @@
             <!-- <view class="text-gray-500 mt-4">{{ $u.timeFrom(item.createtime, 'mm月dd日') }}</view> -->
             <view class="flex mt-3">
                 <view class="flex items-center mr-2" v-for="(tag, index) in item.tags" :key="index" :item="tag">
-                    <view class="text-sm leading-none text-gray-500">{{ tag }}</view>
+                    <view class="text-base leading-none text-gray-500">{{ tag }}</view>
                 </view>
             </view>
             <view class="mt-4">{{ item.bio }}</view>
         </view>
         <view class="ml-4">
-            <view class="border border-solid border-orange-500 p-2 rounded-full text-sm leading-none text-orange-500" @click="$u.route('/pages/user/home', { user_id: item.id })">了解他</view>
+            <view class="border border-solid border-orange-500 p-2 rounded-full text-base leading-none text-orange-500" @click="$u.route('/pages/user/home', { user_id: item.id })">了解他</view>
         </view>
     </view>
 </template>

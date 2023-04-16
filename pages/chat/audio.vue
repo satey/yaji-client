@@ -4,7 +4,7 @@
         <view class="flex justify-between">
             <view class="rounded-full bg-black bg-opacity-20 px-5 py-3">
                 <view class="leading-none text-white">语音直播测试</view>
-                <view class="text-sm leading-none text-white opacity-50 mt-1">语音交友</view>
+                <view class="text-base leading-none text-white opacity-50 mt-1">语音交友</view>
             </view>
             <view class="flex flex-row items-center">
                 <view class="mr-4">
@@ -26,7 +26,7 @@
             <view class="rounded-full bg-black bg-opacity-20 px-4 py-3">
                 <view class="flex items-center text-white opacity-50">
                     <i class="ri-mic-line leading-none mr-1"></i>
-                    <text class="text-sm">自由模式</text>
+                    <text class="text-base">自由模式</text>
                 </view>
             </view>
             <view class="">
@@ -111,7 +111,7 @@
         <view class="flex mt-4">
             <view class="flex items-center m-auto relative rounded-full bg-black bg-opacity-10 px-10 py-2">
                 <i class="ri-user-fill text-base leading-none text-white opacity-50 mr-1"></i>
-                <text class="text-sm text-white opacity-50 mr-3">6</text>
+                <text class="text-base text-white opacity-50 mr-3">6</text>
                 <i class="ri-arrow-drop-down-line text-base leading-none text-white opacity-50"></i>
             </view>
         </view>

@@ -16,7 +16,7 @@
                 </view>
             </view>
             <view class="ml-4">
-                <view class="border p-2 px-2 rounded-full border-orange-500 text-orange-500 text-sm" @click="$u.route('/pages/user/home', { user_id: item.id })">关注</view>
+                <view class="border p-2 px-2 rounded-full border-orange-500 text-orange-500 text-base" @click="$u.route('/pages/user/home', { user_id: item.id })">关注</view>
             </view>
         </view>
     </view>

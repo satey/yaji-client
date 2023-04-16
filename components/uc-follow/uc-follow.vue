@@ -12,7 +12,7 @@
                 <view class="mt-4">{{ item.user.bio }}</view>
             </view>
             <view class="ml-4">
-                <view class="border border-solid border-orange-500 p-2 rounded-full text-sm leading-none text-orange-500" @click="$u.route('/pages/user/home', { user_id: item.user.id })">关注</view>
+                <view class="border border-solid border-orange-500 p-2 rounded-full text-base leading-none text-orange-500" @click="$u.route('/pages/user/home', { user_id: item.user.id })">关注</view>
             </view>
         </view>
     </view>

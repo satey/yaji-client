@@ -6,7 +6,7 @@
                 <i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
             </view>
             <view slot="right">
-                <view class="py-4 px-4 rounded-full text-sm text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleUpdate()">完成</view>
+                <view class="py-4 px-4 rounded-full text-base text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleUpdate()">完成</view>
             </view>
         </u-navbar>
         <view class="flex mt-10">

@@ -14,31 +14,31 @@
                 <view class="flex w-1/2 justify-between">
                     <view class="text-center">
                         <view class="text-2xl leading-none">{{ userData.follownums || 0 }}</view>
-                        <view class="text-sm leading-none text-gray-500 mt-2">关注</view>
+                        <view class="text-base leading-none text-gray-500 mt-2">关注</view>
                     </view>
                     <view class="text-center">
                         <view class="text-2xl leading-none">{{ userData.fansnums || 0 }}</view>
-                        <view class="text-sm leading-none text-gray-500 mt-2">粉丝</view>
+                        <view class="text-base leading-none text-gray-500 mt-2">粉丝</view>
                     </view>
                     <view class="text-center">
                         <view class="text-2xl leading-none">{{ userData.diggnums || 0 }}</view>
-                        <view class="text-sm leading-none text-gray-500 mt-2">获赞</view>
+                        <view class="text-base leading-none text-gray-500 mt-2">获赞</view>
                     </view>
                 </view>
             </view>
             <view class="text-xl font-bold mt-2">
                 {{ userInfo.role_realname || '无名氏' }} · {{ userInfo.role_dynasty || '未知朝代' }}
             </view>
-            <view class="text-sm leading-none text-gray-500 mt-2">角色名望：{{ userInfo.score || 0 }}</view>
-            <view class="text-sm leading-none text-gray-500 mt-2">用户UID：{{ userInfo.id || '********' }}</view>
-            <view class="text-sm leading-none text-gray-500 mt-2">
+            <view class="text-base leading-none text-gray-500 mt-2">角色名望：{{ userInfo.score || 0 }}</view>
+            <view class="text-base leading-none text-gray-500 mt-2">用户UID：{{ userInfo.id || '********' }}</view>
+            <view class="text-base leading-none text-gray-500 mt-2">
                 IP属地：{{ userInfo.region || '未知' }}
                 <i @click="showIp = true" class="ri-question-line ml-2 text-gray-500"></i>
             </view>
             <view class="mt-4">{{ userInfo.bio || '暂无介绍' }}</view>
             <view class="flex mt-4">
                 <block v-for="(tag, index) in userInfo.tags" :key="index" :item="tag">
-                    <view class="border border-solid border-gray-200 p-2 rounded-full text-sm leading-none text-gray-500 mr-2">
+                    <view class="border border-solid border-gray-200 p-2 rounded-full text-base leading-none text-gray-500 mr-2">
                         {{ tag }}
                     </view>
                 </block>
@@ -48,63 +48,30 @@
                     <view class="m-auto w-8 h-8 p-4 rounded-full bg-gradient-to-b from-purple-500 to-purple-400">
                         <i class="ri-camera-fill text-white text-3xl leading-none"></i>
                     </view>
-                    <view class="text-sm leading-none text-gray-500 mt-2">发布动态</view>
+                    <view class="text-base leading-none text-gray-500 mt-2">发布动态</view>
                 </view>
                 <view class="text-center" @click="$u.route('/pages/mine/gift')">
                     <view class="m-auto w-8 h-8 p-4 rounded-full bg-gradient-to-b from-red-500 to-red-400">
                         <i class="ri-gift-fill text-white text-3xl leading-none"></i>
                     </view>
-                    <view class="text-sm leading-none text-gray-500 mt-2">我的礼物</view>
+                    <view class="text-base leading-none text-gray-500 mt-2">我的礼物</view>
                 </view>
                 <view class="text-center" @click="$u.route('/pages/mine/role')">
                     <view class="m-auto w-8 h-8 p-4 rounded-full bg-gradient-to-b from-blue-500 to-blue-400">
                         <i class="ri-shield-user-fill text-white text-3xl leading-none"></i>
                     </view>
-                    <view class="text-sm leading-none text-gray-500 mt-2">我的角色</view>
+                    <view class="text-base leading-none text-gray-500 mt-2">我的角色</view>
                 </view>
                 <view class="text-center" @click="$u.route('/pages/mine/wallet')">
                     <view class="m-auto w-8 h-8 p-4 rounded-full bg-gradient-to-b from-pink-500 to-pink-400">
                         <i class="ri-wallet-fill text-white text-3xl leading-none"></i>
                     </view>
-                    <view class="text-sm leading-none text-gray-500 mt-2">我的钱包</view>
+                    <view class="text-base leading-none text-gray-500 mt-2">我的钱包</view>
                 </view>
             </view>
             <u-tabs :list="tablist" lineColor="rgba(255, 0, 0, 0.2)" lineWidth="70rpx" lineHeight="16rpx" itemStyle="height: 72rpx;" inactiveStyle="color: #787878; transform: scale(1);" activeStyle="color: #333333; font-weight: blod; transform: scale(1.2);" @change="changeTab">
             </u-tabs>
-            <view class="flex mt-6" v-for="(item, index) in listPostMine" :key="index" :item="item">
-                <view class="px-4 mr-4 flex flex-col items-center">
-                    <view class="text-3xl font-sans">{{ $u.date(item.createtime, 'd') }}</view>
-                    <view class="text-base">{{ $u.date(item.createtime, 'mm月') }}</view>
-                </view>
-                <view class="flex-1">
-                    <view class="text-gray-500">{{ $u.date(item.createtime, 'hh:MM') }}</view>
-                    <view class="mt-4" @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}</view>
-                    <view v-if="item.images" class="mt-4">
-                        <u-album :urls="item.images.split(',')" multipleSize="150" rowCount="3"></u-album>
-                    </view>
-                    <view class="flex mt-4">
-                        <view class="flex items-center border border-solid border-gray-200 p-2 rounded-full mr-2" v-for="(tag, index) in item.tags" :key="index" :item="tag">
-                            <i class="ri-hashtag text-base leading-none text-gray-500"></i>
-                            <view class="text-sm leading-none text-gray-500">{{ tag }}</view>
-                        </view>
-                    </view>
-                    <view class="flex mt-4">
-                        <view class="flex-1 flex items-center">
-                            <i class="ri-eye-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-                            <text class="text-gray-500 ml-2">{{ item.viewnums }}</text>
-                        </view>
-                        <view class="flex items-center">
-                            <i class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-                            <text class="text-gray-500 ml-2">{{ item.diggnums }}</text>
-                        </view>
-                        <view class="flex items-center ml-4">
-                            <i class="ri-message-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-                            <text class="text-gray-500 ml-2">{{ item.commentnums }}</text>
-                        </view>
-                    </view>
-                </view>
-                <!-- <view class="ml-4"></view> -->
-            </view>
+            <uc-mypost v-for="(item, index) in listPostMine" :key="index" :item="item"></uc-mypost>
             <u-loadmore v-if="listPostMine.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
             <u-empty v-if="!listPostMine.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
         </view>

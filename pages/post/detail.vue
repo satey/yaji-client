@@ -28,6 +28,12 @@
             <view v-if="post.images" class="mt-4">
                 <u-album :urls="post.images.split(',')" multipleSize="150" rowCount="3"></u-album>
             </view>
+            <view v-if="post.audio"  @click="handlePlayAudio(post.audio)" class="mt-4 flex items-center justify-center rounded-full overflow-hidden w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
+                <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
+            </view>
+            <view v-if="post.video" @click="handlePlayVideo(post.video)" class="mt-4 flex items-center justify-center rounded overflow-hidden w-60 bg-gray-200">
+                <video class="z-0" :src="post.video" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
+            </view>
             <view class="flex mt-4">
                 <view class="flex items-center rounded-full mr-2" v-for="(tag, index) in post.tags" :key="index" :post="tag">
                     <i class="ri-hashtag text-gray-500"></i>
@@ -80,7 +86,7 @@
                     <u-textarea v-model="message" :focus="inputFocus" :autoHeight="true" :placeholder="placeholder" type="text" maxlength="50"></u-textarea>
                 </view>
                 <view class="flex items-center">
-                    <view class="p-3 rounded-full text-sm leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="doComment()">发送</view>
+                    <view class="p-3 rounded-full text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="doComment()">发送</view>
                 </view>
             </view>
             <!-- 表情 -->
@@ -97,7 +103,7 @@
                 <view class="grid grid-cols-5 gap-4 mt-6">
                     <view class="text-center" @click="showFeedback = true, showAction = false">
                         <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i>
-                        <view class="text-sm mt-2">举报</view>
+                        <view class="text-base mt-2">举报</view>
                     </view>
                 </view>
             </view>
@@ -109,7 +115,7 @@
                 <view class="text-gray-500 mt-6">选择分类：</view>
                 <view class="flex flex-wrap rounded-full">
                     <view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in ListFeedbackType" :key="index" :item="item" @click="feedbackType = item" :class="feedbackType === item ? 'bg-rose-200' : ''">
-                        <text class="text-sm">{{ item }}</text>
+                        <text class="text-base">{{ item }}</text>
                     </view>
                 </view>
                 <view class="text-gray-500 mt-6">补充说明：</view>
@@ -135,6 +141,10 @@ export default {
             post: {
                 user: {}
             },
+            audio: null,
+            audioStatus: false,
+            video: null,
+            videoStatus: false,
             listPostComment: [],
             params: {
                 type: 'all',
@@ -200,6 +210,51 @@ export default {
                 that.emojiList = ['😀','😁','😂','🤣','😃','😄','😅','😆','😉','😊','😋','😎','😍','😘','🥰','😗','😙','🥲','😚','🙂','🤗','🤩','🤔','🫡','🤨','😐','😑','😶','🫥','😶‍🌫️','🙄','😏','😣','😥','😮','🤐','😯','😪','😫','🥱','😴','😌','😛','😜','😝','🤤','😒','😓','😔','😕','🫤','🙃','🫠','🤑','😲','☹️','🙁','😖','😞','😟','😤','😢','😭','😦','😧','😨','😩','🤯','😬','😮‍💨','😰','😱','🥵','🥶','😳','🤪','😵','😵‍💫','🥴','😠','😡','🤬','😷','🤒','🤕','🤢','🤮','🤧','😇','🥳','🥸','🥺','🥹','🤠','🤡','🤥','🤫','🤭','🫢','🫣','🧐','🤓','😈','👿','👹','👺','💀','☠️','👻','👽','👾','🤖','💩','😺','😸','😹','😻','😼','😽','🙀','😿','😾','🙈','🙉','🙊','🐵','🐶','🐺','🐱','🦁','🐯','🦒','🦊','🦝','🐮','🐷','🐗','🐭','🐹','🐰','🐻','🐻‍❄️','🐨','🐼','🐸','🦓','🐴','🦄','🐔','🐲','🐽','🐾','🐒','🦍','🦧','🦮','🐕‍🦺','🐩','🐕','🐈','🐈‍⬛','🐅','🐆','🐎','🦌','🦬','🦏','🦛','🐂','🐃','🐄','🐖','🐏','🐑','🐐','🐪','🐫','🦙','🦘','🦥','🦨','🦡','🐘','🦣','🐁','🐀','🦔','🐇','🐿️','🦫','🦎','🐊','🐢','🐍','🐉','🦕','🦖','🦦','🦈','🐬','🦭','🐳','🐋','🐟','🐠','🐡','🦐','🦑','🐙','🦞','🦀','🐚','🪸','🦆','🐓','🦃','🦅','🕊️','🦢','🦜','🦩','🦚','🦉','🦤','🪶','🐦','🐧','🐥','🐤','🐣','🦇','🦋','🐌','🐛','🦟','🪰','🪱','🦗','🐜','🪳','🐝','🪲','🐞','🦂','🕷️','🕸️','🦠','🧞‍♀️','🧞‍♂️','🧞','🧟‍♀️','🧟‍♂️','🧟','🧌','🗣️','👤','👥','🫂','👁️','👀','🦴','🦷','👅','👄','🫦','🧠','🫀','🫁','🦾','🦿','👣','🤺','⛷️']
                 uni.setStorageSync('EMOJILIST', that.emojiList)
 
+            }
+        },
+        handlePlayAudio(audio) {
+            let that = this
+            if (!audio) {
+                that.$u.toast('语音不能为空')
+                return false
+            }
+            if (!that.audio) {
+                that.audio = uni.createInnerAudioContext()
+                that.audio.src = audio
+            }
+            that.audioStatus = !that.audioStatus
+            if(that.audioStatus) {
+                that.$nextTick(function () {
+                    that.audio.play()
+                    that.audio.onEnded((e) => {
+                        that.audioStatus = false
+                    })
+                })
+            } else {
+                that.$nextTick(function () {
+                    that.audio.pause()
+                })
+            }
+        },
+        handlePlayVideo(video) {
+            let that = this
+            if (!video) {
+                that.$u.toast('视频不能为空')
+                return false
+            }
+            if (!that.video) {
+                that.video = uni.createVideoContext('video')
+                that.video.src = video
+            }
+            that.videoStatus = !that.videoStatus
+            if(that.videoStatus) {
+                that.$nextTick(function () {
+                    that.video.play()
+                })
+            } else {
+                that.$nextTick(function () {
+                    that.video.pause()
+                })
             }
         },
         addComment(item) {

@@ -4,7 +4,7 @@
         <view class="flex justify-between">
             <view class="rounded-full bg-black bg-opacity-20 px-5 py-3">
                 <view class="leading-none text-white">曲水流觞</view>
-                <view class="text-sm leading-none text-white opacity-50 mt-1">语音交友</view>
+                <view class="text-base leading-none text-white opacity-50 mt-1">语音交友</view>
             </view>
             <view class="flex flex-row items-center">
                 <view class="rounded-full w-10 h-10 flex items-center justify-center bg-black bg-opacity-20 mr-4" @click="showHelp = true">
@@ -86,7 +86,7 @@
         <view class="flex mt-4">
             <view class="flex items-center m-auto relative rounded-full bg-black bg-opacity-10 px-10 py-2">
                 <i class="ri-user-fill text-base leading-none text-white opacity-50 mr-1"></i>
-                <text class="text-sm text-white opacity-50 mr-3">6</text>
+                <text class="text-base text-white opacity-50 mr-3">6</text>
                 <i class="ri-arrow-drop-down-line text-base leading-none text-white opacity-50"></i>
             </view>
         </view>
@@ -125,7 +125,7 @@
                     <i class="ri-gift-fill text-4xl leading-none text-gray-300"></i>
                 </view>
                 <view class="flex items-center" v-if="message" @click="handleMessageSend">
-                    <text class="rounded-full p-2 px-3 text-sm text-white bg-gradient-to-r from-purple-800 to-purple-900">发送</text>
+                    <text class="rounded-full p-2 px-3 text-base text-white bg-gradient-to-r from-purple-800 to-purple-900">发送</text>
                 </view>
             </view>
             <!-- 语音 -->

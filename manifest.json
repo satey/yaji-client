@@ -24,7 +24,9 @@
                 "buttonRefuse" : "拒绝"
             }
         },
-        "modules" : {},
+        "modules" : {
+            "VideoPlayer" : {}
+        },
         "distribute" : {
             "android" : {
                 "permissions" : [

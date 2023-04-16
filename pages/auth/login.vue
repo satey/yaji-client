@@ -23,13 +23,13 @@
                 <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="onLogin()">登录</view>
             </view>
             <view class="flex flex-row-right mt-8">
-                <text class="text-sm leading-none text-white opacity-50" @click="$u.route('/pages/public/page', { id: 4 })">登录遇到问题?</text>
+                <text class="text-base leading-none text-white opacity-50" @click="$u.route('/pages/public/page', { id: 4 })">登录遇到问题?</text>
             </view>
             <view class="flex" style="position: absolute; bottom: 100rpx; text-align: center;">
                 <u-checkbox-group>
                     <u-checkbox @change="handleAgree" size="28" shape="circle" inactiveColor="#ffffff" activeColor="#ff6897"></u-checkbox>
                 </u-checkbox-group>
-                <view class="text-sm leading-none text-white opacity-50">
+                <view class="text-base leading-none text-white opacity-50">
                     <text>阅读并同意</text>
                     <text class="ml-2 mr-4" @click="$.route('/pages/public/page', { id: 1 })">《用户协议》</text>
                     <text>和</text>

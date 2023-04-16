@@ -10,7 +10,7 @@
         <view style="padding: 250rpx 100rpx;">
             <view class="flex text-left text-xl text-white">欢迎来到雅集</view>
             <view class="flex text-left mt-4">
-                <text class="text-white opacity-50 text-sm">性别确定后将不可更改，请慎重选择。</text>
+                <text class="text-white opacity-50 text-base">性别确定后将不可更改，请慎重选择。</text>
             </view>
             <view class="flex justify-around mt-10">
                 <view class="flex flex-col items-center" @click="handleChangeGender('male')">

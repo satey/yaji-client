@@ -6,7 +6,7 @@
                 <i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
             </view>
             <view slot="right">
-                <view class="p-2 rounded-full text-sm leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="doPublish()">发布</view>
+                <view class="p-2 rounded-full text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="doPublish()">发布</view>
             </view>
         </u-navbar>
 
@@ -15,43 +15,48 @@
             <view class="flex flex-wrap">
                 <view class="flex items-center bg-gray-100 rounded-full p-3 text-orange-500 mr-2 mt-2" v-for="(item, index) in form.tags" :key="index" :item="item" @click="delTag(index)">
                     <i class="ri-hashtag mr-1"></i>
-                    <view class="text-sm">{{ item }}</view>
+                    <view class="text-base">{{ item }}</view>
                     <i class="ri-close-line ml-2"></i>
                 </view>
             </view>
             <view class="flex flex-wrap" v-if="group.title">
                 <view class="flex items-center bg-gray-100 rounded-full p-3 text-orange-500 mr-2 mt-2" @click="delGroup()">
                     <i class="ri-focus-fill mr-2"></i>
-                    <view class="text-sm">{{ group.title }}</view>
+                    <view class="text-base">{{ group.title }}</view>
                     <i class="ri-close-line ml-2"></i>
                 </view>
             </view>
             <view class="mt-4" v-if="form.images">
-                <u-album :urls="form.images.split(',')" multipleSize="150" rowCount="3"></u-album>
+                <u-album :urls="form.images" multipleSize="150" rowCount="3"></u-album>
             </view>
-            <view v-if="form.audio" @click="handlePlayAudio()" class="mt-4 flex items-center justify-center rounded w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
-                <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
+            <view v-if="form.audio" class="mt-4">
+                <view @click="handlePlayAudio(form.audio)" class="mt-4 flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
+                    <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
+                </view>
             </view>
-            <view v-if="form.video" @click="handlePlayVideo()" class="mt-4 flex items-center justify-center rounded w-60 h-48 bg-gray-200">
-                <i class="ri-play-fill text-2xl text-gray-500" :class="videoStatus ? 'animate-pulse' : ''"></i>
+            <view v-if="form.video" class="mt-4">
+                <view @click="handlePlayVideo(form.video)" class="mt-4 flex items-center justify-center rounded w-60 bg-gray-200">
+                    <video class="z-0" :src="form.video" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
+                </view>
             </view>
             <view class="flex pt-4">
                 <view class="flex items-center bg-gray-100 border text-gray-500 p-3 rounded-full mr-2" @click="showTag = true">
                     <i class="ri-hashtag mr-1"></i>
-                    <view class="text-sm leading-none">添加话题</view>
+                    <view class="text-base leading-none">添加话题</view>
                 </view>
                 <view class="flex items-center bg-gray-100 border text-gray-500 p-3 rounded-full" @click="showGroup = true">
                     <i class="ri-focus-fill mr-2"></i>
-                    <view class="text-sm leading-none">添加圈子</view>
+                    <view class="text-base leading-none">添加圈子</view>
                 </view>
             </view>
             <view class="flex pt-4">
                 <u-checkbox-group>
-                    <u-checkbox label="是否私密话题" size="28" shape="circle" inactiveColor="#AAAAAA" activeColor="#FF7043" @change="changeProtocol"></u-checkbox>
+                    <u-checkbox label="是否私密话题" size="28" labelSize="24" shape="circle" inactiveColor="#AAAAAA" activeColor="#FF7043" @change="changeProtocol"></u-checkbox>
                 </u-checkbox-group>
             </view>
         </view>
 
+        <!-- 工具栏 -->
         <view class="border-0 !border-t border-solid border-gray-200 fixed bottom-0 left-0 right-0">
             <view class="flex flex-row-center p-4 bg-white">
                 <view class="flex-1 flex">
@@ -86,10 +91,6 @@
             </view>
         </view>
 
-        <!-- 视频 -->
-        <u-popup :show="showVideo" @close="showVideo = false" :closeable="true" mode="center">
-            <video id="video" :src="form.video" controls></video>
-        </u-popup>
         <!-- 话题 -->
         <u-popup :show="showTag" @close="showTag = false" :closeable="true" :round="30" customStyle="min-height: 500rpx;">
             <view class="p-4">
@@ -103,7 +104,7 @@
                 <view class="flex flex-wrap rounded-full">
                     <view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in listHotTag" :key="index" :item="item" @click="addTag(item)">
                         <i class="ri-hashtag mr-1"></i>
-                        <view class="text-sm">{{ item }}</view>
+                        <view class="text-base">{{ item }}</view>
                     </view>
                 </view>
                 <u-empty v-if="!listHotTag.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
@@ -111,7 +112,7 @@
                 <view class="flex flex-wrap rounded-full">
                     <view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in listNewTag" :key="index" :item="item" @click="addTag(item)">
                         <i class="ri-hashtag mr-1"></i>
-                        <view class="text-sm">{{ item }}</view>
+                        <view class="text-base">{{ item }}</view>
                     </view>
                 </view>
                 <u-empty v-if="!listNewTag.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
@@ -125,7 +126,7 @@
                 <view class="flex flex-wrap rounded-full">
                     <view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in listMineGroup" :key="index" :item="item" @click="addGroup(item)">
                         <i class="ri-focus-fill mr-2"></i>
-                        <view class="text-sm">{{ item.title }}</view>
+                        <view class="text-base">{{ item.title }}</view>
                     </view>
                 </view>
                 <u-empty v-if="!listMineGroup.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
@@ -184,11 +185,10 @@ export default {
             audioStatus: false,
             video: null,
             videoStatus: false,
-            showVideo: false,
             recorder: uni.getRecorderManager(),
-            recordTip: "按住说话",
-            recording: true,
+            recording: false,
             recordStoping: false,
+            recordTip: "按住说话",
             recordTimer: null,
             recordLength: 0,
             point: {
@@ -197,8 +197,14 @@ export default {
             },
         }
     },
-    onLoad(option) {
+    onLoad() {
         let that = this
+        that.recorder.onStart((e) => {
+            that.recordStart(e)
+        })
+        that.recorder.onStop((e) => {
+            that.recordStop(e)
+        })
     },
     computed: {
         ...mapState({
@@ -233,20 +239,23 @@ export default {
             that.form.group_id = 0
             that.group = []
         },
-        handlePlayAudio() {
+        handlePlayAudio(audio) {
             let that = this
-            if (!that.form.audio) {
+            if (!audio) {
                 that.$u.toast('语音不能为空')
                 return false
             }
             if (!that.audio) {
                 that.audio = uni.createInnerAudioContext()
-                that.audio.src = that.form.audio
+                that.audio.src = audio
             }
             that.audioStatus = !that.audioStatus
             if(that.audioStatus) {
                 that.$nextTick(function () {
                     that.audio.play()
+                    that.audio.onEnded((e) => {
+                        that.audioStatus = false
+                    })
                 })
             } else {
                 that.$nextTick(function () {
@@ -254,65 +263,47 @@ export default {
                 })
             }
         },
-        handlePlayVideo() {
+        handlePlayVideo(video) {
             let that = this
-            if (!that.form.video) {
+            if (!video) {
                 that.$u.toast('视频不能为空')
                 return false
             }
-            if (!that.audio) {
+            if (!that.video) {
                 that.video = uni.createVideoContext('video')
-                that.video.src = that.form.video
+                that.video.src = video
             }
-            that.showVideo = true
-            that.$nextTick(function () {
-                that.video.play()
-            })
-        },
-        recordStart(e) {
-            let that = this
-            that.recording = true
-            that.recordLength = 0
-            that.recordTimer = setInterval(() => {
-                that.recordLength++
-            }, 1000)
-        },
-        recordStop(e) {
-            let that = this
-            clearInterval(that.recordTimer)
-            if (!that.recordStoping) {
-                that.$request.upfile(e.tempFilePath).then(resf => {
-                    that.$u.toast('TODO')
-                    // that.$request.http('/Conversation/CreateDetail', {
-                    //     ConversationId: that.id,
-                    //     OperateType: 5,
-                    //     MsgContent: resf.data,
-                    //     DurationTime: msg.length
-                    // }).then((res) => {
-                    //     that.hindlist()
-                    //     that.keyword = ''
-                    // })
+            that.videoStatus = !that.videoStatus
+            if(that.videoStatus) {
+                that.$nextTick(function () {
+                    that.video.play()
+                })
+            } else {
+                that.$nextTick(function () {
+                    that.video.pause()
                 })
             }
-            that.recordStoping = false
         },
         handleRecordStart(e) {
             let that = this
             console.log('touch start')
             if (e.touches.length > 1) {
-                // return
+                return
             }
+            that.recording = true
+            that.recordStoping = false
+            that.recordTip = '正在录制…'
             that.point.Y = e.touches[0].clientY
             that.point.identifier = e.touches[0].identifier
-            // that.recorder.start({
-            //     format: "mp3"
-            // })
+            that.recorder.start({
+                format: "mp3"
+            })
         },
         handleRecordStop(e) {
             let that = this
             console.log('touch stop')
             if (!that.recording) {
-                // return
+                return
             }
             that.recording = false
             that.recordTip = '按住说话'
@@ -321,14 +312,44 @@ export default {
         handleRecordDoing(e) {
             let that = this
             console.log('touch move')
-            if (!that.recording) {
-                // return
-            }
             if (that.point.Y - e.touches[0].clientY >= uni.upx2px(100)) {
                 that.recordStoping = true
                 that.recordTip = '松开手指，取消发送'
             }
         },
+        recordStart(e) {
+            let that = this
+			console.log('recorder start' + JSON.stringify(e));
+            that.recordLength = 0
+            that.recordTimer = setInterval(() => {
+                that.recordLength++
+            }, 1000)
+		},
+        recordStop(e) {
+            let that = this
+			console.log('recorder stop' + JSON.stringify(e))
+            // e = JSON.stringify(e)
+            that.recording = false
+            // clearInterval(that.recordTimer)
+            // if (!that.recordStoping) {
+            //     return
+            // }
+			console.log('recorder upload')
+            uni.uploadFile({
+                url: that.$API_URL + 'index/upload',
+                filePath: e.tempFilePath,
+                name: 'file',
+                success: res => {
+                    res = JSON.parse(res.data)
+                    if (res.code === 1) {
+                        that.form.audio = res.data.fullurl
+                    } else {
+                        that.$u.toast(res.msg)
+                    }
+                },
+                complete: e => {}
+            })
+		},
         addImage() {
             let that = this
             uni.chooseImage({
@@ -347,7 +368,6 @@ export default {
                             name: 'file',
                             success: res => {
                                 res = JSON.parse(res.data)
-                                // console.log(res)
                                 if (res.code === 1) {
                                     that.form.images.push(res.data.fullurl)
                                 } else {
@@ -369,11 +389,10 @@ export default {
                     console.log(res)
                     uni.uploadFile({
                         url: that.$API_URL + 'index/upload',
-                        filePath: res.tempFilePaths,
+                        filePath: res.tempFilePath,
                         name: 'file',
                         success: res => {
                             res = JSON.parse(res.data)
-                            // console.log(res)
                             if (res.code === 1) {
                                 that.form.audio = res.data.fullurl
                             } else {
@@ -392,13 +411,17 @@ export default {
                 sourceType: ['album'],
                 success: (res) => {
                     console.log(res)
+                    if (res.size > 10 * 1024 * 1024) {
+                        that.$u.toast('视频不能超过10M')
+                        return false
+                    }
                     uni.uploadFile({
                         url: that.$API_URL + 'index/upload',
-                        filePath: res.tempFilePaths,
+                        filePath: res.tempFilePath,
                         name: 'file',
                         success: res => {
                             res = JSON.parse(res.data)
-                            // console.log(res)
+                            console.log(res)
                             if (res.code === 1) {
                                 that.form.video = res.data.fullurl
                             } else {

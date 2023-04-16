@@ -20,19 +20,19 @@
             <block v-if="type === 'hot'">
                 <view class="text-xl text-gray-500 mt-8">角色朝代</view>
                 <view class="flex flex-wrap flex-direction-row">
-                    <view v-for="(item, index) in listRoleDynasty" :key="index" :item="item" :class="params.dynasty === item ? '!bg-rose-200' : ''" @click="handleSearchDynasty(item)" class="rounded text-sm leading-none p-2 bg-gray-100 mt-4 mr-4">
+                    <view v-for="(item, index) in listRoleDynasty" :key="index" :item="item" :class="params.dynasty === item ? '!bg-rose-200' : ''" @click="handleSearchDynasty(item)" class="rounded text-base leading-none p-2 bg-gray-100 mt-4 mr-4">
                         {{ item.dynasty }}
                     </view>
                 </view>
                 <view class="text-xl text-gray-500 mt-8">角色称号</view>
                 <view class="flex flex-wrap flex-direction-row">
-                    <view v-for="(item, index) in listRoleTitle" :key="index" :item="item" @click="handleSearchTitle(item)" class="rounded text-sm leading-none p-2 bg-gray-100 mt-4 mr-4">
+                    <view v-for="(item, index) in listRoleTitle" :key="index" :item="item" @click="handleSearchTitle(item)" class="rounded text-base leading-none p-2 bg-gray-100 mt-4 mr-4">
                         {{ item.title }}
                     </view>
                 </view>
                 <view class="text-xl text-gray-500 mt-8">角色成就</view>
                 <view class="flex flex-wrap flex-direction-row">
-                    <view v-for="(item, index) in listRoleAchievement" :key="index" :item="item" @click="handleSearchAchievement(item)" class="rounded text-sm leading-none p-2 bg-gray-100 mt-4 mr-4">
+                    <view v-for="(item, index) in listRoleAchievement" :key="index" :item="item" @click="handleSearchAchievement(item)" class="rounded text-base leading-none p-2 bg-gray-100 mt-4 mr-4">
                         {{ item.achievement }}
                     </view>
                 </view>

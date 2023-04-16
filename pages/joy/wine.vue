@@ -4,7 +4,7 @@
         <view class="flex justify-between">
             <view class="rounded-full bg-black bg-opacity-20 px-5 py-3">
                 <view class="leading-none text-white">诗词结缘</view>
-                <view class="text-sm leading-none text-white opacity-50 mt-1">交友</view>
+                <view class="text-base leading-none text-white opacity-50 mt-1">交友</view>
             </view>
             <view class="flex flex-row items-center">
                 <view class="mr-4">
@@ -32,48 +32,48 @@
             <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
             <view class="flex-1 mr-5">
                 <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-sm leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
+                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
                 <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
             </view>
             <view class="flex items-center">
                 <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-sm leading-none text-white ml-1">385</view>
+                <view class="text-base leading-none text-white ml-1">385</view>
             </view>
         </view>
         <view class="flex mt-6">
             <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
             <view class="flex-1 mr-5">
                 <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-sm leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
+                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
                 <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
             </view>
             <view class="flex items-center">
                 <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-sm leading-none text-white ml-1">385</view>
+                <view class="text-base leading-none text-white ml-1">385</view>
             </view>
         </view>
         <view class="flex mt-6">
             <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
             <view class="flex-1 mr-5">
                 <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-sm leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
+                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
                 <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
             </view>
             <view class="flex items-center">
                 <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-sm leading-none text-white ml-1">385</view>
+                <view class="text-base leading-none text-white ml-1">385</view>
             </view>
         </view>
         <view class="flex mt-6">
             <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
             <view class="flex-1 mr-5">
                 <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-sm leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
+                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
                 <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
             </view>
             <view class="flex items-center">
                 <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-sm leading-none text-white ml-1">385</view>
+                <view class="text-base leading-none text-white ml-1">385</view>
             </view>
         </view>
 

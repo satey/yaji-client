@@ -28,7 +28,7 @@
                 <u-empty v-if="!listUserRecommend.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
             </block>
             <block v-if="type === 'post'">
-                <uc-post v-for="(item, index) in     listPostRecommend" :key="index" :item="item"></uc-post>
+                <uc-post v-for="(item, index) in listPostRecommend" :key="index" :item="item"></uc-post>
                 <u-loadmore v-if="listPostRecommend.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
                 <u-empty v-if="!listPostRecommend.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
             </block>

@@ -22,7 +22,7 @@
             <view class="flex justify-between items-center py-4 px-4 bg-white">
                 <view class="flex-1 text-base">
                     自由模式
-                    <view class="text-sm mt-1 text-gray-400">所有人自由发言</view>
+                    <view class="text-base mt-1 text-gray-400">所有人自由发言</view>
                 </view>
                 <u-checkbox-group>
                     <u-checkbox shape="circle" activeColor="rgb(168, 85, 247)"></u-checkbox>
@@ -31,7 +31,7 @@
             <view class="flex justify-between items-center py-4 px-4 bg-white">
                 <view class="flex-1 text-base">
                     主席模式
-                    <view class="text-sm mt-1 text-gray-400">仅管理员可以发言</view>
+                    <view class="text-base mt-1 text-gray-400">仅管理员可以发言</view>
                 </view>
                 <u-checkbox-group>
                     <u-checkbox shape="circle" activeColor="rgb(168, 85, 247)"></u-checkbox>
@@ -40,7 +40,7 @@
             <view class="flex justify-between items-center py-4 px-4 bg-white">
                 <view class="flex-1 text-base">
                     麦序模式
-                    <view class="text-sm mt-1 text-gray-400">麦序第一人以及管理员可以发言</view>
+                    <view class="text-base mt-1 text-gray-400">麦序第一人以及管理员可以发言</view>
                 </view>
                 <u-checkbox-group>
                     <u-checkbox shape="circle" activeColor="rgb(168, 85, 247)"></u-checkbox>

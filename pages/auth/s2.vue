@@ -18,7 +18,7 @@
             <view class="flex flex-col mt-4" style="height: 600rpx; overflow-y: scroll;">
                 <view class="flex items-center p-2 rounded-lg mt-4" v-for="(item, index) in listRoleDynasty" :key="index" :item="item" :class="dynasty.id === item.id ? 'bg-white text-rose-500' : 'text-white'" @click="handleChangeDynasty(item)">
                     <view class="flex-1">{{ item.dynasty }}</view>
-                    <view class="text-sm opacity-50">{{ $tools.erayear(item.startyear) + ' - ' + $tools.erayear(item.endyear) }}</view>
+                    <view class="text-base opacity-50">{{ $tools.erayear(item.startyear) + ' - ' + $tools.erayear(item.endyear) }}</view>
                 </view>
             </view>
             <view class="grid gap-4 mt-10 text-center">

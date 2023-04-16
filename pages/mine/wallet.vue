@@ -24,7 +24,7 @@
         </view>
         <view class="p-4 rounded-lg mt-4 bg-gray-100">
             <u-input v-model="money" :focus="true" placeholder="输入充值铜币" type="number" maxlength="10" @input="onCheckMoney">
-                <view slot="suffix" class="py-3 px-4 rounded-full text-sm text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleRecharge()">充值</view>
+                <view slot="suffix" class="py-3 px-4 rounded-full text-base text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleRecharge()">充值</view>
             </u-input>
         </view>
         <view class="text-base leading-none text-gray-500 mt-4">当前充值 {{ money }} 个铜币，需支付 {{ amount }} 元。</view>

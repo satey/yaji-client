@@ -19,7 +19,7 @@
                 <view class="flex justify-end mt-6">
                     <view class="flex justify-end w-4/6">
                         <view class="mr-3">
-                            <view v-if="item.type === 'text'" class="rounded-3xl rounded-tr-none p-3 text-sm text-white bg-gradient-to-r from-fuchsia-400 to-fuchsia-500 whitespace-pre-wrap">{{ item.content }}</view>
+                            <view v-if="item.type === 'text'" class="rounded-3xl rounded-tr-none p-3 text-base text-white bg-gradient-to-r from-fuchsia-400 to-fuchsia-500 whitespace-pre-wrap">{{ item.content }}</view>
                         </view>
                         <view class="flex">
                             <image class="block rounded-full w-10 h-10" :src="item.user.avatar || '/static/avatar.png'"></image>
@@ -46,7 +46,7 @@
                     <i class="ri-add-circle-fill text-4xl leading-none text-gray-400"></i>
                 </view>
                 <view class="flex items-center" v-if="text" @click="handleTextSend">
-                    <text class="rounded-full p-2 px-3 text-sm text-white bg-gradient-to-r from-fuchsia-400 to-fuchsia-500">发送</text>
+                    <text class="rounded-full p-2 px-3 text-base text-white bg-gradient-to-r from-fuchsia-400 to-fuchsia-500">发送</text>
                 </view>
             </view>
             <!-- 语音 -->
@@ -83,25 +83,25 @@
                     <view class="rounded-lg bg-white p-4 mx-auto">
                         <i class="ri-image-fill block text-2xl leading-none text-black"></i>
                     </view>
-                    <view class="text-sm leading-none mt-2">相册</view>
+                    <view class="text-base leading-none mt-2">相册</view>
                 </view>
                 <view class="flex flex-col justify-center text-center" @tap="handleCamera">
                     <view class="rounded-lg bg-white p-4 mx-auto">
                         <i class="ri-camera-fill block text-2xl leading-none text-black"></i>
                     </view>
-                    <view class="text-sm leading-none mt-2">拍摄</view>
+                    <view class="text-base leading-none mt-2">拍摄</view>
                 </view>
                 <view class="flex flex-col justify-center text-center" @tap="handleVideo">
                     <view class="rounded-lg bg-white p-4 mx-auto">
                         <i class="ri-vidicon-fill block text-2xl leading-none text-black"></i>
                     </view>
-                    <view class="text-sm leading-none mt-2">录制</view>
+                    <view class="text-base leading-none mt-2">录制</view>
                 </view>
                 <view class="flex flex-col justify-center text-center" @click="handleGift">
                     <view class="rounded-lg bg-white p-4 mx-auto">
                         <i class="ri-gift-fill block text-2xl leading-none text-black"></i>
                     </view>
-                    <view class="text-sm leading-none mt-2">礼物</view>
+                    <view class="text-base leading-none mt-2">礼物</view>
                 </view>
             </view>
         </view>
@@ -353,7 +353,7 @@ export default {
                 }
             })
         },
-        handleCamera() {
+        async handleCamera() {
             let that = this
             that.showPlus = false
             uni.chooseImage({
@@ -380,7 +380,7 @@ export default {
                 }
             })
         },
-        handleVideo() {
+        async handleVideo() {
             let that = this
             that.showEmoji = false
             uni.chooseVideo({
@@ -391,12 +391,11 @@ export default {
                         that.$u.toast('视频时长不得超过10秒')
                         return
                     } else {
-                        // #ifdef APP-PLUS
                         uni.compressVideo({
                             src: res.tempFilePath,
                             quality: 'medium', //'low':低，'medium':中，'high':高
                             success: (res) => {
-                            that.$u.toast('TODO')
+                                that.$u.toast('TODO')
                                 // that.$request.upfile(res.tempFilePath).then(result => {
                                 //     that.$request.http('/Conversation/CreateDetail', {
                                 //         ConversationId: that.id,
@@ -408,19 +407,6 @@ export default {
                                 // })
                             },
                         })
-                        // #endif
-                        // #ifdef H5
-                        that.$u.toast('TODO')
-                        // that.$request.upfile(res.tempFilePath).then(result => {
-                        //     that.$request.http('/Conversation/CreateDetail', {
-                        //         ConversationId: that.id,
-                        //         OperateType: 7,
-                        //         MsgContent: result.data
-                        //     }).then((ref) => {
-                        //         that.getMessageList()
-                        //     })
-                        // })
-                        // #endif
                     }
                 }
             })
