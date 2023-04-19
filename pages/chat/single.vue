@@ -6,7 +6,7 @@
                 <i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
             </view>
             <view slot="right">
-                <i class="ri-more-fill text-3xl" @click="$u.route('pages/chat/groupsetting')"></i>
+                <!-- <i class="ri-more-fill text-3xl" @click="$u.route('pages/chat/groupsetting')"></i> -->
             </view>
         </u-navbar>
         
@@ -16,13 +16,47 @@
                 <view class="text-center">
                     <text class="p-1 px-2 rounded text-xs leading-none text-gray-400 bg-gray-50">{{ $u.timeFormat(item.createtime, 'yyyy-mm-dd hh:MM') }}</text>
                 </view>
-                <view class="flex justify-end mt-6">
+                <view class="flex justify-end mt-6" v-if="item.user.id === userInfo.id">
                     <view class="flex justify-end w-4/6">
                         <view class="mr-3">
                             <view v-if="item.type === 'text'" class="rounded-3xl rounded-tr-none p-3 text-base text-white bg-gradient-to-r from-fuchsia-400 to-fuchsia-500 whitespace-pre-wrap">{{ item.content }}</view>
+                            <view v-if="item.type === 'image'">
+                                <u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
+                            </view>
+                            <view v-if="item.type === 'gift'">
+                                <u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
+                            </view>
+                            <view v-if="item.type === 'audio'" @click="handlePlayAudio(item.content)" class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
+                                <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
+                            </view>
+                            <view v-if="item.type === 'video'" @click="handlePlayVideo(item.content)" class="flex items-center justify-center rounded w-60 bg-gray-200">
+                                <video class="z-0" :src="item.content" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
+                            </view>
                         </view>
                         <view class="flex">
                             <image class="block rounded-full w-10 h-10" :src="item.user.avatar || '/static/avatar.png'"></image>
+                        </view>
+                    </view>
+                </view>
+                <view class="flex justify-start mt-6" v-else>
+                    <view class="flex justify-start w-4/6">
+                        <view class="flex">
+                            <image class="block rounded-full w-10 h-10" :src="item.user.avatar || '/static/avatar.png'"></image>
+                        </view>
+                        <view class="ml-3">
+                            <view v-if="item.type === 'text'" class="rounded-3xl rounded-tl-none p-3 text-base text-white bg-gradient-to-r from-fuchsia-400 to-fuchsia-500 whitespace-pre-wrap">{{ item.content }}</view>
+                            <view v-if="item.type === 'image'">
+                                <u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
+                            </view>
+                            <view v-if="item.type === 'gift'">
+                                <u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
+                            </view>
+                            <view v-if="item.type === 'audio'" @click="handlePlayAudio(item.content)" class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
+                                <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
+                            </view>
+                            <view v-if="item.type === 'video'" @click="handlePlayVideo(item.content)" class="flex items-center justify-center rounded w-60 bg-gray-200">
+                                <video class="z-0" :src="item.content" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
+                            </view>
                         </view>
                     </view>
                 </view>
@@ -64,9 +98,9 @@
                 </view>
             </view>
             <!-- 表情 -->
-            <view class="grid grid-cols-12 gap-2 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
+            <view class="grid grid-cols-8 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
                 <view class="flex" v-for="(item, index) in emojiList" :key="index" :item="item" @click="handleEmojiSend(item)">
-                    <text class="text-xl leading-none">{{ item }}</text>
+                    <text class="text-2xl leading-none">{{ item }}</text>
                 </view>
             </view>
             <!-- 礼物 -->
@@ -79,13 +113,13 @@
             </view>
             <!-- 操作 -->
             <view class="grid grid-cols-4 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showPlus">
-                <view class="flex flex-col justify-center text-center" @tap="handleAlbum">
+                <view class="flex flex-col justify-center text-center" @tap="handleImage">
                     <view class="rounded-lg bg-white p-4 mx-auto">
                         <i class="ri-image-fill block text-2xl leading-none text-black"></i>
                     </view>
                     <view class="text-base leading-none mt-2">相册</view>
                 </view>
-                <view class="flex flex-col justify-center text-center" @tap="handleCamera">
+                <view class="flex flex-col justify-center text-center" @tap="handleVideo">
                     <view class="rounded-lg bg-white p-4 mx-auto">
                         <i class="ri-camera-fill block text-2xl leading-none text-black"></i>
                     </view>
@@ -121,8 +155,9 @@ export default {
     },
     data() {
         return {
-            socket: null, //socket服务
+            chat: {},
             user: {},
+            socket: null,
             params: {
                 type: 'all',
                 page: 1,
@@ -131,7 +166,7 @@ export default {
                 total: 0,
                 last_page: 0,
             },
-			scrollInto: '', //scrollBottom
+			scrollInto: '',
             loadmore: false,
             text: '',
             messageList: [],
@@ -144,14 +179,17 @@ export default {
             showCamera: false,
             showRecord: false,
             showGift: false,
-            audio: uni.createInnerAudioContext(),
+            audio: null,
+            audioStatus: false,
+            video: null,
+            videoStatus: false,
             recorder: uni.getRecorderManager(),
-            recordTip: "按住说话",
-            recording: true,
+            recording: false,
             recordStoping: false,
+            recordTip: "按住说话",
             recordTimer: null,
             recordLength: 0,
-            point: {
+            recordPoint: {
                 identifier: 0,
                 Y: 0
             },
@@ -167,32 +205,56 @@ export default {
         that.getUserProfile()
         that.getEmojiList()
         that.getGiftList()
-        // #ifndef H5
-        this.recorder.onStart((e) => {
-            this.recordStart(e)
-        })
-        this.recorder.onStop((e) => {
-            this.recordStop(e)
-        })
-        // #endif
-
-        // 监听消息
-        that.socket = new Socket((msg) => {
-            that.parseMsg(msg.data)
-        });
 	},
     onLoad() {
         let that = this
+        that.init()
     },
     beforeDestroy() {
         let that = this
-        that.socket.close()
+        if (that.socket) {
+            that.socket.close()
+        }
     },
     methods: {
+        init() {
+            let that = this
+            that.$api('chat.single', {
+                user_id: that.$Route.query.user_id
+            }).then(res => {
+                if (res.code === 1) {
+                    that.chat = res.data
+                    uni.setStorageSync('CHATSESSIONID', res.data.session_id)
+                    // 监听消息
+                    that.socket = new Socket((msg) => {
+                        that.parseMsg(msg.data)
+                    });
+                    // 监听录音
+                    that.recorder.onStart((e) => {
+                        that.recordStart(e)
+                    })
+                    that.recorder.onStop((e) => {
+                        that.recordStop(e)
+                    })
+                } else {
+                    that.$u.toast(res.msg)
+                }
+            })
+        },
         changeTab(e) {
             let that = this
             that.type = e.type
         },
+		scrollBottom() {
+            let that = this
+			let timeout = null
+			that.scrollInto = ''
+			clearTimeout(timeout)
+			timeout = setTimeout(() => {
+				that.scrollInto = 'scrollBottom'
+			}, 300)
+		},
+        // 解析消息
         parseMsg(message) {
             console.log(message)
             let that = this
@@ -200,16 +262,22 @@ export default {
             if (msg.code === 1) {
                 switch (msg.type) {
                     case 'init':
-                        uni.setStorageSync('CHATSESSIONID', msg.data.session_id)
-                        that.getMessageList()
+                        that.sendMessage('', 'history')
                         that.scrollBottom()
                         break
                     case 'text':
                         that.messageList.push(msg.data)
                         that.scrollBottom()
-                        // uni.vibrateLong()
                         break
-                    case 'gift':
+                    case 'image':
+                        that.messageList.push(msg.data)
+                        that.scrollBottom()
+                        break
+                    case 'audio':
+                        that.messageList.push(msg.data)
+                        that.scrollBottom()
+                        break
+                    case 'video':
                         that.messageList.push(msg.data)
                         that.scrollBottom()
                         break
@@ -228,13 +296,11 @@ export default {
             let that = this
             let params = {
                 type: 'history',
-                msg: '',
+                msg: 'send',
                 data: ''
             }
             let res = await that.socket.send(JSON.stringify(params))
-            // console.log(res)
         },
-
         // 发送服务数据
         async sendMessage(data, type = 'text') {
             let that = this
@@ -244,17 +310,7 @@ export default {
                 data: data
             }
             let res = await that.socket.send(JSON.stringify(params))
-            // console.log(res)
         },
-		scrollBottom() {
-            let that = this
-			let timeout = null
-			that.scrollInto = ''
-			clearTimeout(timeout)
-			timeout = setTimeout(() => {
-				that.scrollInto = 'scrollBottom'
-			}, 300)
-		},
         handleTextSend() {
             let that = this
             if (that.text === '') {
@@ -301,7 +357,7 @@ export default {
                 that.$api.msg('账户铜币不足')
                 return
             }
-            that.sendMessage(that.gift, 'gift')
+            that.sendMessage(that.gift.image, 'gift')
             that.showGift = false
             that.handleGiftPlay()
         },
@@ -319,164 +375,6 @@ export default {
                     })
                 })
             })
-        },
-        async handleAlbum() {
-            let that = this
-            that.showPlus = false
-            uni.chooseImage({
-                count: 9,
-                sizeType: ['original', 'compressed'],
-                sourceType: ['album', 'camera'],
-                success: (res) => {
-                    res.tempFilePaths.forEach(item => {
-                        uni.uploadFile({
-                            url: that.action,
-                            method: "POST",
-                            header: {
-                                'Authorization': uni.getStorageSync('token'),
-                                'Content-Type': 'multipart/form-data'
-                            },
-                            filePath: item,
-                            name: 'file',
-                            success: (result) => {
-                                let res = JSON.parse(result.data)
-                                if (res.code == 200) {
-                                    that.imageList = that.imageList.concat(res.data[0].data);
-                                    console.log(that.imageList, '上传图片成功')
-                                } else {
-                                    that.$u.toast('上传失败')
-                                }
-                            }
-                        })
-                    })
-                
-                }
-            })
-        },
-        async handleCamera() {
-            let that = this
-            that.showPlus = false
-            uni.chooseImage({
-                sourceType: ['camera'],
-                sizeType: ['original', 'compressed'],
-                success: (res) => {
-                    for (let i = 0; i < res.tempFilePaths.length; i++) {
-                        uni.getImageInfo({
-                            src: res.tempFilePaths[i],
-                            success: (image) => {
-                                that.$u.toast('TODO')
-                                // this.$request.upfile(res.tempFilePaths[i]).then(resf => {
-                                //     this.$request.http('/Conversation/CreateDetail', {
-                                //         ConversationId: this.id,
-                                //         OperateType: 2,
-                                //         MsgContent: resf.data
-                                //     }).then((ref) => {
-                                //         this.getMessageList()
-                                //     })
-                                // })
-                            }
-                        })
-                    }
-                }
-            })
-        },
-        async handleVideo() {
-            let that = this
-            that.showEmoji = false
-            uni.chooseVideo({
-                sourceType: ['camera', 'album'],
-                maxDuration: 10,
-                success: res => {
-                    if (Math.floor(res.duration) > 10) {
-                        that.$u.toast('视频时长不得超过10秒')
-                        return
-                    } else {
-                        uni.compressVideo({
-                            src: res.tempFilePath,
-                            quality: 'medium', //'low':低，'medium':中，'high':高
-                            success: (res) => {
-                                that.$u.toast('TODO')
-                                // that.$request.upfile(res.tempFilePath).then(result => {
-                                //     that.$request.http('/Conversation/CreateDetail', {
-                                //         ConversationId: that.id,
-                                //         OperateType: 7,
-                                //         MsgContent: result.data
-                                //     }).then((ref) => {
-                                //         that.getMessageList()
-                                //     })
-                                // })
-                            },
-                        })
-                    }
-                }
-            })
-        },
-        // 播放语音
-        handlePlayVoice(msg) {
-            this.audio.src = msg.MsgContent
-            this.$nextTick(function () {
-                this.audio.play()
-            })
-        },
-        recordStart(e) {
-            let that = this
-            that.recording = true
-            that.recordLength = 0
-            that.recordTimer = setInterval(() => {
-                that.recordLength++
-            }, 1000)
-        },
-        recordStop(e) {
-            let that = this
-            clearInterval(that.recordTimer)
-            if (!that.recordStoping) {
-                that.$request.upfile(e.tempFilePath).then(resf => {
-                    that.$u.toast('TODO')
-                    // that.$request.http('/Conversation/CreateDetail', {
-                    //     ConversationId: that.id,
-                    //     OperateType: 5,
-                    //     MsgContent: resf.data,
-                    //     DurationTime: msg.length
-                    // }).then((res) => {
-                    //     that.hindlist()
-                    //     that.keyword = ''
-                    // })
-                })
-            }
-            that.recordStoping = false
-        },
-        handleRecordStart(e) {
-            let that = this
-            console.log('touch start')
-            if (e.touches.length > 1) {
-                // return
-            }
-            that.point.Y = e.touches[0].clientY
-            that.point.identifier = e.touches[0].identifier
-            // that.recorder.start({
-            //     format: "mp3"
-            // })
-        },
-        handleRecordStop(e) {
-            let that = this
-            console.log('touch stop')
-            if (!that.recording) {
-                // return
-            }
-            that.recording = false
-            that.recordTip = '按住说话'
-            that.recorder.stop()
-        },
-        handleRecordDoing(e) {
-            let that = this
-            console.log('touch move')
-            if (!that.recording) {
-                // return
-            }
-            if (that.point.Y - e.touches[0].clientY >= uni.upx2px(100)) {
-                that.recordStoping = true
-                that.recordTip = '松开手指，取消发送'
-            }
         },
         async getUserProfile() {
             let that = this
@@ -508,6 +406,167 @@ export default {
                     }
                 })
             }
+        },
+        handlePlayAudio(audio) {
+            let that = this
+            if (!audio) {
+                that.$u.toast('语音不能为空')
+                return false
+            }
+            if (!that.audio) {
+                that.audio = uni.createInnerAudioContext()
+                that.audio.src = audio
+            }
+            that.audioStatus = !that.audioStatus
+            if(that.audioStatus) {
+                that.$nextTick(function () {
+                    that.audio.play()
+                    that.audio.onEnded((e) => {
+                        that.audioStatus = false
+                    })
+                })
+            } else {
+                that.$nextTick(function () {
+                    that.audio.pause()
+                })
+            }
+        },
+        handlePlayVideo(video) {
+            let that = this
+            if (!video) {
+                that.$u.toast('视频不能为空')
+                return false
+            }
+            if (!that.video) {
+                that.video = uni.createVideoContext('video')
+                that.video.src = video
+            }
+            that.videoStatus = !that.videoStatus
+            if(that.videoStatus) {
+                that.$nextTick(function () {
+                    that.video.play()
+                })
+            } else {
+                that.$nextTick(function () {
+                    that.video.pause()
+                })
+            }
+        },
+        handleRecordStart(e) {
+            let that = this
+            console.log('touch start')
+            if (e.touches.length > 1) {
+                return
+            }
+            that.recording = true
+            that.recordStoping = false
+            that.recordTip = '正在录制…'
+            that.recordPoint.Y = e.touches[0].clientY
+            that.recordPoint.identifier = e.touches[0].identifier
+            that.recorder.start({
+                format: "mp3"
+            })
+        },
+        handleRecordStop(e) {
+            let that = this
+            console.log('touch stop')
+            if (!that.recording) {
+                return
+            }
+            that.recording = false
+            that.recordTip = '按住说话'
+            that.recorder.stop()
+        },
+        handleRecordDoing(e) {
+            let that = this
+            console.log('touch move')
+            if (that.recordPoint.Y - e.touches[0].clientY >= uni.upx2px(100)) {
+                that.recordStoping = true
+                that.recordTip = '松开手指，取消发送'
+            }
+        },
+        recordStart(e) {
+            let that = this
+			console.log('recorder start' + JSON.stringify(e));
+            that.recordLength = 0
+            that.recordTimer = setInterval(() => {
+                that.recordLength++
+            }, 1000)
+		},
+        recordStop(e) {
+            let that = this
+			console.log('recorder stop' + JSON.stringify(e))
+            that.recording = false
+            clearInterval(that.recordTimer)
+            uni.uploadFile({
+                url: that.$API_URL + 'index/upload',
+                filePath: e.tempFilePath,
+                name: 'file',
+                success: res => {
+                    res = JSON.parse(res.data)
+                    if (res.code === 1) {
+                        that.sendMessage(res.data.fullurl, 'audio')
+                    } else {
+                        that.$u.toast(res.msg)
+                    }
+                },
+                complete: e => {}
+            })
+		},
+        handleImage() {
+            let that = this
+            uni.chooseImage({
+                count: 3,
+                sizeType: ['original', 'compressed'],
+                sourceType: ['album'],
+                success: (res) => {
+                    res.tempFilePaths.forEach(item => {
+                        uni.uploadFile({
+                            url: that.$API_URL + 'index/upload',
+                            filePath: item,
+                            name: 'file',
+                            success: res => {
+                                res = JSON.parse(res.data)
+                                if (res.code === 1) {
+                                    that.sendMessage(res.data.fullurl, 'image')
+                                } else {
+                                    that.$u.toast(res.msg)
+                                }
+                            },
+                            complete: e => {}
+                        })
+                    })
+                }
+            })
+        },
+        handleVideo() {
+            let that = this
+            uni.chooseVideo({
+                maxDuration: 10,
+                sourceType: ['album'],
+                success: (res) => {
+                    console.log(res)
+                    if (res.size > 10 * 1024 * 1024) {
+                        that.$u.toast('视频不能超过10M')
+                        return false
+                    }
+                    uni.uploadFile({
+                        url: that.$API_URL + 'index/upload',
+                        filePath: res.tempFilePath,
+                        name: 'file',
+                        success: res => {
+                            res = JSON.parse(res.data)
+                            console.log(res)
+                            if (res.code === 1) {
+                                that.sendMessage(res.data.fullurl, 'video')
+                            } else {
+                                that.$u.toast(res.msg)
+                            }
+                        },
+                        complete: e => {}
+                    })
+                }
+            })
         },
     }
 }

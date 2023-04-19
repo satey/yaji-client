@@ -204,7 +204,7 @@ export default {
             recordStoping: false,
             recordTimer: null,
             recordLength: 0,
-            point: {
+            recordPoint: {
                 identifier: 0,
                 Y: 0
             },
@@ -323,8 +323,8 @@ export default {
             if (e.touches.length > 1) {
                 // return
             }
-            that.point.Y = e.touches[0].clientY
-            that.point.identifier = e.touches[0].identifier
+            that.recordPoint.Y = e.touches[0].clientY
+            that.recordPoint.identifier = e.touches[0].identifier
             // that.recorder.start({
             //     format: "mp3"
             // })
@@ -345,7 +345,7 @@ export default {
             if (!that.recording) {
                 // return
             }
-            if (that.point.Y - e.touches[0].clientY >= uni.upx2px(100)) {
+            if (that.recordPoint.Y - e.touches[0].clientY >= uni.upx2px(100)) {
                 that.recordStoping = true
                 that.recordTip = '松开手指，取消发送'
             }

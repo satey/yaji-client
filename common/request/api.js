@@ -28,6 +28,13 @@ export default {
 	gift: {
 		lists: { url: 'gift/lists', auth: true, method: 'GET', desc: '礼物列表', },
 	},
+	chat: {
+		single: { url: 'chat/single', auth: true, method: 'GET', desc: '单聊详情', },
+		group: { url: 'chat/group', auth: true, method: 'GET', desc: '群聊详情', },
+		voice: { url: 'chat/voice', auth: true, method: 'GET', desc: '语音详情', },
+		live: { url: 'chat/live', auth: true, method: 'GET', desc: '视频详情', },
+		lists: { url: 'chat/lists', auth: true, method: 'GET', desc: '会话列表', },
+	},
 	message: {
 		lists: { url: 'message/lists', auth: true, method: 'GET', desc: '消息列表', },
 		readall: { url: 'message/readall', auth: true, method: 'GET', desc: '标记已读', },

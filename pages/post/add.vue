@@ -60,13 +60,13 @@
         <view class="border-0 !border-t border-solid border-gray-200 fixed bottom-0 left-0 right-0">
             <view class="flex flex-row-center p-4 bg-white">
                 <view class="flex-1 flex">
-                    <view class="flex items-center bg-gray-100 p-3 rounded-full mr-4" @click="addImage">
+                    <view class="flex items-center bg-gray-100 p-3 rounded-full mr-4" @click="handleImage">
                         <i class="ri-camera-fill text-2xl leading-none text-gray-500"></i>
                     </view>
                     <view class="flex items-center bg-gray-100 p-3 rounded-full mr-4" @click="showRecord = !showRecord">
                         <i class="ri-mic-fill text-2xl leading-none text-gray-500"></i>
                     </view>
-                    <view class="flex items-center bg-gray-100 p-3 rounded-full" @click="addVideo">
+                    <view class="flex items-center bg-gray-100 p-3 rounded-full" @click="handleVideo">
                         <i class="ri-live-fill text-2xl leading-none text-gray-500"></i>
                     </view>
                 </view>
@@ -191,7 +191,7 @@ export default {
             recordTip: "按住说话",
             recordTimer: null,
             recordLength: 0,
-            point: {
+            recordPoint: {
                 identifier: 0,
                 Y: 0
             },
@@ -238,6 +238,50 @@ export default {
             let that = this
             that.form.group_id = 0
             that.group = []
+        },
+        changeProtocol(e) {
+            let that = this
+            that.form.ischat = e
+            console.log(that.form.ischat)
+        },
+        onChangePrivacy(e) {
+            let that = this
+            that.form.privacy = e
+            that.listPrivacy.forEach(item => {
+                if (item.type === e) {
+                    that.privacyText = item.title
+                    that.showPrivacy = false
+                }
+            })
+        },
+        doPublish() {
+            let that = this
+            if (!that.userInfo.role_id) {
+                that.$u.toast('无角色暂不能发布动态')
+                return
+            }
+            if (!that.form.content) {
+                that.$u.toast('内容不能为空')
+                return
+            }
+            let data = {
+                content: that.form.content,
+                images: that.form.images.toString(),
+                tags: that.form.tags.toString(),
+                audio: that.form.audio,
+                video: that.form.video,
+                ischat: that.form.ischat,
+                privacy: that.form.privacy,
+                group_id: that.group.id > 0 ? that.group.id : 0
+            }
+            that.$api('post.add', data).then(res => {
+                if (res.code === 1) {
+                    that.form.content = ''
+                    that.$u.toast('发布成功')
+                } else {
+                    that.$u.toast(res.msg)
+                }
+            })
         },
         handlePlayAudio(audio) {
             let that = this
@@ -293,8 +337,8 @@ export default {
             that.recording = true
             that.recordStoping = false
             that.recordTip = '正在录制…'
-            that.point.Y = e.touches[0].clientY
-            that.point.identifier = e.touches[0].identifier
+            that.recordPoint.Y = e.touches[0].clientY
+            that.recordPoint.identifier = e.touches[0].identifier
             that.recorder.start({
                 format: "mp3"
             })
@@ -312,7 +356,7 @@ export default {
         handleRecordDoing(e) {
             let that = this
             console.log('touch move')
-            if (that.point.Y - e.touches[0].clientY >= uni.upx2px(100)) {
+            if (that.recordPoint.Y - e.touches[0].clientY >= uni.upx2px(100)) {
                 that.recordStoping = true
                 that.recordTip = '松开手指，取消发送'
             }
@@ -328,13 +372,8 @@ export default {
         recordStop(e) {
             let that = this
 			console.log('recorder stop' + JSON.stringify(e))
-            // e = JSON.stringify(e)
             that.recording = false
-            // clearInterval(that.recordTimer)
-            // if (!that.recordStoping) {
-            //     return
-            // }
-			console.log('recorder upload')
+            clearInterval(that.recordTimer)
             uni.uploadFile({
                 url: that.$API_URL + 'index/upload',
                 filePath: e.tempFilePath,
@@ -350,10 +389,10 @@ export default {
                 complete: e => {}
             })
 		},
-        addImage() {
+        handleImage() {
             let that = this
             uni.chooseImage({
-                count: 5,
+                count: 3,
                 sizeType: ['original', 'compressed'],
                 sourceType: ['album'],
                 success: (res) => {
@@ -380,31 +419,7 @@ export default {
                 }
             })
         },
-        addVoice() {
-            let that = this
-            uni.chooseVideo({
-                maxDuration: 10,
-                sourceType: ['album'],
-                success: (res) => {
-                    console.log(res)
-                    uni.uploadFile({
-                        url: that.$API_URL + 'index/upload',
-                        filePath: res.tempFilePath,
-                        name: 'file',
-                        success: res => {
-                            res = JSON.parse(res.data)
-                            if (res.code === 1) {
-                                that.form.audio = res.data.fullurl
-                            } else {
-                                that.$u.toast(res.msg)
-                            }
-                        },
-                        complete: e => {}
-                    })
-                }
-            })
-        },
-        addVideo() {
+        handleVideo() {
             let that = this
             uni.chooseVideo({
                 maxDuration: 10,
@@ -430,50 +445,6 @@ export default {
                         },
                         complete: e => {}
                     })
-                }
-            })
-        },
-        changeProtocol(e) {
-            let that = this
-            that.form.ischat = e
-            console.log(that.form.ischat)
-        },
-        onChangePrivacy(e) {
-            let that = this
-            that.form.privacy = e
-            that.listPrivacy.forEach(item => {
-                if (item.type === e) {
-                    that.privacyText = item.title
-                    that.showPrivacy = false
-                }
-            })
-        },
-        doPublish() {
-            let that = this
-            if (!that.userInfo.role_id) {
-                that.$u.toast('无角色暂不能发布动态')
-                return
-            }
-            if (!that.form.content) {
-                that.$u.toast('内容不能为空')
-                return
-            }
-            let data = {
-                content: that.form.content,
-                images: that.form.images.toString(),
-                tags: that.form.tags.toString(),
-                audio: that.form.audio,
-                video: that.form.video,
-                ischat: that.form.ischat,
-                privacy: that.form.privacy,
-                group_id: that.group.id > 0 ? that.group.id : 0
-            }
-            that.$api('post.add', data).then(res => {
-                if (res.code === 1) {
-                    that.form.content = ''
-                    that.$u.toast('发布成功')
-                } else {
-                    that.$u.toast(res.msg)
                 }
             })
         },

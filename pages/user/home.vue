@@ -87,7 +87,7 @@
             <view style="height: 220rpx;"></view>
         </view>
 
-        <view class="grid grid-cols-2 gap-4 p-4 fixed left-0 right-0 bottom-0 bg-gradient-to-b from-transparent to-white">
+        <view class="grid grid-cols-2 gap-4 p-4 fixed left-0 right-0 bottom-0 bg-gradient-to-b from-transparent to-white z-10">
             <view class="flex items-center justify-center p-4 rounded-full bg-rose-500" @click="$u.route('pages/chat/single', {user_id: user.id})">
                 <i class="ri-message-3-fill text-xl text-white mr-2"></i>
                 <text class="text-base text-white">打招呼</text>

@@ -19,7 +19,7 @@ export default class Socket {
 		this.timer = null; // 检测定时器
 		this.limit = 0; //检测次数，默认最大12
 		this.timout = 10000;
-		uni.setStorageSync('CHAT_SocketOpen', false)
+		uni.setStorageSync('CHATWS', false)
 		this.init()
 	}
 
@@ -30,7 +30,7 @@ export default class Socket {
 
 	// 连接
 	async connect() {
-		if (!uni.getStorageSync('CHAT_SocketOpen')) {
+		if (!uni.getStorageSync('CHATWS')) {
 			let [error, res] = await uni.connectSocket({
 				url: `${this.config.url}?token=${this.config.token}&session_id=${this.config.session_id}`
 			});
@@ -42,7 +42,7 @@ export default class Socket {
 
 	// 发送消息
 	async send(msg = "") {
-		if (uni.getStorageSync('CHAT_SocketOpen')) {
+		if (uni.getStorageSync('CHATWS')) {
 			let [error, res] = await uni.sendSocketMessage({
 				data: msg
 			});
@@ -64,9 +64,9 @@ export default class Socket {
 	close() {
 		uni.closeSocket();
 		uni.removeStorage({
-			key: 'CHAT_SocketOpen',
+			key: 'CHATWS',
 			success: (res) => {
-				console.log('移除CHAT_SocketOpen');
+				console.log('移除CHATWS');
 			}
 		});
 		clearTimeout(this.timer);
@@ -92,7 +92,7 @@ export default class Socket {
 	initEventHandle() {
 		// 监听打开
 		uni.onSocketOpen(res => {
-			uni.setStorageSync('CHAT_SocketOpen', true)
+			uni.setStorageSync('CHATWS', true)
 			console.log('连接成功！');
 			this.lockReconnect = true;
 			this.isClose = false;
@@ -112,7 +112,7 @@ export default class Socket {
 		uni.onSocketClose(res => {
 			console.log('关闭链接');
 			this.isClose = true;
-			if (uni.getStorageSync('CHAT_SocketOpen')) {
+			if (uni.getStorageSync('CHATWS')) {
 				this.lockReconnect = false
 				this.reconnect()
 			}
