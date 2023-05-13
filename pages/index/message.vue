@@ -75,7 +75,8 @@ export default {
         async getMessage() {
             let that = this
             that.loadmore = 'loading'
-            that.$api('message.lists', that.params).then(res => {
+			console.log( that.params);
+            that.$api('message.lists',that.params).then(res => {
                 if (res.code === 1) {
                     that.paginator.total = res.data.total
                     that.paginator.last_page = res.data.last_page

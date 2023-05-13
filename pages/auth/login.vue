@@ -1,4 +1,6 @@
 <template>
+
+	
     <page-meta :root-font-size="'13px'"></page-meta>
     <view class="py-20">
         <image src='@/static/user_background.png' class="fixed w-full h-full top-0 left-0 right-0 -z-10"></image>
@@ -31,13 +33,15 @@
                 </u-checkbox-group>
                 <view class="text-base leading-none text-white opacity-50">
                     <text>阅读并同意</text>
-                    <text class="ml-2 mr-4" @click="$.route('/pages/public/page', { id: 1 })">《用户协议》</text>
+                    <text class="ml-2 mr-4" @click="$u.route('/pages/public/page', { id: 1 })">《用户协议》</text>
                     <text>和</text>
                     <text class="ml-2 mr-4" @click="$u.route('/pages/public/page', { id: 2 })">《隐私政策》</text>
                 </view>
             </view>
         </view>
+		
     </view>
+
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
@@ -53,6 +57,10 @@ export default {
             protocol: '',
             isMobileEnd: false,
             disabledCode: false,
+			policy:'',//协议内容
+			showPopup:false,//控制协议弹窗
+			scrollHeight:uni.getSystemInfoSync().windowHeight-130,//协议内容滚动高度
+			
         }
     },
     computed: {
@@ -62,6 +70,8 @@ export default {
     },
     mounted() { },
     methods: {
+		
+		
         ...mapActions(['getUserInfo']),
         handleInput(key) {
             let that = this

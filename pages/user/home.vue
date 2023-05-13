@@ -18,24 +18,26 @@
                 </view>
                 <view class="flex w-1/2 justify-between">
                     <view class="text-center">
-                        <view class="text-2xl leading-none">{{ userData.follownums || 0 }}</view>
+                        <view class="text-2xl leading-none">{{ user.follow_count || 0 }}</view>
                         <view class="text-base leading-none text-gray-500 mt-2">关注</view>
                     </view>
                     <view class="text-center">
-                        <view class="text-2xl leading-none">{{ userData.fansnums || 0 }}</view>
+                        <view class="text-2xl leading-none">{{ user.fans_count || 0 }}</view>
                         <view class="text-base leading-none text-gray-500 mt-2">粉丝</view>
                     </view>
                     <view class="text-center">
-                        <view class="text-2xl leading-none">{{ userData.diggnums || 0 }}</view>
+                        <view class="text-2xl leading-none">{{ user.digg_count || 0 }}</view>
                         <view class="text-base leading-none text-gray-500 mt-2">获赞</view>
                     </view>
                 </view>
             </view>
             <view class="text-xl font-bold mt-2">
-                {{ user.role_realname || '无名氏' }} · {{ user.role_dynasty || '未知朝代' }}
+				
+                <!-- {{ user.role.realname || '无名氏' }} · {{ user.role.dynasty || '未知朝代' }} -->
             </view>
             <view class="text-base leading-none text-gray-500 mt-2">角色名望：{{ user.score || 0 }}</view>
-            <view class="text-base leading-none text-gray-500 mt-2">用户UID：{{ user.id || '********' }}</view>
+			 <!-- Math.floor(Math.random()*10) -->
+            <view class="text-base leading-none text-gray-500 mt-2">雅集号：{{ user.id|| '********' }}</view>
             <view class="text-base leading-none text-gray-500 mt-2">
                 IP属地：{{ user.region || '未知' }}
             </view>
@@ -58,7 +60,7 @@
             <block v-if="type === 'role'">
                 <view class="grid grid-cols-12 gap-4 mt-4">
                     <view class="col-span-2 text-gray-500">姓名：</view>
-                    <view class="col-span-4">{{ role.realname }}</view>
+                    <!-- <view class="col-span-4">{{ role.realname }}</view> -->
                     <view class="col-span-2 text-gray-500">拼音：</view>
                     <view class="col-span-4">{{ role.chnname }}</view>
                     <view class="col-span-2 text-gray-500">性别：</view>
@@ -92,9 +94,13 @@
                 <i class="ri-message-3-fill text-xl text-white mr-2"></i>
                 <text class="text-base text-white">打招呼</text>
             </view>
-            <view class="flex items-center justify-center p-4 rounded-full bg-purple-500">
+			<view v-if="isInterest"  class="flex items-center justify-center p-4 rounded-full bg-purple-500">
+			    <i class="ri-heart-3-fill text-xl text-white mr-2"></i>
+			    <text class="text-base text-white" @click="interest(1)">关注</text>
+			</view>
+            <view v-else class="flex items-center justify-center p-4 rounded-full bg-gray-300">
                 <i class="ri-heart-3-fill text-xl text-white mr-2"></i>
-                <text class="text-base text-white">关注</text>
+                <text class="text-base text-white"  @click="interest(2)">已关注</text>
             </view>
         </view>
 
@@ -102,6 +108,7 @@
     </view>
 </template>
 <script>
+import loginVue from '../auth/login.vue'
 export default {
     name: 'mine',
     components: {
@@ -126,6 +133,8 @@ export default {
                 last_page: 0,
             },
             loadmore: false,
+			isInterest:false,
+			user_id:''
         }
     },
     onLoad() {
@@ -143,6 +152,43 @@ export default {
         that.getUserPost()
     },
     methods: {
+		interest(type){
+			let that = this
+			console.log(type);
+			if(type==1){
+				that.isInterest=!that.isInterest
+			}
+			if(type==2){
+				uni.showModal({
+				    title: '提示',
+				    content: '确定要取消关注用户？',
+				    confirmText: "确定",//这块是确定按钮的文字
+				    cancelText:"取消",//这块是取消的文字
+					success: function (res) {
+				        if (res.confirm) {	
+							console.log( that.$Route.query.user_id );
+							that.$api('user_follow.follow', { user_id: that.$Route.query.user_id }).then(res => {
+								console.log(res.code);
+							    if (res.code === 1) {
+							        // that.user = res.data
+									console.log('取消成功');
+									console.log(res.data);
+									 that.isInterest=!that.isInterest
+							    }else{
+									console.log('25');
+								}
+							})
+				           
+				
+				        } else if (res.cancel) {
+				            console.log('用户点击取消');
+				        }
+				    }
+				});   
+			}
+		
+			
+		},
         changeTab(e) {
             // console.log(e)
             let that = this
@@ -150,9 +196,11 @@ export default {
         },
         async getUserProfile() {
             let that = this
+			// console.log(that.$Route.query.user_id);
             that.$api('user.profile', { user_id: that.$Route.query.user_id }).then(res => {
                 if (res.code === 1) {
                     that.user = res.data
+					
                 }
             })
         },

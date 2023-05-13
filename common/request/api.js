@@ -11,8 +11,15 @@ export default {
 		user: { url: 'post/user', auth: false, method: 'GET', desc: '话题列表', },
 		mine: { url: 'post/mine', auth: true, method: 'GET', desc: '话题列表', },
 		detail: { url: 'post/detail', auth: false, method: 'GET', desc: '话题详情', },
+		del: { url: 'post/del', auth: false, method: 'GET', desc: '删除动态', },
 		add: { url: 'post/add', auth: true, method: 'POST', desc: '发布话题', },
 		dig: { url: 'post/dig', auth: true, method: 'POST', desc: '点赞', },
+		cai: { url: 'post/cai', auth: true, method: 'POST', desc: '点踩', },
+		is_add: { url: 'post/is_add', auth: true, method: 'POST', desc: '能否显示动态', },
+	},
+	post_cate:{
+		add: { url: 'post_cate/add', auth: true, method: 'POST', desc: '添加话题', },
+		search_list: { url: 'post_cate/search_list', auth: true, method: 'GET', desc: '搜索话题', },
 	},
 	group: {
 		recommend: { url: 'group/recommend', auth: false, method: 'GET', desc: '推荐圈子', },
@@ -65,6 +72,7 @@ export default {
 	},
 	user: {
 		recommend: { url: 'user/recommend', auth: false, method: 'GET', desc: '推荐用户', },
+		recommend_user: { url: 'user/recommend_user', auth: false, method: 'GET', desc: '推荐用户1', },
 		profile: { url: 'user/profile', auth: false, method: 'GET', desc: '用户信息', },
 		role: { url: 'user/role', auth: false, method: 'GET', desc: '用户角色', },
 		data: { url: 'user/data', auth: true, method: 'GET', desc: '关注数据', },
@@ -76,6 +84,7 @@ export default {
 		update: { url: 'user/update', auth: true, method: 'POST', desc: '修改信息', },
 		bindrole: { url: 'user/bindrole', auth: true, method: 'POST', desc: '绑定角色', },
 		changemobile: { url: 'user/changemobile', auth: true, method: 'POST', desc: '修改手机号', },
+		search_log: { url: 'user/search_log', auth: true, method: 'POST', desc: '搜索记录', },
 	},
 	user_gift: {
 		lists: { url: 'user_gift/lists', auth: true, method: 'GET', desc: '礼物列表', },
@@ -92,6 +101,7 @@ export default {
 	},
 	user_follow: {
 		lists: { url: 'user_follow/lists', auth: true, method: 'GET', desc: '关注列表', },
+		follow: { url: 'user_follow/follow', auth: true, method: 'POST', desc: '取消关注', },
 	},
 	role_dynasty: {
 		lists: { url: 'role_dynasty/lists', auth: false, method: 'GET', desc: '朝代列表', },

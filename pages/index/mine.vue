@@ -29,6 +29,7 @@
             <view class="text-xl font-bold mt-2">
                 {{ userInfo.role_realname || '无名氏' }} · {{ userInfo.role_dynasty || '未知朝代' }}
             </view>
+			<!-- {{userInfo}} -->
             <view class="text-base leading-none text-gray-500 mt-2">角色名望：{{ userInfo.score || 0 }}</view>
             <view class="text-base leading-none text-gray-500 mt-2">用户UID：{{ userInfo.id || '********' }}</view>
             <view class="text-base leading-none text-gray-500 mt-2">
@@ -71,7 +72,7 @@
             </view>
             <u-tabs :list="tablist" lineColor="rgba(255, 0, 0, 0.2)" lineWidth="70rpx" lineHeight="16rpx" itemStyle="height: 72rpx;" inactiveStyle="color: #787878; transform: scale(1);" activeStyle="color: #333333; font-weight: blod; transform: scale(1.2);" @change="changeTab">
             </u-tabs>
-            <uc-mypost v-for="(item, index) in listPostMine" :key="index" :item="item"></uc-mypost>
+			<uc-mine  v-for="(item, index) in listPostMine" :key="index" :item="item"></uc-mine>
             <u-loadmore v-if="listPostMine.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
             <u-empty v-if="!listPostMine.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
         </view>

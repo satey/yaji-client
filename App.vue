@@ -1,7 +1,7 @@
 <script>
 import Vue from 'vue';
 import { mapMutations, mapActions, mapState } from 'vuex';
-import Wechat from './common/wechat/wechat';
+import Wechat from './common/wechat/wechat.js';
 
 export default {
 	methods: {
@@ -70,6 +70,18 @@ export default {
 		}
 	},
 	onShow: function() {
+	let token= Boolean(uni.getStorageSync('token'))
+	if(!token){
+		uni.reLaunch({
+			url:'/pages/auth/login',
+			success: (res) => {
+				console.log('cg');
+			},
+			fail: (err) => {
+				console.log(err);
+			}
+		})
+	}
 	},
 	onHide: function() {
 	}

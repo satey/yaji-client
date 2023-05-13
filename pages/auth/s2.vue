@@ -22,9 +22,9 @@
                 </view>
             </view>
             <view class="grid gap-4 mt-10 text-center">
-                <view class="rounded-full p-6 text-base leading-none bg-gray-100" @click="showRead = false">取消
+                <view class="rounded-full p-6 text-base leading-none bg-gray-100" @click="showRead = false" v-if="isCancle">取消
                 </view>
-                <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleMatch()">匹配</view>
+                <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleMatch()" v-if='isBtnStart'>匹配</view>
             </view>
         </view>
 
@@ -53,8 +53,10 @@
                 </view>
                 <view class="text-left text-gray-500 mt-4">你有一个古代身份了，快去交朋友吧。</view>
                 <view class="grid grid-cols-2 gap-4 mt-10 text-center">
-                    <view class="rounded-full p-6 text-base leading-none bg-gray-100" :disabled="!times" @click="handleRematch()">重新匹配({{ times }})</view>
-                    <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleSubmit()">开始体验</view>
+					<view :class="[times==0?'active':'']">
+                    <view v-show="isNo"  class="rounded-full p-6 text-base leading-none bg-gray-100":disabled="!times"  @click="handleRematch()">重新匹配({{ times }})</view>
+                   </view>
+					<view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleSubmit()">开始体验</view>
                 </view>
             </view>
         </u-modal>
@@ -73,6 +75,9 @@ export default {
             times: 3,
             listRoleDynasty: [],
             showRole: false,
+			isNo:true,//重新匹配
+			isBtnStart:true,
+			isCancle:true
         }
     },
     onLoad(option) {
@@ -101,8 +106,12 @@ export default {
                 that.$u.toast('请选择朝代')
                 return false
             }
+			
             if (that.times <= 0) {
+				that.isNo=false
                 that.$u.toast('重新匹配次数不够了')
+				that.isBtnStart=false//匹配按钮
+				that.isCancle=false//取消按钮
                 return false
             }
             let data = {
@@ -115,14 +124,22 @@ export default {
                     that.times -= 1
                     that.showRole = true
                 } else {
-                    that.$u.toast(resmsg)
+                    // that.$u.toast(res.msg)
+					that.$u.toast('不能再匹配了')
+					that.isBtnStart=false//匹配按钮
+					that.isCancle=false//取消按钮
                 }
             })
+			if(that.times==0){
+			that.isBtnStart=false//匹配按钮
+			that.isCancle=false//取消按钮
+			}
         },
         handleRematch() {
             let that = this
             that.showRole = false
-            that.match()
+            // that.match()
+			that.handleMatch()
         },
         handleSubmit() {
             let that = this
@@ -134,6 +151,7 @@ export default {
                 role_id: that.role.id
             }
             that.showRole = false
+			console.log(data);
             that.$api('user.bindrole', data).then(res => {
                 if (res.code === 1) {
                     that.$u.route('/pages/index/index')
@@ -142,15 +160,32 @@ export default {
                     that.$u.route('/pages/index/index')
                 }
             })
+			
         },
         skip() {
             let that = this
-            that.$u.route('/pages/index/index')
+			uni.showModal({
+			    title: '提示',
+			    content: '完成本步步骤就可生成角色。不选角色也可正常进入，但会显示【无名氏】。您可在个人中心再次设置角色。确定暂时不生成角色吗？',
+			    confirmText: "确定",//这块是确定按钮的文字
+			    cancelText:"取消",//这块是取消的文字
+				success: function (res) {
+			        if (res.confirm) {	
+			            console.log('用户点击确定');
+					that.$u.route('/pages/index/index')
+			        } else if (res.cancel) {
+			            console.log('用户点击取消');
+			        }
+			    }
+			});     
         }
     }
 }
 </script>
 <style lang="scss" scoped>
+	.active{
+		display: none;
+	}
 .page {
     display: block;
     position: relative;

@@ -5,7 +5,8 @@
             <u-tabs :list="tablist" lineColor="rgba(255, 0, 0, 0.2)" lineWidth="70rpx" lineHeight="16rpx" itemStyle="height: 72rpx;" inactiveStyle="color: #787878; transform: scale(1);" activeStyle="color: #333333; font-weight: blod; transform: scale(1.2);" @change="changeTab">
             </u-tabs>
             <view class="pt-2">
-                <i class="ri-add-circle-fill text-3xl leading-none bg-gradient-to-b from-rose-500 to-rose-400 bg-clip-text text-transparent" @click="$u.route('/pages/post/add')"></i>
+                <!-- <i class="ri-add-circle-fill text-3xl leading-none bg-gradient-to-b from-rose-500 to-rose-400 bg-clip-text text-transparent" @click="$u.route('/pages/post/add')"></i> -->
+				<i class="ri-add-circle-fill text-3xl leading-none bg-gradient-to-b from-rose-500 to-rose-400 bg-clip-text text-transparent" @click="is_ok()"></i>
             </view>
         </view>
         <block v-if="type === 'recommend'">
@@ -68,7 +69,29 @@ export default {
                 break
         }
     },
+	onPullDownRefresh() {
+		this.getPostRecommend()
+		uni.stopPullDownRefresh()
+	
+	},
     methods: {
+		is_ok(){
+			let that=this
+			that.$api('post.is_add').then(res => {
+				console.log('ii',res);
+						    if (res.code === 0) {
+								console.log(res.code);
+							   that.$u.toast('无角色暂不能发布动态')
+							   return
+						    } else {
+							uni.navigateTo({
+								url:'/pages/post/add'
+							})
+						     
+						    }
+						})
+			         
+		},
         changeTab(e) {
             // console.log(e)
             let that = this
@@ -107,8 +130,10 @@ export default {
         async getPostFollow() {
             let that = this
             that.loadmore = 'loading'
-            that.$api('post.follow', that.params).then(res => {
+			console.log( that.params);
+            that.$api('user_follow.lists', {type:"follow"}).then(res => {
                 if (res.code === 1) {
+					console.log(res.data);
                     that.paginator.total = res.data.total
                     that.paginator.last_page = res.data.last_page
                     that.postFollowList = [...that.postFollowList, ...res.data.data]

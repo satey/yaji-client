@@ -4,7 +4,8 @@
         <image src='@/static/user_background.png' style="position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1"></image>
         <u-navbar bgColor="transparent">
             <view slot="left">
-                <i class="ri-arrow-left-s-line text-4xl text-white" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+				<!-- 返回箭头 -->
+                <!-- <i class="ri-arrow-left-s-line text-4xl text-white" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i> -->
             </view>
         </u-navbar>
         <view style="padding: 250rpx 100rpx;">
@@ -27,7 +28,9 @@
                 </view>
             </view>
             <view class="grid mt-10 text-center">
-                <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="onSubmit()">完成</view>
+                <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="onSubmit()">
+				完成
+				</view>
             </view>
         </view>
     </view>
@@ -43,6 +46,8 @@ export default {
             },
             gender: '',
             showBirthday: false,
+			ismale:'',
+			isFemale:''
         }
     },
     computed: {
@@ -53,23 +58,35 @@ export default {
             let that = this
             that.gender = value
             that.form.gender = that.gender === 'male' ? 1 : 2
+			
         },
         onSubmit() {
             let that = this
+			// 如果是男的就等于1
+			if (that.gender=='male'){
+				that.form.gender=1
+			}
+			// 如果是女的就等于2
+			if (that.gender=='female'){
+				that.form.gender=2
+			}
+			console.log(that.form.gender);
             if (!that.form.gender) {
                 that.$u.toast('性别必须选择')
                 return false
             }
-            let data = {
-                gender: that.form.gender
-            }
-            that.$api('user.update', data).then(res => {
-                if (res.code === 1) {
-                    that.$u.route('/pages/auth/s2')
-                } else {
-                    that.$u.toast(res.msg)
-                }
-            })
+			let data = {
+			    gender: that.form.gender
+			}
+				that.$api('user.update', data).then(res => {
+					// console.log(res.data);
+					that.$u.route('/pages/auth/s2')
+					if (res.code === 1) {
+						that.$u.route('/pages/auth/s2')
+					} else {
+						that.$u.toast(res.msg)
+					}
+				})
         },
     }
 }
@@ -207,5 +224,8 @@ export default {
             }
         }
     }
+}
+.active{
+	display: none;
 }
 </style>

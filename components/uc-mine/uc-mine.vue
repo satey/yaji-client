@@ -9,9 +9,9 @@
 		      <view class="flex-1">
             <view class="text-gray-500">{{ $u.date(item.createtime, 'hh:MM') }}</view>
 			<!-- 删除 -->
-		<!-- 	<view class="" style="float: right; margin-top: -30rpx;"  @click="showAction = true">
+			<view class="" style="float: right; margin-top: -30rpx;"  @click="showAction = true">
 			    <i class="ri-more-2-fill text-xl bg-gradient-to-b from-gray-500 to-gray-400 bg-clip-text text-transparent"></i>
-			</view> -->
+			</view>
 				
 				<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="0">
 				    <view class="p-3">

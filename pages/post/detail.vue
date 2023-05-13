@@ -20,6 +20,7 @@
                         <view class="text-xs leading-none text-gray-500 mr-2" v-for="(tag, index) in post.user.tags" :key="index" :item="tag">{{ tag }}</view>
                     </view>
                 </view>
+				<!-- 举报功能 -->
                 <view class="" @click="showAction = true">
                     <i class="ri-more-2-fill text-xl bg-gradient-to-b from-gray-500 to-gray-400 bg-clip-text text-transparent"></i>
                 </view>
@@ -44,8 +45,10 @@
                 <view class="flex-1 flex items-center">
                     <text class="text-xs leading-none text-gray-400">{{ $u.timeFrom(post.createtime, 'mm月dd日') }}</text>
                 </view>
+				<!-- 红心 -->
                 <view class="flex items-center" @click="handlePostDig()">
-                    <i class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
+                    <i v-show='post.is_zan==0' class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
+					<i v-show='post.is_zan==1' class="ri-heart-3-fill text-xl bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i>
                     <text class="text-gray-500 ml-2">{{ post.diggnums }}</text>
                 </view>
                 <view class="flex items-center ml-4">
@@ -83,7 +86,7 @@
                     <i class="ri-emotion-fill text-4xl text-gray-500"></i>
                 </view>
                 <view class="flex-1 flex">
-                    <u-textarea v-model="message" :focus="inputFocus" :autoHeight="true" :placeholder="placeholder" type="text" maxlength="50"></u-textarea>
+                    <u-textarea v-model="message" :focus="inputFocus" :autoHeight="true"  :placeholder="placeholder" type="text" maxlength="200"></u-textarea>
                 </view>
                 <view class="flex items-center">
                     <view class="p-3 rounded-full text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="doComment()">发送</view>
@@ -105,6 +108,11 @@
                         <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i>
                         <view class="text-base mt-2">举报</view>
                     </view>
+					<!-- 删除动态 -->
+					<view class="text-center" @click="detailTrends">
+					    <i class="ri-alarm-warning-fill block text-3xl leading-none text-orange-500"></i>
+					    <view class="text-base mt-2">删除</view>
+					</view>
                 </view>
             </view>
         </u-popup>
@@ -167,11 +175,14 @@ export default {
             feedback: '',
             feedbackType: '',
             ListFeedbackType: ['色情低俗','政治敏感','造谣传谣','广告欺诈','侵犯权益','其他'],
-        }
+			isRed:false,
+			isNoRed:true
+		}
     },
 	created() {
         let that = this
         that.getEmojiList()
+		// that.isRedLove=false
 	},
     onLoad(option) {
         let that = this
@@ -179,6 +190,14 @@ export default {
         that.getPostComment()
     },
     methods: {
+		// 删除动态
+		detailTrends(){
+			uni.showModal({
+				content:'你确定要删除吗？？？',
+				cancelText:'取消',
+				confirmText:'确定'
+			})
+		},
         getPostDetail() {
             let that = this
             that.$api('post.detail', { post_id: that.$Route.query.post_id }).then(res => {
@@ -269,9 +288,20 @@ export default {
                 post_id: that.post.id
             }).then(res => {
                 if (res.code === 1) {
-                    that.$u.toast('点赞成功')
-                    that.getPostDetail()
+					that.isRed=!that.isRed
+					// that.isNoRed=false
+					that.isNoRed=!that.isNoRed
+					if(that.post.is_zan==0){
+						that.$u.toast('点赞成功')
+					}else{
+						that.$u.toast('取消点赞')
+					}
+					console.log('点赞',res);
+                    that.getPostDetail()//这是更新数据的，数据库里已经改了但是不更新数据是不会改的
                 } else {
+					that.isNoRed=!that.isNoRed
+					// that.isNoRed=false
+					that.isRed=!that.isRed
                     that.$u.toast(res.msg)
                 }
             })

@@ -14,8 +14,8 @@
             <u-textarea v-model="form.content" :focus="true" maxlength="500" :count="true" height="300" placeholder="记录此刻想法，分享给有趣的人看…"></u-textarea>
             <view class="flex flex-wrap">
                 <view class="flex items-center bg-gray-100 rounded-full p-3 text-orange-500 mr-2 mt-2" v-for="(item, index) in form.tags" :key="index" :item="item" @click="delTag(index)">
-                    <i class="ri-hashtag mr-1"></i>
-                    <view class="text-base">{{ item }}</view>
+                    <i  class="ri-hashtag mr-1"></i>
+                    <view class="text-base">{{item}}</view>
                     <i class="ri-close-line ml-2"></i>
                 </view>
             </view>
@@ -39,25 +39,25 @@
                     <video class="z-0" :src="form.video" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
                 </view>
             </view>
-            <view class="flex pt-4">
+            <view class="flex pt-4" v-if='isAddTake'>
                 <view class="flex items-center bg-gray-100 border text-gray-500 p-3 rounded-full mr-2" @click="showTag = true">
                     <i class="ri-hashtag mr-1"></i>
                     <view class="text-base leading-none">添加话题</view>
                 </view>
-                <view class="flex items-center bg-gray-100 border text-gray-500 p-3 rounded-full" @click="showGroup = true">
+              <!--  <view class="flex items-center bg-gray-100 border text-gray-500 p-3 rounded-full" @click="showGroup = true">
                     <i class="ri-focus-fill mr-2"></i>
                     <view class="text-base leading-none">添加圈子</view>
-                </view>
+                </view> -->
             </view>
-            <view class="flex pt-4">
+           <!-- <view class="flex pt-4">
                 <u-checkbox-group>
                     <u-checkbox label="是否私密话题" size="28" labelSize="24" shape="circle" inactiveColor="#AAAAAA" activeColor="#FF7043" @change="changeProtocol"></u-checkbox>
                 </u-checkbox-group>
-            </view>
+            </view> -->
         </view>
 
         <!-- 工具栏 -->
-        <view class="border-0 !border-t border-solid border-gray-200 fixed bottom-0 left-0 right-0">
+        <view class="border-0 !border-t border-solid border-gray-200 fixed bottom-200 left-0 right-0">
             <view class="flex flex-row-center p-4 bg-white">
                 <view class="flex-1 flex">
                     <view class="flex items-center bg-gray-100 p-3 rounded-full mr-4" @click="handleImage">
@@ -96,11 +96,11 @@
             <view class="p-4">
                 <view class="text-2xl text-center">添加话题</view>
                 <view class="flex rounded-full bg-gray-100 mt-6">
-                    <u-input v-model="tag" placeholder="输入话题" type="text" maxlength="20">
+                    <u-input v-model="tag"  placeholder="输入话题" @change="searchAdd"  ref="ipt" type="text" maxlength="20">
                         <text slot="suffix" class="text-rose-500" @click="addTag(tag)">添加</text>
                     </u-input>
                 </view>
-                <view class="text-gray-500 mt-6">热门话题</view>
+                <!-- <view class="text-gray-500 mt-6">热门话题</view> -->
                 <view class="flex flex-wrap rounded-full">
                     <view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in listHotTag" :key="index" :item="item" @click="addTag(item)">
                         <i class="ri-hashtag mr-1"></i>
@@ -108,13 +108,7 @@
                     </view>
                 </view>
                 <u-empty v-if="!listHotTag.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
-                <view class="text-gray-500 mt-6">最新话题</view>
-                <view class="flex flex-wrap rounded-full">
-                    <view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in listNewTag" :key="index" :item="item" @click="addTag(item)">
-                        <i class="ri-hashtag mr-1"></i>
-                        <view class="text-base">{{ item }}</view>
-                    </view>
-                </view>
+                
                 <u-empty v-if="!listNewTag.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
             </view>
         </u-popup>
@@ -149,6 +143,7 @@
     </view>
 </template>
 <script>
+import tag from 'uview-ui/libs/config/props/tag'
 import { mapState } from 'vuex'
 export default {
     name: 'add',
@@ -195,6 +190,8 @@ export default {
                 identifier: 0,
                 Y: 0
             },
+			isAddTake:true,
+			keyword:''
         }
     },
     onLoad() {
@@ -206,27 +203,67 @@ export default {
             that.recordStop(e)
         })
     },
+
     computed: {
         ...mapState({
             userInfo: state => state.user.userInfo,
         })
     },
     methods: {
+		searchAdd(){
+			let that=this
+			// console.log("没获取到输入框的值",that.$refs.ipt.value);
+			let data = {
+			    keyword: that.$refs.ipt.value
+			}
+			that.$api('post_cate.search_list', data).then(res => {
+			    if (res.code == 1) {
+			       console.log(res.data,'111');
+					
+			    } else {
+			        that.$u.toast(res.msg)
+			    }
+			
+			})
+		},
         addTag(item) {
             let that = this
             if (!item) {
                 that.$u.toast('话题不能为空')
                 return false
             }
-            if (that.form.tags.indexOf(item) >= 0 || that.form.tags.length >= 3) {
+            if (that.form.tags.indexOf(item) >= 0 || that.form.tags.length>=3) {
+				that.isAddTake=false
                 return false
             }
             that.form.tags.push(item)
             that.showTag = false
+			// 判断标签是否大于等于三个 大于三个则让添加话题隐藏出来
+			if (that.form.tags.length>=3) {
+				that.isAddTake=false
+			    return false
+			}
+			let data = {
+			    title: this.$refs.ipt.value
+			}
+			console.log(this.$refs.ipt.value);
+			that.$api('post_cate.add',data).then(res => {
+			    if (res.code === 1) {
+			        that.$u.toast('添加成功')
+			    } else {
+				
+			        that.$u.toast(res.msg)
+			    }
+			})
         },
         delTag(index) {
             let that = this
             that.form.tags.splice(index, 1)
+			// 判断标签是否小于三个 小于三个则让添加话题显示出来
+			if (that.form.tags.length<3) {
+				that.isAddTake=true
+			    return false
+			}
         },
         addGroup(item) {
             let that = this
@@ -256,32 +293,42 @@ export default {
         },
         doPublish() {
             let that = this
-            if (!that.userInfo.role_id) {
-                that.$u.toast('无角色暂不能发布动态')
-                return
-            }
-            if (!that.form.content) {
-                that.$u.toast('内容不能为空')
-                return
-            }
+
+			// let data = {
+			//     content: that.form.content,
+			//     images: that.form.images.toString(),
+			//     tags: that.form.tags.toString(),
+			//     audio: that.form.audio,
+			//     video: that.form.video,
+			//     ischat: that.form.ischat,
+			//     privacy: that.form.privacy,
+			//     group_id: that.group.id > 0 ? that.group.id : 0
+			// }
             let data = {
                 content: that.form.content,
                 images: that.form.images.toString(),
-                tags: that.form.tags.toString(),
                 audio: that.form.audio,
                 video: that.form.video,
-                ischat: that.form.ischat,
-                privacy: that.form.privacy,
-                group_id: that.group.id > 0 ? that.group.id : 0
+				post_cate_id:that.group.id > 0 ? that.group.id : 0
             }
             that.$api('post.add', data).then(res => {
                 if (res.code === 1) {
                     that.form.content = ''
                     that.$u.toast('发布成功')
+					uni.navigateTo({
+						url:'/pages/index/square',
+						success: (res) => {
+							console.log('成功');
+						},
+						fail: (err) => {
+							console.log(err);
+						}
+					})
                 } else {
                     that.$u.toast(res.msg)
                 }
-            })
+            
+			})
         },
         handlePlayAudio(audio) {
             let that = this

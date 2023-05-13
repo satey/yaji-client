@@ -17,7 +17,7 @@
                         <view class="text-xl leading-none mr-4">{{ userRole.realname }}</view>
                         <view>{{ userRole.dynasty }}</view>
                     </view>
-                    <view class="text-gray-500 ml-4">名望：{{ userRole.level * 100 }}</view>
+                    <view class="text-gray-500 ml-4"> {{ userRole.level}} 名望：{{ userRole.level * 100 || '无'}}</view>
                 </view>
                 <view class="mt-2">
                     <text class="rounded-full text-gray-500 mr-2" v-for="(title, index) in userRole.titles" :key="index" :item="title">{{ title }}</text>
@@ -32,7 +32,7 @@
             </view>
             <view class="flex mt-6">
                 <ol class="text-gray-200">
-                    <li class="mt-2">每周最多更换一次角色。</li>
+                    <!-- <li class="mt-2">每周最多更换一次角色。</li> -->
                     <li class="mt-2">每个角色都是唯一。</li>
                     <li class="mt-2">若长时间未登录使用，角色可能会被回收。</li>
                 </ol>

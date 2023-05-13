@@ -19,7 +19,8 @@
             "path": "pages/index/square",
             "name": "square",
             "style": {
-                "navigationBarTitleText": "动态"
+                "navigationBarTitleText": "动态",
+				"enablePullDownRefresh": true
             },
             "meta": {
                 "auth": false
@@ -155,6 +156,28 @@
                 "auth": false
             }
         },
+		{
+		    "path": "pages/public/feedback",
+		    "name": "feedback",
+		    "style": {
+		        "navigationBarTitleText": "意见反馈"
+			
+		    },
+		    "meta": {
+		        "auth": false
+		    }
+		},
+		{
+		    "path": "pages/public/feedbackPage",
+		    "name": "feedbackpPage",
+		    "style": {
+		        "navigationBarTitleText": "意见反馈页面"
+			
+		    },
+		    "meta": {
+		        "auth": false
+		    }
+		},
         {
             "path": "pages/joy/poetry",
             "name": "poetry",
@@ -195,6 +218,16 @@
                 "auth": false
             }
         },
+		{
+		    "path": "pages/user/newSearch",
+		    "name": "newSearch",
+		    "style": {
+		        "navigationBarTitleText": "新搜索"
+		    },
+		    "meta": {
+		        "auth": false
+		    }
+		},
         {
             "path": "pages/post/detail",
             "name": "detail",
@@ -264,6 +297,36 @@
             "meta": {
                 "auth": true
             }
+        }
+
+       
+       
+        ,{
+            "path" : "components/takequestion/takequestion",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "components/uc-search/uc-search",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "components/uc-userSearch/uc-userSearch",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
         }
     ],
     "globalStyle": {
