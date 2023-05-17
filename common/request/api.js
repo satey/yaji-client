@@ -20,6 +20,7 @@ export default {
 	post_cate:{
 		add: { url: 'post_cate/add', auth: true, method: 'POST', desc: '添加话题', },
 		search_list: { url: 'post_cate/search_list', auth: true, method: 'GET', desc: '搜索话题', },
+		lst:{ url:'post_cate/lst', auth: true, method: 'GET', desc: '话题列表', }
 	},
 	group: {
 		recommend: { url: 'group/recommend', auth: false, method: 'GET', desc: '推荐圈子', },
@@ -28,9 +29,12 @@ export default {
 		add: { url: 'group/add', auth: true, method: 'POST', desc: '发布圈子', },
 	},
 	comment: {
-		lists: { url: 'post_comment/lists', auth: false, method: 'GET', desc: '评论列表', },
 		add: { url: 'post_comment/add', auth: true, method: 'POST', desc: '发布评论', },
-		dig: { url: 'post_comment/dig', auth: true, method: 'POST', desc: '点赞', },
+		lists: { url: 'post_comment/lists', auth: false, method: 'GET', desc: '评论列表', },
+	},
+	post_comment:{
+			dig: { url: 'post_comment/dig', auth: true, method: 'POST', desc: '评论点赞', },
+			lists: { url: 'post_comment/lists', auth: false, method: 'GET', desc: '评论列表', },
 	},
 	gift: {
 		lists: { url: 'gift/lists', auth: true, method: 'GET', desc: '礼物列表', },
@@ -85,6 +89,8 @@ export default {
 		bindrole: { url: 'user/bindrole', auth: true, method: 'POST', desc: '绑定角色', },
 		changemobile: { url: 'user/changemobile', auth: true, method: 'POST', desc: '修改手机号', },
 		search_log: { url: 'user/search_log', auth: true, method: 'POST', desc: '搜索记录', },
+		only_choose_gender: { url: 'user/only_choose_gender', auth: true, method: 'POST', desc: '只是性别提交', },
+		
 	},
 	user_gift: {
 		lists: { url: 'user_gift/lists', auth: true, method: 'GET', desc: '礼物列表', },
@@ -120,5 +126,11 @@ export default {
 	},
 	share: {
 		add: { url: 'share/add', auth: false, method: 'POST', desc: '添加分享记录', }
+	},
+	user_gift_log:{
+		lists:{ url: 'user_gift_log/lists', auth: false, method: 'GET', desc: '礼物记录',}
+	},
+	user_black:{
+		lists:{ url: 'user_black/lists', auth: false, method: 'GET', desc: '黑名单列表',}
 	}
 };

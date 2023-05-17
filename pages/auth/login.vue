@@ -68,7 +68,9 @@ export default {
             userInfo: state => state.user.userInfo,
         })
     },
-    mounted() { },
+    mounted() { 
+		//alert('d')
+	},
     methods: {
 		
 		

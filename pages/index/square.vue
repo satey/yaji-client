@@ -69,8 +69,14 @@ export default {
                 break
         }
     },
+	onShow() {
+		let that=this
+	that.getPostRecommend()
+	},
 	onPullDownRefresh() {
 		this.getPostRecommend()
+		// this.getPostFollow()
+		// this.onReachBottom()
 		uni.stopPullDownRefresh()
 	
 	},

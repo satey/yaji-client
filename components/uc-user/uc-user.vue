@@ -5,11 +5,9 @@
             <image class="block w-14 h-14 rounded-full" :src="item.avatar || '/static/avatar.png'"></image>
         </view>
         <view class="flex-1" @click="$u.route('/pages/user/home', { user_id: item.id })">
-			
-            <!-- <view class="text-base leading-none mt-2">{{ item.realname + ' · ' + item.dynasty || '无名氏' }}</view> -->
+			<!-- <view class="text-base leading-none mt-2">{{ item.realname + ' · ' + item.dynasty || '无名氏' }}</view> -->
 			<view class="text-base leading-none mt-2">{{ item.realname + ' · ' + item.dynasty || '无名氏' }}</view>
             <!-- <view class="text-gray-500 mt-4">{{ $u.timeFrom(item.createtime, 'mm月dd日') }}</view> -->
-        
 			<view class="flex mt-3">
                 <view class="flex items-center mr-2" v-for="(tag, index) in item.tags" :key="index" :item="tag">
                     <view class="text-base leading-none text-gray-500">{{ tag }}</view>

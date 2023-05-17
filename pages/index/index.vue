@@ -20,13 +20,13 @@
             </view>
         </view>
 		<!-- 搜索人物 -->
-		<view class="search-people" @click="$u.route('pages/user/newSearch')">
-			<view class="search-people-small"><text>搜索人物</text> </view>
-			<view class="search-example ">
-				<view class="search-example-item">历代帝王</view>
-				<view class="search-example-item">史上帝王</view>
-				<view class="search-example-item">成语出处</view>
+		<view class="search-people">
+			<view class="search-people-small"  @click="$u.route('pages/user/newSearch')"><text>搜索人物</text> </view>
+		<view class="search-example-bottom">
+			<view class="search-example " v-for="(item,index) in searchList" :item=item >
+				 <view class="search-example-item"  @click="handleSearchTitle(item)">{{item}}</view>
 			</view>
+		</view>
 		</view>
         <view class="p-4">
             <u-tabs :list="tablist" lineColor="rgba(255, 0, 0, 0.2)" lineWidth="120rpx" lineHeight="16rpx" itemStyle="height: 72rpx;" inactiveStyle="color: #787878; transform: scale(1);" activeStyle="color: #333333; font-weight: blod; transform: scale(1.2);" @change="changeTab">
@@ -79,10 +79,20 @@ export default {
                 last_page: 0,
             },
             loadmore: false,
+			searchList:[],
+			paginator: {
+			    total: 0,
+			    last_page: 0,
+			},
+			loadmore: false,
+			listUserSearch:[],
+			limit:3
+			
         }
     },
     onLoad(option) {
         let that = this
+		that.searchName()
         that.getUserRecommend()
     },
     onReachBottom() {
@@ -105,6 +115,60 @@ export default {
         }
     },
     methods: {
+		
+		// 搜索中的角色称号
+		searchName(){
+			let that = this
+			that.$api('role_title.lists').then(res => {
+			    if (res.code === 1) {
+					that.searchList.push(res.data[0].title,res.data[1].title,res.data[2].title)
+			    }
+			})
+			
+		},
+		
+		// 搜索
+		handleSearchTitle(item) {
+			console.log(item,'item');
+			let that=this
+			uni.navigateTo({
+				url:'/pages/user/newSearch',
+				success: () => {
+					// uni.$emit('item',item)
+				},
+				fail: (err) => {
+					console.log(err);
+				}
+			})
+		    
+		},
+		async getUserSearch() {
+		    let that = this
+		    that.loadmore = 'loading'
+		    that.$api('user.recommend', that.params).then(res => {
+		        if (res.code === 1) {
+					console.log('recommed',res.data);
+		            that.paginator.total = res.data.total
+		            that.paginator.last_page = res.data.last_page
+		            that.listUserSearch = [...that.listUserSearch, ...res.data.data]
+					uni.navigateTo({
+						url:'/pages/index/indexSearch',
+						success: () => {
+							// console.log('s');
+							that.$emit('item',item)
+						},
+						fail: (err) => {
+							console.log(err);
+						}
+					})
+		            if (that.params.page < res.data.last_page) {
+		                that.loadmore = 'loadmore'
+		            } else {
+		                that.loadmore = 'nomore'
+		            }
+		        }
+		    })
+		},
 		// 没喜欢的房间
 		loveRoom(){
 			uni.showModal({
@@ -141,6 +205,7 @@ export default {
         async getUserRecommend() {
             let that = this
             that.loadmore = 'loading'
+			console.log(that.params,'ooo');
             that.$api('user.recommend_user', that.params).then(res => {
                 if (res.code === 1) {
 					console.log('res',res.data);
@@ -157,11 +222,14 @@ export default {
         async getPostRecommend() {
             let that = this
             that.loadmore = 'loading'
-            that.$api('post.recommend', that.params).then(res => {
+			that.params.limit=3
+            that.$api('post_cate.lst', that.params).then(res => {
                 if (res.code === 1) {
-                    that.paginator.total = res.data.total
-                    that.paginator.last_page = res.data.last_page
-                    that.listPostRecommend = [...that.listPostRecommend, ...res.data.data]
+					console.log('saa',res.data);
+                    // that.paginator.total = res.data.total
+                    // // that.paginator.last_page = res.data.last_page
+                    that.listPostRecommend =res.data
+					console.log(that.listPostRecommend);
                     if (that.params.page < res.data.last_page) {
                         that.loadmore = 'loadmore'
                     } else {
@@ -213,19 +281,21 @@ export default {
 	}
 	.search-people-small text{
 		color: rgb(170, 170, 170);
-		position: absolute;
+		// position: absolute;
 		left: 20rpx;
 		line-height: 88rpx;
 		font-size: 32rpx;
 	}
-	.search-example{
-		width: 550rpx;
-		position: absolute;
-		bottom: 25rpx;
-		left: 40rpx;
-		display: flex;
-		justify-content: space-between;
+	.search-example-bottom{
+		width: 640rpx;
+		margin: 0 auto;
+		height: 60rpx;
+		position: relative;
+		bottom: 20rpx;
+		top: 150rpx;
+		// border: 1px solid #000;
 	}
+	
 	.search-example-item{
 		width: 144rpx;
 		height: 48rpx;
@@ -233,7 +303,9 @@ export default {
 		color: white;
 		line-height: 48rpx;
 		text-align: center;
+		margin-left: 20rpx;
 		border-radius: 5rpx;
+		float: left;
 	}
 	.loveRoom{
 	color: #02A7F0;

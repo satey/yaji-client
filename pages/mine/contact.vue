@@ -9,7 +9,9 @@
                 <u-tabs :list="tablist" lineColor="rgba(255, 0, 0, 0.2)" lineWidth="70rpx" lineHeight="16rpx" itemStyle="height: 72rpx;" inactiveStyle="color: #787878; transform: scale(1);" activeStyle="color: #333333; font-weight: blod; transform: scale(1.2);" @change="changeTab">
                 </u-tabs>
             </view>
-            <view slot="right">
+			
+           <view slot="right">
+			   <image @click="skipBackList" style="width: 30rpx;  height: 30rpx;" src="https://axhub.im/ax10/85ee1db375b49826/images/%E6%9C%8B%E5%8F%8B/u10.svg" mode=""></image>
             </view>
         </u-navbar>
         <uc-follow v-for="(item, index) in listUserFollow" :key="index" :item="item"></uc-follow>
@@ -35,6 +37,7 @@ export default {
             params: {
                 type: 'follow',
                 page: 1,
+				limit:3
             },
             paginator: {
                 total: 0,
@@ -55,6 +58,19 @@ export default {
         that.getUserFollow()
     },
     methods: {
+		skipBackList(){
+			// 跳转到黑名单
+			uni.navigateTo({
+				url:'/pages/mine/blackList',
+				success() {
+					console.log('jac');
+				},
+				fail(err) {
+					console.log(err);
+				}
+				
+			})
+		},
         changeTab(e) {
             // console.log(e)
             let that = this
@@ -67,9 +83,11 @@ export default {
             that.loadmore = 'loading'
             that.$api('user_follow.lists', that.params).then(res => {
                 if (res.code === 1) {
-                    that.paginator.total = res.data.total
-                    that.paginator.last_page = res.data.last_page
-                    that.listUserFollow = [...that.listUserFollow, ...res.data.data]
+					console.log(res.data);
+                    // that.paginator.total = res.data.total
+                    // that.paginator.last_page = res.data.last_page
+                    // that.listUserFollow = [...that.listUserFollow, ...res.data.data]
+					that.listUserFollow =res.data
                     if (that.params.page < res.data.last_page) {
                         that.loadmore = 'loadmore'
                     } else {

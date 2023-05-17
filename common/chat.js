@@ -46,6 +46,7 @@ export default class Socket {
 			let [error, res] = await uni.sendSocketMessage({
 				data: msg
 			});
+			console.log('报错了：',error)
 			return Promise.resolve(res);
 		}
 	}
@@ -116,8 +117,6 @@ export default class Socket {
 				this.lockReconnect = false
 				this.reconnect()
 			}
-
-
 		});
 	}
 
@@ -134,5 +133,4 @@ export default class Socket {
 			this.limit += 1
 		}
 	}
-
 }

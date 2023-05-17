@@ -1,0 +1,36 @@
+<template>
+	<view class="">
+		<u-navbar title="用户设置" :safeAreaInsetTop="true" :placeholder="true">
+			<view slot="left">
+				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+			</view>
+		</u-navbar>
+		<view class="">
+			<view class="" style="margin-left: 50rpx; margin-top: 20rpx;">加入黑名单</view>
+				<u-switch style='margin-left: 680rpx; margin-top: -30rpx;'   v-model="checked"></u-switch>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		name: 'joinBlackList',
+		data() {
+			return {
+				checked: false,
+			}
+		},
+		computed: {
+	
+		},
+		
+		methods: {
+			change(status) {
+				console.log(status);
+			},
+		}
+	}
+</script>
+
+<style>
+</style>

@@ -70,7 +70,7 @@ export default {
 			if (that.gender=='female'){
 				that.form.gender=2
 			}
-			console.log(that.form.gender);
+			// console.log(that.form.gender);
             if (!that.form.gender) {
                 that.$u.toast('性别必须选择')
                 return false
@@ -87,6 +87,10 @@ export default {
 						that.$u.toast(res.msg)
 					}
 				})
+				
+				
+				uni.$emit('gender',that.form.gender)
+					
         },
     }
 }

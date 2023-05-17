@@ -27,7 +27,7 @@
 								<view slot="addBtn" class="slot-btn" hover-class="slot-btn__hover" hover-stay-time="150">
 									<u-icon name="photo" size="60" :color="$u.color['lightColor']"></u-icon>
 								</view>
-							</u-upload>
+					</u-upload>
 			</view>
 		</view>
 		
@@ -60,6 +60,9 @@
 			submit() {
 			console.log(this.title);
 			console.log(this.content);
+			uni.navigateTo({
+				url:'/pages/public/feedbackPage'
+			})
 			
 			}
 		}

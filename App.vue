@@ -6,6 +6,8 @@ import Wechat from './common/wechat/wechat.js';
 export default {
 	methods: {
 		...mapActions(['getAppInit', 'getRoutes', 'getUserInfo']),
+		
+	
 		async setAppInfo() {
 			let that = this;
 			let platform = '';
@@ -84,6 +86,10 @@ export default {
 	}
 	},
 	onHide: function() {
+	},
+	created() {
+
+		
 	}
 };
 </script>

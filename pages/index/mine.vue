@@ -31,7 +31,7 @@
             </view>
 			<!-- {{userInfo}} -->
             <view class="text-base leading-none text-gray-500 mt-2">角色名望：{{ userInfo.score || 0 }}</view>
-            <view class="text-base leading-none text-gray-500 mt-2">用户UID：{{ userInfo.id || '********' }}</view>
+            <view class="text-base leading-none text-gray-500 mt-2">雅集号：{{ userInfo.id || '********' }}</view>
             <view class="text-base leading-none text-gray-500 mt-2">
                 IP属地：{{ userInfo.region || '未知' }}
                 <i @click="showIp = true" class="ri-question-line ml-2 text-gray-500"></i>
@@ -145,9 +145,12 @@ export default {
         },
         async getUserData() {
             let that = this
+			console.log(11);
             that.$api('user.data', { user_id: that.userInfo.id }).then(res => {
                 if (res.code === 1) {
+					console.log('mymymymy',res.data);
                     that.userData = res.data
+					console.log('that.userData',that.userData);
                 }
             })
         },

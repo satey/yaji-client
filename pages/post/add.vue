@@ -44,7 +44,7 @@
                     <i class="ri-hashtag mr-1"></i>
                     <view class="text-base leading-none">添加话题</view>
                 </view>
-              <!--  <view class="flex items-center bg-gray-100 border text-gray-500 p-3 rounded-full" @click="showGroup = true">
+               <!-- <view class="flex items-center bg-gray-100 border text-gray-500 p-3 rounded-full" @click="showGroup = true">
                     <i class="ri-focus-fill mr-2"></i>
                     <view class="text-base leading-none">添加圈子</view>
                 </view> -->
@@ -106,6 +106,10 @@
                         <i class="ri-hashtag mr-1"></i>
                         <view class="text-base">{{ item }}</view>
                     </view>
+					<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in searchTag" :key="index" :item="item">
+					    <i class="ri-hashtag mr-1"></i>
+					    <view class="text-base">{{ item }}</view>
+					</view>
                 </view>
                 <u-empty v-if="!listHotTag.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
                 
@@ -191,7 +195,8 @@ export default {
                 Y: 0
             },
 			isAddTake:true,
-			keyword:''
+			keyword:'',
+			searchTag:[]
         }
     },
     onLoad() {
@@ -218,7 +223,9 @@ export default {
 			}
 			that.$api('post_cate.search_list', data).then(res => {
 			    if (res.code == 1) {
-			       console.log(res.data,'111');
+					// that.searchTag=res.data[0].title
+					// console.log(that.searchTag,'1');
+			       // console.log(res.data[0].title,'111');
 					
 			    } else {
 			        that.$u.toast(res.msg)

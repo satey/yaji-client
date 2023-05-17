@@ -56,7 +56,7 @@
                	<text class="text-gray-500 ml-2">{{ item.diggnums }}</text>
                </view>
                 <view class="flex items-center ml-4">
-                    <i class="ri-message-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
+                    <i @click="$u.route('/pages/post/detail', { post_id: item.id })" class="ri-message-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
                     <text class="text-gray-500 ml-2">{{ item.commentnums }}</text>
                 </view>
             </view>
@@ -151,12 +151,12 @@ export default {
 			        post_id:that.item.id,
 			    }).then(res => {
 			        if (res.code === 1) {
-						console.log('点赞');
 						that.isRed=!that.isRed
 						that.isNoRed=!that.isRed
 			            that.$u.toast('点赞成功')
 			            that.getPostDetail()
 						that.isZan()
+						
 			        } else {
 						that.isNoRed=!that.isNoRed
 						that.isRed=!that.isRed

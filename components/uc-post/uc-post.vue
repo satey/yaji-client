@@ -12,7 +12,7 @@
 		 <text style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: #D0E17D; color: green;" @click="$u.route('/pages/user/home', { user_id: item.id })">望</text>
 		 <text style="color: green;">{{item.user.score }}</text>
 		
-			
+			<!-- {{item}} -->
             </view>
             <view class="text-base leading-none text-gray-400 mt-3">{{ $u.timeFrom(item.createtime, 'mm月dd日 hh:MM') }}</view>
             <view class="mt-4" @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}</view>
@@ -47,18 +47,18 @@
 			     <!-- <i class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i> -->
 			     <i v-show='is_cai==0' class="ri-hail-line text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
 			     <i v-show='is_cai==1' class="ri-hail-line text-xl bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i>
-			 	<!-- <text class="text-gray-500 ml-2">{{ item.diggnums }}</text> -->
+			 	<text class="text-gray-500 ml-2">{{ item.cainums }}</text>
 			 </view>
                 <view class="flex items-center ml-4">
-                    <i class="ri-message-3-fill text-xl leading-none bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
+                    <i  @click="$u.route('/pages/post/detail', { post_id: item.id })" class="ri-message-3-fill text-xl leading-none bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
                     <text class="text-base leading-none text-gray-500 ml-1">{{ item.commentnums }}</text>
                 </view>
             </view>
         </view>
         <view class="">
 			
-           <!-- <view v-if="item.ischat" class="border border-solid border-orange-500 p-2 rounded-full text-base leading-none text-orange-500" @click="$u.route('/pages/user/home', { user_id: item.id })">私聊他</view>
-           <view v-else>
+			<!-- <view v-if="item.ischat" class="border border-solid border-orange-500 p-2 rounded-full text-base leading-none text-orange-500" @click="$u.route('/pages/user/home', { user_id: item.id })">私聊他</view>
+			<view v-else>
                 <i class="ri-more-2-fill text-xl bg-gradient-to-b from-gray-500 to-gray-400 bg-clip-text text-transparent"></i>
             </view> -->
 		<!-- 举报功能 -->
@@ -129,6 +129,7 @@ export default {
 	},
 	mounted() {
 		this.isZan()
+		this.isCai()
 	},
     methods: {
 		isZan(){
@@ -139,6 +140,19 @@ export default {
 			    if (res.code === 1) {
 					that.is_zan=res.data.is_zan
 					console.log(that.is_zan);
+			    } else {
+			        that.$u.toast(res.msg)
+			    }
+			})
+		},
+		isCai(){
+			let that=this
+			that.$api('post.detail', {
+			 post_id:that.item.id
+			}).then(res => {
+			    if (res.code === 1) {
+					that.is_cai=res.data.is_cai
+					console.log(that.is_cai);
 			    } else {
 			        that.$u.toast(res.msg)
 			    }
@@ -172,14 +186,11 @@ export default {
 		}).then(res => {
 		    if (res.code === 1) {
 				console.log('点踩');
-				that.is_zan=0
 				that.is_cai=1
 		        // that.$u.toast('点踩成功')
-		        that.getPostDetail()
+		        that.getPostDetailCancle()
 				// that.isZan()
 		    } else {
-				// console.log('no点赞');
-				that.is_zan=1
 				that.is_cai=0
 		        that.$u.toast(res.msg)
 			
@@ -194,6 +205,15 @@ export default {
                 }
             })
         },
+		// 点踩详情
+		getPostDetailCancle() {
+		    let that = this
+		    that.$api('post.detail', { post_id:that.item.id }).then(res => {
+		        if (res.code === 1) {
+		            that.item.cainums= res.data.cainums
+		        }
+		    })
+		},
 		// 点赞红心
 			handlePostDig() {
 			    let that = this

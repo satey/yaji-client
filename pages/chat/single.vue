@@ -6,6 +6,7 @@
                 <i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
             </view>
             <view slot="right">
+			<view style="font-size: 50rpx; margin-top: -40rpx;"  @click="$u.route('pages/chat/joinBlackList')">...</view>
                 <!-- <i class="ri-more-fill text-3xl" @click="$u.route('pages/chat/groupsetting')"></i> -->
             </view>
         </u-navbar>
@@ -26,12 +27,12 @@
                             <view v-if="item.type === 'gift'">
                                 <u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
                             </view>
-                            <view v-if="item.type === 'audio'" @click="handlePlayAudio(item.content)" class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
+                           <!-- <view v-if="item.type === 'audio'" @click="handlePlayAudio(item.content)" class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
                                 <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
                             </view>
                             <view v-if="item.type === 'video'" @click="handlePlayVideo(item.content)" class="flex items-center justify-center rounded w-60 bg-gray-200">
                                 <video class="z-0" :src="item.content" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
-                            </view>
+                            </view> -->
                         </view>
                         <view class="flex">
                             <image class="block rounded-full w-10 h-10" :src="item.user.avatar || '/static/avatar.png'"></image>
@@ -51,12 +52,12 @@
                             <view v-if="item.type === 'gift'">
                                 <u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
                             </view>
-                            <view v-if="item.type === 'audio'" @click="handlePlayAudio(item.content)" class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
+                           <view v-if="item.type === 'audio'" @click="handlePlayAudio(item.content)" class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
                                 <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
                             </view>
-                            <view v-if="item.type === 'video'" @click="handlePlayVideo(item.content)" class="flex items-center justify-center rounded w-60 bg-gray-200">
+                             <!--<view v-if="item.type === 'video'" @click="handlePlayVideo(item.content)" class="flex items-center justify-center rounded w-60 bg-gray-200">
                                 <video class="z-0" :src="item.content" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
-                            </view>
+                            </view> -->
                         </view>
                     </view>
                 </view>
@@ -86,7 +87,8 @@
             <!-- 语音 -->
             <view class="flex flex-col items-center bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showRecord">
                 <view class="text-xs leading-none text-gray-500">{{ recordTip }}</view>
-                <view class="flex justify-center items-center mt-16" @touchstart="handleRecordStart" @touchmove.stop.prevent="handleRecordDoing" @touchend="handleRecordStop">
+                <view class="flex justify-center items-center mt-16" @touchstart="voiceBeginH5" @touchmove.stop.prevent="voiceIng" @touchend="voiceEndH5"
+						@touchcancel="voiceCancelH5">
                     <view class="relative flex justify-center items-center rounded-full">
                         <view class="flex justify-center items-center rounded-full w-20 h-20 bg-fuchsia-500 z-10">
                             <i class="ri-mic-fill text-4xl leading-none text-white"></i>
@@ -119,7 +121,7 @@
                     </view>
                     <view class="text-base leading-none mt-2">相册</view>
                 </view>
-                <view class="flex flex-col justify-center text-center" @tap="handleVideo">
+<!--                <view class="flex flex-col justify-center text-center" @tap="handleVideo">
                     <view class="rounded-lg bg-white p-4 mx-auto">
                         <i class="ri-camera-fill block text-2xl leading-none text-black"></i>
                     </view>
@@ -130,7 +132,7 @@
                         <i class="ri-vidicon-fill block text-2xl leading-none text-black"></i>
                     </view>
                     <view class="text-base leading-none mt-2">录制</view>
-                </view>
+                </view> -->
                 <view class="flex flex-col justify-center text-center" @click="handleGift">
                     <view class="rounded-lg bg-white p-4 mx-auto">
                         <i class="ri-gift-fill block text-2xl leading-none text-black"></i>
@@ -149,6 +151,7 @@
 <script>
 import { mapState } from 'vuex'
 import Socket from '@/common/chat.js'
+	import RecordRTC from 'recordrtc'
 export default {
     name: 'mine',
     components: {
@@ -193,6 +196,15 @@ export default {
                 identifier: 0,
                 Y: 0
             },
+			
+			
+			
+			
+			voiceH5Tis:'',
+			is_start_record: false, //是否开始录音
+			recorder_h5: null, //录音对象
+			recorder_timer: null, //录音定时器
+			recorder_time: 0,
         }
     },
     computed: {
@@ -209,6 +221,20 @@ export default {
     onLoad() {
         let that = this
         that.init()
+		//注册事件
+		// 注册发送音频事件
+		this.regOnStartEvent((e) => {
+			this.recordBegin(e);
+		});
+		// 注册发送音频事件
+		this.regSendVoiceEvent((e) => {
+			this.recordEnd(e);
+		});
+		
+		// 注册发送音频事件
+		this.regVudioEndEvent((e) => {
+			this.playMsgid = null;
+		});
     },
     beforeDestroy() {
         let that = this
@@ -217,12 +243,195 @@ export default {
         }
     },
     methods: {
+		// 录音开始H5 TODO
+		voiceBeginH5(e) {
+			if (!this.is_start_record) {
+				navigator.mediaDevices.getUserMedia({
+					video: false,
+					audio: true
+				}).then((stream) => {
+					this.recorder_h5 = RecordRTC(stream, {
+						type: 'audio'
+					});
+					this.is_start_record = true
+					console.log("recorder", this.recorder_h5)
+					this.recorder_h5.startRecording();
+					this.recorder_time = 0
+					this.recorder_timer = setInterval(() => {
+						this.recorder_time += 0.1
+					}, 100)
+					uni.showModal({
+						title: '提示',
+						content: '正在录音中....',
+						confirmText: '发送录音',
+						cancelText: '取消录音',
+						success: (res) => {
+							clearInterval(this.recorder_timer);
+							this.recorder_timer = null
+							if (res.confirm) {
+								this.recorder_h5.stopRecording((res_data) => {
+									console.log("res_data", res_data)
+									let blob = this.recorder_h5.getBlob();
+									console.log("blob", blob)
+									// RecordRTC.invokeSaveAsDialog(blob);
+									uni.downloadFile({
+										url: res_data,
+										success: e => {
+											console.log("e", e)
+											let msg = {
+												length: 0,
+												url: e.tempFilePath,
+											};
+											console.log(JSON.stringify(msg));
+											let min = parseInt(this
+												.recorder_time / 60);
+											let sec = parseInt(this
+												.recorder_time % 60);
+											min = min < 10 ? "0" + min : min;
+											sec = sec < 10 ? "0" + sec : sec;
+											if (min > 0 || sec > 0) {
+												msg.length = min + ":" + sec;
+												this.sendMsg(msg, 1);
+											}
+										}
+									})
+									this.is_start_record = false
+									this.recorder_h5.destroy();
+								});
+							} else {
+								this.is_start_record = false
+								this.recorder_h5.destroy();
+							}
+						}
+					})
+				});
+			}
+		
+		},
+		// 录音开始
+		voiceBegin(e) {
+			if (e.touches.length > 1) {
+				return;
+			}
+			this.initPoint.Y = e.touches[0].clientY;
+			this.initPoint.identifier = e.touches[0].identifier;
+			// this.RECORDER.start({ format: "mp3" });//录音开始,
+			// 开始录音
+			this.RECORD.start({
+				format: "mp3",
+			});
+		},
+		//录音开始UI效果
+		recordBegin(e) {
+			/** 暂停语音播放 */
+			this.AUDIO.pause();
+			this.recording = true;
+			this.voiceTis = "松开 结束";
+		},
+		// 录音被打断
+		voiceCancel() {
+			this.recording = false;
+			this.voiceTis = "按住 说话";
+			this.recordTis = "手指上滑 取消发送";
+			this.willStop = true; //不发送录音
+			this.RECORD.stop(); //录音结束
+		},
+		// 录音被打断H5
+		voiceCancelH5() {
+			this.recording = false;
+			this.voiceTis = "按住 说话";
+			this.recordTis = "手指上滑 取消发送";
+			this.willStop = true; //不发送录音
+			this.stopRecord()
+		},
+		// 录音中(判断是否触发上滑取消发送)
+		voiceIng(e) {
+			if (!this.recording) {
+				return;
+			}
+			let touche = e.touches[0];
+			//上滑一个导航栏的高度触发上滑取消发送
+			if (this.initPoint.Y - touche.clientY >= uni.upx2px(100)) {
+				this.willStop = true;
+				this.recordTis = "松开手指 取消发送";
+			} else {
+				this.willStop = false;
+				this.recordTis = "手指上滑 取消发送";
+			}
+		},
+		// 结束录音
+		voiceEndH5(e) {
+			if (!this.recording) {
+				return;
+			}
+			this.recording = false;
+			this.voiceTis = "按住 说话";
+			this.recordTis = "手指上滑 取消发送";
+			this.stopRecord()
+		},
+		// 结束录音
+		voiceEnd(e) {
+			if (!this.recording) {
+				return;
+			}
+			this.recording = false;
+			this.voiceTis = "按住 说话";
+			this.recordTis = "手指上滑 取消发送";
+			this.RECORD.stop(); //录音结束
+		},
+		//录音结束(回调文件)
+		recordEnd(e) {
+			if (!this.willStop) {
+				// console.log("e: " + JSON.stringify(e));
+				let msg = {
+					length: 0,
+					url: e.tempFilePath,
+				};
+				console.log(JSON.stringify(msg));
+				let min = parseInt(this.RecordTime / 60);
+				let sec = this.RecordTime % 60;
+				min = min < 10 ? "0" + min : min;
+				sec = sec < 10 ? "0" + sec : sec;
+				if (min > 0 || sec > 0) {
+					msg.length = min + ":" + sec;
+					this.sendMsg(msg, 1);
+					// this.sendMsg(msg);
+				}
+			} else {
+				console.log("取消发送录音");
+			}
+			this.willStop = false;
+		},
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
         init() {
             let that = this
             that.$api('chat.single', {
                 user_id: that.$Route.query.user_id
             }).then(res => {
                 if (res.code === 1) {
+					console.log('init',res.data);
                     that.chat = res.data
                     uni.setStorageSync('CHATSESSIONID', res.data.session_id)
                     // 监听消息
@@ -354,12 +563,18 @@ export default {
             let that = this
             that.gift = item
             if (that.userInfo.money < that.gift.price) {
-                that.$api.msg('账户铜币不足')
+                // that.$api.msg('账户铜币不足')
+				that.$u.toast('账户铜币不足')
                 return
             }
             that.sendMessage(that.gift.image, 'gift')
             that.showGift = false
             that.handleGiftPlay()
+			// that.handleTextSend()
+			// 强制刷新
+				setTimeout(() => {
+					this.$router.go(0)
+				}, 10)
         },
         handleGiftPlay() {
             let that = this
@@ -400,6 +615,7 @@ export default {
                 that.giftList = uni.getStorageSync('GIFTLIST')
             } else {
                 that.$api('gift.lists').then(res => {
+					console.log(res.data);
                     if (res.code === 1) {
                         that.giftList = res.data.data
                         uni.setStorageSync('GIFTLIST', that.giftList)
@@ -431,27 +647,27 @@ export default {
                 })
             }
         },
-        handlePlayVideo(video) {
-            let that = this
-            if (!video) {
-                that.$u.toast('视频不能为空')
-                return false
-            }
-            if (!that.video) {
-                that.video = uni.createVideoContext('video')
-                that.video.src = video
-            }
-            that.videoStatus = !that.videoStatus
-            if(that.videoStatus) {
-                that.$nextTick(function () {
-                    that.video.play()
-                })
-            } else {
-                that.$nextTick(function () {
-                    that.video.pause()
-                })
-            }
-        },
+        // handlePlayVideo(video) {
+        //     let that = this
+        //     if (!video) {
+        //         that.$u.toast('视频不能为空')
+        //         return false
+        //     }
+        //     if (!that.video) {
+        //         that.video = uni.createVideoContext('video')
+        //         that.video.src = video
+        //     }
+        //     that.videoStatus = !that.videoStatus
+        //     if(that.videoStatus) {
+        //         that.$nextTick(function () {
+        //             that.video.play()
+        //         })
+        //     } else {
+        //         that.$nextTick(function () {
+        //             that.video.pause()
+        //         })
+        //     }
+        // },
         handleRecordStart(e) {
             let that = this
             console.log('touch start')
@@ -539,35 +755,35 @@ export default {
                 }
             })
         },
-        handleVideo() {
-            let that = this
-            uni.chooseVideo({
-                maxDuration: 10,
-                sourceType: ['album'],
-                success: (res) => {
-                    console.log(res)
-                    if (res.size > 10 * 1024 * 1024) {
-                        that.$u.toast('视频不能超过10M')
-                        return false
-                    }
-                    uni.uploadFile({
-                        url: that.$API_URL + 'index/upload',
-                        filePath: res.tempFilePath,
-                        name: 'file',
-                        success: res => {
-                            res = JSON.parse(res.data)
-                            console.log(res)
-                            if (res.code === 1) {
-                                that.sendMessage(res.data.fullurl, 'video')
-                            } else {
-                                that.$u.toast(res.msg)
-                            }
-                        },
-                        complete: e => {}
-                    })
-                }
-            })
-        },
+        // handleVideo() {
+        //     let that = this
+        //     uni.chooseVideo({
+        //         maxDuration: 10,
+        //         sourceType: ['album'],
+        //         success: (res) => {
+        //             console.log(res)
+        //             if (res.size > 10 * 1024 * 1024) {
+        //                 that.$u.toast('视频不能超过10M')
+        //                 return false
+        //             }
+        //             uni.uploadFile({
+        //                 url: that.$API_URL + 'index/upload',
+        //                 filePath: res.tempFilePath,
+        //                 name: 'file',
+        //                 success: res => {
+        //                     res = JSON.parse(res.data)
+        //                     console.log(res)
+        //                     if (res.code === 1) {
+        //                         that.sendMessage(res.data.fullurl, 'video')
+        //                     } else {
+        //                         that.$u.toast(res.msg)
+        //                     }
+        //                 },
+        //                 complete: e => {}
+        //             })
+        //         }
+        //     })
+        // },
     }
 }
 </script>

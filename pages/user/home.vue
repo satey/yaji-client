@@ -41,7 +41,7 @@
             <view class="text-base leading-none text-gray-500 mt-2">
                 IP属地：{{ user.region || '未知' }}
             </view>
-            <view class="mt-4">{{ user.bio || '暂无介绍' }}</view>
+            <!-- <view class="mt-4">{{ user.bio || '暂无介绍' }}</view> -->
             <view class="flex mt-4">
                 <block v-for="(tag, index) in user.tags" :key="index" :item="tag">
                     <view class="border border-solid border-gray-200 p-2 rounded-full text-base leading-none text-gray-500 mr-2">
@@ -60,7 +60,7 @@
             <block v-if="type === 'role'">
                 <view class="grid grid-cols-12 gap-4 mt-4">
                     <view class="col-span-2 text-gray-500">姓名：</view>
-                    <!-- <view class="col-span-4">{{ role.realname }}</view> -->
+                    <view class="col-span-4">{{ role.realname }}</view>
                     <view class="col-span-2 text-gray-500">拼音：</view>
                     <view class="col-span-4">{{ role.chnname }}</view>
                     <view class="col-span-2 text-gray-500">性别：</view>
@@ -94,11 +94,11 @@
                 <i class="ri-message-3-fill text-xl text-white mr-2"></i>
                 <text class="text-base text-white">打招呼</text>
             </view>
-			<view v-if="isInterest"  class="flex items-center justify-center p-4 rounded-full bg-purple-500">
+			<view v-show='is_follow==0'  class="flex items-center justify-center p-4 rounded-full bg-purple-500">
 			    <i class="ri-heart-3-fill text-xl text-white mr-2"></i>
 			    <text class="text-base text-white" @click="interest(1)">关注</text>
 			</view>
-            <view v-else class="flex items-center justify-center p-4 rounded-full bg-gray-300">
+            <view v-show="is_follow==1" class="flex items-center justify-center p-4 rounded-full bg-gray-300">
                 <i class="ri-heart-3-fill text-xl text-white mr-2"></i>
                 <text class="text-base text-white"  @click="interest(2)">已关注</text>
             </view>
@@ -133,8 +133,8 @@ export default {
                 last_page: 0,
             },
             loadmore: false,
-			isInterest:false,
-			user_id:''
+			user_id:'',
+			is_follow:''
         }
     },
     onLoad() {
@@ -156,7 +156,10 @@ export default {
 			let that = this
 			console.log(type);
 			if(type==1){
-				that.isInterest=!that.isInterest
+			that.$api('user_follow.follow', { user_id: that.$Route.query.user_id }).then(res => {
+				that.is_follow==1
+				that.getUserProfile()
+			})
 			}
 			if(type==2){
 				uni.showModal({
@@ -172,8 +175,10 @@ export default {
 							    if (res.code === 1) {
 							        // that.user = res.data
 									console.log('取消成功');
+									that.is_follow==0
 									console.log(res.data);
-									 that.isInterest=!that.isInterest
+									 // that.isInterest=!that.isInterest
+									 that.getUserProfile()
 							    }else{
 									console.log('25');
 								}
@@ -200,7 +205,7 @@ export default {
             that.$api('user.profile', { user_id: that.$Route.query.user_id }).then(res => {
                 if (res.code === 1) {
                     that.user = res.data
-					
+					that.is_follow=res.data.is_follow
                 }
             })
         },

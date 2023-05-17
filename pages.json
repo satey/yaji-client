@@ -46,6 +46,16 @@
                 "auth": false
             }
         },
+		{
+		    "path": "pages/index/indexSearch",
+		    "name": "indexSearch",
+		    "style": {
+		        "navigationBarTitleText": "首页直接搜索"
+		    },
+		    "meta": {
+		        "auth": false
+		    }
+		},
         {
             "path": "pages/auth/login",
             "name": "login",
@@ -106,6 +116,16 @@
                 "auth": true
             }
         },
+		{
+		    "path": "pages/mine/blackList",
+		    "name": "blackList",
+		    "style": {
+		        "navigationBarTitleText": "黑名单"
+		    },
+		    "meta": {
+		        "auth": true
+		    }
+		},
         {
             "path": "pages/mine/role",
             "name": "role",
@@ -146,6 +166,16 @@
                 "auth": true
             }
         },
+		{
+		    "path": "pages/mine/giftsRecord",
+		    "name": "giftsRecord",
+		    "style": {
+		        "navigationBarTitleText": "礼物记录"
+		    },
+		    "meta": {
+		        "auth": false
+		    }
+		},
         {
             "path": "pages/public/page",
             "name": "page",
@@ -172,6 +202,19 @@
 		    "name": "feedbackpPage",
 		    "style": {
 		        "navigationBarTitleText": "意见反馈页面"
+				
+			
+		    },
+		    "meta": {
+		        "auth": false
+		    }
+		},
+		{
+		    "path": "pages/public/feedbackSuggest",
+		    "name": "feedbackSuggest",
+		    "style": {
+		        "navigationBarTitleText": "意见反馈答复"
+				
 			
 		    },
 		    "meta": {
@@ -258,6 +301,16 @@
                 "auth": true
             }
         },
+		{
+		    "path": "pages/chat/joinBlackList",
+		    "name": "joinBlackList",
+		    "style": {
+		        "navigationBarTitleText": "加入黑名单"
+		    },
+		    "meta": {
+		        "auth": true
+		    }
+		},
         {
             "path": "pages/chat/group",
             "name": "group",

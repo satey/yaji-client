@@ -7,8 +7,11 @@
                 <i class="ri-arrow-left-s-line text-4xl text-white" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
             </view>
             <view slot="center">
-                <view class="text-white">礼物墙</view>
+                <view class="text-white" @click="skipGifts">我的礼物</view>
             </view>
+			<view slot="right">
+			    <view class="text-right" style="color: white;" @click="skipGifts">礼物记录</view>
+			</view>
         </u-navbar>
         <view class="grid grid-cols-4 gap-4">
             <uc-gift v-for="(item, index) in listUserGift" :key="index" :item="item"></uc-gift>
@@ -64,7 +67,18 @@ export default {
                     }
                 }
             })
-        }
+        },
+		skipGifts(){
+			uni.reLaunch({
+				url:'/pages/mine/giftsRecord',
+				success: () => {
+				console.log('ca');	
+				},
+				fail: (err) => {
+					console.log(err);
+				}
+			})
+		}
     }
 }
 </script>
