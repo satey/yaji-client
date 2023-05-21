@@ -3,7 +3,8 @@
  * @param  {Object} config  - 初始化配置对象
  * @param {Number} wait = [10000]  - 心跳频率
  */
-const WS_URL = 'wss://yaji.shuchuang.net/websocket/';
+const WS_URL = 'wss://yaji.ixiaojin.cn/websocket';
+// const WS_URL = 'wss://yaji.shuchuang.net/websocket';
 
 export default class Socket {
 	constructor(callback) {

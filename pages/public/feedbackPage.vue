@@ -7,11 +7,11 @@
 		</u-navbar>
 		<view class="questTitle">
 			<text class="text1">反馈问题的标题</text>
-			<text class="text2">已反馈</text>
+			<text class="text2 active">已反馈</text>
 		</view>
 		<view class="questTitle">
 			<text class="text1">反馈问题的标题</text>
-			<text class="text2 active">已答复</text>
+			<text class="text2">已答复</text>
 		</view>
 	</view>
 </template>

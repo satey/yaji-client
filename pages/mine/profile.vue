@@ -10,7 +10,7 @@
             </view>
         </u-navbar>
         <view class="flex mt-10">
-            <image class="block m-auto w-24 h-24 rounded-full" :src="userInfo.avatar || '/static/avatar.png'"></image>
+            <image @click="changeImage" class="block m-auto w-24 h-24 rounded-full" :src="userInfo.avatar || '/static/avatar.png'"></image>
         </view>
         <view class="bg-white mt-10">
             <u-cell-group>
@@ -22,7 +22,6 @@
         </view>
 
         <u-datetime-picker :show="showBirthday" v-model="userInfo.birthday" :confirm="showBirthday = false" mode="date"></u-datetime-picker>
-
         <u-modal :show="showNickname" :showConfirmButton="false" :showCancelButton="false">
             <view class="w-full">
                 <view class="text-2xl mt-4 text-center">修改昵称</view>
@@ -53,6 +52,7 @@
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
+    // import COS from '../../../yaji-app/dist/cos.js';
 export default {
     name: 'profile',
     data() {
@@ -87,7 +87,23 @@ export default {
                     that.$u.toast(res.msg)
                 }
             })
-        }
+        },
+		changeImage(){
+			uni.chooseImage({
+							  //   count: 1, //默认9
+							  //   sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+							  //   sourceType: ['album'], //从相册选择
+							  //   success: function (res) {
+							// let filePath = res.tempFiles[0].path;
+									// let filename = filePath.substr(filePath.lastIndexOf('/') + 1);
+									// COS.uploadFileToTencentClound(filename,filePath).then((res)=>{
+									// 	console.log("[修改头像]",res)
+									// 	that.avatarUrl=res
+									// })
+							  //   }
+				});
+		
+		}
     }
 }
 </script>

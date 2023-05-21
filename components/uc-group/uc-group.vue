@@ -3,10 +3,10 @@
     <page-meta :root-font-size="'13px'"></page-meta>
 	
     <view>
-		
         <view class="flex mt-4 bg-gray-100 p-4 rounded" @tap="$u.route('/pages/chat/audio', { id: item.id })">
             <view class="flex mr-4 rounded">
-                <u-image :src="item.image" mode="aspectFill" width="180" height="180" :lazy-load="true"></u-image>
+                <!-- <u-image :src="item.image" mode="aspectFill" width="180" height="180" :lazy-load="true"></u-image> -->
+				<u-image src="/static/coin.png" mode="aspectFill" width="180" height="180" :lazy-load="true"></u-image>
             </view>
             <view class="flex-1">
                 <view class="">{{ item.title }}</view>

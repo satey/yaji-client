@@ -381,6 +381,15 @@
             }
             
         }
+        ,{
+            "path" : "components/uc-comment/uc-comment",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
     "globalStyle": {
         "navigationStyle": "custom",

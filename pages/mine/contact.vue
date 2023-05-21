@@ -16,7 +16,7 @@
         </u-navbar>
         <uc-follow v-for="(item, index) in listUserFollow" :key="index" :item="item"></uc-follow>
         <u-loadmore v-if="listUserFollow.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
-        <u-empty v-if="!listUserFollow.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
+        <u-empty v-if="!listUserFollow.length" icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
 
         <uc-auth></uc-auth>
     </view>

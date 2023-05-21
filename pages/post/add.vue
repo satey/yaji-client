@@ -256,6 +256,7 @@ export default {
 			console.log(this.$refs.ipt.value);
 			that.$api('post_cate.add',data).then(res => {
 			    if (res.code === 1) {
+					
 			        that.$u.toast('添加成功')
 			    } else {
 				

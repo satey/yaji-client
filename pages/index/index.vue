@@ -241,7 +241,7 @@ export default {
         async getGroupRecommend() {
             let that = this
             that.loadmore = 'loading'
-            that.$api('group.recommend', that.params).then(res => {
+            that.$api('group.lists', that.params).then(res => {
                 if (res.code === 1) {
 					console.log('今日雅集',res.data);
                     that.paginator.total = res.data.total

@@ -24,6 +24,7 @@
                     <text class="rounded-full text-gray-500 mr-2" v-for="(achievement, index) in userRole.achievements" :key="index" :item="achievement">{{ achievement }}</text>
                 </view>
                 <view class="mt-4">
+					
                     <view class="">{{ userRole.content || '暂无介绍' }}</view>
                 </view>
             </view>
@@ -40,6 +41,7 @@
         </view>
 
         <view v-if="!showUserRole" style="padding: 200rpx 50rpx 20rpx 50rpx;">
+			
             <view class="flex text-left text-2xl text-white">选择角色</view>
             <view class="flex text-left mt-4">
                 <text class="text-white opacity-50">选择穿越到的朝代，以便给你创建角色。</text>
@@ -117,7 +119,7 @@ export default {
         ...mapActions(['getUserInfo']),
         async getUserRole() {
             let that = this
-            that.$api('user.role', { user_id: that.userInfo.id }).then(res => {
+            that.$api('user.info', { user_id: that.userInfo.id }).then(res => {
                 if (res.code === 1) {
                     that.userRole = res.data
                     that.showUserRole = true

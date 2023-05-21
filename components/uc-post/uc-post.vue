@@ -139,7 +139,6 @@ export default {
 			}).then(res => {
 			    if (res.code === 1) {
 					that.is_zan=res.data.is_zan
-					console.log(that.is_zan);
 			    } else {
 			        that.$u.toast(res.msg)
 			    }
@@ -152,7 +151,6 @@ export default {
 			}).then(res => {
 			    if (res.code === 1) {
 					that.is_cai=res.data.is_cai
-					console.log(that.is_cai);
 			    } else {
 			        that.$u.toast(res.msg)
 			    }
@@ -221,16 +219,10 @@ export default {
 			        post_id:that.item.id,
 			    }).then(res => {
 			        if (res.code === 1) {
-						console.log('点赞');
-						that.isRed=!that.isRed
-						that.isNoRed=!that.isRed
 			            that.$u.toast('点赞成功')
 			            that.getPostDetail()
 						that.isZan()
 			        } else {
-						// console.log('no点赞');
-						that.isNoRed=!that.isNoRed
-						that.isRed=!that.isRed
 			            that.$u.toast(res.msg)
 					
 			        }

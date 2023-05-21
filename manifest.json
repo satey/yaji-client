@@ -46,7 +46,17 @@
                 "dSYMs" : false
             },
             "sdkConfigs" : {
-                "push" : {},
+                "push" : {
+                    "unipush" : {
+                        "version" : "2",
+                        "offline" : true,
+                        "fcm" : {},
+                        "mi" : {},
+                        "vivo" : {},
+                        "oppo" : {},
+                        "hms" : {}
+                    }
+                },
                 "share" : {
                     "sina" : {
                         "appkey" : "",

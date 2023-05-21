@@ -2,6 +2,7 @@
 	<view class="">
 		<u-navbar title="黑名单" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
+				<!-- {{item}} -->
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
@@ -14,7 +15,7 @@
 
 		</view>
 		<!-- <u-loadmore v-if="blackList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" /> -->
-		<u-empty v-else icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100" ></u-empty>
+		<u-empty v-else icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100" ></u-empty>
 	</view>
 </template>
 
@@ -41,10 +42,10 @@
 		methods: {
 			initBlackList() {
 				let that = this
-				console.log(that.params);
+				// console.log('that.params',that.params);
 				that.$api('user_black.lists',that.params).then(res => {
 					if (res.code ==1) {
-				 	console.log(res.data);
+				 	console.log('ss',res.data);
 						that.blackList = res.data.data
 						if(that.blackList){
 							// /此时显示数据为空

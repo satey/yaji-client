@@ -89,7 +89,8 @@ export default {
 				})
 				
 				
-				uni.$emit('gender',that.form.gender)
+				// uni.$emit('gender',that.form.gender)
+				uni.setStorageSync('gender',that.form.gender)
 					
         },
     }

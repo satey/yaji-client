@@ -27,16 +27,17 @@
                 </view>
             </view>
             <view class="text-xl font-bold mt-2">
-                {{ userInfo.role_realname || '无名氏' }} · {{ userInfo.role_dynasty || '未知朝代' }}
+                {{ userInfo.realname || '无名氏' }} · {{ userInfo.dynasty || '未知朝代' }}
             </view>
 			<!-- {{userInfo}} -->
+			
             <view class="text-base leading-none text-gray-500 mt-2">角色名望：{{ userInfo.score || 0 }}</view>
             <view class="text-base leading-none text-gray-500 mt-2">雅集号：{{ userInfo.id || '********' }}</view>
             <view class="text-base leading-none text-gray-500 mt-2">
                 IP属地：{{ userInfo.region || '未知' }}
                 <i @click="showIp = true" class="ri-question-line ml-2 text-gray-500"></i>
             </view>
-            <view class="mt-4">{{ userInfo.bio || '暂无介绍' }}</view>
+            <!-- <view class="mt-4">{{ userInfo.bio || '暂无介绍' }}</view> -->
             <view class="flex mt-4">
                 <block v-for="(tag, index) in userInfo.tags" :key="index" :item="tag">
                     <view class="border border-solid border-gray-200 p-2 rounded-full text-base leading-none text-gray-500 mr-2">
@@ -57,7 +58,8 @@
                     </view>
                     <view class="text-base leading-none text-gray-500 mt-2">我的礼物</view>
                 </view>
-                <view class="text-center" @click="$u.route('/pages/mine/role')">
+                <!-- <view class="text-center" @click="$u.route('/pages/mine/role')"> -->
+				<view class="text-center" @click="skipRole">
                     <view class="m-auto w-8 h-8 p-4 rounded-full bg-gradient-to-b from-blue-500 to-blue-400">
                         <i class="ri-shield-user-fill text-white text-3xl leading-none"></i>
                     </view>
@@ -139,18 +141,24 @@ export default {
     },
     methods: {
         ...mapActions(['getUserInfo']),
+		// 跳转角色
+		skipRole(){
+			uni.navigateTo({
+				url:'/pages/mine/role',
+			})
+			// uni.setStorageSync('user_id',that.userInfo.id)
+		},
         changeTab(e) {
             // console.log(e)
             let that = this
         },
         async getUserData() {
             let that = this
-			console.log(11);
-            that.$api('user.data', { user_id: that.userInfo.id }).then(res => {
+			// console.log(that.userInfo.id);
+            that.$api('user.info', { user_id: that.userInfo.id }).then(res => {
                 if (res.code === 1) {
-					console.log('mymymymy',res.data);
+					console.log('res.daa',res.data);
                     that.userData = res.data
-					console.log('that.userData',that.userData);
                 }
             })
         },

@@ -27,6 +27,7 @@ export default {
 		mine: { url: 'group/mine', auth: true, method: 'GET', desc: '圈子列表', },
 		detail: { url: 'group/detail', auth: true, method: 'GET', desc: '圈子详情', },
 		add: { url: 'group/add', auth: true, method: 'POST', desc: '发布圈子', },
+		lists:{ url: 'group/lists', auth: true, method: 'GET', desc: '群聊列表',}
 	},
 	comment: {
 		add: { url: 'post_comment/add', auth: true, method: 'POST', desc: '发布评论', },

@@ -79,20 +79,21 @@ export default {
 			isBtnStart:true,
 			isCancle:true,
 			formGender:'',
-				
-			
+			gender:''
         }
     },
     onLoad(option) {
         let that = this
         that.getRoleDynasty()
+		
     },
 	created() {
+		let that=this
 			uni.$on('gender',gender =>{
-				this.formGender =gender
-					// console.log(this.formGender,'5555555');			
+				that.gender =gender
+				console.log('xingbie',gender);
+					// console.log(that.formGender,'5555555');		
 			})
-	
 	},
     computed: {
     },
@@ -176,8 +177,14 @@ export default {
         },
         skip() {
             let that = this
-			
-			// console.log(that.formGender,'thar');
+			let gender=uni.getStorageSync('gender')
+			that.formGender=gender
+			console.log(that.formGender,'ss');
+			//记得清除
+			uni.removeStorageSync('gender')
+			let data={
+				gender:that.formGender
+			}
 			uni.showModal({
 			    title: '提示',
 			    content: '完成本步步骤就可生成角色。不选角色也可正常进入，但会显示【无名氏】。您可在个人中心再次设置角色。确定暂时不生成角色吗？',
@@ -185,20 +192,13 @@ export default {
 			    cancelText:"取消",//这块是取消的文字
 				success: function (res) {
 			        if (res.confirm) {	
-			          
-				
-						// console.log('fo',this.formGender);/
-						// that.$api('user.only_choose_gender', that.formGender).then(res => {
-						//     if (res.code === 1) {
-						//         that.$u.route('/pages/index/index')
-						// 		console.log('ssss');
-						//     } else {
-						//         that.$u.toast(res.msg)
-						//         that.$u.route('/pages/index/index')
-						//     }
-						// })
-					that.$u.route('/pages/index/index')
-					
+						that.$api('user.only_choose_gender',data).then(res => {
+						    if (res.code === 1) {
+						        that.$u.route('/pages/index/index')
+						    } else {
+						        that.$u.toast(res.msg)
+						    }
+						})					
 			        } else if (res.cancel) {
 			            console.log('用户点击取消');
 			        }

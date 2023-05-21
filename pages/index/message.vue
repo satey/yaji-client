@@ -10,7 +10,7 @@
         </view>
         <uc-message v-for="(item, index) in listMessage" :key="index" :item="item"></uc-message>
         <u-loadmore v-if="listMessage.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
-        <u-empty v-if="!listMessage.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
+        <u-empty v-if="!listMessage.length" icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
 
         <u-modal :show="showRead" :showConfirmButton="false" :showCancelButton="false">
             <view class="w-full">

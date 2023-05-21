@@ -59,32 +59,7 @@
 
             <!-- <view class=" text-gray-500 mt-6">所有评论 ({{ paginator.total }})</view> post.commentnums -->
 			<view class=" text-gray-500 mt-6">所有评论 ({{post.commentnums }})</view>
-            <view v-for="(item, index) in listPostComment" :key="index" :item="item" class="flex mt-6">
-                <view class="mr-4">
-                    <u-avatar size="72" :src="item.avatar || '/static/avatar.png'" @click="$u.route('/pages/user/home', { user_id: item.user_id })"></u-avatar>
-                </view>
-                <view class="flex-1">
-                    <view class="text-base leading-none mt-1">{{ item.role_realname + ' · ' + item.role_dynasty || '无名氏' }}</view>
-                    <view class="mt-4">{{ item.content }}</view>
-                    <view class="mt-2">
-                        <text class="text-xs leading-none text-gray-400">{{item.createdate}}</text>
-                        <text class="text-xs text-gray-400 ml-4" @click="addComment(item)">回复</text>
-                    </view>
-                </view>
-				<!-- <view class="ml-4 flex items-center" @click="handlePostDigComment()">
-				    <i v-show='post.is_zan==0' class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-					<i v-show='post.is_zan==1' class="ri-heart-3-fill text-xl bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i>
-				    <text class="text-gray-500 ml-2">{{ post.diggnums }}</text>
-				</view> -->
-               <view class="ml-4 flex items-center" @click="handlePostDigComment(item)">
-				 
-				   <i v-show='is_commentZan==0'  class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-				   <i v-show='is_commentZan==1' class="ri-heart-3-fill text-xl bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i>
-					<!-- <i  class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i> -->
-                    <text class="text-gray-500 ml-2">{{ item.diggnums }}</text>
-                </view>
-            </view>
-            <!-- <u-loadmore v-if="listPostComment.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" /> -->
+            <uc-comment v-for="(item, index) in listPostComment" :key="index" :item="item" :id='post.id'></uc-comment>
             <u-empty v-if="!listPostComment.length" icon="/static/empty.png" text="暂无评论" textColor="#a1a1a1" marginTop="100"></u-empty>
             <view style="height: 220rpx;"></view>
         </view>
@@ -186,9 +161,7 @@ export default {
             ListFeedbackType: ['色情低俗','政治敏感','造谣传谣','广告欺诈','侵犯权益','其他'],
 			isRed:false,
 			isNoRed:true,
-			post_comment_id:null,
-			is_commentZan:0,
-			comment_diggnums:null
+		
 		}
     },
 	created() {
@@ -223,40 +196,7 @@ export default {
 			// 	})
 			
 		},
-		// 点赞评论
-		handlePostDigComment(item){
-			let that = this
-			console.log(item);
-			that.$api('post_comment.dig', {
-			   post_comment_id: item.id
-		 	}).then(res => {
-			    if (res.code === 1) {
-						that.$u.toast('点赞成功')
-						that.is_commentZan=1
-		// 				that.getDigCommentDetail(item)
-			    } else {
-					
-			        that.$u.toast(res.msg)
-			    }
-			})	
-			
-		},
-		// // 判断是否评论点赞
-		// getDigCommentDetail(item){
-		// 	let that=this
-		// 	console.log(item.id);
-		// 	that.$api('post_comment.lists', {
-		// 	   post_id: item._id
-		// 	}).then(res => {
-		// 	    if (res.code === 1) {
-		// 				console.log('getDigCommentDetail',res.data);
-		// 				that.is_commentZan=res.data.is_zan
-		// 				that.comment_diggnums=res.data.diggnums
-		// 	    } else {
-		// 	        that.$u.toast(res.msg)
-		// 	    }
-		// 	})	
-		// },
+		
         getPostDetail() {
             let that = this
             that.$api('post.detail', { post_id: that.$Route.query.post_id }).then(res => {
@@ -275,6 +215,7 @@ export default {
                     // that.paginator.last_page = res.data.last_page
                     // that.listPostComment = [...that.listPostComment, ...res.data.data]
 					    that.listPostComment =res.data
+					console.log('评论',res.data);
                     // if (that.params.page < res.data.last_page) {
                         // that.loadmore = 'loadmore'
                     // } else

@@ -38,20 +38,20 @@
 	            </view> -->
 	          <!--  <view class="text-xl text-gray-500 mt-8">热门角色</view>
 	            <uc-user v-for="(item, index) in listUserRecommend" :key="index" :item="item"></uc-user>
-	            <u-empty v-if="!listUserRecommend.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty> -->
+	            <u-empty v-if="!listUserRecommend.length" icon="="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty> -->
 				
 				
 				<view class="text-xl text-gray-500 mt-8">历史记录</view>
 				<!-- <uc-user v-for="(item, index) in listUserRecommend" :key="index" :item="item" ></uc-user> -->
 				<uc-userSearch  v-for="(item, index) in listUserRecommend" :key="index" :item="item" ></uc-userSearch>
-				<u-empty v-if="!listUserRecommend.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
+				<u-empty v-if="!listUserRecommend.length" icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
 	        </block>
 	        <block v-if="type === 'search'">
 	            <view class="text-xl text-gray-500 mt-8">搜索结果</view>
 	            <!-- <uc-user v-for="(item, index) in listUserSearch" :key="index" :item="item"></uc-user> -->
 				<uc-search v-for="(item, index) in listUserSearch" :key="index" :item="item" ></uc-search>
 	            <u-loadmore v-if="listUserSearch.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
-	            <u-empty v-if="!listUserSearch.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100" ></u-empty>
+	            <u-empty v-if="!listUserSearch.length" icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100" ></u-empty>
 	        </block>
 	    </view>
 	
@@ -213,7 +213,6 @@
 <style>
 	.characterTitle{
 		height: 440rpx;
-		/* border: 1px solid #000; */
 		 white-space: nowrap;
 		    overflow-x: hidden;
 		    overflow-y: auto;

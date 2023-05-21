@@ -16,6 +16,7 @@
             <view class="mt-4">{{ item.bio }}</view>
         </view>
         <view class="ml-4">
+			<!-- {{item}} -->
             <!-- <view class="border border-solid border-orange-500 p-2 rounded-full text-base leading-none text-orange-500" @click="$u.route('/pages/user/home', { user_id: item.id })">了解他</view> -->
        <text style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%; background-color: greenyellow; color: green;" @click="$u.route('/pages/user/home', { user_id: item.id })">望</text> 
 	   <text style="color: green;">{{item.total_mw}}</text>

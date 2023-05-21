@@ -7,7 +7,7 @@
 		</u-navbar>
 		<view class="">
 			<view class="" style="margin-left: 50rpx; margin-top: 20rpx;">加入黑名单</view>
-				<u-switch style='margin-left: 680rpx; margin-top: -30rpx;'   v-model="checked"></u-switch>
+				<u-switch style='margin-left: 680rpx; margin-top: -30rpx;' @change="change"  v-model="checked"></u-switch>
 		</view>
 	</view>
 </template>
@@ -26,7 +26,17 @@
 		
 		methods: {
 			change(status) {
-				console.log(status);
+				// console.log(status);
+				let that=this
+				if(status){
+				that.$api('user_black.lists', { post_id: that.$Route.query.post_id }).then(res => {
+				    if (res.code === 1) {
+				        that.post = res.data
+					}
+				})
+				}else{
+			
+				}
 			},
 		}
 	}

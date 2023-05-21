@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import { mapMutations, mapActions, mapState } from 'vuex';
 import Wechat from './common/wechat/wechat.js';
+	// import permision from "@/js_sdk/wa-permission/permission.js"
 
 export default {
 	methods: {
@@ -57,7 +58,19 @@ export default {
 			// #ifdef H5
 			uni.setStorageSync('appid', initData.wechat.appid);
 			// #endif
-		}
+		},
+		// requestAn() {
+		// 	switch (uni.getSystemInfoSync().platform) {
+		// 		case 'android':
+		// 			permision.requestAndroidPermission("android.permission.RECORD_AUDIO")
+		// 			break;
+		// 		case 'ios':
+		// 			permision.judgeIosPermission("record")
+		// 			break;
+		// 	}
+		
+		// }
+		
 	},
 	onLaunch: async function(options) {
 		await this.setAppInfo();
@@ -72,6 +85,7 @@ export default {
 		}
 	},
 	onShow: function() {
+		// this.requestAn()
 	let token= Boolean(uni.getStorageSync('token'))
 	if(!token){
 		uni.reLaunch({

@@ -58,6 +58,7 @@
                 <u-empty v-if="!postList.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
             </block>
             <block v-if="type === 'role'">
+
                 <view class="grid grid-cols-12 gap-4 mt-4">
                     <view class="col-span-2 text-gray-500">姓名：</view>
                     <view class="col-span-4">{{ role.realname }}</view>
@@ -156,6 +157,7 @@ export default {
 			let that = this
 			console.log(type);
 			if(type==1){
+				
 			that.$api('user_follow.follow', { user_id: that.$Route.query.user_id }).then(res => {
 				that.is_follow==1
 				that.getUserProfile()
@@ -195,7 +197,6 @@ export default {
 			
 		},
         changeTab(e) {
-            // console.log(e)
             let that = this
             that.type = e.type
         },
@@ -211,7 +212,7 @@ export default {
         },
         async getUserData() {
             let that = this
-            that.$api('user.data', { user_id: that.$Route.query.user_id }).then(res => {
+            that.$api('user.info', { user_id: that.$Route.query.user_id }).then(res => {
                 if (res.code === 1) {
                     that.userData = res.data
                 }
@@ -219,9 +220,9 @@ export default {
         },
         async getUserRole() {
             let that = this
-            that.$api('user.role', { user_id: that.$Route.query.user_id }).then(res => {
+            that.$api('user.profile', { user_id: that.$Route.query.user_id }).then(res => {
                 if (res.code === 1) {
-                    that.role = res.data
+                    that.role = res.data.role
                 }
             })
         },

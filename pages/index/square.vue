@@ -12,12 +12,12 @@
         <block v-if="type === 'recommend'">
             <uc-post v-for="(item, index) in postRecommendList" :key="index" :item="item"></uc-post>
             <u-loadmore v-if="postRecommendList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
-            <u-empty v-if="!postRecommendList.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
+            <u-empty v-if="!postRecommendList.length" icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
         </block>
         <block v-if="type === 'follow'">
             <uc-post v-for="(item, index) in postFollowList" :key="index" :item="item"></uc-post>
             <u-loadmore v-if="postFollowList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
-            <u-empty v-if="!postFollowList.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
+            <u-empty v-if="!postFollowList.length" icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
         </block>
 
         <uc-auth></uc-auth>
