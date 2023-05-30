@@ -17,20 +17,29 @@
                         <view class="text-xl leading-none mr-4">{{ userRole.realname }}</view>
                         <view>{{ userRole.dynasty }}</view>
                     </view>
-                    <view class="text-gray-500 ml-4"> {{ userRole.level}} 名望：{{ userRole.level * 100 || '无'}}</view>
+                    <view class="text-gray-500 ml-4">名望：{{ userRole.level * 100 || '无'}}</view>
                 </view>
                 <view class="mt-2">
-                    <text class="rounded-full text-gray-500 mr-2" v-for="(title, index) in userRole.titles" :key="index" :item="title">{{ title }}</text>
+                    <!-- <text class="rounded-full text-gray-500 mr-2" v-for="(title, index) in userRole.titles" :key="index" :item="title">{{ title }}</text> -->
                     <text class="rounded-full text-gray-500 mr-2" v-for="(achievement, index) in userRole.achievements" :key="index" :item="achievement">{{ achievement }}</text>
                 </view>
                 <view class="mt-4">
 					
                     <view class="">{{ userRole.content || '暂无介绍' }}</view>
                 </view>
+				<!-- {{userRole}} -->
             </view>
+			<view class="flex mt-6" style="background-color:mediumslateblue; border-radius: 25rpx;">
+			    <ul class="text-gray-200" style='list-style: none;'>
+			        <!-- <li class="mt-2">每周最多更换一次角色。</li> -->
+			        <li class="mt-2">获得时间: &nbsp&nbsp&nbsp{{userRole.role_time}}</li>
+			        <li class="mt-2">初始名望:&nbsp&nbsp&nbsp{{userRole.total_mw}}</li>
+			    </ul>
+			</view>
             <view class="grid mt-6 text-center">
-                <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleReborn()">重新获取 ({{ price }} 铜币)</view>
-            </view>
+				<view v-if="istime"  class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleReborn()">还有{{time}}次机会来获取角色哦</view>
+                <view  v-else class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleHuoQu()">重新获取({{ price }} 铜币)</view>
+			</view>
             <view class="flex mt-6">
                 <ol class="text-gray-200">
                     <!-- <li class="mt-2">每周最多更换一次角色。</li> -->
@@ -53,7 +62,7 @@
                 </view>
             </view>
             <view class="grid gap-4 mt-10 text-center">
-                <view class="rounded-full p-6 text-base leading-none bg-gray-100" @click="showRead = false">取消
+                <!-- <view class="rounded-full p-6 text-base leading-none bg-gray-100" @click="showRead = false">取消 -->
                 </view>
                 <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleMatch()">匹配</view>
             </view>
@@ -78,9 +87,9 @@
                 </view>
                 <view class="text-left text-gray-500 mt-4">你有一个古代身份了，快去交朋友吧。</view>
                 <view class="grid grid-cols-2 gap-4 mt-10 text-center">
-                    <view class="rounded-full p-6 text-base leading-none bg-gray-100" @click="handleReborn()">重新获取 ({{ price }} 铜币)
+                   <view class="rounded-full p-6 text-base leading-none bg-gray-100" @click="handleReborn1()">放弃
                     </view>
-                    <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleSubmit()">开始体验</view>
+                    <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleSubmit()">使用</view>
                 </view>
             </view>
         </u-modal>
@@ -103,6 +112,9 @@ export default {
             listRoleDynasty: [],
             showRole: false,
             showUserRole: true,
+			time:null,
+			istime:true,
+			gender:null
         }
     },
     onLoad(option) {
@@ -115,7 +127,30 @@ export default {
             userInfo: state => state.user.userInfo,
         })
     },
+	mounted() {
+
+		let that=this
+	// let time=uni.getStorageSync('times')
+	// console.log('ssss',time);	
+	// that.time=time
+	
+	// if(time!=0){
+		
+	// }
+	that.init()
+	},
     methods: {
+		init(){
+			let that=this
+			let time=uni.getStorageSync('times')
+			// console.log('ssss',time);	
+			that.time=time
+			if(that.time<1){
+				that.istime=true
+			}
+			// console.log(that.time);
+			
+		},
         ...mapActions(['getUserInfo']),
         async getUserRole() {
             let that = this
@@ -136,12 +171,44 @@ export default {
                 }
             })
         },
+		// 重新获取
+		handleHuoQu(){
+			let that=this
+			that.$u.toast('铜币不足')
+		},
         handleReborn() {
             let that = this
-            that.times = 1
-            that.showUserRole = false
-            that.showDynasty = true
+			that.showRole=false
+			let time=uni.getStorageSync('times')
+            that.times = time
+			// that.times-=1
+			if(that.times<1){
+				that.istime=false
+				// return false
+			}else{
+				that.showUserRole = false
+				that.showDynasty = true
+				let time=uni.getStorageSync('times')
+				that.times = time
+				// that.times-=1
+			}
+            
         },
+		// 放弃
+		handleReborn1(){
+			
+			let that=this
+			let time=uni.getStorageSync('times')
+			that.times = time
+			that.times-=1
+			that.showRole = false
+			console.log(that.times,'dxd');
+			// that.role = res.data
+			// 将本地存储的次数移除
+			uni.removeStorageSync('times')
+			// 将新的剩余次数存储进去
+			uni.setStorageSync('times',that.times)
+		},
         handleChangeDynasty(obj) {
             let that = this
             that.dynasty = obj
@@ -156,17 +223,36 @@ export default {
                 that.$u.toast('次数不够了')
                 return false
             }
+			
             let data = {
-                dynasty: that.dynasty.dynasty
+                dynasty: that.dynasty.dynasty,
+				gender:uni.getStorageSync('gender')
             }
             that.$api('role.match', data).then(res => {
-                if (res.code === 1) {
+				console.log('resscscs',res);
+                if (res.code ===1) {
+					if(that.times==0){
+						that.$u.toast('没有免费次数了')
+					}
                     that.role = res.data
                     that.times -= 1
                     that.showRole = true
-                } else {
+                } if(res.code==2){
+					if(that.times==1){
+						that.role = res.data
+					}
+					    // that.role = res.data
+						that.times -= 1
+						that.showRole = true
+				}
+				// if(res.msg=='匹配失败'){
+				// 	that.$u.toast('该朝所有角色已被用完')
+				// }
+				else {
                     that.$u.toast(res.msg)
+					console.log('xx',res.msg);
                 }
+				
             })
         },
         handleSubmit() {
@@ -187,6 +273,9 @@ export default {
                     that.$u.route('/pages/index/index')
                 }
             })
+			console.log(that.times);
+			uni.removeStorageSync('times')
+			uni.setStorageSync('times',that.times)
         },
     }
 }

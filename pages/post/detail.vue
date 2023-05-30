@@ -1,7 +1,7 @@
 <template>
     <page-meta :root-font-size="'13px'"></page-meta>
     <view class="">
-        <u-navbar title="动态" :safeAreaInsetTop="true" :placeholder="true">
+        <u-navbar title="动态" :safeAreaInsetTop="true" :placeholder="true" @click="$u.route({ type: 'navigateBack', delta: 1 })">
             <view slot="left">
                 <i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
             </view>
@@ -51,10 +51,10 @@
 					<i v-show='post.is_zan==1' class="ri-heart-3-fill text-xl bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i>
                     <text class="text-gray-500 ml-2">{{ post.diggnums }}</text>
                 </view>
-                <view class="flex items-center ml-4">
+             <!--   <view class="flex items-center ml-4">
                     <i class="ri-message-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
                     <text class="text-gray-500 ml-2">{{ post.commentnums }}</text>
-                </view>
+                </view> -->
             </view>
 
             <!-- <view class=" text-gray-500 mt-6">所有评论 ({{ paginator.total }})</view> post.commentnums -->
@@ -93,10 +93,10 @@
                         <view class="text-base mt-2">举报</view>
                     </view>
 					<!-- 删除动态 -->
-					<view class="text-center" @click="detailTrends">
+				<!-- 	<view class="text-center" @click="detailTrends">
 					    <i class="ri-alarm-warning-fill block text-3xl leading-none text-orange-500"></i>
 					    <view class="text-base mt-2">删除</view>
-					</view>
+					</view> -->
                 </view>
             </view>
         </u-popup>
@@ -177,25 +177,25 @@ export default {
     },
     methods: {
 		// 删除动态
-		detailTrends(){
-			let that=this
-			uni.showModal({
-				content:'你确定要删除吗？？？',
-				cancelText:'取消',
-				confirmText:'确定'
-			})
-			// 	that.$api('post.del', { post_id:that.item.id }).then(res => {
-			// 	    if (res.code === 1) {
-			// 		console.log('删除成功');
+		// detailTrends(){
+		// 	let that=this
+		// 	uni.showModal({
+		// 		content:'你确定要删除吗？？？',
+		// 		cancelText:'取消',
+		// 		confirmText:'确定'
+		// 	})
+		// 	// 	that.$api('post.del', { post_id:that.item.id }).then(res => {
+		// 	// 	    if (res.code === 1) {
+		// 	// 		console.log('删除成功');
 					
-			// 		that.getPostMine()
-			// 		setTimeout(() => {
-			// 			this.$router.go(0)
-			// 		}, 500)
-			// 	    }
-			// 	})
+		// 	// 		that.getPostMine()
+		// 	// 		setTimeout(() => {
+		// 	// 			this.$router.go(0)
+		// 	// 		}, 500)
+		// 	// 	    }
+		// 	// 	})
 			
-		},
+		// },
 		
         getPostDetail() {
             let that = this

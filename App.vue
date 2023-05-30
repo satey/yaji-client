@@ -5,11 +5,12 @@ import Wechat from './common/wechat/wechat.js';
 	// import permision from "@/js_sdk/wa-permission/permission.js"
 
 export default {
+	
 	methods: {
 		...mapActions(['getAppInit', 'getRoutes', 'getUserInfo']),
 		
-	
-		async setAppInfo() {
+		
+			async setAppInfo() {
 			let that = this;
 			let platform = '';
 			return new Promise((resolve, reject) => {
@@ -72,6 +73,15 @@ export default {
 		// }
 		
 	},
+	// onLaunch(options) {
+	//     // 判断是否是第一次启动应用
+	//     if (!options.query || !options.query.scene) {
+	//       // 如果是第一次启动应用，则跳转到指定页面
+	//       uni.navigateTo({
+	//         url: '/pages/auth/login'
+	//       })
+	//     }
+	//   },
 	onLaunch: async function(options) {
 		await this.setAppInfo();
 		try {
@@ -84,25 +94,110 @@ export default {
 			console.log(e);
 		}
 	},
-	onShow: function() {
+	// onLaunch:function(){
+	// 		plus.runtime.getProperty(plus.runtime.appid, (info) => {
+	// 				uni.setStorageSync('version', info.version)
+	// 			})
+
+	// },
+	onLaunch: function() {
 		// this.requestAn()
-	let token= Boolean(uni.getStorageSync('token'))
-	if(!token){
-		uni.reLaunch({
-			url:'/pages/auth/login',
-			success: (res) => {
-				console.log('cg');
-			},
-			fail: (err) => {
-				console.log(err);
+		let token=Boolean( uni.getStorageSync('token'))
+		let that=this
+		that.$api('user.info').then(res => {
+			
+			console.log('ewxq',res.data.gender);
+			if(token&&res.data.gender==0 ){
+				uni.reLaunch({
+					url:'/pages/auth/s1',
+					success: (res) => {
+					},
+					fail: (err) => {
+						console.log(err);
+					}
+				}) 
+			}
+			if (!Boolean(res.data.realname)&&!Boolean(res.data.dynasty)&&res.data.gender!=0&&res.data.choose_num!=4 ){
+							 console.log('cs',res.data.choose_num);
+							 uni.reLaunch({
+							 	url:'/pages/index/index',
+							 	success: (res) => {
+							 	},
+							 	fail: (err) => {
+							 		console.log(err);
+							 	}
+							 }) 
+							 
+			}
+			console.log('cs',res.data.choose_num);
+			 if (!Boolean(res.data.realname)&&!Boolean(res.data.dynasty)&&res.data.gender!=0){
+				 uni.reLaunch({
+				 	url:'/pages/auth/s2',
+				 	success: (res) => {
+				 	},
+				 	fail: (err) => {
+				 		console.log(err);
+				 	}
+				 }) 
+			 }
+			// 如果没角色有性别的话 跳到角色页面
+			 if (!Boolean(res.data.realname)&&!Boolean(res.data.dynasty)&&res.data.gender!=0&&res.data.choose_num==4 ){
+				 console.log('cs',res.data.choose_num);
+				 uni.reLaunch({
+				 	url:'/pages/auth/s2',
+				 	success: (res) => {
+				 	},
+				 	fail: (err) => {
+				 		console.log(err);
+				 	}
+				 }) 
+				 
+			 }
+			 //如果有角色有性别的话  就跳到首页
+		    if (Boolean(res.data.realname)&&Boolean(res.data.dynasty)&&res.data.gender!=0 ) {
+		       uni.reLaunch({
+		       	url:'/pages/index/index',
+		       	success: (res) => {
+		       	},
+		       	fail: (err) => {
+		       		console.log(err);
+		       	}
+		       }) 
+		    }
+			//如果有性别的话就跳到角色
+			else if(res.data.gender!=0 ){
+				uni.reLaunch({
+					url:'/pages/auth/s2',
+					success: (res) => {
+					},
+					fail: (err) => {
+						console.log(err);
+					}
+				}) 
+			}else{
+				uni.reLaunch({
+					url:'/pages/auth/s1',
+					success: (res) => {
+					},
+					fail: (err) => {
+						console.log(err);
+					}
+				})
 			}
 		})
-	}
+	
+	
+	// let token= Boolean(uni.getStorageSync('token'))
+	// console.log(token,'token');
+	// if(!token){
+		
+	// }
 	},
 	onHide: function() {
 	},
+	
 	created() {
-
+	
 		
 	}
 };

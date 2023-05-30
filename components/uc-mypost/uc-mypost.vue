@@ -153,7 +153,6 @@ export default {
 			        if (res.code === 1) {
 						that.isRed=!that.isRed
 						that.isNoRed=!that.isRed
-			            that.$u.toast('点赞成功')
 			            that.getPostDetail()
 						that.isZan()
 						

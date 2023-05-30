@@ -11,6 +11,11 @@ uni.$u.config.unit = 'rpx'
 import { RouterMount } from 'uni-simple-router'
 import api from '@/common/request/index'
 
+// 防止多次点击
+import common from './common/common.js'
+Vue.prototype.$noMultipleClicks = common.noMultipleClicks;
+
+
 Vue.prototype.$API_URL = API_URL;
 Vue.prototype.$store = store;
 Vue.prototype.$api = api;

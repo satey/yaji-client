@@ -1,3 +1,5 @@
+import { data } from "uview-ui/libs/mixin/mixin";
+
 /**
  * socket
  * @param  {Object} config  - 初始化配置对象
@@ -47,7 +49,7 @@ export default class Socket {
 			let [error, res] = await uni.sendSocketMessage({
 				data: msg
 			});
-			console.log('报错了：',error)
+			// console.log('报错了：',res)
 			return Promise.resolve(res);
 		}
 	}

@@ -5,24 +5,23 @@
             <image class="block w-14 h-14 rounded-full" :src="item.user.avatar || '/static/avatar.png'"></image>
         </view>
         <view class="flex-1 mr-4">
+			
             <view class="text-base leading-none mt-2" @click="$u.route(' /pages/user/home', { user_id: item.user_id })">
                 {{ item.user.role_realname + ' · ' + item.user.role_dynasty || '无名氏' }}
-				<!-- {{item.user}} -->
-		 <!-- {{item.user.score }} -->
 		 <text style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: #D0E17D; color: green;" @click="$u.route('/pages/user/home', { user_id: item.id })">望</text>
 		 <text style="color: green;">{{item.user.score }}</text>
 		
-			<!-- {{item}} -->
             </view>
             <view class="text-base leading-none text-gray-400 mt-3">{{ $u.timeFrom(item.createtime, 'mm月dd日 hh:MM') }}</view>
             <view class="mt-4" @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}</view>
+			<!-- {{item}} -->
             <view v-if="item.images" class="mt-4">
                 <u-album :urls="item.images.split(',')" multipleSize="150" rowCount="3"></u-album>
             </view>
             <view v-if="item.audio"  @click="handlePlayAudio(item.audio)" class="mt-4 flex items-center justify-center rounded-full overflow-hidden w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
                 <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
             </view>
-            <view v-if="item.video" @click="handlePlayVideo(item.video)" class="mt-4 flex items-center justify-center rounded overflow-hidden w-60 bg-gray-200">
+           <view v-if="item.video" @click="handlePlayVideo(item.video)" class="mt-4 flex items-center justify-center rounded overflow-hidden w-60 bg-gray-200">
                 <video class="z-0" :src="item.video" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
             </view>
             <view class="flex mt-4">
@@ -31,29 +30,33 @@
                     <view class="text-base leading-none text-gray-500">{{ tag }}</view>
                 </view>
             </view>
+			<view class="flex-1 flex items-center" click="skipTopic(item)">
+			<!-- 	{{item.post_cate.hot_num}} -->
+			     <text @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id})" class="text-base leading-none text-gray-500 ml-1" style="color: #6F93BD;" v-for="items in item.post_cate">{{ items.title }}</text>
+			 </view>
             <view class="flex mt-4">
-                <!-- <view class="flex-1 flex items-center">
-                    <i class="ri-eye-fill text-xl leading-none bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-                    <text class="text-base leading-none text-gray-500 ml-1">{{ item.viewnums }}</text>
-                </view> -->
+
              <view class="flex items-center"  @click="handlePostDig()">
                  <!-- <i class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i> -->
                  <i v-show='is_zan==0' class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
                  <i v-show='is_zan==1' class="ri-heart-3-fill text-xl bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i>
              	<text class="text-gray-500 ml-2">{{ item.diggnums }}</text>
              </view>
-			 <!-- 点踩 -->
-			 <view style="margin-left: 30rpx;" class="flex items-center"  @click="handleConcleDig()">
-			     <!-- <i class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i> -->
-			     <i v-show='is_cai==0' class="ri-hail-line text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-			     <i v-show='is_cai==1' class="ri-hail-line text-xl bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i>
-			 	<text class="text-gray-500 ml-2">{{ item.cainums }}</text>
+			 <!-- 评论 -->
+			 <view class="flex items-center ml-4">
+			         <i  @click="$u.route('/pages/post/detail', { post_id: item.id })" class="ri-message-3-fill text-xl leading-none bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
+			         <text class="text-base leading-none text-gray-500 ml-1">{{ item.commentnums }}</text>
+			     </view>
 			 </view>
-                <view class="flex items-center ml-4">
-                    <i  @click="$u.route('/pages/post/detail', { post_id: item.id })" class="ri-message-3-fill text-xl leading-none bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-                    <text class="text-base leading-none text-gray-500 ml-1">{{ item.commentnums }}</text>
-                </view>
-            </view>
+			 <!-- 点踩 -->
+			 <view style="margin-left: 450rpx; margin-top: -50rpx;" class="flex items-center"  @click="handleConcleDig()">
+			<image  v-show='is_cai==0' src="../../static/nolove.png" style="width: 30rpx;margin-top: 10rpx; height: 30rpx;" mode=""></image>
+			<image v-show='is_cai==1' src="../../static/nolove-red.png" style="width: 30rpx;margin-top: 10rpx;height: 30rpx;" mode=""></image>
+				 <!-- <i v-show='is_cai==0' class="ri-dislike-line text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i> -->
+			     <!-- <i v-show='is_cai==1' class="ri-dislike-line text-xl bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i> -->
+			 	<!-- <text class="text-gray-500 ml-2">{{ item.cainums }}</text> -->
+			 </view>
+             <!-- <text class="text-gray-500 ml-2">{{ item.cainums }}</text> -->
         </view>
         <view class="">
 			
@@ -62,7 +65,8 @@
                 <i class="ri-more-2-fill text-xl bg-gradient-to-b from-gray-500 to-gray-400 bg-clip-text text-transparent"></i>
             </view> -->
 		<!-- 举报功能 -->
-		<view class="" @click="showAction = true">
+		<!-- <view class="" @click="showAction = true"> -->
+			<view class="" @click=" jubao">
 		    <i class="ri-more-2-fill text-xl bg-gradient-to-b from-gray-500 to-gray-400 bg-clip-text text-transparent"></i>
 		</view>
 			<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
@@ -118,7 +122,9 @@ export default {
 			ListFeedbackType: ['色情低俗','政治敏感','造谣传谣','广告欺诈','侵犯权益','其他'],
 			post_id:"",
 			is_zan:'',
-			is_cai:''
+			is_cai:'',
+			hot:'',
+			title:''
         }
     },
     props: {
@@ -132,6 +138,10 @@ export default {
 		this.isCai()
 	},
     methods: {
+		skipTopic(item){
+			that.hot=uni.setStorageSync('hot',item.post_cate.hot_num)
+			that.title=uni.setStorageSync('title',item.post_cate.title)
+		},
 		isZan(){
 			let that=this
 			that.$api('post.detail', {
@@ -156,6 +166,23 @@ export default {
 			    }
 			})
 		},
+		jubao(){
+			let that=this
+			that.$api('user.info').then(res => {
+			    if (res.code === 1) {
+					// console.log('11',that.item.user.id,res.data.id);
+					if(that.item.user.id!=res.data.id){
+					
+					that.showAction=true
+					}else{
+						that.$u.toast('不能举报自己哦')	
+					}
+			    } else {
+			        that.$u.toast(res.msg)
+				return
+			    }
+			})
+		},
 	// 提交举报 
 	handleFeedback() {
 	    let that = this
@@ -177,23 +204,33 @@ export default {
 	},
 		// 点踩
 		handleConcleDig(){
-		console.log('111');	
 		let that = this
-		that.$api('post.cai', {
-		    post_id:that.item.id,
-		}).then(res => {
+		that.$api('user.info').then(res => {
 		    if (res.code === 1) {
-				console.log('点踩');
-				that.is_cai=1
-		        // that.$u.toast('点踩成功')
-		        that.getPostDetailCancle()
-				// that.isZan()
+				if(that.item.user.id!=res.data.id){
+					that.$api('post.cai', {
+					    post_id:that.item.id,
+					}).then(res => {
+					    if (res.code === 1) {
+							that.is_cai=1
+					        that.getPostDetailCancle()
+							that.isCai()
+					    } else {
+							that.is_cai=0
+					        that.$u.toast(res.msg)
+						
+					    }
+					})
+				}else{
+				that.$u.toast('不能给自己点踩哦')	
+				}
+
 		    } else {
-				that.is_cai=0
 		        that.$u.toast(res.msg)
-			
+			return
 		    }
 		})
+		
 		},
 		 getPostDetail() {
             let that = this
@@ -219,7 +256,6 @@ export default {
 			        post_id:that.item.id,
 			    }).then(res => {
 			        if (res.code === 1) {
-			            that.$u.toast('点赞成功')
 			            that.getPostDetail()
 						that.isZan()
 			        } else {

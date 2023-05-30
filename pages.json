@@ -4,6 +4,7 @@
         "^uc-(.*)": "@/components/uc-$1/uc-$1.vue"
     },
     "pages": [
+		
         {
             "path": "pages/index/index",
             "name": "index",
@@ -14,6 +15,7 @@
             "meta": {
                 "auth": false
             }
+			
         },
         {
             "path": "pages/index/square",
@@ -187,6 +189,16 @@
             }
         },
 		{
+		    "path": "pages/public/center",
+		    "name": "center",
+		    "style": {
+		        "navigationBarTitleText": "帮助中心"
+		    },
+		    "meta": {
+		        "auth": false
+		    }
+		},
+		{
 		    "path": "pages/public/feedback",
 		    "name": "feedback",
 		    "style": {
@@ -261,6 +273,16 @@
                 "auth": false
             }
         },
+		{
+		    "path": "pages/user/topicspeed",
+		    "name": "topicspeed",
+		    "style": {
+		        "navigationBarTitleText": "话题速配"
+		    },
+		    "meta": {
+		        "auth": false
+		    }
+		},
 		{
 		    "path": "pages/user/newSearch",
 		    "name": "newSearch",

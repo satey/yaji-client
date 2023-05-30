@@ -1,13 +1,13 @@
 <template>
-    <u-modal :show="showModal" :showConfirmButton="false" :showCancelButton="false">
-        <view class="w-full text-center">
+   <u-modal :show="showModal" :showConfirmButton="false" :showCancelButton="false">
+        <!-- <view class="w-full text-center">
             <view class="text-2xl mt-4">注册登录</view>
             <view class="mt-4">根据国家规定，需登录才能使用相关功能</view>
             <view class="grid grid-cols-2 gap-4 mt-10">
                 <view class="rounded-full p-6 text-base leading-none bg-gray-100" @click="showModal = false">取消</view>
                 <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="$u.route('/pages/auth/login')">确定</view>
             </view>
-        </view>
+        </view> -->
     </u-modal>
 </template>
 
@@ -32,6 +32,13 @@ export default {
         }),
         showModal: {
             get() {
+				if(this.showLoginTip){
+					uni.navigateTo({
+						url:'/pages/auth/login'
+					})
+				}
+			
+				// console.log( this.showLoginTip);
                 return this.showLoginTip
             },
             set(val) {
@@ -39,6 +46,7 @@ export default {
             }
         }
     },
+
     methods: {
         ...mapActions(['getUserInfo']),
         async wxLogin() {
@@ -48,7 +56,10 @@ export default {
             uni.setStorageSync('token', token)
             that.getUserInfo()
         }
-    }
+    },
+	created() {
+	},
+	
 }
 </script>
 

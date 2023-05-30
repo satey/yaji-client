@@ -59,6 +59,15 @@
                     <i class="ri-message-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
                     <text class="text-gray-500 ml-2">{{ item.commentnums }}</text>
                 </view>
+				<view class="flex items-center ml-4" @click="handleConcleDig()">
+			
+				  <image  v-show='is_cai==0' src="../../static/nolove.png" style="width: 30rpx; margin-left: 10rpx;margin-top: 5rpx; height: 30rpx;" mode=""></image>
+				  <image v-show='is_cai==1' src="../../static/nolove-red.png" style="width: 30rpx;margin-left: 10rpx;margin-top: 5rpx;  height: 30rpx;" mode=""></image>
+					<text class="text-gray-500 ml-2">{{ item.cainums }}</text>
+				</view>
+				
+				
+				
             </view>
         </view>
     </view>
@@ -79,7 +88,9 @@ export default {
 			showAction: false,
 			showFeedback: false,
 			post_id:"",
-			is_zan:''
+			is_zan:'',
+			is_cai:''
+			
         }
     },
     props: {
@@ -92,6 +103,7 @@ export default {
 	},
 	mounted() {
 		this.isZan()
+		this.isCai()
 		
 	},
     methods: {
@@ -122,6 +134,7 @@ export default {
 			    }
 			})
 		},
+		// 是否点赞
 		isZan(){
 			let that=this
 			that.$api('post.detail', {
@@ -129,12 +142,64 @@ export default {
 			}).then(res => {
 			    if (res.code === 1) {
 					that.is_zan=res.data.is_zan
-					console.log(that.is_zan);
 			    } else {
 			        that.$u.toast(res.msg)
 			    }
 			})
 		},
+	// 是否点踩
+	isCai(){
+		let that=this
+		that.$api('post.detail', {
+		 post_id:that.item.id
+		}).then(res => {
+		    if (res.code === 1) {
+				that.is_cai=res.data.is_cai
+				that.isCai()
+		    } else {
+		        that.$u.toast(res.msg)
+		    }
+		})
+	},
+	// 点踩
+	handleConcleDig(){
+	let that = this
+	that.$api('user.info').then(res => {
+	    if (res.code === 1) {
+			if(that.item.user.id!=res.data.id){
+				that.$api('post.cai', {
+				    post_id:that.item.id,
+				}).then(res => {
+				    if (res.code === 1) {
+						that.is_cai=1
+				        that.getPostDetailCancle()
+						that.isCai()
+				    } else {
+						that.is_cai=0
+				        that.$u.toast(res.msg)
+					
+				    }
+				})
+			}else{
+			that.$u.toast('不能给自己点踩哦')	
+			}
+	
+	    } else {
+	        that.$u.toast(res.msg)
+		return
+	    }
+	})
+	
+	},
+	// 点踩详情
+	getPostDetailCancle() {
+	    let that = this
+	    that.$api('post.detail', { post_id:that.item.id }).then(res => {
+	        if (res.code === 1) {
+	            that.item.cainums= res.data.cainums
+	        }
+	    })
+	},
 		getPostDetail() {
 		    let that = this
 		    that.$api('post.detail', { post_id:that.item.id }).then(res => {
@@ -154,7 +219,6 @@ export default {
 						console.log('点赞');
 						that.isRed=!that.isRed
 						that.isNoRed=!that.isRed
-			            that.$u.toast('点赞成功')
 			            that.getPostDetail()
 						that.isZan()
 			        } else {

@@ -1,5 +1,5 @@
 // import _onSocket from './_onSocket';
-// import _data from './_data';
+import _data from './_data.js';
 // import _lang from '../lang/lang';
 
 /**

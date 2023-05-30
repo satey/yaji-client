@@ -1,18 +1,18 @@
 <template>
     <page-meta :root-font-size="'13px'"></page-meta>
-    <view class="px-4 py-2" :style="`padding-top: ${CustomBar}rpx;`">
+    <view class="px-4 py-2" :style="`padding-top: 80rpx;`">
         <view class="flex justify-between">
             <u-tabs :list="tablist" lineColor="rgba(255, 0, 0, 0.2)" lineWidth="70rpx" lineHeight="16rpx" itemStyle="height: 72rpx;" inactiveStyle="color: #787878; transform: scale(1);" activeStyle="color: #333333; font-weight: blod; transform: scale(1.2);" @change="changeTab">
             </u-tabs>
-            <view class="pt-2">
+         <!--   <view class="pt-2">
                 <i class="ri-brush-3-fill text-3xl leading-none bg-gradient-to-b from-rose-500 to-rose-400 bg-clip-text text-transparent" @click="showRead = true"></i>
-            </view>
+            </view> -->
         </view>
         <uc-message v-for="(item, index) in listMessage" :key="index" :item="item"></uc-message>
         <u-loadmore v-if="listMessage.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
         <u-empty v-if="!listMessage.length" icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
 
-        <u-modal :show="showRead" :showConfirmButton="false" :showCancelButton="false">
+       <!-- <u-modal :show="showRead" :showConfirmButton="false" :showCancelButton="false">
             <view class="w-full">
                 <view class="mt-6">确定清空所有未读消息吗？</view>
                 <view class="grid grid-cols-2 gap-4 mt-10 text-center">
@@ -20,9 +20,9 @@
                     <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="doReadMessage()">确定</view>
                 </view>
             </view>
-        </u-modal>
+        </u-modal> -->
 
-        <uc-auth></uc-auth>
+        <!-- <uc-auth></uc-auth> -->
         <uc-tabbar></uc-tabbar>
     </view>
 </template>
@@ -89,19 +89,19 @@ export default {
                 }
             })
         },
-        async doReadMessage() {
-            let that = this
-            that.showRead = false
-            that.$api('message.readall').then(res => {
-                if (res.code === 1) {
-                    that.$u.toast('操作成功')
-                    that.listMessage = []
-                    that.getMessage()
-                } else {
-                    that.$u.toast(res.msg)
-                }
-            })
-        },
+        // async doReadMessage() {
+        //     let that = this
+        //     that.showRead = false
+        //     that.$api('message.readall').then(res => {
+        //         if (res.code === 1) {
+        //             that.$u.toast('操作成功')
+        //             that.listMessage = []
+        //             that.getMessage()
+        //         } else {
+        //             that.$u.toast(res.msg)
+        //         }
+        //     })
+        // },
     }
 }
 </script>

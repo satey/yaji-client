@@ -12,22 +12,23 @@
         <view class="px-10 py-20">
             <view class="text-2xl text-white">注册登录</view>
             <view class="bg-white p-4 rounded-full mt-8">
+				
                 <u-input v-model="form.mobile" :focus="true" placeholder="请输入手机号" type="number" maxlength="11" @input="handleInput('mobile')">
                     <text slot="prefix" class="text-2xl pr-2 mr-4 border-right">+86</text>
                 </u-input>
             </view>
             <view class="bg-white p-4 rounded-full mt-8 mb-10">
                 <u-input placeholder="请输入验证码" type="number" maxlength="6" v-model="form.code">
-                    <text slot="suffix" class="text-rose-500" @click="getSmsCode('mobilelogin')">{{ codeText }}</text>
+                    <text slot="suffix" class="text-rose-500" @click="getSmsCode()">{{ codeText }}</text>
                 </u-input>
             </view>
-            <view class="grid mt-8 text-center">
+            <view class="grid mt-8 text-center"  @click="$noMultipleClicks(commitWork)">
                 <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="onLogin()">登录</view>
             </view>
-            <view class="flex flex-row-right mt-8">
-                <text class="text-base leading-none text-white opacity-50" @click="$u.route('/pages/public/page', { id: 4 })">登录遇到问题?</text>
+            <view class="flex " style="position: absolute; bottom: 100rpx; text-align: center;">
+                <text class="text-base leading-none text-white opacity-50" @click="$u.route('/pages/public/center')">登录遇到问题?</text>
             </view>
-            <view class="flex" style="position: absolute; bottom: 100rpx; text-align: center;">
+            <view class="flex flex-row-right mt-8">
                 <u-checkbox-group>
                     <u-checkbox @change="handleAgree" size="28" shape="circle" inactiveColor="#ffffff" activeColor="#ff6897"></u-checkbox>
                 </u-checkbox-group>
@@ -60,7 +61,7 @@ export default {
 			policy:'',//协议内容
 			showPopup:false,//控制协议弹窗
 			scrollHeight:uni.getSystemInfoSync().windowHeight-130,//协议内容滚动高度
-			
+			  noClick:true,
         }
     },
     computed: {
@@ -69,12 +70,25 @@ export default {
         })
     },
     mounted() { 
-		//alert('d')
+		console.log(uni.getStorageSync('token'));
+		let that=this
+		that.$api('user.info').then(res => {
+		    if (res.code === 1) {
+		       console.log('mount',res);
+		    } else {
+		        that.$u.toast(res.msg)
+		    }
+		})
 	},
     methods: {
-		
-		
         ...mapActions(['getUserInfo']),
+		// 登录
+		 commitWork(){
+			 let that=this
+		        //开始你的表演
+				console.log('noClick',that.noClick);
+		    }   ,
+		
         handleInput(key) {
             let that = this
             that.isMobileEnd = that.$u.test.mobile(that.form.mobile)
@@ -84,7 +98,7 @@ export default {
             that.protocol = e
             console.log(that.protocol)
         },
-        getSmsCode(type) {
+        getSmsCode() {
             let that = this
             if (!that.protocol) {
                 that.$u.toast('请同意用户协议')
@@ -95,14 +109,15 @@ export default {
                 return false
             }
             let data = {
-                mobile: that.form.mobile,
-                event: type
+                mobile:Number(that.form.mobile) ,
+                event:'register'
             }
-            that.$api('sms.send', data).then(res => {
+			
+            that.$api('sms.send_sms', data).then(res => {
                 if (res.code === 1) {
                     if (that.disabledCode) return
                     that.disabledCode = true
-                    let n = 10
+                    let n = 60
                     let run = setInterval(() => {
                         n -= 1
                         that.codeText = n + 's后重试'
@@ -125,34 +140,61 @@ export default {
                 that.$u.toast('请同意用户协议')
                 return false
             }
+			// console.log(that.isMobileEnd, that.disabledCode ,that.form.code);
             if (!that.isMobileEnd || that.disabledCode || !that.form.code) {
                 that.$u.toast('请正确填写信息')
                 return false
             }
+			// that.$api('user.info').then(res => {
+			//     if (res.code === 1) {
+			//        console.log('login',res);
+			//     } else {
+			//         that.$u.toast(res.msg)
+			//     }
+			// })
+			
+			
+			
             let data = {
-                mobile: that.form.mobile,
-                code: that.form.code
+                mobile:Number(that.form.mobile) ,
+                code:Number(that.form.code) ,
+				event:'register'
             }
             that.$api('user.smslogin', data).then(res => {
                 if (res.code === 1) {
                     uni.setStorageSync('token', res.data.token)
+					console.log('token', uni.getStorageSync('token'));
                     that.getUserInfo(res.data.token).then(() => {
-                        if (!that.userInfo.role_id) {
-                            console.log('no')
+						console.log('that.userinfo',that.userInfo);
+                        if (!that.userInfo.realname&&!that.userInfo.dynasty&&that.userInfo.gender==0) {
                             that.$u.route('/pages/auth/s1')
-                        } else {
+                        } else if(that.userInfo.gender!=0){
+							console.log('that.userInfo.gender',that.userInfo.gender);
+							 if(that.userInfo.realname!=''&&that.userInfo.dynasty!=''){
+								 that.$u.route('/pages/index/index')
+							 }else{
+								 console.log('不知道是否有免费次数');
+							 }
+								 
+						} else{
                             console.log('ok')
-                            that.$u.route('/pages/index/index')
+                            that.$u.route('/pages/auth/login')
                         }
                     })
-                    console.log(that.userInfo)
-                    if (!that.userInfo.role_id) {
-                        console.log('no')
-                        that.$u.route('/pages/auth/s1')
-                    } else {
-                        console.log('ok')
-                        that.$u.route('/pages/index/index')
-                    }
+     //                if (!that.userInfo.role_id) {
+     //                    console.log('no')
+     //                    that.$u.route('/pages/auth/s1')
+     //                }
+					// if(that.userInfo.gender==0){
+					// 	console.log('111');
+					// 	that.$u.route('/pages/auth/s1')
+					// }
+					// if(that.userInfo.realname!=''&&that.userInfo.dynasty!=''&&that.userInfo.gender!=0){
+					// 	that.$u.route('/pages/index/index')
+					// }else {
+     //                    console.log('ok')
+     //                    that.$u.route('/pages/auth/s1')
+     //                }
                 } else {
                     that.$u.toast(res.msg)
                 }

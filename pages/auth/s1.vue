@@ -29,7 +29,7 @@
             </view>
             <view class="grid mt-10 text-center">
                 <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="onSubmit()">
-				完成
+				确认
 				</view>
             </view>
         </view>
@@ -70,7 +70,6 @@ export default {
 			if (that.gender=='female'){
 				that.form.gender=2
 			}
-			// console.log(that.form.gender);
             if (!that.form.gender) {
                 that.$u.toast('性别必须选择')
                 return false
@@ -78,18 +77,15 @@ export default {
 			let data = {
 			    gender: that.form.gender
 			}
-				that.$api('user.update', data).then(res => {
-					// console.log(res.data);
-					that.$u.route('/pages/auth/s2')
-					if (res.code === 1) {
+				// that.$api('user.update', data).then(res => {
+				// 	that.$u.route('/pages/auth/s2')
+				// 	if (res.code === 1) {
 						that.$u.route('/pages/auth/s2')
-					} else {
-						that.$u.toast(res.msg)
-					}
-				})
-				
-				
-				// uni.$emit('gender',that.form.gender)
+				// 	} else {
+				// 		that.$u.toast(res.msg)
+				// 	}
+				// })
+	
 				uni.setStorageSync('gender',that.form.gender)
 					
         },

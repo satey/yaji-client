@@ -9,7 +9,8 @@
 				<u-image src="/static/coin.png" mode="aspectFill" width="180" height="180" :lazy-load="true"></u-image>
             </view>
             <view class="flex-1">
-                <view class="">{{ item.title }}</view>
+				
+                <view class="" >{{ item.title }}</view>
                 <!-- <view class="text-gray-500 mt-4">{{ item.desc }}</view> -->
                 <view class="flex mt-4">
                     <view class="flex items-center mr-2" v-for="(tag, index) in item.tags" :key="index" :item="tag">

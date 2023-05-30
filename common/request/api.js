@@ -16,11 +16,14 @@ export default {
 		dig: { url: 'post/dig', auth: true, method: 'POST', desc: '点赞', },
 		cai: { url: 'post/cai', auth: true, method: 'POST', desc: '点踩', },
 		is_add: { url: 'post/is_add', auth: true, method: 'POST', desc: '能否显示动态', },
+		follow_user_post_list:{url: 'post/follow_user_post_list', auth: true, method: 'GET', desc: '关注列表',}
 	},
 	post_cate:{
 		add: { url: 'post_cate/add', auth: true, method: 'POST', desc: '添加话题', },
 		search_list: { url: 'post_cate/search_list', auth: true, method: 'GET', desc: '搜索话题', },
-		lst:{ url:'post_cate/lst', auth: true, method: 'GET', desc: '话题列表', }
+		lst:{ url:'post_cate/lst', auth: true, method: 'GET', desc: '话题列表', },
+		hot_list:{ url:'post_cate/hot_list', auth: true, method: 'GET', desc: '热门话题列表', }
+		
 	},
 	group: {
 		recommend: { url: 'group/recommend', auth: false, method: 'GET', desc: '推荐圈子', },
@@ -91,6 +94,7 @@ export default {
 		changemobile: { url: 'user/changemobile', auth: true, method: 'POST', desc: '修改手机号', },
 		search_log: { url: 'user/search_log', auth: true, method: 'POST', desc: '搜索记录', },
 		only_choose_gender: { url: 'user/only_choose_gender', auth: true, method: 'POST', desc: '只是性别提交', },
+		logout: { url: 'user/logout', auth: true, method: 'POST', desc: '退出登录', },
 		
 	},
 	user_gift: {
@@ -120,7 +124,7 @@ export default {
 		lists: { url: 'role_title/lists', auth: false, method: 'GET', desc: '称号列表', },
 	},
 	sms: {
-		send: { url: 'sms/send', auth: false, method: 'POST', desc: '发送短信', },
+		send_sms: { url: 'sms/send_sms', auth: false, method: 'POST', desc: '发送短信', },
 	},
 	pay: {
 		prepay: { url: 'pay/prepay', auth: true, method: 'POST', desc: '发起支付', },
@@ -133,5 +137,8 @@ export default {
 	},
 	user_black:{
 		lists:{ url: 'user_black/lists', auth: false, method: 'GET', desc: '黑名单列表',}
+	},
+	versions:{
+		index:{ url: 'version/index', auth: false, method: 'POST', desc: '版本更新',}
 	}
 };

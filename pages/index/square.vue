@@ -1,6 +1,6 @@
 <template>
     <page-meta :root-font-size="'13px'"></page-meta>
-    <view class="px-4 py-2" :style="`padding-top: ${CustomBar}rpx;`">
+    <view class="px-4 py-2" :style="`padding-top: 60rpx;`">
         <view class="flex justify-between">
             <u-tabs :list="tablist" lineColor="rgba(255, 0, 0, 0.2)" lineWidth="70rpx" lineHeight="16rpx" itemStyle="height: 72rpx;" inactiveStyle="color: #787878; transform: scale(1);" activeStyle="color: #333333; font-weight: blod; transform: scale(1.2);" @change="changeTab">
             </u-tabs>
@@ -20,7 +20,7 @@
             <u-empty v-if="!postFollowList.length" icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
         </block>
 
-        <uc-auth></uc-auth>
+        <!-- <uc-auth></uc-auth>/ -->
         <uc-tabbar></uc-tabbar>
     </view>
 </template>
@@ -47,6 +47,7 @@ export default {
                 last_page: 0,
             },
             loadmore: false,
+			follow_user_id:null
         }
     },
     onLoad(option) {
@@ -75,8 +76,6 @@ export default {
 	},
 	onPullDownRefresh() {
 		this.getPostRecommend()
-		// this.getPostFollow()
-		// this.onReachBottom()
 		uni.stopPullDownRefresh()
 	
 	},
@@ -93,13 +92,10 @@ export default {
 							uni.navigateTo({
 								url:'/pages/post/add'
 							})
-						     
 						    }
 						})
-			         
 		},
         changeTab(e) {
-            // console.log(e)
             let that = this
             that.type = e.type
             switch (that.type) {
@@ -136,21 +132,23 @@ export default {
         async getPostFollow() {
             let that = this
             that.loadmore = 'loading'
-			console.log( that.params);
-            that.$api('user_follow.lists', {type:"follow"}).then(res => {
-                if (res.code === 1) {
-					console.log(res.data);
-                    that.paginator.total = res.data.total
-                    that.paginator.last_page = res.data.last_page
-                    that.postFollowList = [...that.postFollowList, ...res.data.data]
-                    if (that.params.page < res.data.last_page) {
-                        that.loadmore = 'loadmore'
-                    } else {
-                        that.loadmore = 'nomore'
-                    }
-                }
-            })
-        },
+			let data={
+				page:1
+			}
+		   that.$api('post.follow_user_post_list', data).then(res => {
+		       if (res.code === 1) {
+				console.log(res.data);
+		           that.paginator.total = res.data.total
+		           that.paginator.last_page = res.data.last_page
+		           that.postFollowList = [...that.postFollowList, ...res.data.data]
+		           if (that.params.page < res.data.last_page) {
+		               that.loadmore = 'loadmore'
+		           } else {
+		               that.loadmore = 'nomore'
+		           }
+		       }
+		   })
+		},
     }
 }
 </script>

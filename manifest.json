@@ -5,7 +5,14 @@
     "versionName" : "1.2.1",
     "versionCode" : 121,
     "transformPx" : false,
+    "app" : {
+        "launch_path" : "/pages/auth/login"
+    },
     "app-plus" : {
+        "compatible" : {
+            "runtimeVersion" : "3.7.9", //根据实际情况填写  
+            "compilerVersion" : "3.6.15" //根据实际情况填写  
+        },
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
@@ -17,11 +24,15 @@
         },
         "privacy" : {
             "prompt" : "template",
-            "template" : {
-                "title" : "用户协议和隐私政策",
-                "message" : "请你务必审慎阅读、充分理解“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。<br/>　　你可阅读<a href=''>《用户协议》</a>和<a href=''>《隐私政策》</a>了解详细信息。如果你同意，请点击下面按钮开始接受我们的服务。",
-                "buttonAccept" : "同意",
-                "buttonRefuse" : "拒绝"
+            "title" : "用户协议和隐私政策",
+            "message" : "请你务必审慎阅读、充分理解“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。<br/>　　你可阅读<a href=''>《用户协议》</a>和<a href=''>《隐私政策》</a>了解详细信息。如果你同意，请点击下面按钮开始接受我们的服务。",
+            "buttonAccept" : "同意",
+            "buttonRefuse" : "拒绝",
+            "disagreeMode" : {
+                "support" : false,
+                "loadNativePlugins" : false,
+                "visitorEntry" : false, // 关闭游客模式
+                "showAlways" : false
             }
         },
         "modules" : {
@@ -35,6 +46,8 @@
                     "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
                     "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.GET_TASKS\"/>",
+                    "<uses-permission android:name=\"android.permission.INJECT_EVENTS\"/>",
                     "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
                     "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
@@ -123,7 +136,7 @@
         },
         "usingComponents" : true,
         "unipush" : {
-            "enable" : true
+            "enable" : false
         },
         "permission" : {}
     },

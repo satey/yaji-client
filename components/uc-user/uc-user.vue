@@ -1,44 +1,92 @@
 <template>
-    <page-meta :root-font-size="'13px'"></page-meta>
-    <view class="flex mt-8">
-        <view class="mr-4" @click="$u.route('/pages/user/home', { user_id: item.id })">
-            <image class="block w-14 h-14 rounded-full" :src="item.avatar || '/static/avatar.png'"></image>
-        </view>
-        <view class="flex-1" @click="$u.route('/pages/user/home', { user_id: item.id })">
-			<!-- <view class="text-base leading-none mt-2">{{ item.realname + ' · ' + item.dynasty || '无名氏' }}</view> -->
-			<view class="text-base leading-none mt-2">{{ item.realname + ' · ' + item.dynasty || '无名氏' }}</view>
-            <!-- <view class="text-gray-500 mt-4">{{ $u.timeFrom(item.createtime, 'mm月dd日') }}</view> -->
-			<view class="flex mt-3">
-                <view class="flex items-center mr-2" v-for="(tag, index) in item.tags" :key="index" :item="tag">
-                    <view class="text-base leading-none text-gray-500">{{ tag }}</view>
-                </view>
-            </view>
-            <view class="mt-4">{{ item.bio }}</view>
-        </view>
-        <view class="ml-4">
-			<!-- {{item}} -->
-            <!-- <view class="border border-solid border-orange-500 p-2 rounded-full text-base leading-none text-orange-500" @click="$u.route('/pages/user/home', { user_id: item.id })">了解他</view> -->
-       <text style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%; background-color: greenyellow; color: green;" @click="$u.route('/pages/user/home', { user_id: item.id })">望</text> 
-	   <text style="color: green;">{{item.total_mw}}</text>
-	  
+	<page-meta :root-font-size="'13px'"></page-meta>
+	<view class="">
+		
+		<view class="flex mt-8">
+			 <view class="mr-4" @click="$u.route('/pages/user/home', { user_id: item.id })">
+			<image class="block w-14 h-14 rounded-full" :src="item.avatar || '/static/avatar.png'"></image>
+			</view>
+			<view class="flex-1" @click="$u.route('/pages/user/home', { user_id: item.id })">
+					<text class="text-base leading-none mt-2">{{ item.realname + ' · ' + item.dynasty || '无名氏' }}</text>
+				
+				<text
+					style=" display: inline-block; width: 40rpx; text-align: center; height: 40rpx;margin-left: 30rpx; border-radius: 50%; background-color: cornsilk; color:  #FFB41F;"
+				>望</text>
+				<text style="color:  #FFB41F; margin-left: 10rpx;">{{item.total_mw}}</text>
+			
+				<view class="flex mt-3">
+					<!-- 改在这儿 -->
+					<!-- <view class="mt-4" style="margin-bottom: 10rpx; width: 460rpx; margin-top: -10rpx; color: #808080;">{{item.achievements}}</view> -->
+					<view class="mt-4" style="margin-bottom: 10rpx; width: 460rpx; margin-top: -10rpx; color: #808080;">
+						<view src="" style="display: inline-block;margin-left:5rpx;" v-show="achievementsList.length>0" v-for="items in achievementsList">{{items}}</view>
+					</view>
+					<!--  -->
+					<view class="know">了解他</view>
+				</view>
+				<view class="mt-4 content" v-if='isInterduce' style="margin-top: 40rpx;">暂无简介</view>
+					<view class="mt-4 content" v-else style="margin-top: 40rpx;">{{ item.content}}</view>
+					<view class="" style="margin-top: 30rpx; margin-left: -140rpx; height: 1rpx;background: #ECECEC;"></view>
+			</view>
+			
 		</view>
-    </view>
+		
+	</view>
+
+
 </template>
 
 <script>
-export default {
-    components: {},
-    data() {
-        return {}
-    },
-    props: {
-        item: {}
-    },
-    computed: {},
-    methods: {}
-}
+	export default {
+		components: {},
+		data() {
+			return {
+				a:[],
+				achievementsList:[],//新数组
+				isInterduce:false
+			}
+		},
+		props: {
+			item: {}
+		},
+		mounted() {
+			let that=this
+			if(that.item.content==null){
+				that.isInterduce=true
+			}
+		that.a = that.item.achievements
+		that.achievementsList=that.a.split(',')
+		},
+		computed: {},
+		methods: {}
+	}
 </script>
 
 <style lang="scss">
-
+	.content {
+		width: 690rpx;
+		height: 120rpx;
+		font-size: 28rpx;
+		overflow: hidden;
+		color: #808080;
+		line-height: 40rpx;
+		margin-left: -100rpx;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		overflow: hidden;
+	}
+	.know{
+		width: 106rpx;
+		height: 44rpx;
+		background: #FE4373;
+		border-radius: 22px;
+	text-align: center;
+		font-size: 24rpx;
+		color: #FFFFFF;
+		line-height: 44rpx;
+		
+		position: absolute;
+		right: 30rpx;
+		margin-top: -28rpx;
+	}
 </style>

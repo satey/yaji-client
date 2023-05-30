@@ -2,7 +2,7 @@
     <page-meta :root-font-size="'13px'"></page-meta>
     <view class="flex mt-8">
 
-			<view class="text-base leading-none mt-2">{{ item }}</view>
+			<view class="">{{ item }}</view>
          
 		</view>
     </view>

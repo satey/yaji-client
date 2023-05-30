@@ -2,7 +2,7 @@
 	<view class="">
 		<u-navbar title="礼物记录" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+				<i class="ri-arrow-left-s-line text-3xl" @click="backPage"></i>
 			</view>
 		</u-navbar>
 		<view class="giftList">
@@ -32,6 +32,11 @@
 			that.init()
 		},
 		methods: {
+			backPage(){
+			uni.navigateTo({
+				url:'/pages/mine/gift'
+			})
+			},
 			init(){
 				let that=this
 				that.$api('user_gift_log.lists').then(res => {

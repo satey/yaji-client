@@ -3,7 +3,7 @@
     <view class="flex mt-8" :class="[item.is_free==0?'':'active']">
 		<!-- {{item}} -->
         <view class="mr-4" @click="$u.route('/pages/user/home', { user_id: item.id })">
-            <image style="border: 1rpx solid gray;" class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'"></image>
+            <image class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'"></image>
 
         </view>
         <view class="flex-1" @click="$u.route('/pages/user/home', { user_id: item.id })">
@@ -32,7 +32,7 @@
 	<view class="flex mt-8"   :class="[item.is_free==0?'active':'']">
 		<!-- {{item}} -->
 	    <view class="mr-4">
-	        <image style="border: 1rpx solid gray;" class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'"></image>
+	        <image style="" class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'"></image>
 	
 	    </view>
 	    <view class="flex-1">
@@ -50,8 +50,7 @@
 	    </view>
 	
 		<view class="ml-4"  :class="[item.is_free==0?'active':'']">
-		   <text style=" display: inline-block; width: 80rpx; text-align: center; margin-right: 20rpx; height: 40rpx; color: gray;" >未激活</text>
-			  
+		   <text style=" display: inline-block; width: 120rpx; text-align: center;  height: 40rpx; color: gray;" >未激活</text>
 		</view>
 	</view>
 </template>

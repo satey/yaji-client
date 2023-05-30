@@ -4,7 +4,7 @@
         <image src='@/static/user_background.png' style="position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1"></image>
         <u-navbar bgColor="transparent" :safeAreaInsetTop="true" :placeholder="true">
             <view slot="left">
-                <i class="ri-arrow-left-s-line text-4xl text-white" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+                <i class="ri-arrow-left-s-line text-4xl text-white" @click='backPage'></i>
             </view>
             <view slot="center">
                 <view class="text-white" @click="skipGifts">我的礼物</view>
@@ -52,6 +52,11 @@ export default {
         that.getUserGift()
     },
     methods: {
+		backPage(){
+			uni.navigateTo({
+				url:'/pages/index/mine'
+			})
+		},
         async getUserGift() {
             let that = this
             that.loadmore = 'loading'

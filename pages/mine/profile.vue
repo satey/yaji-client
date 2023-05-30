@@ -53,6 +53,12 @@
 <script>
 import { mapActions, mapState } from 'vuex'
     // import COS from '../../../yaji-app/dist/cos.js';
+	import COS from 'cos-js-sdk-v5';
+	
+	var cos = new COS({
+	  SecretId: 'AKID5KWSK8sdK4kNxSF0joldRAoNrHbr2BDB',
+	  SecretKey: '2zqbHrR0VyLet6FIMfzIawEUgpuxwsk5'
+	});
 export default {
     name: 'profile',
     data() {
@@ -101,10 +107,43 @@ export default {
 									// 	that.avatarUrl=res
 									// })
 							  //   }
-				});
-		
-		}
-    }
+// 					count: 1,
+// 					  success: function(res) {
+// 						var file = res.tempFiles[0];
+// 						console.log('file',file);
+// 						if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+// 						  console.log('文件格式不正确');
+// 						  return;
+// 						}
+// 						if (file.size > 5 * 1024 * 1024) {
+// 						  console.log('文件大小超过限制');
+// 						  return;
+// 						}
+// 						var cos = new COS({
+// 						  SecretId: 'AKID5KWSK8sdK4kNxSF0joldRAoNrHbr2BDB',
+// 						  SecretKey: '2zqbHrR0VyLet6FIMfzIawEUgpuxwsk5'
+// 						});
+// 						var key = 'uploads/' + file.name;
+// 						cos.putObject({
+// 						  Bucket: 'yaji-1318192409',
+// 						  Region: 'ap-shanghai',
+// 						  Key: key,
+// 						  FilePath: file.path,
+// 						  onProgress: function(progressData) {
+// 							console.log('上传进度：', progressData);
+// 						  },
+// 						  success: function(data) {
+// 							console.log('上传成功：', data);
+// 						  },
+// 						  error: function(err) {
+// 							console.log('上传失败：', err);
+// 						  }
+// 						});
+// 					  }
+									});
+							
+							}
+						}
 }
 </script>
 <style lang="scss" scoped>

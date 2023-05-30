@@ -39,6 +39,7 @@ const mutations = {
 	},
 	[LOGIN_TIP](state, data) {
 		state.showLoginTip = data
+		console.log('data',data);
 	},
 	// [ORDER_NUMBER](state, data) {
 	// 	state.orderNum = data

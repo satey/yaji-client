@@ -1,6 +1,7 @@
 <template>
     <page-meta :root-font-size="'13px'"></page-meta>
-    <view :style="`padding-top: ${CustomBar}rpx;`">
+	<!-- ${CustomBar} -->
+    <view :style="`padding-top: 50rpx;`">
         <image class="fixed w-full h-screen top-0 left-0 right-0 -z-10" src='@/static/user_background.png' />
         <view class="flex px-4 justify-end text-white" style="margin: 50rpx 0 150rpx 0; ">
             <i @click="$u.route('/pages/mine/contact')" class="ri-user-heart-fill text-3xl mr-6"></i>
@@ -13,15 +14,15 @@
                 </view>
                 <view class="flex w-1/2 justify-between">
                     <view class="text-center">
-                        <view class="text-2xl leading-none">{{ userData.follownums || 0 }}</view>
+                        <view class="text-2xl leading-none">{{ userData.follow_count || 0 }}</view>
                         <view class="text-base leading-none text-gray-500 mt-2">关注</view>
                     </view>
                     <view class="text-center">
-                        <view class="text-2xl leading-none">{{ userData.fansnums || 0 }}</view>
+                        <view class="text-2xl leading-none">{{ userData.fans_count || 0 }}</view>
                         <view class="text-base leading-none text-gray-500 mt-2">粉丝</view>
                     </view>
                     <view class="text-center">
-                        <view class="text-2xl leading-none">{{ userData.diggnums || 0 }}</view>
+                        <view class="text-2xl leading-none">{{ userData.digg_count || 0 }}</view>
                         <view class="text-base leading-none text-gray-500 mt-2">获赞</view>
                     </view>
                 </view>
@@ -29,12 +30,11 @@
             <view class="text-xl font-bold mt-2">
                 {{ userInfo.realname || '无名氏' }} · {{ userInfo.dynasty || '未知朝代' }}
             </view>
-			<!-- {{userInfo}} -->
-			
+		
             <view class="text-base leading-none text-gray-500 mt-2">角色名望：{{ userInfo.score || 0 }}</view>
-            <view class="text-base leading-none text-gray-500 mt-2">雅集号：{{ userInfo.id || '********' }}</view>
+            <view class="text-base leading-none text-gray-500 mt-2">雅集号：{{ userInfo.uid || '********' }}</view>
             <view class="text-base leading-none text-gray-500 mt-2">
-                IP属地：{{ userInfo.region || '未知' }}
+                IP属地：{{ userInfo.province || '未知' }}
                 <i @click="showIp = true" class="ri-question-line ml-2 text-gray-500"></i>
             </view>
             <!-- <view class="mt-4">{{ userInfo.bio || '暂无介绍' }}</view> -->
@@ -65,7 +65,8 @@
                     </view>
                     <view class="text-base leading-none text-gray-500 mt-2">我的角色</view>
                 </view>
-                <view class="text-center" @click="$u.route('/pages/mine/wallet')">
+               <!-- <view class="text-center" @click="$u.route('/pages/mine/wallet')"> -->
+			   <view class="text-center" @click="$u.toast('暂未开放哦')">
                     <view class="m-auto w-8 h-8 p-4 rounded-full bg-gradient-to-b from-pink-500 to-pink-400">
                         <i class="ri-wallet-fill text-white text-3xl leading-none"></i>
                     </view>
@@ -154,10 +155,8 @@ export default {
         },
         async getUserData() {
             let that = this
-			// console.log(that.userInfo.id);
             that.$api('user.info', { user_id: that.userInfo.id }).then(res => {
                 if (res.code === 1) {
-					console.log('res.daa',res.data);
                     that.userData = res.data
                 }
             })
@@ -169,6 +168,7 @@ export default {
                 if (res.code === 1) {
                     that.paginator.total = res.data.total
                     that.paginator.last_page = res.data.last_page
+					console.log('llll',res.data);
                     that.listPostMine = [...that.listPostMine, ...res.data.data]
                     that.listPostMine.forEach(item => {
                         item.user = that.userInfo

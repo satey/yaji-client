@@ -1,14 +1,14 @@
 <template>
     <page-meta :root-font-size="'13px'"></page-meta>
     <view>
-        <view class="px-4 py-2 bg-gradient-to-b from-red-200 to-white" :style="`padding-top: ${CustomBar}rpx;`">
+        <view class="px-4 py-2 bg-gradient-to-b from-red-200 to-white" :style="`padding-top: 50rpx;`">
             <view class="flex justify-between items-center">
                 <view class="text-2xl font-bold">雅集</view>
                 <view class="">
                     <i class="ri-user-search-fill text-3xl leading-none bg-gradient-to-b from-rose-500 to-rose-400 bg-clip-text text-transparent" @click="$u.route('/pages/user/newSearch')"></i>
                 </view>
             </view>
-            <view class="grid grid-cols-2 gap-4 mt-6">
+           <!-- <view class="grid grid-cols-2 gap-4 mt-6">
                 <view class="bg-purple-500 p-4 text-white rounded" @click="$u.route('pages/joy/poetry')">
                     <view class="text-xl">曲水流觞</view>
                     <view class="mt-4 opacity-75">美酒助兴畅玩嗨翻天</view>
@@ -17,14 +17,24 @@
                     <view class="text-xl">诗词结缘</view>
                     <view class="mt-4 opacity-75">美酒助兴畅玩嗨翻天</view>
                 </view>
-            </view>
+            </view> -->
+			<view class="grid grid-cols-2 gap-4 mt-6">
+			    <view class="bg-purple-500 p-4 text-white rounded" @click="$u.toast('暂未开放，敬请期待吧')">
+			        <view class="text-xl">曲水流觞</view>
+			        <view class="mt-4 opacity-75">美酒助兴畅玩嗨翻天</view>
+			    </view>
+			    <view class="bg-red-500 p-4 text-white rounded" @click="$u.toast('暂未开放，敬请期待吧')">
+			        <view class="text-xl">诗词结缘</view>
+			        <view class="mt-4 opacity-75">美酒助兴畅玩嗨翻天</view>
+			    </view>
+			</view>
         </view>
 		<!-- 搜索人物 -->
 		<view class="search-people">
 			<view class="search-people-small"  @click="$u.route('pages/user/newSearch')"><text>搜索人物</text> </view>
 		<view class="search-example-bottom">
 			<view class="search-example " v-for="(item,index) in searchList" :item=item >
-				 <view class="search-example-item"  @click="handleSearchTitle(item)">{{item}}</view>
+				 <view class="search-example-item"  @click="handleSearchTitle(item)">{{item.title}}</view>
 			</view>
 		</view>
 		</view>
@@ -63,7 +73,7 @@ export default {
     data() {
         return {
             tablist: [
-                { name: '今日邂逅', type: 'user', count: 0 },
+                { name: '每日邂逅', type: 'user', count: 0 },
                 { name: '话题速配', type: 'post', count: 0 },
                 { name: '今日雅集', type: 'group', count: 0 },
             ],
@@ -86,15 +96,12 @@ export default {
 			},
 			loadmore: false,
 			listUserSearch:[],
-			limit:3
-			
+			limit:3,
+			count: 0,
+
         }
     },
-    onLoad(option) {
-        let that = this
-		that.searchName()
-        that.getUserRecommend()
-    },
+
     onReachBottom() {
         let that = this
         if (that.loadmore === 'nomore') return false
@@ -114,6 +121,105 @@ export default {
                 break
         }
     },
+	mounted() {
+	uni.removeStorageSync('titleItem')	
+	},
+	onLoad(option) {
+		let that = this
+		that.searchName()
+		that.getUserRecommend()
+		// that.$api('user.info').then(res => {
+		//     if (res.code === 1) {
+		// 		console.log('res.data',res.data.uid);
+		// 		uni.setStorageSync('userInfo', userInfo);
+		//     }
+		// })
+			
+		// let userInfo = uni.getStorageSync('userInfo');
+		// if (userInfo && userInfo.id === targetUserId) {
+		//   // 当前用户为目标用户，执行相应逻辑
+		// }
+	 var count = uni.getStorageSync('pageCount') || 0;
+	  count++;
+	  uni.setStorageSync('pageCount', count);
+		if(count<=1){
+			uni.request({
+			  url: 'https://yaji.ixiaojin.cn/api/version/index',
+			  success: function(res) {
+				var latestVersion =res.data.data.oldversion;
+				var currentVersion = res.data.data.newversion;
+				// console.log('currentVersion',currentVersion);
+				// console.log('latestVersion',latestVersion);
+				// 比较版本号
+				if (compareVersion(currentVersion, latestVersion) > 0) {
+				  // 提示用户更新
+				  uni.showModal({
+					title: '版本更新',
+					content: '有新版本可用，是否更新？',
+					success: function(res) {
+					  if (res.confirm) {
+						// 下载最新版本
+						uni.downloadFile({
+						  url: 'http://example.com/latestVersion.apk',
+						  success: function(res) {
+							// 安装新版本
+							uni.showModal({
+							  title: '安装新版本',
+							  content: '新版本已下载完成，是否安装？',
+							  success: function(res) {
+								if (res.confirm) {
+								  uni.install({
+									filePath: res.tempFilePath
+								  });
+								}
+							  }
+							});
+						  }
+						});
+					  }
+					}
+				  });
+				}
+			  }
+			});
+			
+				// 比较版本号
+				function compareVersion(v1, v2) {
+				  v1 = v1.split('.');
+				  v2 = v2.split('.');
+				  var len = Math.max(v1.length, v2.length);
+				  while (v1.length < len) {
+					v1.push('0');
+				  }
+				  while (v2.length < len) {
+					v2.push('0');
+				  }
+				  for (var i = 0; i < len; i++) {
+					var num1 = parseInt(v1[i]);
+					var num2 = parseInt(v2[i]);
+					if (num1 > num2) {
+					  return 1;
+					} else if (num1 < num2) {
+					  return -1;
+					}
+				  }
+				  return 0;
+				}
+			
+		}
+		
+	},
+	onShow: function() {
+	  var lastVisitTime = uni.getStorageSync('lastVisitTime') || 0;
+	  var now = Date.now();
+	  if (now - lastVisitTime > 24 * 60 * 60 * 1000) {
+	    uni.setStorageSync('pageCount', 0);
+	  }
+	  uni.setStorageSync('lastVisitTime', now);
+	},
+	created() {
+	uni.removeStorageSync('titleItem')	
+	},
     methods: {
 		
 		// 搜索中的角色称号
@@ -121,7 +227,7 @@ export default {
 			let that = this
 			that.$api('role_title.lists').then(res => {
 			    if (res.code === 1) {
-					that.searchList.push(res.data[0].title,res.data[1].title,res.data[2].title)
+					that.searchList.push(res.data[0],res.data[1],res.data[2])
 			    }
 			})
 			
@@ -130,11 +236,12 @@ export default {
 		// 搜索
 		handleSearchTitle(item) {
 			console.log(item,'item');
+			uni.setStorageSync('titleItem',item)
 			let that=this
 			uni.navigateTo({
-				url:'/pages/user/newSearch',
+				url:'/pages/index/indexSearch',
 				success: () => {
-					// uni.$emit('item',item)
+					uni.setStorageSync('titleItem',item)
 				},
 				fail: (err) => {
 					console.log(err);
@@ -211,6 +318,7 @@ export default {
 					console.log('res',res.data);
                   
                     that.listUserRecommend =res.data
+					
 					if (that.params.page < res.data.last_page) {
                         that.loadmore = 'loadmore'
                     } else {
@@ -309,6 +417,7 @@ export default {
 	}
 	.loveRoom{
 	color: #02A7F0;
-	margin-left: 75%;
+	margin-left: 70%;
+	margin-top: 10rpx;
 	}
 </style>

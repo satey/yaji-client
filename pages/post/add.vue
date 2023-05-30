@@ -34,7 +34,7 @@
                     <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
                 </view>
             </view>
-            <view v-if="form.video" class="mt-4">
+           <view v-if="form.video" class="mt-4">
                 <view @click="handlePlayVideo(form.video)" class="mt-4 flex items-center justify-center rounded w-60 bg-gray-200">
                     <video class="z-0" :src="form.video" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
                 </view>
@@ -66,17 +66,17 @@
                     <view class="flex items-center bg-gray-100 p-3 rounded-full mr-4" @click="showRecord = !showRecord">
                         <i class="ri-mic-fill text-2xl leading-none text-gray-500"></i>
                     </view>
-                    <view class="flex items-center bg-gray-100 p-3 rounded-full" @click="handleVideo">
+                  <!--  <view class="flex items-center bg-gray-100 p-3 rounded-full" @click="handleVideo">
                         <i class="ri-live-fill text-2xl leading-none text-gray-500"></i>
-                    </view>
+                    </view> -->
                 </view>
-                <view class="flex items-center bg-gray-100 p-3 rounded-full" @click="showPrivacy = true">
+                <!-- <view class="flex items-center bg-gray-100 p-3 rounded-full" @click="showPrivacy = true">
                     <i class="ri-eye-fill text-2xl leading-none text-gray-500 mr-2"></i>
                     <view class="text-gray-500">{{ privacyText }}</view>
-                </view>
+                </view> -->
             </view>
             <!-- 语音 -->
-            <view class="flex flex-col items-center bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showRecord">
+           <view class="flex flex-col items-center bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showRecord">
                 <view class="text-xs leading-none text-gray-500">{{ recordTip }}</view>
                 <view class="flex justify-center items-center mt-16" @touchstart="handleRecordStart" @touchmove.stop.prevent="handleRecordDoing" @touchend="handleRecordStop">
                     <view class="relative flex justify-center items-center rounded-full">
@@ -97,7 +97,7 @@
                 <view class="text-2xl text-center">添加话题</view>
                 <view class="flex rounded-full bg-gray-100 mt-6">
                     <u-input v-model="tag"  placeholder="输入话题" @change="searchAdd"  ref="ipt" type="text" maxlength="20">
-                        <text slot="suffix" class="text-rose-500" @click="addTag(tag)">添加</text>
+                        <text slot="suffix" class="text-rose-500" @click.stop="addContentTag(tag)">添加</text>
                     </u-input>
                 </view>
                 <!-- <view class="text-gray-500 mt-6">热门话题</view> -->
@@ -117,7 +117,7 @@
             </view>
         </u-popup>
         <!-- 圈子 -->
-        <u-popup :show="showGroup" @close="showGroup = false" :closeable="true" :round="30" customStyle="min-height: 500rpx;">
+       <!-- <u-popup :show="showGroup" @close="showGroup = false" :closeable="true" :round="30" customStyle="min-height: 500rpx;">
             <view class="p-4">
                 <view class="text-2xl text-center">添加圈子</view>
                 <view class="text-gray-500 mt-6">我的圈子</view>
@@ -129,9 +129,9 @@
                 </view>
                 <u-empty v-if="!listMineGroup.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
             </view>
-        </u-popup>
+        </u-popup> -->
         <!-- 隐私 -->
-        <u-popup :show="showPrivacy" @close="showPrivacy = false" :closeable="true" :round="30" customStyle="min-height: 500rpx;">
+<!--        <u-popup :show="showPrivacy" @close="showPrivacy = false" :closeable="true" :round="30" customStyle="min-height: 500rpx;">
             <view class="p-4">
                 <view class="text-2xl text-center">隐私设置</view>
                 <view class="text-gray-500 mt-6">可见范围</view>
@@ -142,7 +142,7 @@
                 </view>
             </view>
         </u-popup>
-
+ -->
         <uc-auth></uc-auth>
     </view>
 </template>
@@ -196,7 +196,9 @@ export default {
             },
 			isAddTake:true,
 			keyword:'',
-			searchTag:[]
+			searchTag:[],
+			post_cate_id:null,
+			itemList:[]
         }
     },
     onLoad() {
@@ -214,6 +216,9 @@ export default {
             userInfo: state => state.user.userInfo,
         })
     },
+	onHide() {
+			uni.removeStorageSync('post_cate_id')
+	},
     methods: {
 		searchAdd(){
 			let that=this
@@ -233,8 +238,8 @@ export default {
 			
 			})
 		},
-        addTag(item) {
-            let that = this
+		addContentTag(item){
+			let that = this
             if (!item) {
                 that.$u.toast('话题不能为空')
                 return false
@@ -243,23 +248,53 @@ export default {
 				that.isAddTake=false
                 return false
             }
-            that.form.tags.push(item)
+            that.form.tags.push('#'+item)
             that.showTag = false
 			// 判断标签是否大于等于三个 大于三个则让添加话题隐藏出来
 			if (that.form.tags.length>=3) {
 				that.isAddTake=false
 			    return false
 			}
+			console.log('that.form.tags',that.form.tags);
+			that.itemList+=that.form.tags
 			let data = {
-			    title: this.$refs.ipt.value
+			    title: that.itemList
 			}
-			console.log(this.$refs.ipt.value);
 			that.$api('post_cate.add',data).then(res => {
 			    if (res.code === 1) {
-					
 			        that.$u.toast('添加成功')
+					that.post_cate_id=res.data
+					uni.setStorageSync('post_cate_id',res.data)
 			    } else {
-				
+			        that.$u.toast(res.msg)
+			    }
+			})
+		},
+        addTag(item) {
+            let that = this
+            if (that.form.tags.indexOf(item) >= 0 || that.form.tags.length>=3) {
+				that.isAddTake=false
+                return false
+            }
+            that.form.tags.push('#'+item)
+            that.showTag = false
+			// 判断标签是否大于等于三个 大于三个则让添加话题隐藏出来
+			if (that.form.tags.length>=3) {
+				that.isAddTake=false
+			    return false
+			}
+			that.itemList=that.itemList+=that.form.tags
+			let data = {
+			    title:that.itemList
+			}
+			console.log(data);
+			that.$api('post_cate.add',data).then(res => {
+			    if (res.code === 1) {
+			        that.$u.toast('添加成功')
+					console.log('hot-list',res.data);
+					uni.setStorageSync('post_cate_id',res.data)
+					
+			    } else {
 			        that.$u.toast(res.msg)
 			    }
 			})
@@ -317,8 +352,9 @@ export default {
                 images: that.form.images.toString(),
                 audio: that.form.audio,
                 video: that.form.video,
-				post_cate_id:that.group.id > 0 ? that.group.id : 0
+				post_cate_id:uni.getStorageSync('post_cate_id')
             }
+			console.log('data',uni.getStorageSync('post_cate_id'));
             that.$api('post.add', data).then(res => {
                 if (res.code === 1) {
                     that.form.content = ''
@@ -362,27 +398,27 @@ export default {
                 })
             }
         },
-        handlePlayVideo(video) {
-            let that = this
-            if (!video) {
-                that.$u.toast('视频不能为空')
-                return false
-            }
-            if (!that.video) {
-                that.video = uni.createVideoContext('video')
-                that.video.src = video
-            }
-            that.videoStatus = !that.videoStatus
-            if(that.videoStatus) {
-                that.$nextTick(function () {
-                    that.video.play()
-                })
-            } else {
-                that.$nextTick(function () {
-                    that.video.pause()
-                })
-            }
-        },
+        // handlePlayVideo(video) {
+        //     let that = this
+        //     if (!video) {
+        //         that.$u.toast('视频不能为空')
+        //         return false
+        //     }
+        //     if (!that.video) {
+        //         that.video = uni.createVideoContext('video')
+        //         that.video.src = video
+        //     }
+        //     that.videoStatus = !that.videoStatus
+        //     if(that.videoStatus) {
+        //         that.$nextTick(function () {
+        //             that.video.play()
+        //         })
+        //     } else {
+        //         that.$nextTick(function () {
+        //             that.video.pause()
+        //         })
+        //     }
+        // },
         handleRecordStart(e) {
             let that = this
             console.log('touch start')
@@ -474,35 +510,35 @@ export default {
                 }
             })
         },
-        handleVideo() {
-            let that = this
-            uni.chooseVideo({
-                maxDuration: 10,
-                sourceType: ['album'],
-                success: (res) => {
-                    console.log(res)
-                    if (res.size > 10 * 1024 * 1024) {
-                        that.$u.toast('视频不能超过10M')
-                        return false
-                    }
-                    uni.uploadFile({
-                        url: that.$API_URL + 'index/upload',
-                        filePath: res.tempFilePath,
-                        name: 'file',
-                        success: res => {
-                            res = JSON.parse(res.data)
-                            console.log(res)
-                            if (res.code === 1) {
-                                that.form.video = res.data.fullurl
-                            } else {
-                                that.$u.toast(res.msg)
-                            }
-                        },
-                        complete: e => {}
-                    })
-                }
-            })
-        },
+        // handleVideo() {
+        //     let that = this
+        //     uni.chooseVideo({
+        //         maxDuration: 10,
+        //         sourceType: ['album'],
+        //         success: (res) => {
+        //             console.log(res)
+        //             if (res.size > 10 * 1024 * 1024) {
+        //                 that.$u.toast('视频不能超过10M')
+        //                 return false
+        //             }
+        //             uni.uploadFile({
+        //                 url: that.$API_URL + 'index/upload',
+        //                 filePath: res.tempFilePath,
+        //                 name: 'file',
+        //                 success: res => {
+        //                     res = JSON.parse(res.data)
+        //                     console.log(res)
+        //                     if (res.code === 1) {
+        //                         that.form.video = res.data.fullurl
+        //                     } else {
+        //                         that.$u.toast(res.msg)
+        //                     }
+        //                 },
+        //                 complete: e => {}
+        //             })
+        //         }
+        //     })
+        // },
     }
 }
 </script>

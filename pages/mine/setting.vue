@@ -59,7 +59,10 @@ export default {
     name: 'about',
     data() {
         return {
-            cache: 0
+            cache: 0,
+			version:null,
+			token:"",
+			tokens:""
         }
     },
     computed: {
@@ -71,10 +74,27 @@ export default {
     methods: {
         onLogout() {
             let that = this
-            that.$store.commit('OUT_LOGIN')
-			uni.reLaunch({
-				url:'/pages/auth/login'
+            // that.$store.commit('OUT_LOGIN')
+			let tokens=uni.getStorageSync('token')
+			console.log(tokens);
+			uni.request({
+				url:'https://yaji.ixiaojin.cn/api/user/logout',
+				  method: 'POST',
+				  headers: {
+				    'token': that.tokens,
+				  },
+				success(res) {
+					console.log('suesss',res);
+					uni.reLaunch({
+						url:'/pages/auth/login'
+					})
+					uni.removeStorageSync('token')
+				},
+				fail(err) {
+					console.log('err',err);
+				}
 			})
+			
         },
         onClear() {
             // #ifdef APP-PLUS
@@ -87,8 +107,22 @@ export default {
         },
         onVersion() {
             let that = this
-			console.log(that.initData);
-            uni.toast('当前版本:' + that.initData.info.version, 'none')
+			uni.request({
+				url:'https://yaji.ixiaojin.cn/api/version/index',
+				success(res) {
+					console.log(res.data.data.oldversion);
+					
+					that.$u.toast('当前版本为'+res.data.data.oldversion)
+				},
+				fail(err) {
+					console.log('err',err);
+				}
+			})
+
+
+	
+
+	
         }
     }
 }

@@ -8,7 +8,7 @@
 			</u-navbar>
 
 			<!-- 标题 -->
-			<view class="header-title">
+			<view class="header-title" >
 				<text> 标题：</text><input  v-model="title" type="text" placeholder="限22字符" maxlength="22">
 			</view>
 		</view>
@@ -58,6 +58,9 @@
 				action: 'http://192.168.100.17/index.php/index/index/upload', // 演示地址
 				showUploadList: true, 
 				uUpload: {}, // 组件实例
+				remark:'',
+				id:null,
+				images:''
 			}
 		},
 		computed: {
@@ -68,28 +71,52 @@
 			console.log(this.$refs.uUpload);
 			this.uUpload = this.$refs.uUpload;
 		},
+		mounted() {
+		this.init()
+		console.log('111');
+		},
 		methods: {
-			submit() {
+			init(){
 				let that = this
-				that.$api('feedback.add', {
-				    type: 'feedback',
-				    content:that.title+'.'+that.content 
-				}).then(res => {
+				that.$api('user.info').then(res => {
+					// console.log(res.data)/;
 				    if (res.code === 1) {
-				        that.$u.toast('提交成功')
-						// console.log(res);
-						uni.navigateTo({
-									url:'/pages/public/feedbackPage',
-						})
-						that.content=""
-						that.title=""
-						
+					uni.setStorageSync('id',res.data.id)
 				    } else {
 				        that.$u.toast(res.msg)
 				    }
 				})
+			},
+			submit() {
+				let that = this
+				let id=	uni.getStorageSync('id')
+				if(that.title!=0&&that.content.length>=10){
+					that.$api('feedback.add', {
+					    type: 'feedback',
+						feedback_user_id:id,
+					    remark:that.title,
+						content:that.content,
+						images:''
+					}).then(res => {
+					    if (res.code === 1) {
+					        that.$u.toast('提交成功')
+							uni.navigateTo({
+								url:'/pages/public/feedbackPage',
+							})
+							that.content=""
+							that.title=""
+							
+					    } else {
+					        that.$u.toast(res.msg)
+					    }
+					})
+				}else{
+					that.$u.toast('按规定填写哦')
+				}
+				
+
 			// console.log(this.title);
-			// console.log(this.content);
+			
 			
 			}
 		}
@@ -102,17 +129,21 @@
 	}
 
 	.header {
-		height: 200rpx;
+		height: 240rpx;
 		background-color: white;
 		margin-top: 20rpx;
 	}
 
 	.header-title {
-		margin-left: 40rpx;
-		margin-top: 50rpx;
+		margin-left: 30rpx;
+		margin-top: 30rpx;
+		display: block;
+		height: 60rpx;
 	}
 
 	.header-title text {
+		font-size: 24rpx;
+		margin-top: -2rpx;
 		float: left;
 	}
 
@@ -150,6 +181,7 @@
 		position: absolute;
 		top: 20rpx;
 		left: 30rpx;
+		font-size: 24rpx;
 	}
 
 	.pic-board {

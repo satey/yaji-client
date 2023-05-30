@@ -2,21 +2,26 @@
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="px-4">
 	    <u-navbar :safeAreaInsetTop="true" :placeholder="true">
-	        <view slot="left">
+	        <view slot="left" @click="back">
 	            <i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 	        </view>
-	        <view slot="right">
-	            <i class="ri-question-fill text-3xl bg-gradient-to-b from-red-400 to-red-200 bg-clip-text text-transparent" @click="showHelp = true"></i>
-	        </view>
-	    </u-navbar>
+			<view slot="center">
+				{{titleItem.title}}
+			 </view>
 	
-	    <view class="pt-4">
-	        <view class="flex rounded-full bg-gray-100">
-	            <u-input v-model="params.keywords" :focus="true" placeholder="输入角色名搜索" type="text" maxlength="20">
-	                <i slot="prefix" class="ri-search-2-line text-xl leading-none text-gray-500"></i>
-	                <text slot="suffix" class="text-rose-500" @click="handleSearch()">搜索</text>
-	            </u-input>
-	        </view>
+	    </u-navbar>
+	<block  v-if="type === 'hot'">
+		<view class="" style=" z-index: 58745; position: fixed;width: 720rpx; margin-left: -10rpx;">
+			<view class="flex rounded-full bg-gray-100">
+				<u-input v-model="params.keywords" :focus="true" placeholder="输入角色名搜索" type="text" maxlength="20">
+				   <i slot="prefix" class="ri-search-2-line text-xl leading-none text-gray-500"></i>
+					<text slot="suffix" class="text-rose-500"  @click="handleSearch()">搜索</text>
+				</u-input>
+			</view>
+	</view>
+	</block>
+	    <view class="pt-4" >
+			
 	        <block v-if="type === 'hot'">
 	           <!-- <view class="text-xl text-gray-500 mt-8">角色朝代</view>
 	            <view class="flex flex-wrap flex-direction-row">
@@ -25,7 +30,16 @@
 	                </view>
 	            </view>
 	            <view class="text-xl text-gray-500 mt-8">角色称号</view> -->
-	            <view class="flex flex-wrap flex-direction-row characterTitle">
+				<view class="text-xl text-gray-500 mt-8">历史记录</view>
+				<image src="../../static/gift/rubish.png" @click="clearAll" style="width: 30rpx; height: 30rpx; float: right;margin-top: -30rpx;"></image>
+				<!-- <uc-user v-for="(item, index) in listUserRecommend" :key="index" :item="item" ></uc-user> -->
+				<!-- <uc-userSearch  v-for="(item, index) in listUserRecommend" :key="index" :item="item" ></uc-userSearch> -->
+				<view v-for="(item, index) in listUserRecommend" :key="index" :item="item" class="rounded text-base leading-none p-2 bg-gray-100 mt-4 mr-4 characterTitle-item ">
+				  <text @click="LishandleSearch(item)"> {{ item}}</text> 
+				</view>
+				
+				 <view class="text-xl text-gray-500 mt-8">角色称号</view>
+	            <view class="flex flex-wrap flex-direction-row ">
 	                <view v-for="(item, index) in listRoleTitle" :key="index" :item="item" @click="handleSearchTitle(item)" class="rounded text-base leading-none p-2 bg-gray-100 mt-4 mr-4 characterTitle-item ">
 	                    {{ item.title }}
 	                </view>
@@ -41,13 +55,9 @@
 	            <u-empty v-if="!listUserRecommend.length" icon="="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty> -->
 				
 				
-				<view class="text-xl text-gray-500 mt-8">历史记录</view>
-				<!-- <uc-user v-for="(item, index) in listUserRecommend" :key="index" :item="item" ></uc-user> -->
-				<uc-userSearch  v-for="(item, index) in listUserRecommend" :key="index" :item="item" ></uc-userSearch>
-				<u-empty v-if="!listUserRecommend.length" icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
+			
 	        </block>
 	        <block v-if="type === 'search'">
-	            <view class="text-xl text-gray-500 mt-8">搜索结果</view>
 	            <!-- <uc-user v-for="(item, index) in listUserSearch" :key="index" :item="item"></uc-user> -->
 				<uc-search v-for="(item, index) in listUserSearch" :key="index" :item="item" ></uc-search>
 	            <u-loadmore v-if="listUserSearch.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
@@ -55,7 +65,7 @@
 	        </block>
 	    </view>
 	
-	    <u-modal :show="showHelp" :showConfirmButton="false" :showCancelButton="false">
+	<!--    <u-modal :show="showHelp" :showConfirmButton="false" :showCancelButton="false">
 	        <view class="w-full text-center">
 	            <view class="text-4xl mt-4">搜索小贴士</view>
 	            <view class="mt-6 text-left">{{ help }}</view>
@@ -63,7 +73,7 @@
 	                <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="showHelp = false">确定</view>
 	            </view>
 	        </view>
-	    </u-modal>
+	    </u-modal> -->
 	
 	    <uc-auth></uc-auth>
 	</view>
@@ -88,6 +98,7 @@
 	            dynasty: null,
 	            title: null,
 	            achievement: null,
+				role_title_id:null
 	        },
 	        paginator: {
 	            total: 0,
@@ -96,6 +107,7 @@
 	        loadmore: false,
 	        help: '小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士',
 	        showHelp: false,
+			titleItem:''
 			
 	    }
 	},
@@ -113,7 +125,35 @@
 	    that.params.page = ++that.params.page
 	    that.getUserSearch()
 	},
+	mounted() {
+		
+	},
+	onHide() {
+	uni.removeStorageSync('titleItem')	
+	},
+	// onShow() {
+	// 	uni.removeStorageSync('titleItem')
+	// },
+
 	methods: {
+		// 清除历史记录
+		clearAll(){
+			let that=this
+			that.listUserRecommend=[]
+		},
+		back(){
+				uni.removeStorageSync('titleItem')
+		},
+		// 历史记录搜索
+		LishandleSearch(item) {
+		    let that = this
+		   console.log(item);
+		    that.params.page = 1
+		    that.type = 'search'
+			that.params.keywords=item
+		    that.listUserSearch = []
+		    that.getUserSearch()
+		},
 	    handleSearch() {
 	        let that = this
 	        if (!that.params.keywords) {
@@ -134,12 +174,15 @@
 	        that.getUserSearch()
 	    },
 	    handleSearchTitle(item) {
+			console.log('handleSearchTitle',item);
 	        let that = this
-	        that.params.title = item.title
+	        that.params.role_title_id = item.id
 	        that.params.page = 1
 	        that.type = 'search'
 	        that.listUserSearch = []
 	        that.getUserSearch()
+			
+			that.titleItem=item
 	    },
 	    handleSearchAchievement(item) {
 	        let that = this
@@ -161,6 +204,7 @@
 	    async getUserSearch() {
 	        let that = this
 	        that.loadmore = 'loading'
+			console.log('xax',that.params);
 	        that.$api('user.recommend', that.params).then(res => {
 	            if (res.code === 1) {
 					console.log('recommed',res.data);
@@ -212,7 +256,7 @@
 
 <style>
 	.characterTitle{
-		height: 440rpx;
+		height: 640rpx;
 		 white-space: nowrap;
 		    overflow-x: hidden;
 		    overflow-y: auto;
