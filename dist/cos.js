@@ -1,6 +1,6 @@
 const COS=require('../dist/cos-js-sdk-v5.js')
-// const COS=require("./cos-wx-sdk-v5.js")
-import Cos from 'cos-js-sdk-v5'
+// const COS=require("cos-wx-sdk-v5")
+// import Cos from 'cos-js-sdk-v5'
 const Bucket="yaji-1318192409";//存储桶的名称，命名规则为 BucketName-APPID，此处填写的存储桶名称必须为此格式
 const Region="ap-shanghai";//存储桶所在地域
 //创建一个 COS SDK 实例
@@ -23,7 +23,6 @@ cos.getService(function (err, data) {
   console.log(data && data.Buckets);
 });
 //删除
-
 function deleteFileToTencentClound(Key){
 	return new Promise((resolve,reject)=>{
 		cos.deleteObject({
@@ -42,7 +41,7 @@ function uploadFileToTencentClound(filename,filePath){
 		cos.postObject({
 		    Bucket: Bucket,
 		    Region: Region,
-		    Key: 'wxFile/' + filename,
+		    Key: filePath+filename,
 		    FilePath: filePath,
 		    onProgress: function (info) {
 		        console.log("[cos.postObject-seccess]",JSON.stringify(info));

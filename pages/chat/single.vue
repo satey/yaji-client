@@ -27,7 +27,7 @@
                                 <u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
                             </view>
                             <view v-if="item.type === 'audio'" @click="handlePlayAudio(item.content)" class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
-                     {{item.readtime}}           <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
+                              <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
                             </view>
                            <!-- <view v-if="item.type === 'video'" @click="handlePlayVideo(item.content)" class="flex items-center justify-center rounded w-60 bg-gray-200">
                                 <video class="z-0" :src="item.content" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
@@ -140,7 +140,6 @@
                 </view>
             </view>
         </view>
-
         <view v-if="showSvga" id="svgaPlayer" class="fixed w-full h-screen top-0 right-0 bottom-0 left-0">
             <l-svga ref="svgaPlayer"></l-svga>
         </view>
@@ -150,6 +149,7 @@
 <script>
 import { mapState } from 'vuex'
 import Socket from '@/common/chat.js'
+// import onSocket from '@/common/onSoceketChat.js'
 export default {
     name: 'mine',
     components: {
@@ -194,7 +194,8 @@ export default {
                 identifier: 0,
                 Y: 0
             },
-			pageHeight:null
+			pageHeight:null,
+			page:1
         }
     },
     computed: {
@@ -223,26 +224,23 @@ export default {
 		focus(e){
 		     // 可用区域高度减去软键盘高度，最后加上px转为字符串
 			this.pageHeight =60
-		 
 		},
 		// 失去焦点后
 		blur(){
 			this.pageHeight = 0
-			
 		},
-
-		
         init() {
             let that = this
             that.$api('chat.single', {
                 user_id: that.$Route.query.user_id
             }).then(res => {
                 if (res.code === 1) {
-					console.log('init',res.data);
                     that.chat = res.data
                     uni.setStorageSync('CHATSESSIONID', res.data.session_id)
                     // 监听消息
                     that.socket = new Socket((msg) => {
+						// this.$set(msg, 'recordtimes',that.$Route.query.user_id)
+						console.log("'thats: " ,that.recordLength);
                         that.parseMsg(msg.data)
                     });
                     // 监听录音
@@ -268,13 +266,16 @@ export default {
 			clearTimeout(timeout)
 			timeout = setTimeout(() => {
 				that.scrollInto = 'scrollBottom'
-				console.log('that.scrollInto ',that.scrollInto );
 			}, 300)
 		},
         // 解析消息
         parseMsg(message) {
             let that = this
             let msg = JSON.parse(message)
+			// this.$set(msg, 'name', '张三')
+			// console.log('msg285',msg);
+			// that.paginator.total = msg.data.total
+			// that.paginator.last_page = msg.data.last_page
             if (msg.code === 1) {
                 switch (msg.type) {
                     case 'init':
@@ -309,22 +310,29 @@ export default {
         },
         // 获取历史聊天记录
         async getMessageList() {
+			console.log('11');
             let that = this
+			console.log('that.$Route.query.user_id',that.$Route.query.user_id);
             let params = {
-                type: 'history',
+                type:'history',
                 msg: 'send',
-                data: ''
+                data: '',
+				to_user_id:that.$Route.query.user_id,//接收者的id,
             }
             let res = await that.socket.send(JSON.stringify(params))
         },
         // 发送服务数据
         async sendMessage(data, type = 'text') {
             let that = this
+			console.log('that.$Route.query.user_idww',that.$Route.query.user_id);
+			// console.log('page',that.page++);
             let params = {
                 type: type,
                 msg: 'send',
-                data: data
+                data: data,
+				to_user_id:that.$Route.query.user_id,//接收者的id,
             }
+			console.log(params);
             let res = await that.socket.send(JSON.stringify(params))
         },
         handleTextSend() {
@@ -370,7 +378,6 @@ export default {
             let that = this
             that.gift = item
             if (that.userInfo.money < that.gift.price) {
-                // that.$api.msg('账户铜币不足')
 				that.$u.toast('账户铜币不足')
                 return
             }

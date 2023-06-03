@@ -49,7 +49,6 @@ export default class Socket {
 			let [error, res] = await uni.sendSocketMessage({
 				data: msg
 			});
-			// console.log('报错了：',res)
 			return Promise.resolve(res);
 		}
 	}

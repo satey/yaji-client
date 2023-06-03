@@ -2,11 +2,11 @@
     <page-meta :root-font-size="'13px'"></page-meta>
     <view class="flex mt-8" :class="[item.is_free==0?'':'active']">
 		<!-- {{item}} -->
-        <view class="mr-4" @click="$u.route('/pages/user/home', { user_id: item.id })">
+        <view class="mr-4" @click="$u.route('/pages/user/home', { user_id: item.user_id })">
             <image class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'"></image>
 
         </view>
-        <view class="flex-1" @click="$u.route('/pages/user/home', { user_id: item.id })">
+        <view class="flex-1" @click="$u.route('/pages/user/home', { user_id: item.user_id })">
 			
             <!-- <view class="text-base leading-none mt-2">{{ item.realname + ' · ' + item.dynasty || '无名氏' }}</view> -->
 			<view class="text-base leading-none mt-2">{{ item.realname + ' · ' + item.dynasty || '无名氏' }}</view>

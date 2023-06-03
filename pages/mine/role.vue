@@ -37,8 +37,8 @@
 			    </ul>
 			</view>
             <view class="grid mt-6 text-center">
-				<view v-if="istime"  class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleReborn()">还有{{time}}次机会来获取角色哦</view>
-                <view  v-else class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleHuoQu()">重新获取({{ price }} 铜币)</view>
+				<view v-show="istime"  class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleReborn()">还有{{time}}次机会来获取角色哦</view>
+                <view v-show="isXians"class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleHuoQu()">重新获取({{ price }} 铜币)</view>
 			</view>
             <view class="flex mt-6">
                 <ol class="text-gray-200">
@@ -108,13 +108,14 @@ export default {
             role: {},
             dynasty: {},
             times: 0,
-            price: 30,
+            price: 50,
             listRoleDynasty: [],
             showRole: false,
             showUserRole: true,
 			time:null,
 			istime:true,
-			gender:null
+			gender:null,
+			isXians:false
         }
     },
     onLoad(option) {
@@ -130,13 +131,14 @@ export default {
 	mounted() {
 
 		let that=this
-	// let time=uni.getStorageSync('times')
+	let time=uni.getStorageSync('times')
 	// console.log('ssss',time);	
-	// that.time=time
+	that.time=time
 	
-	// if(time!=0){
-		
-	// }
+	if(that.time==0){
+		that.isXians=true
+		that.istime=false
+	}
 	that.init()
 	},
     methods: {
@@ -146,7 +148,7 @@ export default {
 			// console.log('ssss',time);	
 			that.time=time
 			if(that.time<1){
-				that.istime=true
+				that.istime=f
 			}
 			// console.log(that.time);
 			

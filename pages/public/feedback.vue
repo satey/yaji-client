@@ -33,7 +33,7 @@
 							 :percent="item.progress"></u-line-progress>
 						</view>
 					</view>
-					<u-upload :custom-btn="true" ref="uUpload" :show-upload-list="showUploadList" :action="action"> 
+					<u-upload :custom-btn="true" ref="uUpload" :show-upload-list="showUploadList" :action="action">
 						<view slot="addBtn" class="slot-btn" hover-class="slot-btn__hover" hover-stay-time="150">
 							<u-icon name="photo" size="60" :color="$u.color['lightColor']"></u-icon>
 						</view>

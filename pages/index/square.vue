@@ -72,7 +72,7 @@ export default {
     },
 	onShow() {
 		let that=this
-	that.getPostRecommend()
+	// that.getPostRecommend()
 	},
 	onPullDownRefresh() {
 		this.getPostRecommend()

@@ -3,13 +3,15 @@ import Vue from 'vue';
 import { mapMutations, mapActions, mapState } from 'vuex';
 import Wechat from './common/wechat/wechat.js';
 	// import permision from "@/js_sdk/wa-permission/permission.js"
+// import chat from "./common/chat.js"
 
+import Socket from '@/common/chat.js'
 export default {
 	
+
+
 	methods: {
 		...mapActions(['getAppInit', 'getRoutes', 'getUserInfo']),
-		
-		
 			async setAppInfo() {
 			let that = this;
 			let platform = '';
@@ -199,7 +201,8 @@ export default {
 	created() {
 	
 		
-	}
+	},
+	
 };
 </script>
 

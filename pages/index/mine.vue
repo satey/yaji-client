@@ -168,7 +168,7 @@ export default {
                 if (res.code === 1) {
                     that.paginator.total = res.data.total
                     that.paginator.last_page = res.data.last_page
-					console.log('llll',res.data);
+					// console.log('llll',res.data);
                     that.listPostMine = [...that.listPostMine, ...res.data.data]
                     that.listPostMine.forEach(item => {
                         item.user = that.userInfo

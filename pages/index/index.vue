@@ -31,7 +31,7 @@
         </view>
 		<!-- 搜索人物 -->
 		<view class="search-people">
-			<view class="search-people-small"  @click="$u.route('pages/user/newSearch')"><text>搜索人物</text> </view>
+			<view class="search-people-small"  @click="$u.route('pages/user/newSearch')"><text style="margin-left: 30rpx;">搜索人物</text> </view>
 		<view class="search-example-bottom">
 			<view class="search-example " v-for="(item,index) in searchList" :item=item >
 				 <view class="search-example-item"  @click="handleSearchTitle(item)">{{item.title}}</view>
@@ -142,7 +142,7 @@ export default {
 	 var count = uni.getStorageSync('pageCount') || 0;
 	  count++;
 	  uni.setStorageSync('pageCount', count);
-		if(count<=1){
+		if(count<1){
 			uni.request({
 			  url: 'https://yaji.ixiaojin.cn/api/version/index',
 			  success: function(res) {
@@ -182,7 +182,6 @@ export default {
 				}
 			  }
 			});
-			
 				// 比较版本号
 				function compareVersion(v1, v2) {
 				  v1 = v1.split('.');
@@ -205,7 +204,6 @@ export default {
 				  }
 				  return 0;
 				}
-			
 		}
 		
 	},

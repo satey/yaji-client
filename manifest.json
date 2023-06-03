@@ -36,7 +36,8 @@
             }
         },
         "modules" : {
-            "VideoPlayer" : {}
+            "VideoPlayer" : {},
+            "Record" : {}
         },
         "distribute" : {
             "android" : {
@@ -48,6 +49,7 @@
                     "<uses-permission android:name=\"android.permission.CAMERA\"/>",
                     "<uses-permission android:name=\"android.permission.GET_TASKS\"/>",
                     "<uses-permission android:name=\"android.permission.INJECT_EVENTS\"/>",
+                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
                     "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
                     "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
@@ -87,33 +89,33 @@
             },
             "icons" : {
                 "android" : {
-                    "hdpi" : "",
-                    "xhdpi" : "",
-                    "xxhdpi" : "",
-                    "xxxhdpi" : ""
+                    "hdpi" : "static/logo-28.png",
+                    "xhdpi" : "static/logo-108.png",
+                    "xxhdpi" : "static/logo-300.png",
+                    "xxxhdpi" : "static/logo-circle.png"
                 },
                 "ios" : {
                     "appstore" : "",
                     "ipad" : {
-                        "app" : "",
-                        "app@2x" : "",
-                        "notification" : "",
-                        "notification@2x" : "",
-                        "proapp@2x" : "",
-                        "settings" : "",
-                        "settings@2x" : "",
-                        "spotlight" : "",
-                        "spotlight@2x" : ""
+                        "app" : "static/logo-28.png",
+                        "app@2x" : "static/logo-circle.png",
+                        "notification" : "static/logo-28.png",
+                        "notification@2x" : "static/logo-28.png",
+                        "proapp@2x" : "static/logo-circle.png",
+                        "settings" : "static/logo-28.png",
+                        "settings@2x" : "static/logo-28.png",
+                        "spotlight" : "static/logo-28.png",
+                        "spotlight@2x" : "static/logo-28.png"
                     },
                     "iphone" : {
-                        "app@2x" : "",
-                        "app@3x" : "",
-                        "notification@2x" : "",
-                        "notification@3x" : "",
-                        "settings@2x" : "",
-                        "settings@3x" : "",
-                        "spotlight@2x" : "",
-                        "spotlight@3x" : ""
+                        "app@2x" : "static/logo-300.png",
+                        "app@3x" : "static/logo-circle.png",
+                        "notification@2x" : "static/logo-28.png",
+                        "notification@3x" : "static/logo-28.png",
+                        "settings@2x" : "static/logo-28.png",
+                        "settings@3x" : "static/logo-28.png",
+                        "spotlight@2x" : "static/logo-28.png",
+                        "spotlight@3x" : "static/logo-108.png"
                     }
                 }
             },

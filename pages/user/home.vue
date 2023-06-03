@@ -65,7 +65,7 @@
                     <view class="col-span-2 text-gray-500">拼音：</view>
                     <view class="col-span-4">{{ role.chnname }}</view>
                     <view class="col-span-2 text-gray-500">性别：</view>
-                    <view class="col-span-4">{{ role.gender === 0 ? '男' : '女' }}</view>
+                    <view class="col-span-4">{{ role.gender === 1 ? '男' : '女' }}</view>
                     <view class="col-span-2 text-gray-500">朝代：</view>
                     <view class="col-span-4">{{ role.dynasty }}</view>
                     <view class="col-span-2 text-gray-500">生年：</view>
@@ -91,9 +91,10 @@
         </view>
 
         <view class="grid grid-cols-2 gap-4 p-4 fixed left-0 right-0 bottom-0 bg-gradient-to-b from-transparent to-white z-10">
-            <view class="flex items-center justify-center p-4 rounded-full bg-rose-500" @click="$u.route('pages/chat/single', {user_id: user.id})">
-                <i class="ri-message-3-fill text-xl text-white mr-2"></i>
-                <text class="text-base text-white">打招呼</text>
+            <view class="flex items-center justify-center p-4 rounded-full bg-rose-500" @click="$u.route('pages/chat/single', {user_id:user_id})">
+                
+				<i class="ri-message-3-fill text-xl text-white mr-2"></i>
+			<text class="text-base text-white">	 打招呼</text>
             </view>
 			<view v-show='is_follow==0'  class="flex items-center justify-center p-4 rounded-full bg-purple-500">
 			    <i class="ri-heart-3-fill text-xl text-white mr-2"></i>
@@ -152,6 +153,11 @@ export default {
         that.params.page = ++that.params.page
         that.getUserPost()
     },
+	mounted() {
+		let that = this
+		that.user_id= that.$Route.query.user_id
+		console.log(that.user_id= that.$Route.query.user_id,'1');
+	},
     methods: {
 		interest(type){
 			let that = this
