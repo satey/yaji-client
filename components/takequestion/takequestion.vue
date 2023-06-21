@@ -1,84 +1,83 @@
 <template>
-	
-		 <view class="takeQuestion">
-			 <!-- {{item}} -->
-		  <view class="takeQuestion-item"  @click="skipTopic(item)">
-		   <!-- 话题 -->
-		  <view class="question-title" @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id})">#{{item.title}}</view>
-		  <image class="hot" src="https://axhub.im/ax10/85ee1db375b49826/images/%E9%A6%96%E9%A1%B5/u104.svg" mode=""></image>
-		  <text>{{item.hot_num}}</text>
-		  <view class="pics">
-		  <image :src="item.avatar[0]" class="pics-item" mode=""></image>
-		<image :src="item.avatar[1]" class="pics-item" mode=""></image>
-		   <image :src="item.avatar[2]" class="pics-item" mode=""></image>
-		  </view>
-		  </view>
-		  
-		 </view>
-	
+
+	<view class="takeQuestion">
+		<!-- {{item}} -->
+		<view class="takeQuestion-item" @click="skipTopic(item)" :style="{background:colors[index % 4 ]}">
+			<!-- 话题 -->
+			<view class="question-title">
+				<view @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id})">{{item.title}}</view>
+				<view class="pics">
+					<image :src="items" class="pics-item" mode="" v-for="(items,index) in item.avatar"></image>
+				</view>
+			</view>
+			<view style="display: flex;align-items: center;">
+				<text class="ri-fire-fill" style="color: #FE4373;font-size: 50rpx;"></text>
+				<text style="color: #FE4373;font-size: 30rpx;">{{item.hot_num}}</text>
+			</view>
+		</view>
+
+	</view>
+
 </template>
-		
+
 <script>
 	export default {
 		props: {
-		    item: {}
+			item: {},
+			index: 0
 		},
 		data() {
 			return {
-				
+				colors: ["#F6F6FF", "#F1FEFF", "#FFFBF4", "#FFF6FE"],
 			}
 		},
-	
+		created() {},
 		onShow() {
 			uni.removeStorageSync('hot')
 			uni.removeStorageSync('title')
 		},
 		methods: {
-			skipTopic(item){
-				console.log(item);
-				uni.setStorageSync('hot',item.hot_num)
-				uni.setStorageSync('title',item.title)
+			skipTopic(item) {
+				uni.setStorageSync('hot', item.hot_num)
+				uni.setStorageSync('title', item.title)
 			}
 		}
 	}
 </script>
 
-<style>
-.takeQuestion-item{
- width:100%;
- height: 130rpx;
- border-bottom: 1px solid  rgba(0, 0, 0, 0.05);;
-}
-.hot{
- width: 30rpx;
- height: 30rpx;
- float: right;
- margin-right: 80rpx;
- /* border: 1px solid #000; */
-}
-.takeQuestion-item text{
- float: right;
- margin-right: -80rpx;
-}
-.question-title{
- margin-left: 20rpx;
- font-size: 30rpx;
- color: #169BD5;
-padding-top: 20rpx;
-}
+<style lang="scss" scoped>
+	.takeQuestion-item {
+		width: 100%;
+		height: 160rpx;
+		padding: 30rpx;
+		box-sizing: border-box;
+		border-radius: 10rpx;
+		margin-top: 20rpx;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
 
-.pics-item{
- width: 40rpx;
- height: 40rpx;
- margin-left: 10rpx;
- margin-top: 15rpx;
- border-radius: 50%;
- /* border: 1px solid rgba(0, 0, 0, 0.05); */
-}
-.pics-item:nth-child(2){
-	margin-left: -10rpx;
-}
-.pics-item:nth-child(3){
-	margin-left: -10rpx;
-}
+	.hot {
+		width: 30rpx;
+		height: 30rpx;
+		float: right;
+		margin-right: 80rpx;
+		/* border: 1px solid #000; */
+	}
+
+	.question-title {
+		font-size: 28rpx;
+		color: #6F93BD;
+	}
+
+	.pics-item {
+		width: 40rpx;
+		height: 40rpx;
+		margin-left: 10rpx;
+		margin-top: 15rpx;
+		border-radius: 50%;
+		margin-right: 10rpx;
+		/* border: 1px solid rgba(0, 0, 0, 0.05); */
+	}
 </style>
