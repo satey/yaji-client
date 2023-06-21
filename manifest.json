@@ -1,9 +1,9 @@
 {
     "name" : "雅集",
-    "appid" : "__UNI__AE1975A",
+    "appid" : "__UNI__5018490",
     "description" : "雅集",
-    "versionName" : "1.2.1",
-    "versionCode" : 121,
+    "versionName" : "1.0.0",
+    "versionCode" : 100,
     "transformPx" : false,
     "app" : {
         "launch_path" : "/pages/auth/login"
@@ -25,7 +25,7 @@
         "privacy" : {
             "prompt" : "template",
             "title" : "用户协议和隐私政策",
-            "message" : "请你务必审慎阅读、充分理解“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。<br/>　　你可阅读<a href=''>《用户协议》</a>和<a href=''>《隐私政策》</a>了解详细信息。如果你同意，请点击下面按钮开始接受我们的服务。",
+            "message" : "请你务必审慎阅读、充分理解“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。<br/>　　你可阅读<a href=\"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacyProtocol.html?type=agreement\">《用户协议》</a>和<a href=\"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacyProtocol.html?type=privacy\">《隐私政策》</a>了解详细信息。如果你同意，请点击下面按钮开始接受我们的服务。",
             "buttonAccept" : "同意",
             "buttonRefuse" : "拒绝",
             "disagreeMode" : {
@@ -42,18 +42,18 @@
         "distribute" : {
             "android" : {
                 "permissions" : [
-                    "<uses-feature android:name=\"android.hardware.camera\"/>",
-                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
-                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    // "<uses-feature android:name=\"android.hardware.camera\"/>",
+                    // "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+                    // "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
+                    // "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
+                    // "<uses-permission android:name=\"android.permission.CAMERA\"/>",
                     "<uses-permission android:name=\"android.permission.GET_TASKS\"/>",
                     "<uses-permission android:name=\"android.permission.INJECT_EVENTS\"/>",
-                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
-                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
-                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
+                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>"
                 ],
+                // "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+                // "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>"
+                // "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
             },
             "ios" : {
@@ -61,32 +61,32 @@
                 "dSYMs" : false
             },
             "sdkConfigs" : {
-                "push" : {
-                    "unipush" : {
-                        "version" : "2",
-                        "offline" : true,
-                        "fcm" : {},
-                        "mi" : {},
-                        "vivo" : {},
-                        "oppo" : {},
-                        "hms" : {}
-                    }
-                },
-                "share" : {
-                    "sina" : {
-                        "appkey" : "",
-                        "redirect_uri" : "",
-                        "UniversalLinks" : ""
-                    },
-                    "weixin" : {
-                        "appid" : "",
-                        "UniversalLinks" : ""
-                    }
-                },
-                "ad" : {},
-                "maps" : {},
-                "payment" : {}
+                "ad" : {}
             },
+            // "push" : {
+            //     "unipush" : {
+            //         "offline" : false,
+            //         "hms" : {},
+            //         "oppo" : {},
+            //         "vivo" : {},
+            //         "mi" : {},
+            //         "fcm" : {}
+            //     }
+            // },
+            // "share" : {
+            //     "sina" : {
+            //         "appkey" : "",
+            //         "redirect_uri" : "",
+            //         "UniversalLinks" : ""
+            //     },
+            //     "weixin" : {
+            //         "appid" : "",
+            //         "UniversalLinks" : ""
+            //     }
+            // },
+            // "ad" : {},
+            // "maps" : {},
+            // "payment" : {}
             "icons" : {
                 "android" : {
                     "hdpi" : "static/logo-28.png",
