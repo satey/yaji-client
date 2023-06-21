@@ -8,9 +8,10 @@
 		<view class="face">###{{title}}</view>
 		<image src="../../static/hot.png" class="hot" style="margin-top: 20rpx;" mode=""></image>
 		<view class="mw">{{hot}}</view>
-		
+
 		<view class="topic">
-			<uc-topicspeed  v-for="(item,index) in topicspeedList" key="index" :item='item' :roleTotalList='roleTotalList'></uc-topicspeed>
+			<uc-topicspeed v-for="(item,index) in topicspeedList" key="index" :item='item'
+				:roleTotalList='roleTotalList'></uc-topicspeed>
 			<!-- <view class="topic-item"  v-for="(item,index) in topicspeedList.data" key="index">
 				<image class="pic" :src="item.user.avatar" mode=""></image>
 				<view class="name">{{item.user.role_realname}}  {{item.user.role_dynasty}}</view>
@@ -37,7 +38,7 @@
 			</view>
 	 -->
 		</view>
-	<!-- </view> -->
+		<!-- </view> -->
 
 	</view>
 </template>
@@ -49,24 +50,24 @@
 			return {
 				page: 1,
 				post_cate_id: null,
-				topicspeedList:[],
-				hot:'',
-				title:'',
-				roleTotalList:[]
-				
+				topicspeedList: [],
+				hot: '',
+				title: '',
+				roleTotalList: []
+
 			}
 		},
 		onLoad(options) {
 			let that = this
 			that.post_cate_id = options.post_cate_id
-			uni.setStorageSync('post_cate_id',options.post_cate_id)
+			uni.setStorageSync('post_cate_id', options.post_cate_id)
 		},
 		mounted() {
-			let that=this
-		this.init()	
-		// console.log('hot',uni.getStorageSync('hot'));
-		that.hot=uni.getStorageSync('hot')
-		that.title=uni.getStorageSync('title')
+			let that = this
+			this.init()
+			// console.log('hot',uni.getStorageSync('hot'));
+			that.hot = uni.getStorageSync('hot')
+			that.title = uni.getStorageSync('title')
 			uni.removeStorageSync('hot')
 			uni.removeStorageSync('title')
 		},
@@ -74,23 +75,23 @@
 
 		},
 		methods: {
-			
+
 			init() {
 				let that = this
-				let data={
-					page:1,
-					post_cate_id:uni.getStorageSync('post_cate_id')
+				let data = {
+					page: 1,
+					post_cate_id: uni.getStorageSync('post_cate_id')
 				}
-				that.$api('post.recommend',data).then(res => {
+				that.$api('post.recommend', data).then(res => {
 					if (res.code === 1) {
-						that.topicspeedList=res.data.data
+						that.topicspeedList = res.data.data
 						// console.log('sc',that.topicspeedList);
-						for (let i = 0; i <that.topicspeedList.length; i++) {
+						for (let i = 0; i < that.topicspeedList.length; i++) {
 							console.log('11', that.topicspeedList[i].user.role_titles.split(','));
 							that.roleTotalList = that.topicspeedList[i].user.role_titles.split(',')
 						}
-					
-						}
+
+					}
 				})
 			},
 
@@ -98,7 +99,7 @@
 		created() {
 
 		},
-		
+
 
 
 	}

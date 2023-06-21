@@ -1,386 +1,619 @@
 <template>
-    <page-meta :root-font-size="'13px'"></page-meta>
-    <view class="">
-        <u-navbar title="动态" :safeAreaInsetTop="true" :placeholder="true" @click="$u.route({ type: 'navigateBack', delta: 1 })">
-            <view slot="left">
-                <i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
-            </view>
-            <view slot="right">
-                <!-- <i class="ri-question-fill text-3xl bg-gradient-to-b from-red-400 to-red-200 bg-clip-text text-transparent"></i> -->
-            </view>
-        </u-navbar>
-        <view class="px-4">
-            <view class="flex mt-6">
-                <view class="mr-4" @click="$u.route('/pages/user/home', { user_id: post.user_id })">
-                    <image class="block w-14 h-14 rounded-full" :src="post.user.avatar || '/static/avatar.png'"></image>
-                </view>
-                <view class="flex-1">
-                    <view class="text-base leading-none mt-2">{{ post.user.role_realname + ' · ' + post.user.role_dynasty || '无名氏' }}</view>
-                    <view class="flex mt-4">
-                        <view class="text-xs leading-none text-gray-500 mr-2" v-for="(tag, index) in post.user.tags" :key="index" :item="tag">{{ tag }}</view>
-                    </view>
-                </view>
-				<!-- 举报功能 -->
-                <view class="" @click="showAction = true">
-                    <i class="ri-more-2-fill text-xl bg-gradient-to-b from-gray-500 to-gray-400 bg-clip-text text-transparent"></i>
-                </view>
-            </view>
-            <view class="mt-4" @click="addComment(post)">{{ post.content }}</view>
-            <view v-if="post.images" class="mt-4">
-                <u-album :urls="post.images.split(',')" multipleSize="150" rowCount="3"></u-album>
-            </view>
-            <view v-if="post.audio"  @click="handlePlayAudio(post.audio)" class="mt-4 flex items-center justify-center rounded-full overflow-hidden w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
-                <i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
-            </view>
-            <view v-if="post.video" @click="handlePlayVideo(post.video)" class="mt-4 flex items-center justify-center rounded overflow-hidden w-60 bg-gray-200">
-                <video class="z-0" :src="post.video" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
-            </view>
-            <view class="flex mt-4">
-                <view class="flex items-center rounded-full mr-2" v-for="(tag, index) in post.tags" :key="index" :post="tag">
-                    <i class="ri-hashtag text-gray-500"></i>
-                    <view class="text-gray-500">{{ tag }}</view>
-                </view>
-            </view>
-            <view class="flex mt-4">
-                <view class="flex-1 flex items-center">
-                    <text class="text-xs leading-none text-gray-400">{{ $u.timeFrom(post.createtime, 'mm月dd日') }}</text>
-                </view>
-				<!-- 红心 -->
-                <view class="flex items-center" @click="handlePostDig()">
-                    <i v-show='post.is_zan==0' class="ri-heart-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-					<i v-show='post.is_zan==1' class="ri-heart-3-fill text-xl bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i>
-                    <text class="text-gray-500 ml-2">{{ post.diggnums }}</text>
-                </view>
-             <!--   <view class="flex items-center ml-4">
-                    <i class="ri-message-3-fill text-xl bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-                    <text class="text-gray-500 ml-2">{{ post.commentnums }}</text>
-                </view> -->
-            </view>
+	<page-meta :root-font-size="'13px'"></page-meta>
+	<view class="">
+		<u-navbar title="详情" :safeAreaInsetTop="true" :placeholder="true"
+			@click="$u.route({ type: 'navigateBack', delta: 1 })">
+			<view slot="left">
+				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+			</view>
+			<view slot="right" @click="showAction = true" v-if="userInfo.id != user_id">
+				<i class="ri-more-fill " style="font-size: 38rpx;color: #333;"></i>
+				<!-- <i class="ri-question-fill text-3xl bg-gradient-to-b from-red-400 to-red-200 bg-clip-text text-transparent"></i> -->
+			</view>
+		</u-navbar>
+		<!-- 举报 -->
+		<u-popup :show="showFeedback" @close="showFeedback = false" :closeable="true" :round="30"
+			customStyle="min-height: 500rpx;">
+			<view class="p-4">
+				<view class="text-2xl text-center">举报反馈</view>
+				<view class="text-gray-500 mt-6">选择分类：</view>
+				<view class="flex flex-wrap rounded-full">
+					<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4"
+						v-for="(item, index) in ListFeedbackType" :key="index" :item="item" @click="feedbackType = item"
+						:class="feedbackType === item ? 'bg-rose-200' : ''">
+						<text class="text-base">{{ item }}</text>
+					</view>
+				</view>
+				<view class="text-gray-500 mt-6">补充说明：</view>
+				<view class="flex p-4 rounded bg-gray-100 mt-4">
+					<u-textarea v-model="feedback" type="text" maxlength="200" :clearable="true" :count="true"
+						customStyle="border: none; background: none; padding: 0;"></u-textarea>
+				</view>
+				<view class="grid gap-4 mt-10 text-center">
+					<view
+						class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
+						@click="handleFeedback()">提交</view>
+				</view>
+			</view>
+		</u-popup>
+		<!-- 操作弹窗 -->
+		<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
+			<view class="p-4">
+				<!-- <view class="text-2xl text-center">操作</view> -->
+				<view class="delete" @click="showFeedback = true, showAction = false" style="margin-top: 50rpx;">
+					<!-- <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i> -->
+					<view style="font-size: 30rpx;">举报广告/色情等</view>
+				</view>
+				<view class="delete2" @click="showAction = false" style="margin-top: 20rpx;">
+					<!-- <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i> -->
+					<view style="font-size: 30rpx;">取消</view>
+				</view>
+				<!-- <view class="grid grid-cols-5 gap-4 mt-6">
+					<view class="text-center" @click="showFeedback = true, showAction = false">
+						<i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i>
+						<view class="text-base mt-2">举报</view>
+					</view>
+				</view> -->
+			</view>
+		</u-popup>
+		<!-- 底部 -->
+		<view class="fixed bottom-0 left-0 right-0 !border-t border-0 border-solid border-gray-100 bg-white"
+			style="z-index: 90;">
+			<view class="flex p-4">
+				<view class="flex items-center" @click="showEmoji = !showEmoji">
+					<i class="ri-emotion-fill text-4xl text-gray-500"></i>
+				</view>
+				<view class="flex-1 flex">
+					<u-textarea v-model="message" :focus="inputFocus" :autoHeight="true" :placeholder="placeholder"
+						type="text" maxlength="200"></u-textarea>
+				</view>
+				<view class="flex items-center">
+					<view
+						class="p-3 rounded-full text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
+						@click="doComment()">发送</view>
+				</view>
+			</view>
+			<!-- 表情 -->
+			<view class="grid grid-cols-12 gap-2 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
+				<view class="flex" v-for="(item, index) in emojiList" :key="index" :item="item"
+					@click="handleEmojiSend(item)">
+					<text class="text-xl leading-none">{{ item }}</text>
+				</view>
+			</view>
+		</view>
+		<!-- 内容 -->
+		<view class="userContent">
+			<view class="userImg" @click="$u.route('/pages/user/home', { user_id: post.user_id })">
+				<image :src="post.user.avatar || '/static/avatar.png'" class="userImg"></image>
+			</view>
+			<view style="flex: 1;">
+				<view class="userInfo">
+					<view class="userNameBox">
+						<view class="userName">{{ post.user.role_realname + ' · ' + post.user.role_dynasty || '无名氏' }}
+						</view>
+						<view class="tags">{{achievements.replace(/,/g,"&nbsp;&nbsp;")}}</view>
+					</view>
+					<view class="follow" v-show='is_follow==0' @click="interest(1)">关注</view>
+					<view class="followActive" v-show="is_follow==1" @click="interest(2)">已关注</view>
+				</view>
+				<view class="detailsText">{{ post.content || '' }}</view>
+				<view v-if="post.images">
+					<image v-for="(item,index) in images" :src="item" style="width: 100%;border-radius: 10rpx;"
+						mode="widthFix" class="mt-4" @click="openImgs(index)"></image>
+					<!-- <u-album :urls="post.images.split(',')" multipleSize="150" rowCount="3"></u-album> -->
+				</view>
+				<view v-if="post.audio" @click="handlePlayAudio(post.audio)"
+					class="mt-4 flex items-center justify-center rounded-full overflow-hidden w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
+					<i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
+				</view>
+				<view class="topic">
+					<view class="topicItem" @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id})"
+						v-for="(item,index) in post.post_cate">{{item.title}}</view>
+				</view>
+				<view style="display: flex;align-items: center;justify-content: space-between;margin-top: 30rpx;">
+					<view style="color: #999999;font-size: 22rpx;">{{ $u.timeFrom(post.createtime, 'mm月dd日') }}</view>
+					<view style="display: flex;align-items: center;" @click="handlePostDig()">
+						<text v-show='post.is_zan==0' class="ri-heart-line"
+							style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
+						<text v-show='post.is_zan==1' class="ri-heart-fill"
+							style="font-size: 40rpx;margin-right: 10rpx;color: #fe4373;"></text>
+						<text style="font-size: 24rpx;color: #999;">{{ post.diggnums == 0?'出彩':post.diggnums }}</text>
+					</view>
+				</view>
+				<!-- <view class="zanNum">
+					<image src="../../static/userBg.png" class="imgsItem" mode=""></image>
+					<image src="../../static/userBg.png" class="imgsItem" mode=""></image>
+					<image src="../../static/userBg.png" class="imgsItem" mode=""></image>
+					<image src="../../static/userBg.png" class="imgsItem" mode=""></image>
+					<image src="../../static/userBg.png" class="imgsItem" mode=""></image>
+					<text style="margin-left: 20rpx;font-size: 22rpx;color: #999999;">等人点赞</text>
+				</view> -->
+			</view>
+		</view>
 
-            <!-- <view class=" text-gray-500 mt-6">所有评论 ({{ paginator.total }})</view> post.commentnums -->
-			<view class=" text-gray-500 mt-6">所有评论 ({{post.commentnums }})</view>
-            <uc-comment v-for="(item, index) in listPostComment" :key="index" :item="item" :id='post.id'></uc-comment>
-            <u-empty v-if="!listPostComment.length" icon="/static/empty.png" text="暂无评论" textColor="#a1a1a1" marginTop="100"></u-empty>
-            <view style="height: 220rpx;"></view>
-        </view>
-
-		<view class="fixed bottom-0 left-0 right-0 !border-t border-0 border-solid border-gray-100 bg-white">
-            <view class="flex p-4">
-                <view class="flex items-center" @click="showEmoji = !showEmoji">
-                    <i class="ri-emotion-fill text-4xl text-gray-500"></i>
-                </view>
-                <view class="flex-1 flex">
-                    <u-textarea v-model="message" :focus="inputFocus" :autoHeight="true"  :placeholder="placeholder" type="text" maxlength="200"></u-textarea>
-                </view>
-                <view class="flex items-center">
-                    <view class="p-3 rounded-full text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="doComment()">发送</view>
-                </view>
-            </view>
-            <!-- 表情 -->
-            <view class="grid grid-cols-12 gap-2 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
-                <view class="flex" v-for="(item, index) in emojiList" :key="index" :item="item" @click="handleEmojiSend(item)">
-                    <text class="text-xl leading-none">{{ item }}</text>
-                </view>
-            </view>
-        </view>
-        
-        <u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
-            <view class="p-4">
-                <view class="text-2xl text-center">操作</view>
-                <view class="grid grid-cols-5 gap-4 mt-6">
-                    <view class="text-center" @click="showFeedback = true, showAction = false">
-                        <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i>
-                        <view class="text-base mt-2">举报</view>
-                    </view>
-					<!-- 删除动态 -->
-				<!-- 	<view class="text-center" @click="detailTrends">
-					    <i class="ri-alarm-warning-fill block text-3xl leading-none text-orange-500"></i>
-					    <view class="text-base mt-2">删除</view>
-					</view> -->
-                </view>
-            </view>
-        </u-popup>
-
-        <u-popup :show="showFeedback" @close="showFeedback = false" :closeable="true" :round="30" customStyle="min-height: 500rpx;">
-            <view class="p-4">
-                <view class="text-2xl text-center">举报反馈</view>
-                <view class="text-gray-500 mt-6">选择分类：</view>
-                <view class="flex flex-wrap rounded-full">
-                    <view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in ListFeedbackType" :key="index" :item="item" @click="feedbackType = item" :class="feedbackType === item ? 'bg-rose-200' : ''">
-                        <text class="text-base">{{ item }}</text>
-                    </view>
-                </view>
-                <view class="text-gray-500 mt-6">补充说明：</view>
-                <view class="flex p-4 rounded bg-gray-100 mt-4">
-                    <u-textarea v-model="feedback" type="text" maxlength="200" :clearable="true" :count="true" customStyle="border: none; background: none; padding: 0;"></u-textarea>
-                </view>
-                <view class="grid gap-4 mt-10 text-center">
-                    <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleFeedback()">提交</view>
-                </view>
-            </view>
-        </u-popup>
-
-        <uc-auth></uc-auth>
-    </view>
+		<view class="comment" style="padding: 30rpx;">
+			<view class="title" style="color: #323232;font-size: 28rpx;font-weight: bold;">全部评论({{post.commentnums }})
+			</view>
+			<view class="commentList">
+				<uc-comment v-for="(item, index) in listPostComment" :key="index" :item="item"
+					:id='post.id'></uc-comment>
+				<u-empty v-if="!listPostComment.length" icon="/static/empty.png" text="暂无评论" textColor="#a1a1a1"
+					marginTop="100"></u-empty>
+				<view style="height: 120rpx;"></view>
+			</view>
+		</view>
+	</view>
 </template>
 <script>
-export default {
-    name: 'detail',
-    components: {
-    },
-    data() {
-        return {
-            post: {
-                user: {}
-            },
-            audio: null,
-            audioStatus: false,
-            video: null,
-            videoStatus: false,
-            listPostComment: [],
-            params: {
-                type: 'all',
-                page: 1,
-            },
-            paginator: {
-                total: 0,
-                last_page: 0,
-            },
-            loadmore: false,
-            inputFocus: false,
-            placeholder: '发表评论',
-            showEmoji: false,
-            emojiList: [],
-            message: '',
-            post_id: null,
-            post_comment_id: null,
-            showAction: false,
-            showFeedback: false,
-            feedback: '',
-            feedbackType: '',
-            ListFeedbackType: ['色情低俗','政治敏感','造谣传谣','广告欺诈','侵犯权益','其他'],
-			isRed:false,
-			isNoRed:true,
-		
-		}
-    },
-	created() {
-        let that = this
-        that.getEmojiList()
-		// that.isRedLove=false
-	},
-    onLoad(option) {
-        let that = this
-        that.getPostDetail()
-        that.getPostComment()
-		// that.getDigCommentDetail()
-    },
-    methods: {
-		// 删除动态
-		// detailTrends(){
-		// 	let that=this
-		// 	uni.showModal({
-		// 		content:'你确定要删除吗？？？',
-		// 		cancelText:'取消',
-		// 		confirmText:'确定'
-		// 	})
-		// 	// 	that.$api('post.del', { post_id:that.item.id }).then(res => {
-		// 	// 	    if (res.code === 1) {
-		// 	// 		console.log('删除成功');
-					
-		// 	// 		that.getPostMine()
-		// 	// 		setTimeout(() => {
-		// 	// 			this.$router.go(0)
-		// 	// 		}, 500)
-		// 	// 	    }
-		// 	// 	})
-			
-		// },
-		
-        getPostDetail() {
-            let that = this
-            that.$api('post.detail', { post_id: that.$Route.query.post_id }).then(res => {
-                if (res.code === 1) {
-                    that.post = res.data
-					that.paginator.total = res.data.total
-					that.paginator.last_page = res.data.last_page
-					that.postRecommendList = [...that.post, ...res.data]
-					if (that.params.page < res.data.last_page) {
-					    that.loadmore = 'loadmore'
-					} else {
-					    that.loadmore = 'nomore'
-					}
-                }
-            })
-        },
-        async getPostComment() {
-            let that = this
-            that.loadmore = 'loading'
-            that.$api('comment.lists', { post_id: that.$Route.query.post_id }).then(res => {
-                if (res.code === 1) {
-					console.log(res.data);
-                    // that.paginator.total = res.data.total
-                    // that.paginator.last_page = res.data.last_page
-                    // that.listPostComment = [...that.listPostComment, ...res.data.data]
-					    that.listPostComment =res.data
-					console.log('评论',res.data);
-                    // if (that.params.page < res.data.last_page) {
-                        // that.loadmore = 'loadmore'
-                    // } else
-                        // that.loadmore = 'nomore'
-                }
-            })
-        },
-        async getEmojiList() {
-            let that = this
-            if (uni.getStorageSync('EMOJILIST')) {
-                that.emojiList = uni.getStorageSync('EMOJILIST')
-            } else {
-                that.emojiList = ['😀','😁','😂','🤣','😃','😄','😅','😆','😉','😊','😋','😎','😍','😘','🥰','😗','😙','🥲','😚','🙂','🤗','🤩','🤔','🫡','🤨','😐','😑','😶','🫥','😶‍🌫️','🙄','😏','😣','😥','😮','🤐','😯','😪','😫','🥱','😴','😌','😛','😜','😝','🤤','😒','😓','😔','😕','🫤','🙃','🫠','🤑','😲','☹️','🙁','😖','😞','😟','😤','😢','😭','😦','😧','😨','😩','🤯','😬','😮‍💨','😰','😱','🥵','🥶','😳','🤪','😵','😵‍💫','🥴','😠','😡','🤬','😷','🤒','🤕','🤢','🤮','🤧','😇','🥳','🥸','🥺','🥹','🤠','🤡','🤥','🤫','🤭','🫢','🫣','🧐','🤓','😈','👿','👹','👺','💀','☠️','👻','👽','👾','🤖','💩','😺','😸','😹','😻','😼','😽','🙀','😿','😾','🙈','🙉','🙊','🐵','🐶','🐺','🐱','🦁','🐯','🦒','🦊','🦝','🐮','🐷','🐗','🐭','🐹','🐰','🐻','🐻‍❄️','🐨','🐼','🐸','🦓','🐴','🦄','🐔','🐲','🐽','🐾','🐒','🦍','🦧','🦮','🐕‍🦺','🐩','🐕','🐈','🐈‍⬛','🐅','🐆','🐎','🦌','🦬','🦏','🦛','🐂','🐃','🐄','🐖','🐏','🐑','🐐','🐪','🐫','🦙','🦘','🦥','🦨','🦡','🐘','🦣','🐁','🐀','🦔','🐇','🐿️','🦫','🦎','🐊','🐢','🐍','🐉','🦕','🦖','🦦','🦈','🐬','🦭','🐳','🐋','🐟','🐠','🐡','🦐','🦑','🐙','🦞','🦀','🐚','🪸','🦆','🐓','🦃','🦅','🕊️','🦢','🦜','🦩','🦚','🦉','🦤','🪶','🐦','🐧','🐥','🐤','🐣','🦇','🦋','🐌','🐛','🦟','🪰','🪱','🦗','🐜','🪳','🐝','🪲','🐞','🦂','🕷️','🕸️','🦠','🧞‍♀️','🧞‍♂️','🧞','🧟‍♀️','🧟‍♂️','🧟','🧌','🗣️','👤','👥','🫂','👁️','👀','🦴','🦷','👅','👄','🫦','🧠','🫀','🫁','🦾','🦿','👣','🤺','⛷️']
-                uni.setStorageSync('EMOJILIST', that.emojiList)
+	export default {
+		name: 'detail',
+		components: {},
+		data() {
+			return {
+				post: {
+					user: {}
+				},
+				audio: null,
+				audioStatus: false,
+				video: null,
+				videoStatus: false,
+				listPostComment: [],
+				params: {
+					type: 'all',
+					page: 1,
+				},
+				paginator: {
+					total: 0,
+					last_page: 0,
+				},
+				loadmore: false,
+				inputFocus: false,
+				placeholder: '发表评论',
+				showEmoji: false,
+				emojiList: [],
+				message: '',
+				post_id: null,
+				post_comment_id: null,
+				showAction: false,
+				showFeedback: false,
+				feedback: '',
+				feedbackType: '',
+				ListFeedbackType: ['色情低俗', '政治敏感', '造谣传谣', '广告欺诈', '侵犯权益', '其他'],
+				isRed: false,
+				isNoRed: true,
+				// ------
+				images: [],
+				is_follow: '',
+				user_id: "",
+				achievements: "",
+				userInfo: "",
+			}
+		},
+		created() {
+			let that = this
+			that.getEmojiList()
+			// that.isRedLove=false
+		},
+		onLoad(option) {
+			let that = this;
+			that.userInfo = uni.getStorageSync("userInfo");
+			that.getPostDetail()
+			that.getPostComment()
+			// that.getDigCommentDetail()
+		},
+		methods: {
+			interest(type) {
+				let that = this
+				if (type == 1) {
+					that.$api('user_follow.follow', {
+						user_id: that.user_id
+					}).then(res => {
+						that.is_follow == 1
+						that.getUserProfile(that.user_id)
+					})
+				}
+				if (type == 2) {
+					uni.showModal({
+						title: '提示',
+						content: '确定要取消关注用户？',
+						confirmText: "确定", //这块是确定按钮的文字
+						cancelText: "取消", //这块是取消的文字
+						success: function(res) {
+							if (res.confirm) {
+								that.$api('user_follow.follow', {
+									user_id: that.user_id
+								}).then(res => {
+									console.log(res.code);
+									if (res.code === 1) {
+										// that.user = res.data
+										console.log('取消成功');
+										that.is_follow == 0
+										console.log(res.data);
+										// that.isInterest=!that.isInterest
+										that.getUserProfile()
+									} else {
+										console.log('25');
+									}
+								})
 
-            }
-        },
-        handlePlayAudio(audio) {
-            let that = this
-            if (!audio) {
-                that.$u.toast('语音不能为空')
-                return false
-            }
-            if (!that.audio) {
-                that.audio = uni.createInnerAudioContext()
-                that.audio.src = audio
-            }
-            that.audioStatus = !that.audioStatus
-            if(that.audioStatus) {
-                that.$nextTick(function () {
-                    that.audio.play()
-                    that.audio.onEnded((e) => {
-                        that.audioStatus = false
-                    })
-                })
-            } else {
-                that.$nextTick(function () {
-                    that.audio.pause()
-                })
-            }
-        },
-        handlePlayVideo(video) {
-            let that = this
-            if (!video) {
-                that.$u.toast('视频不能为空')
-                return false
-            }
-            if (!that.video) {
-                that.video = uni.createVideoContext('video')
-                that.video.src = video
-            }
-            that.videoStatus = !that.videoStatus
-            if(that.videoStatus) {
-                that.$nextTick(function () {
-                    that.video.play()
-                })
-            } else {
-                that.$nextTick(function () {
-                    that.video.pause()
-                })
-            }
-        },
-        addComment(item) {
-            let that = this
-            that.placeholder = `回复${item.user.role_realname}`
-            that.post_comment_id = item.id
-            that.inputFocus = true
-        },
-        handlePostDig() {
-            let that = this
-            that.$api('post.dig', {
-                post_id: that.post.id
-            }).then(res => {
-                if (res.code === 1) {
-					that.isRed=!that.isRed
-					// that.isNoRed=false
-					that.isNoRed=!that.isNoRed
-					if(that.post.is_zan==0){
-						that.$u.toast('点赞成功')
-					}else{
-						that.$u.toast('取消点赞')
+
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+				}
+			},
+			//关注
+			async getUserProfile(id) {
+				let that = this
+				// console.log(that.$Route.query.user_id);
+				that.$api('user.profile', {
+					user_id: id
+				}).then(res => {
+					if (res.code === 1) {
+						that.is_follow = res.data.is_follow
 					}
-					console.log('点赞',res);
-                    that.getPostDetail()//这是更新数据的，数据库里已经改了但是不更新数据是不会改的
-                } else {
-					that.isNoRed=!that.isNoRed
-					// that.isNoRed=false
-					that.isRed=!that.isRed
-                    that.$u.toast(res.msg)
-                }
-            })
-        },
-        handleCommentDig(item) {
-            let that = this
-            that.$api('comment.dig', {
-                post_comment_id: item.id
-            }).then(res => {
-                if (res.code === 1) {
-                    that.$u.toast('点赞成功')
-                    that.getPostDetail()
-                    that.params.page = 1
-                    that.listPostComment = []
-                    that.getPostComment()
-                } else {
-                    that.$u.toast(res.msg)
-                }
-            })
-        },
-        doComment() {
-            let that = this
-            if (!that.message) {
-                that.$u.toast('内容不能为空')
-                return false
-            }
-            that.$api('comment.add', {
-                content: that.message,
-                post_comment_id: that.post_comment_id,
-                post_id: that.post.id
-            }).then(res => {
-                if (res.code === 1) {
-                    that.message = ''
-                    that.$u.toast('评论成功')
-                    that.showEmoji = false
-                    that.getPostDetail()
-                    that.params.page = 1
-                    that.listPostComment = []
-                    that.getPostComment()
-                } else {
-                    that.$u.toast(res.msg)
-                }
-            })
-        },
-        handleEmojiSend(item) {
-            let that = this
-            that.message += item
-        },
-        handleFeedback() {
-            let that = this
-            that.$api('feedback.add', {
-                type: 'report',
-                content: that.feedback,
-                remark: `类型：${that.feedbackType}，ID：${that.post.id}`
-            }).then(res => {
-                if (res.code === 1) {
-                    that.message = ''
-                    that.$u.toast('举报成功')
-                    that.showFeedback = false
-                    that.feedbackType = ''
-                    that.feedback = ''
-                } else {
-                    that.$u.toast(res.msg)
-                }
-            })
-        },
-    }
-}
+				})
+			},
+
+			//打开图片
+			openImgs(index) {
+				var that = this;
+				uni.previewImage({
+					current: index,
+					urls: that.images
+				})
+			},
+			// 删除动态
+			// detailTrends(){
+			// 	let that=this
+			// 	uni.showModal({
+			// 		content:'你确定要删除吗？？？',
+			// 		cancelText:'取消',
+			// 		confirmText:'确定'
+			// 	})
+			// 	// 	that.$api('post.del', { post_id:that.item.id }).then(res => {
+			// 	// 	    if (res.code === 1) {
+			// 	// 		console.log('删除成功');
+
+			// 	// 		that.getPostMine()
+			// 	// 		setTimeout(() => {
+			// 	// 			this.$router.go(0)
+			// 	// 		}, 500)
+			// 	// 	    }
+			// 	// 	})
+
+			// },
+
+			getPostDetail() {
+				let that = this
+				that.$api('post.detail', {
+					post_id: that.$Route.query.post_id
+				}).then(res => {
+					if (res.code === 1) {
+						that.user_id = res.data.user_id;
+						// ---------
+						that.$api('user.info', {
+							user_id: res.data.user_id
+						}).then(data => {
+							if (data.code === 1) {
+								that.achievements = data.data.achievements;
+							} else {}
+						})
+						that.getUserProfile(res.data.user_id)
+						that.post = res.data;
+						that.images = res.data.images.split(",");
+						that.paginator.total = res.data.total
+						that.paginator.last_page = res.data.last_page
+						that.postRecommendList = [...that.post, ...res.data]
+
+						if (that.params.page < res.data.last_page) {
+							that.loadmore = 'loadmore'
+						} else {
+							that.loadmore = 'nomore'
+						}
+
+					}
+				})
+			},
+			async getPostComment() {
+				let that = this
+				that.loadmore = 'loading'
+				that.$api('comment.lists', {
+					post_id: that.$Route.query.post_id
+				}).then(res => {
+					if (res.code === 1) {
+						// that.paginator.total = res.data.total
+						// that.paginator.last_page = res.data.last_page
+						// that.listPostComment = [...that.listPostComment, ...res.data.data]
+						that.listPostComment = res.data
+						// if (that.params.page < res.data.last_page) {
+						// that.loadmore = 'loadmore'
+						// } else
+						// that.loadmore = 'nomore'
+					}
+				})
+			},
+			async getEmojiList() {
+				let that = this
+				if (uni.getStorageSync('EMOJILIST')) {
+					that.emojiList = uni.getStorageSync('EMOJILIST')
+				} else {
+					that.emojiList = ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍',
+						'😘', '🥰', '😗', '😙', '🥲', '😚', '🙂', '🤗', '🤩', '🤔', '🫡', '🤨', '😐', '😑', '😶',
+						'🫥', '😶‍🌫️', '🙄', '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '🥱', '😴', '😌',
+						'😛', '😜', '😝', '🤤', '😒', '😓', '😔', '😕', '🫤', '🙃', '🫠', '🤑', '😲', '☹️', '🙁',
+						'😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😩', '🤯', '😬', '😮‍💨', '😰',
+						'😱', '🥵', '🥶', '😳', '🤪', '😵', '😵‍💫', '🥴', '😠', '😡', '🤬', '😷', '🤒', '🤕',
+						'🤢', '🤮', '🤧', '😇', '🥳', '🥸', '🥺', '🥹', '🤠', '🤡', '🤥', '🤫', '🤭', '🫢', '🫣',
+						'🧐', '🤓', '😈', '👿', '👹', '👺', '💀', '☠️', '👻', '👽', '👾', '🤖', '💩', '😺', '😸',
+						'😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊', '🐵', '🐶', '🐺', '🐱', '🦁',
+						'🐯', '🦒', '🦊', '🦝', '🐮', '🐷', '🐗', '🐭', '🐹', '🐰', '🐻', '🐻‍❄️', '🐨', '🐼',
+						'🐸', '🦓', '🐴', '🦄', '🐔', '🐲', '🐽', '🐾', '🐒', '🦍', '🦧', '🦮', '🐕‍🦺', '🐩',
+						'🐕', '🐈', '🐈‍⬛', '🐅', '🐆', '🐎', '🦌', '🦬', '🦏', '🦛', '🐂', '🐃', '🐄', '🐖', '🐏',
+						'🐑', '🐐', '🐪', '🐫', '🦙', '🦘', '🦥', '🦨', '🦡', '🐘', '🦣', '🐁', '🐀', '🦔', '🐇',
+						'🐿️', '🦫', '🦎', '🐊', '🐢', '🐍', '🐉', '🦕', '🦖', '🦦', '🦈', '🐬', '🦭', '🐳', '🐋',
+						'🐟', '🐠', '🐡', '🦐', '🦑', '🐙', '🦞', '🦀', '🐚', '🪸', '🦆', '🐓', '🦃', '🦅', '🕊️',
+						'🦢', '🦜', '🦩', '🦚', '🦉', '🦤', '🪶', '🐦', '🐧', '🐥', '🐤', '🐣', '🦇', '🦋', '🐌',
+						'🐛', '🦟', '🪰', '🪱', '🦗', '🐜', '🪳', '🐝', '🪲', '🐞', '🦂', '🕷️', '🕸️', '🦠',
+						'🧞‍♀️', '🧞‍♂️', '🧞', '🧟‍♀️', '🧟‍♂️', '🧟', '🧌', '🗣️', '👤', '👥', '🫂', '👁️', '👀',
+						'🦴', '🦷', '👅', '👄', '🫦', '🧠', '🫀', '🫁', '🦾', '🦿', '👣', '🤺', '⛷️'
+					]
+					uni.setStorageSync('EMOJILIST', that.emojiList)
+
+				}
+			},
+			handlePlayAudio(audio) {
+				let that = this
+				if (!audio) {
+					that.$u.toast('语音不能为空')
+					return false
+				}
+				if (!that.audio) {
+					that.audio = uni.createInnerAudioContext()
+					that.audio.src = audio
+				}
+				that.audioStatus = !that.audioStatus
+				if (that.audioStatus) {
+					that.$nextTick(function() {
+						that.audio.play()
+						that.audio.onEnded((e) => {
+							that.audioStatus = false
+						})
+					})
+				} else {
+					that.$nextTick(function() {
+						that.audio.pause()
+					})
+				}
+			},
+			handlePlayVideo(video) {
+				let that = this
+				if (!video) {
+					that.$u.toast('视频不能为空')
+					return false
+				}
+				if (!that.video) {
+					that.video = uni.createVideoContext('video')
+					that.video.src = video
+				}
+				that.videoStatus = !that.videoStatus
+				if (that.videoStatus) {
+					that.$nextTick(function() {
+						that.video.play()
+					})
+				} else {
+					that.$nextTick(function() {
+						that.video.pause()
+					})
+				}
+			},
+			addComment(item) {
+				let that = this
+				that.placeholder = `回复${item.user.role_realname}`
+				that.post_comment_id = item.id
+				that.inputFocus = true
+			},
+			handlePostDig() {
+				let that = this
+				that.$api('post.dig', {
+					post_id: that.post.id
+				}).then(res => {
+					if (res.code === 1) {
+						that.isRed = !that.isRed
+						// that.isNoRed=false
+						that.isNoRed = !that.isNoRed
+						if (that.post.is_zan == 0) {
+							that.$u.toast('点赞成功')
+						} else {
+							that.$u.toast('取消点赞')
+						}
+						console.log('点赞', res);
+						that.getPostDetail() //这是更新数据的，数据库里已经改了但是不更新数据是不会改的
+					} else {
+						that.isNoRed = !that.isNoRed
+						// that.isNoRed=false
+						that.isRed = !that.isRed
+						that.$u.toast(res.msg)
+					}
+				})
+			},
+			handleCommentDig(item) {
+				let that = this
+				that.$api('comment.dig', {
+					post_comment_id: item.id
+				}).then(res => {
+					if (res.code === 1) {
+						that.$u.toast('点赞成功')
+						that.getPostDetail()
+						that.params.page = 1
+						that.listPostComment = []
+						that.getPostComment()
+					} else {
+						that.$u.toast(res.msg)
+					}
+				})
+			},
+			doComment() {
+				let that = this
+				if (!that.message) {
+					that.$u.toast('内容不能为空')
+					return false
+				}
+				that.$api('comment.add', {
+					content: that.message,
+					post_comment_id: that.post_comment_id,
+					post_id: that.post.id
+				}).then(res => {
+					if (res.code === 1) {
+						that.message = ''
+						that.$u.toast('评论成功')
+						that.showEmoji = false
+						that.getPostDetail()
+						that.params.page = 1
+						that.listPostComment = []
+						that.getPostComment()
+					} else {
+						that.$u.toast(res.msg)
+					}
+				})
+			},
+			handleEmojiSend(item) {
+				let that = this
+				that.message += item
+			},
+			handleFeedback() {
+				let that = this
+				that.$api('feedback.add', {
+					type: 'report',
+					content: that.feedback,
+					remark: `类型：${that.feedbackType}，ID：${that.post.id}`
+				}).then(res => {
+					if (res.code === 1) {
+						that.message = ''
+						that.$u.toast('举报成功')
+						that.showFeedback = false
+						that.feedbackType = ''
+						that.feedback = ''
+					} else {
+						that.$u.toast(res.msg)
+					}
+				})
+			},
+		}
+	}
 </script>
 <style lang="scss" scoped>
+	.userContent {
+		padding: 30rpx;
+		display: flex;
+		border-bottom: 1rpx solid #ECECEC;
 
+		.userImg {
+			width: 85rpx;
+			height: 85rpx;
+			border-radius: 50%;
+			margin-right: 15rpx;
+		}
+
+		.userInfo {
+			height: 85rpx;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			.userNameBox {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-around;
+				height: 100%;
+
+				.userName {
+					color: #323232;
+					font-size: 28rpx;
+				}
+
+				.tags {
+					font-size: 24rpx;
+					color: #999;
+				}
+			}
+
+			.follow {
+				width: 100rpx;
+				height: 42rpx;
+				background: #FE4373;
+				font-size: 24rpx;
+				color: #fff;
+				border-radius: 30rpx;
+				text-align: center;
+				line-height: 42rpx;
+			}
+
+			.followActive {
+				width: 100rpx;
+				height: 42rpx;
+				background: #999;
+				font-size: 24rpx;
+				color: #fff;
+				border-radius: 30rpx;
+				text-align: center;
+				line-height: 42rpx;
+			}
+		}
+
+		.detailsText {
+			margin-top: 20rpx;
+			font-size: 26rpx;
+			color: #323232;
+		}
+
+		.topic {
+			color: #6F93BD;
+			font-size: 26rpx;
+
+			.topicItem {
+				margin-top: 10rpx;
+			}
+		}
+
+		.zanNum {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			margin-top: 25rpx;
+
+			.imgsItem {
+				width: 38rpx;
+				height: 38rpx;
+				border-radius: 50%;
+				border: 1rpx solid #fff;
+				margin-right: -10rpx;
+			}
+		}
+
+	}
+
+	.delete {
+		background: #F7F7F7;
+		text-align: center;
+		height: 85rpx;
+		line-height: 85rpx;
+		width: 100%;
+		border-radius: 42rpx;
+		color: #323232;
+		font-size: 28rpx;
+	}
+
+	.delete2 {
+		background: #fff;
+		text-align: center;
+		height: 85rpx;
+		line-height: 85rpx;
+		width: 100%;
+		border-radius: 42rpx;
+		color: #323232;
+		font-size: 28rpx;
+	}
 </style>

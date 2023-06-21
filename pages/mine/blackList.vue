@@ -15,7 +15,7 @@
 
 		</view>
 		<!-- <u-loadmore v-if="blackList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" /> -->
-		<u-empty v-else icon="/static/fly.png" text="数据为空" textColor="#a1a1a1" marginTop="100" ></u-empty>
+		<u-empty v-else icon="/static/null.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
 	</view>
 </template>
 
@@ -29,7 +29,7 @@
 					page: 1,
 					limit: 10
 				},
-				isB:false
+				isB: false
 			}
 		},
 		computed: {
@@ -43,16 +43,16 @@
 			initBlackList() {
 				let that = this
 				// console.log('that.params',that.params);
-				that.$api('user_black.lists',that.params).then(res => {
-					if (res.code ==1) {
-				 	console.log('ss',res.data);
+				that.$api('user_black.lists', that.params).then(res => {
+					if (res.code == 1) {
+						console.log('ss', res.data);
 						that.blackList = res.data.data
-						if(that.blackList){
+						if (that.blackList) {
 							// /此时显示数据为空
-							that.isB=true
+							that.isB = true
 						}
 
-				 } else {
+					} else {
 						that.$u.toast(res.msg)
 					}
 				})

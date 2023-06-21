@@ -11,8 +11,8 @@
 			<!-- 隐私 -->
 			<view class="" v-show="isProvicy">
 				<view class="" style="text-align: center;">隐私政策</view>
-				<view class="" style="text-align: right;">更新日期：2023年01月17日</view>
-				<view class="" style="text-align: right;">生效日期：2023年01月13日</view>
+				<view class="" style="text-align: right;">更新日期：2023年06月20日</view>
+				<view class="" style="text-align: right;">生效日期：2023年06月20日</view>
 				<view class="" style="text-align: left;">引言</view>
 				<br>
 
@@ -248,8 +248,8 @@
 			<!-- 用户 -->
 			<view class="" v-show="isUserAgreement">
 				<view class="" style="text-align: center;">用户协议</view>
-				<view class="" style="text-align: right;"> 更新时间：2023年3月1日</view>
-				<view class="" style="text-align: right;">生效时间：2023年3月1日</view>
+				<view class="" style="text-align: right;"> 更新时间：2023年6月20日</view>
+				<view class="" style="text-align: right;">生效时间：2023年6月20日</view>
 				<br>
 				雅集（包括可在IOS
 				系统及Android系统中运行的名为“雅集”的移动应用程序，以及其他不同版本的程序，以下简称"雅集”）由郑州索而有得信息科技有限公司（包括其关联机构，以下合称“我们”）运营并享有完全的所有权及知识产权等权益，雅集提供的服务将完全按照其发布的条款和操作规则严格执行。我们在此特别提醒您（用户）在注册成为用户之前，请认真阅读本《用户协议》（以下简称“协议”），确保您充分理解本协议中各条款。请您审慎阅读并选择接受或不接受本协议。除非您接受本协议所有条款，否则您无权注册、登录或使用本协议所涉服务。您的注册、登录、使用等行为将视为对本协议的接受，并同意接受本协议各项条款的约束。
@@ -447,21 +447,25 @@
 
 			<!-- 关于我们 -->
 			<view class="" v-show="isAboutOur" style="color:rgba(0, 0, 0, 0.7);">
+				<view style="text-align: center;margin-bottom: 50rpx;">关于我们</view>
 				<view class="">产品不删档公测阶段，欢迎朋友们提供各种建议。可通过问题反馈或以下方式与我们联系。</view>
 				<br> 联系我们：
 				<br><br>
 				邮箱：kefu@suoeryoude.cn
 				<text @click="copy(copyEmail)">
-					<img  style="width: 30rpx; height: 30rpx; margin-left: 20rpx;"  src="	https://axhub.im/ax10/85ee1db375b49826/images/%E5%85%B3%E4%BA%8E/u5.svg" alt="">
-				</text> 
-				<br><br> 微信：yajixiaoya 
+					<img style="width: 30rpx; height: 30rpx; margin-left: 20rpx;"
+						src="	https://axhub.im/ax10/85ee1db375b49826/images/%E5%85%B3%E4%BA%8E/u5.svg" alt="">
+				</text>
+				<br><br> 微信：yajixiaoya
 				<text @click="copy(copyWechat)">
-					<img  style="width: 30rpx; height: 30rpx; margin-left: 20rpx;"  src="	https://axhub.im/ax10/85ee1db375b49826/images/%E5%85%B3%E4%BA%8E/u5.svg" alt="">
+					<img style="width: 30rpx; height: 30rpx; margin-left: 20rpx;"
+						src="	https://axhub.im/ax10/85ee1db375b49826/images/%E5%85%B3%E4%BA%8E/u5.svg" alt="">
 				</text> <br><br>
-				QQ群：543677898
-				 <text @click="copy(copyQQ)">
-				 	<img  style="width: 30rpx; height: 30rpx; margin-left: 20rpx;"  src="	https://axhub.im/ax10/85ee1db375b49826/images/%E5%85%B3%E4%BA%8E/u5.svg" alt="">
-				 </text> <br><br>
+				QQ群：704329837
+				<text @click="copy(copyQQ)">
+					<img style="width: 30rpx; height: 30rpx; margin-left: 20rpx;"
+						src="	https://axhub.im/ax10/85ee1db375b49826/images/%E5%85%B3%E4%BA%8E/u5.svg" alt="">
+				</text> <br><br>
 				郑州索而有得信息科技有限公司，是一家致力于互联网软件应用的开发和运营的公司。我们致力于科技与文化的结合，利用互联网技术，传承和发扬中国传统文化。在科技快速发展的今天，世界各国的文化思想也在相互影响。我们希有更多的国人，尤其是年轻人，了解和传承我们自己的文化。
 				<br><br>索而有得，坚持对科技的持续探索，希望通过稳健的技术和
 				精良的产品，为客户提供坚固、扎实的软件信息服务。
@@ -478,9 +482,9 @@
 				isUserAgreement: false, //用户协议
 				isProvicy: false, //隐私政策
 				isAboutOur: false,
-				copyEmail:'kefu@suoeryoude.cn',
-				copyWechat:'yajixiaoya ',
-				copyQQ:'543677898'
+				copyEmail: 'kefu@suoeryoude.cn',
+				copyWechat: 'yajixiaoya ',
+				copyQQ: '704329837'
 			}
 		},
 		onLoad() {
@@ -490,31 +494,43 @@
 		methods: {
 			// 复制
 			copy(value) {
-			 	uni.setClipboardData({
-			 	    data: value,
-			    	success: function () {
-			    	//调用方法成功
-			        console.log('success');
-			    }
-			 	})
+				uni.setClipboardData({
+					data: value,
+					success: function() {
+						//调用方法成功
+						console.log('success');
+					}
+				})
 			},
 			getRichText() {
 				let that = this
-				that.$api('richtext.detail', {
-					id: that.$Route.query.id
-				}).then(res => {
-					that.data = res.data
-					// console.log(res.data);
-					if (res.data.id == 1) {
-						this.isUserAgreement = true
-					}
-					if (res.data.id == 2) {
-						this.isProvicy = true
-					}
-					if (res.data.id == 3) {
-						this.isAboutOur = true
-					}
-				})
+				if (that.$Route.query.id == 1) {
+					this.isUserAgreement = true
+				}
+				if (that.$Route.query.id == 2) {
+					this.isProvicy = true
+				}
+				if (that.$Route.query.id == 3) {
+					this.isAboutOur = true
+				}
+
+
+				// that.$api('richtext.detail', {
+				// 	id: that.$Route.query.id
+				// }).then(res => {
+				// 	that.data = res.data
+				// 	console.log(res.data);
+				// 	console.log(that.$Route.query.id);
+				// 	if (res.data.id == 1) {
+				// 		this.isUserAgreement = true
+				// 	}
+				// 	if (res.data.id == 2) {
+				// 		this.isProvicy = true
+				// 	}
+				// 	if (res.data.id == 3) {
+				// 		this.isAboutOur = true
+				// 	}
+				// })
 			}
 		}
 	}
