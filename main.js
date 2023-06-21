@@ -13,6 +13,7 @@ import api from '@/common/request/index'
 
 // 防止多次点击
 import common from './common/common.js'
+// import cos from "@/dist/cos.js"
 Vue.prototype.$noMultipleClicks = common.noMultipleClicks;
 
 
