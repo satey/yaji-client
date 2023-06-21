@@ -7,8 +7,8 @@ import audio from '@/store/modules/audio.js';
 import common from '@/store/modules/common.js';
 
 export default new Vuex.Store({
-	modules:{
+	modules: {
 		audio,
-		common
+		common,
 	}
 })
