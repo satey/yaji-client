@@ -5,7 +5,7 @@ import {
 } from '../types.js'
 const state = {
 	initData: {},
-	routes:[]
+	routes: [],
 }
 
 const actions = {
@@ -14,7 +14,7 @@ const actions = {
 	}, options) {
 		let params = {}
 		uni.setStorageSync('mode', 'product');
-		if(options.query.preview_id) {
+		if (options.query.preview_id) {
 			uni.setStorageSync('mode', 'preview');
 			params.preview_id = options.query.preview_id;
 		}
@@ -32,8 +32,8 @@ const actions = {
 		commit
 	}) {
 		return new Promise((resolve, reject) => {
-			api('index.asyncLink',{
-				data:ROUTES
+			api('index.asyncLink', {
+				data: ROUTES
 			}).then(res => {
 				commit('PAGE_ROUTES', res.data);
 				resolve(res)
@@ -51,6 +51,7 @@ const mutations = {
 	[INIT_DATA](state, data) {
 		state.initData = data
 	},
+
 }
 
 const getters = {

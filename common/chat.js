@@ -1,4 +1,6 @@
-import { data } from "uview-ui/libs/mixin/mixin";
+import {
+	data
+} from "uview-ui/libs/mixin/mixin";
 
 /**
  * socket

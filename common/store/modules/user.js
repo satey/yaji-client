@@ -2,6 +2,7 @@
 import api from '@/common/request/index'
 import store from '@/common/store'
 import router from '@/common/router.js'
+import Vue from 'vue'
 import {
 	USER_INFO,
 	LOGIN_TIP,
@@ -18,15 +19,16 @@ const actions = {
 	getUserInfo({
 		commit
 	}) {
+		var that = this;
 		return new Promise((resolve, reject) => {
 			api('user.info').then(res => {
+				var that = this;
 				commit('USER_INFO', res.data);
 				uni.setStorageSync('userInfo', res.data);
 				commit('LOGIN_TIP', false);
 				resolve(res)
 
 			}).catch(e => {
-				console.log(e)
 				reject(e)
 			})
 		})
@@ -39,7 +41,6 @@ const mutations = {
 	},
 	[LOGIN_TIP](state, data) {
 		state.showLoginTip = data
-		console.log('data',data);
 	},
 	// [ORDER_NUMBER](state, data) {
 	// 	state.orderNum = data
@@ -55,8 +56,7 @@ const mutations = {
 	},
 }
 
-const getters = {
-}
+const getters = {}
 
 export default {
 	state,

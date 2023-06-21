@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'uni-simple-router'
 import store from '@/common/store'
-import { LOGIN_TIP } from './store/types';
+import {
+	LOGIN_TIP
+} from './store/types';
 
 Vue.use(Router)
 //初始化
@@ -23,7 +25,6 @@ router.beforeEach((to, from, next) => {
 	let userInfo = Boolean(uni.getStorageSync('userInfo'));
 	// let token= Boolean(uni.getStorageSync('token'))
 	// console.log('token',token);
-	console.log(to.meta, to.meta.auth,userInfo);
 	// 权限控制
 	if (to.meta && to.meta.auth && !userInfo) {
 		store.commit('LOGIN_TIP', true)
