@@ -1,423 +1,430 @@
 {
-    "easycom": {
-        "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue",
-        "^uc-(.*)": "@/components/uc-$1/uc-$1.vue"
-    },
-    "pages": [
-		
-        {
-            "path": "pages/index/index",
-            "name": "index",
-            "title": "首页",
-            "style": {
-                "navigationBarTitleText": "首页"
-            },
-            "meta": {
-                "auth": false
-            }
-			
-        },
-        {
-            "path": "pages/index/square",
-            "name": "square",
-            "style": {
-                "navigationBarTitleText": "动态",
-				"enablePullDownRefresh": true
-            },
-            "meta": {
-                "auth": false
-            }
-        },
-        {
-            "path": "pages/index/message",
-            "name": "message",
-            "style": {
-                "navigationBarTitleText": "消息"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/index/mine",
-            "name": "mine",
-            "style": {
-                "navigationBarTitleText": "我的"
-            },
-            "meta": {
-                "auth": false
-            }
-        },
-		{
-		    "path": "pages/index/indexSearch",
-		    "name": "indexSearch",
-		    "style": {
-		        "navigationBarTitleText": "首页直接搜索"
-		    },
-		    "meta": {
-		        "auth": false
-		    }
-		},
-        {
-            "path": "pages/auth/login",
-            "name": "login",
-            "style": {
-                "navigationBarTitleText": "注册登录"
-            },
-            "meta": {
-                "auth": false
-            }
-        },
-        {
-            "path": "pages/auth/s1",
-            "name": "s1",
-            "style": {
-                "navigationBarTitleText": "选择朝代"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/auth/s2",
-            "name": "s2",
-            "style": {
-                "navigationBarTitleText": "匹配角色"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/mine/profile",
-            "name": "profile",
-            "style": {
-                "navigationBarTitleText": "资料"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/mine/setting",
-            "name": "setting",
-            "style": {
-                "navigationBarTitleText": "设置"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/mine/contact",
-            "name": "contact",
-            "style": {
-                "navigationBarTitleText": "通讯录"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-		{
-		    "path": "pages/mine/blackList",
-		    "name": "blackList",
-		    "style": {
-		        "navigationBarTitleText": "黑名单"
-		    },
-		    "meta": {
-		        "auth": true
-		    }
-		},
-        {
-            "path": "pages/mine/role",
-            "name": "role",
-            "style": {
-                "navigationBarTitleText": "我的角色"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/mine/wallet",
-            "name": "wallet",
-            "style": {
-                "navigationBarTitleText": "我的钱包"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/mine/bill",
-            "name": "bill",
-            "style": {
-                "navigationBarTitleText": "交易记录"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/mine/gift",
-            "name": "gift",
-            "style": {
-                "navigationBarTitleText": "我的礼物"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-		{
-		    "path": "pages/mine/giftsRecord",
-		    "name": "giftsRecord",
-		    "style": {
-		        "navigationBarTitleText": "礼物记录"
-		    },
-		    "meta": {
-		        "auth": false
-		    }
-		},
-        {
-            "path": "pages/public/page",
-            "name": "page",
-            "style": {
-                "navigationBarTitleText": "页面"
-            },
-            "meta": {
-                "auth": false
-            }
-        },
-		{
-		    "path": "pages/public/center",
-		    "name": "center",
-		    "style": {
-		        "navigationBarTitleText": "帮助中心"
-		    },
-		    "meta": {
-		        "auth": false
-		    }
-		},
-		{
-		    "path": "pages/public/feedback",
-		    "name": "feedback",
-		    "style": {
-		        "navigationBarTitleText": "意见反馈"
-			
-		    },
-		    "meta": {
-		        "auth": false
-		    }
-		},
-		{
-		    "path": "pages/public/feedbackPage",
-		    "name": "feedbackpPage",
-		    "style": {
-		        "navigationBarTitleText": "意见反馈页面"
-				
-			
-		    },
-		    "meta": {
-		        "auth": false
-		    }
-		},
-		{
-		    "path": "pages/public/feedbackSuggest",
-		    "name": "feedbackSuggest",
-		    "style": {
-		        "navigationBarTitleText": "意见反馈答复"
-				
-			
-		    },
-		    "meta": {
-		        "auth": false
-		    }
-		},
-        {
-            "path": "pages/joy/poetry",
-            "name": "poetry",
-            "style": {
-                "navigationBarTitleText": "曲水流觞"
-            },
-            "meta": {
-                "auth": false
-            }
-        },
-        {
-            "path": "pages/joy/wine",
-            "name": "wine",
-            "style": {
-                "navigationBarTitleText": "诗词结缘"
-            },
-            "meta": {
-                "auth": false
-            }
-        },
-        {
-            "path": "pages/user/home",
-            "name": "home",
-            "style": {
-                "navigationBarTitleText": "主页"
-            },
-            "meta": {
-                "auth": false
-            }
-        },
-        {
-            "path": "pages/user/search",
-            "name": "search",
-            "style": {
-                "navigationBarTitleText": "搜索"
-            },
-            "meta": {
-                "auth": false
-            }
-        },
-		{
-		    "path": "pages/user/topicspeed",
-		    "name": "topicspeed",
-		    "style": {
-		        "navigationBarTitleText": "话题速配"
-		    },
-		    "meta": {
-		        "auth": false
-		    }
-		},
-		{
-		    "path": "pages/user/newSearch",
-		    "name": "newSearch",
-		    "style": {
-		        "navigationBarTitleText": "新搜索"
-		    },
-		    "meta": {
-		        "auth": false
-		    }
-		},
-        {
-            "path": "pages/post/detail",
-            "name": "detail",
-            "style": {
-                "navigationBarTitleText": "搜索"
-            },
-            "meta": {
-                "auth": false
-            }
-        },
-        {
-            "path": "pages/post/add",
-            "name": "add",
-            "style": {
-                "navigationBarTitleText": "发布"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/chat/single",
-            "name": "single",
-            "style": {
-                "navigationBarTitleText": "单聊"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-		{
-		    "path": "pages/chat/joinBlackList",
-		    "name": "joinBlackList",
-		    "style": {
-		        "navigationBarTitleText": "加入黑名单"
-		    },
-		    "meta": {
-		        "auth": true
-		    }
-		},
-        {
-            "path": "pages/chat/group",
-            "name": "group",
-            "style": {
-                "navigationBarTitleText": "群聊"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/chat/groupsetting",
-            "name": "groupsetting",
-            "style": {
-                "navigationBarTitleText": "群聊设置"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/chat/audio",
-            "name": "audio",
-            "style": {
-                "navigationBarTitleText": "语音直播"
-            },
-            "meta": {
-                "auth": true
-            }
-        },
-        {
-            "path": "pages/chat/audiosetting",
-            "name": "audiosetting",
-            "style": {
-                "navigationBarTitleText": "语音直播设置"
-            },
-            "meta": {
-                "auth": true
-            }
-        }
+	"easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue",
+		"^uc-(.*)": "@/components/uc-$1/uc-$1.vue"
+	},
+	"pages": [
 
-       
-       
-        ,{
-            "path" : "components/takequestion/takequestion",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "components/uc-search/uc-search",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "components/uc-userSearch/uc-userSearch",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "components/uc-comment/uc-comment",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
-    "globalStyle": {
-        "navigationStyle": "custom",
-        "navigationBarTextStyle": "black",
-        "navigationBarTitleText": "",
-        "navigationBarBackgroundColor": "#F8F8F8",
-        "backgroundColor": "#F8F8F8"
-    }
+		{
+			"path": "pages/index/index",
+			"name": "index",
+			"title": "首页",
+			"style": {
+				"navigationBarTitleText": "首页"
+			},
+			"meta": {
+				"auth": false
+			}
+
+		},
+		{
+			"path": "pages/index/square",
+			"name": "square",
+			"style": {
+				"navigationBarTitleText": "动态",
+				"enablePullDownRefresh": true
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/index/message",
+			"name": "message",
+			"style": {
+				"navigationBarTitleText": "消息"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/index/mine",
+			"name": "mine",
+			"style": {
+				"navigationBarTitleText": "我的"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/index/indexSearch",
+			"name": "indexSearch",
+			"style": {
+				"navigationBarTitleText": "首页直接搜索"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/auth/login",
+			"name": "login",
+			"style": {
+				"navigationBarTitleText": "注册登录"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/auth/s1",
+			"name": "s1",
+			"style": {
+				"navigationBarTitleText": "选择朝代"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/auth/s2",
+			"name": "s2",
+			"style": {
+				"navigationBarTitleText": "匹配角色"
+			},
+			"meta": {
+				"auth": true
+			}
+		}, {
+			"path": "pages/auth/s3",
+			"name": "s3",
+			"style": {
+				"navigationBarTitleText": "获得角色"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/mine/profile",
+			"name": "profile",
+			"style": {
+				"navigationBarTitleText": "资料"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/mine/setting",
+			"name": "setting",
+			"style": {
+				"navigationBarTitleText": "设置"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/mine/contact",
+			"name": "contact",
+			"style": {
+				"navigationBarTitleText": "通讯录"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/mine/blackList",
+			"name": "blackList",
+			"style": {
+				"navigationBarTitleText": "黑名单"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/mine/role",
+			"name": "role",
+			"style": {
+				"navigationBarTitleText": "我的角色"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/mine/wallet",
+			"name": "wallet",
+			"style": {
+				"navigationBarTitleText": "我的钱包"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/mine/bill",
+			"name": "bill",
+			"style": {
+				"navigationBarTitleText": "交易记录"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/mine/gift",
+			"name": "gift",
+			"style": {
+				"navigationBarTitleText": "我的礼物"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/mine/giftsRecord",
+			"name": "giftsRecord",
+			"style": {
+				"navigationBarTitleText": "礼物记录"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/public/page",
+			"name": "page",
+			"style": {
+				"navigationBarTitleText": "页面"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/public/center",
+			"name": "center",
+			"style": {
+				"navigationBarTitleText": "帮助中心"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/public/feedback",
+			"name": "feedback",
+			"style": {
+				"navigationBarTitleText": "意见反馈"
+
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/public/feedbackPage",
+			"name": "feedbackpPage",
+			"style": {
+				"navigationBarTitleText": "意见反馈页面"
+
+
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/public/feedbackSuggest",
+			"name": "feedbackSuggest",
+			"style": {
+				"navigationBarTitleText": "意见反馈答复"
+
+
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/joy/poetry",
+			"name": "poetry",
+			"style": {
+				"navigationBarTitleText": "曲水流觞"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/joy/wine",
+			"name": "wine",
+			"style": {
+				"navigationBarTitleText": "诗词结缘"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/user/home",
+			"name": "home",
+			"style": {
+				"navigationBarTitleText": "主页"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/user/search",
+			"name": "search",
+			"style": {
+				"navigationBarTitleText": "搜索"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/user/topicspeed",
+			"name": "topicspeed",
+			"style": {
+				"navigationBarTitleText": "话题速配"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/user/newSearch",
+			"name": "newSearch",
+			"style": {
+				"navigationBarTitleText": "新搜索"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/post/detail",
+			"name": "detail",
+			"style": {
+				"navigationBarTitleText": "搜索"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/post/add",
+			"name": "add",
+			"style": {
+				"navigationBarTitleText": "发布"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/chat/single",
+			"name": "single",
+			"style": {
+				"navigationBarTitleText": "单聊"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/chat/joinBlackList",
+			"name": "joinBlackList",
+			"style": {
+				"navigationBarTitleText": "加入黑名单"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/chat/group",
+			"name": "group",
+			"style": {
+				"navigationBarTitleText": "群聊"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/chat/groupsetting",
+			"name": "groupsetting",
+			"style": {
+				"navigationBarTitleText": "群聊设置"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/chat/audio",
+			"name": "audio",
+			"style": {
+				"navigationBarTitleText": "语音直播"
+			},
+			"meta": {
+				"auth": true
+			}
+		},
+		{
+			"path": "pages/chat/audiosetting",
+			"name": "audiosetting",
+			"style": {
+				"navigationBarTitleText": "语音直播设置"
+			},
+			"meta": {
+				"auth": true
+			}
+		}
+
+
+
+		, {
+			"path": "components/takequestion/takequestion",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "components/uc-search/uc-search",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "components/uc-userSearch/uc-userSearch",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "components/uc-comment/uc-comment",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+
+	],
+	"globalStyle": {
+		"navigationStyle": "custom",
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"bounce": "none",
+			"softinputMode":"adjustPan"
+		}
+	}
 }
