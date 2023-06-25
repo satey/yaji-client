@@ -89,7 +89,7 @@
 				}
 				that.isClick == false;
 				uni.request({
-					url: 'https://yaji.ixiaojin.cn/api/user/logout',
+					url: 'https://yaji.suoeryoude.cn/api/user/logout',
 					method: 'POST',
 					headers: {
 						'token': that.tokens,

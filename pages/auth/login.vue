@@ -156,11 +156,11 @@
 					that.$u.toast('请同意用户协议')
 					return false
 				}
-				// console.log(that.isMobileEnd, that.disabledCode ,that.form.code);
-				if (!that.isMobileEnd || that.disabledCode || !that.form.code) {
-					that.$u.toast('请正确填写信息')
-					return false
-				}
+				console.log(that.isClick)
+				// if (!that.isMobileEnd || that.disabledCode ) {
+				// 	that.$u.toast('请正确填写信息')
+				// 	return false
+				// }
 
 				let data = {
 					mobile: Number(that.form.mobile),
@@ -173,7 +173,9 @@
 				uni.showLoading();
 				that.isClick = false;
 				that.$api('user.smslogin', data).then(res => {
+					that.isClick = true;
 					if (res.code === 1) {
+						console.log(res)
 						uni.setStorageSync('token', res.data.token)
 						that.getUserInfo(res.data.token).then(() => {
 							//#ifdef APP-PLUS
@@ -183,7 +185,6 @@
 							getApp().globalData.islogout = false;
 							// #endif
 							that.$store.commit("setIslogout", false);
-							that.isClick = true;
 							uni.hideLoading();
 							getApp().globalData.getHistoryCronyList()
 							that.$nextTick(() => {
