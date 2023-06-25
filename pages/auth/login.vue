@@ -54,6 +54,7 @@
 	</view>
 
 </template>
+<!-- fei-dev -->
 <script>
 	import {
 		mapState,
