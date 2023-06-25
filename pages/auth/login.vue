@@ -54,6 +54,7 @@
 	</view>
 
 </template>
+<!-- feifeifei -->
 <script>
 	import {
 		mapState,
