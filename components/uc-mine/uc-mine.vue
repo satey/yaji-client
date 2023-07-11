@@ -15,7 +15,7 @@
 			</view>
 		</view>
 	</u-popup>
-	<view class="item">
+	<view class="item" v-if="item.status == 'normal'">
 		<view style="display: flex;align-items: center;justify-content: space-between;">
 			<text class="date">
 				<text>{{$u.date(item.createtime, 'yy-')}}</text>
@@ -41,9 +41,10 @@
 					</image>
 					<image class="imgItem" @click="onPreviewTap(1)" mode="aspectFill" :src="images[1]">
 					</image>
-					<view
+					<view v-if="images.length>=3"
 						style="position: absolute;right: 0;bottom: 0;color: #FFFFFF;z-index: 1;padding: 20rpx;background: rgba(0,0,0,0.5);font-size: 32rpx;">
-						+{{images.length}}</view>
+						{{images.length>=3?'+1':""}}
+					</view>
 				</view>
 			</view>
 			<!-- audio -->
@@ -67,6 +68,14 @@
 				<text class="ri-chat-smile-3-line" style="font-size: 40rpx;margin-right: 10rpx;"></text>
 				<text style="font-size: 24rpx;">{{item.commentnums==0?'评论':item.commentnums}}</text>
 			</view> -->
+
+			<view style="display: flex;align-items: center;margin-right: 30rpx;" v-if="item.cainums!=0">
+				<text class="ri-emotion-normal-line"
+					style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
+				<view style="font-size: 24rpx;color: #999999;width: 20rpx;white-space: nowrap;width: 50rpx;">
+					{{ item.cainums ==0?'无聊':item.cainums }}
+				</view>
+			</view>
 			<!-- 点赞 -->
 			<view @click="handlePostDig()" style="display: flex;align-items: center;">
 				<text v-show='is_zan==0' class="ri-heart-line"
@@ -77,6 +86,7 @@
 					{{ item.diggnums ==0?'出彩':item.diggnums }}
 				</view>
 			</view>
+
 			<!-- 无聊 -->
 			<!-- <view
 				style="color: #999999;display: flex;flex-direction: row;align-items: center;flex: 1;justify-content: flex-end;"
@@ -155,8 +165,11 @@
 						console.log('删除成功');
 
 						that.getPostMine()
-						setTimeout(() => {
-							this.$router.go(0)
+						var Time = setTimeout(() => {
+							uni.reLaunch({
+								url: '/pages/index/mine'
+							});
+							clearTimeout(Time)
 						}, 500)
 					}
 				})

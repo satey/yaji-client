@@ -2,18 +2,26 @@
 
 	<view class="takeQuestion">
 		<!-- {{item}} -->
-		<view class="takeQuestion-item" @click="skipTopic(item)" :style="{background:colors[index % 4 ]}">
-			<!-- 话题 -->
-			<view class="question-title">
-				<view @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id})">{{item.title}}</view>
-				<view class="pics">
-					<image :src="items" class="pics-item" mode="" v-for="(items,index) in item.avatar"></image>
+		<view class="takeQuestion-item" @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id})"
+			:style="{background:colors[index % 4 ]}">
+			<view style="display: flex;align-items: center;margin-right: 10rpx;">
+				<text class="ri-fire-fill" style="color: #FE4373;font-size: 40rpx;"></text>
+				<view class="question-title">
+					<!-- <i class="ri-hashtag mr-1"></i> -->
+					{{item.title}}
 				</view>
 			</view>
-			<view style="display: flex;align-items: center;">
-				<text class="ri-fire-fill" style="color: #FE4373;font-size: 50rpx;"></text>
-				<text style="color: #FE4373;font-size: 30rpx;">{{item.hot_num}}</text>
+			<!-- 话题 -->
+
+			<view class="pics">
+				<!-- <image src="../../static/vv.png" class="pics-item" v-for="(items,index) in 5" mode=""></image> -->
+				<image :src="items" class="pics-item" v-for="(items,index) in item.avatar" v-if="index<=5">
+				</image>
 			</view>
+			<!-- <view style="display: flex;align-items: center;">
+				
+				<view style="color: #FE4373;font-size: 30rpx;width: 50rpx;">{{item.hot_num}}</view>
+			</view> -->
 		</view>
 
 	</view>
@@ -48,14 +56,14 @@
 <style lang="scss" scoped>
 	.takeQuestion-item {
 		width: 100%;
-		height: 160rpx;
-		padding: 30rpx;
+		padding: 25rpx 10rpx 25rpx 20rpx;
 		box-sizing: border-box;
 		border-radius: 10rpx;
 		margin-top: 20rpx;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		height: 146rpx;
 	}
 
 	.hot {
@@ -67,17 +75,29 @@
 	}
 
 	.question-title {
-		font-size: 28rpx;
+		font-size: 32rpx;
 		color: #6F93BD;
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: box;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		margin-left: 10rpx;
+	}
+
+	.pics {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
 	}
 
 	.pics-item {
-		width: 40rpx;
-		height: 40rpx;
-		margin-left: 10rpx;
+		width: 50rpx;
+		height: 50rpx;
 		margin-top: 15rpx;
 		border-radius: 50%;
 		margin-right: 10rpx;
-		/* border: 1px solid rgba(0, 0, 0, 0.05); */
 	}
 </style>

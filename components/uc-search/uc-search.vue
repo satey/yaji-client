@@ -23,9 +23,12 @@
 				<!-- <view class="text-gray-500 mt-4">{{ $u.timeFrom(item.createtime, 'mm月dd日') }}</view> -->
 
 				<view class="flex mt-3">
-					<view class="flex items-center mr-2" v-for="(tag, index) in item.tags" :key="index" :item="tag">
+
+					<view class="text-base leading-none text-gray-500">
+						{{item.achievements.replace(/,/g,"&nbsp;&nbsp;")}}</view>
+					<!-- 	<view class="flex items-center mr-2" v-for="(tag, index) in item.tags" :key="index" :item="tag">
 						<view class="text-base leading-none text-gray-500">{{ tag }}</view>
-					</view>
+					</view> -->
 				</view>
 				<view class="mt-4">{{ item.bio }}</view>
 			</view>
@@ -63,9 +66,11 @@
 				<!-- <view class="text-gray-500 mt-4">{{ $u.timeFrom(item.createtime, 'mm月dd日') }}</view> -->
 
 				<view class="flex mt-3">
-					<view class="flex items-center mr-2" v-for="(tag, index) in item.tags" :key="index" :item="tag">
+					<view class="text-base leading-none text-gray-500">
+						{{item.achievements.replace(/,/g,"&nbsp;&nbsp;")}}</view>
+					<!-- <view class="flex items-center mr-2" v-for="(tag, index) in item.tags" :key="index" :item="tag">
 						<view class="text-base leading-none text-gray-500">{{ tag }}</view>
-					</view>
+					</view> -->
 				</view>
 				<view class="mt-4">{{ item.bio }}</view>
 			</view>
@@ -87,7 +92,6 @@
 			}
 		},
 		created() {
-
 		},
 		props: {
 			item: {},

@@ -8,7 +8,7 @@
 	import Wechat from './common/wechat/wechat.js';
 	// import permision from "@/js_sdk/wa-permission/permission.js"
 	// import chat from "./common/chat.js"
-
+	import push from "@/js_sdk/dc-push/push.js"
 	import Socket from '@/common/utils/f_socket.js'
 	import message from './common/store/modules/message.js';
 	export default {
@@ -31,12 +31,36 @@
 
 		methods: {
 			...mapActions(['getAppInit', 'getRoutes', 'getUserInfo']),
+			//监听通知
+			pushMsg() {
+				uni.onPushMessage((res) => {
+					console.log(res)
+					if (res.type == 'receive') {
+						uni.createPushMessage({
+							title: res.data.title,
+							content: res.data.content,
+							icon: "./static/logo-28.png",
+							sound: "system",
+							fail() {
+								uni.showToast({
+									icon: "error",
+									title: "通知栏失败"
+								})
+							}
+						})
+					}
+				})
+			},
 			//更新
 			renew() {
 				var that = this;
 				uni.request({
 					url: 'https://yaji.suoeryoude.cn/api/version/index',
+					method: "POST",
 					success: function(res) {
+						if (res.data.data == null) {
+							return;
+						}
 						that.$store.commit("setRenewContent", res.data.data.content);
 						that.$store.commit("setDownloadUrl", res.data.data.downloadurl);
 						that.$store.commit("setisEnforce", res.data.data.enforce);
@@ -61,7 +85,15 @@
 					});
 				} else {
 					//统计
-					that.$api('stat.init').then(res => {})
+					uni.getPushClientId({
+						success(res) {
+							that.$api('stat.init', {
+								"push_clientid": res.cid
+							}).then(data => {
+								console.log(data)
+							})
+						}
+					})
 				}
 			},
 			//获取未读消息
@@ -81,6 +113,8 @@
 							obj.content = val.chat_message_content;
 							obj.receiver_id = val.user_id;
 							obj.msgNum = val.no_read_count == 0 ? false : true;
+							obj.is_topping = val.is_topping;
+							obj.topping_time = val.topping_time;
 							for (var i = 0; i < arr.length; i++) {
 								if (arr[i].user_id == val.user_id) {
 									arr.splice(i, 1)
@@ -200,13 +234,18 @@
 				//监听 WebSocket 接受到服务器的消息事件
 				getApp().globalData.socketTask.onMessage((res) => {
 					if (JSON.parse(res.data).type == 'text' || JSON.parse(res.data).type == 'image' || JSON.parse(
-							res.data).type == 'audio') {
+							res.data).type == 'audio' || JSON.parse(res.data).type == 'gift') {
+						console.log(JSON.parse(res.data))
 						var userInfo = uni.getStorageSync("userInfo")
 						//别人给我发消息
 						if (JSON.parse(res.data).data.user.id != userInfo.id) {
 							var messageList = that.$store.state.message.messageList;
+							var is_topping = "";
+							var topping_time = ""
 							messageList.forEach((val, index) => {
 								if (val.user_id == JSON.parse(res.data).data.user.id) {
+									is_topping = val.is_topping;
+									topping_time = val.topping_time;
 									messageList.splice(index, 1);
 								}
 							})
@@ -220,6 +259,8 @@
 							obj.type = sData.type;
 							obj.content = sData.content;
 							obj.receiver_id = sData.receiver_id;
+							obj.is_topping = is_topping;
+							obj.topping_time = topping_time;
 							messageList.unshift(obj);
 							//添加未读数量
 							if (that.$store.state.message.receiverId == "") {
@@ -234,15 +275,18 @@
 						} else if (JSON.parse(res.data).data.receiver_id == Number(that.$store.state.message
 								.receiverId)) {
 							//我给别人发消息		
-
 							//消息列表	
 							that.$api('user.profile', {
 								user_id: Number(that.$store.state.message.receiverId)
 							}).then(data => {
 								var newMsgList = that.$store.state.message.messageList;
+								var is_topping = "";
+								var topping_time = ""
 								newMsgList.forEach((val, index) => {
 									if (val.user_id == JSON.parse(res.data).data
 										.receiver_id) {
+										is_topping = val.is_topping;
+										topping_time = val.topping_time;
 										newMsgList.splice(index, 1);
 									} else if (val.receiver_id == JSON.parse(res.data).data
 										.receiver_id) {
@@ -261,6 +305,8 @@
 								obj.content = sData.content;
 								obj.receiver_id = that.$store.state.message.receiverId;
 								obj.msgNum = false;
+								obj.is_topping = is_topping;
+								obj.topping_time = topping_time;
 								newMsgList.unshift(obj);
 								that.$store.commit("setMessageList", newMsgList);
 							})
@@ -272,9 +318,7 @@
 					console.log('全局Socket 已关闭！');
 					getApp().globalData.wsOnlion = false;
 					clearInterval(getApp().globalData.timmer);
-					if (!getApp().globalData.islogout) {
-						that.initSocket();
-					}
+					that.initSocket();
 				});
 				getApp().globalData.socketTask.onError(function() {
 					console.log("全局Socket连接打开失败，请检查！");
@@ -356,7 +400,6 @@
 		//   },
 		onLaunch: async function(options) {
 			await this.setAppInfo();
-
 			try {
 				let init = await this.getAppInit(options);
 				await this.autoLogin(init.data);
@@ -368,12 +411,14 @@
 			}
 		},
 		onShow() {
-			this.initSocket(); //启动socket
+			// this.initSocket(); //启动socket
 			this.getHistoryCronyList();
 		},
 		onLaunch: async function() {
+			this.initSocket();
 			this.isLogin()
 			this.renew()
+			this.pushMsg();
 			let token = Boolean(uni.getStorageSync('token'))
 			let that = this;
 			that.$api('user.info').then(res => {
@@ -459,6 +504,7 @@
 					})
 				}
 			})
+
 		},
 		onHide: function() {
 			var that = this;
@@ -468,9 +514,15 @@
 			}
 			//聊天记录添加到storage
 			if (that.$store.state.message.messageList.length != 0) {
+				var list = that.$store.state.message.messageList;
+				list.forEach((val, index) => {
+					if (val.user_id == undefined) {
+						list.splice(index, 1)
+					}
+				})
 				var obj = {
 					id: userInfo.id,
-					messageList: that.$store.state.message.messageList
+					messageList: list
 				}
 				uni.setStorageSync("historyCronyList" + userInfo.id, obj)
 			}
@@ -478,8 +530,8 @@
 			if (getApp().globalData.isSelectImage) {
 				return;
 			}
-			getApp().globalData.islogout = true;
-			getApp().globalData.socketTask.close();
+			// getApp().globalData.islogout = true;
+			// getApp().globalData.socketTask.close();
 		},
 	};
 </script>

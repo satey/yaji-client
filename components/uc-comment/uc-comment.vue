@@ -1,12 +1,12 @@
 <template>
 	<view>
 		<view class="commentItem" style="margin-top: 30rpx;display: flex;">
-			<u-avatar size="72" :src="item.avatar || '/static/avatar.png'"
+			<u-avatar size="85" :src="item.avatar || '/static/avatar.png'"
 				@click="$u.route('/pages/user/home', { user_id: item.user_id })"></u-avatar>
 			<view style="flex: 1;margin-left: 16rpx;">
 				<view style="display: flex;align-items: center;justify-content: space-between;height: 65rpx;">
 					<view style="color: #323232;font-size: 24rpx;">
-						{{ item.role_realname + ' · ' + item.role_dynasty || '无名氏' }}
+						{{ name}}
 					</view>
 					<view style="display: flex;" @click="handlePostDigComment()">
 						<text v-show='item.is_zan==0' class="ri-heart-line"
@@ -58,11 +58,15 @@
 				is_commentZan: 0,
 				comment_diggnums: null,
 				post_id: null,
-
+				name: ""
 			}
 		},
 		created() {
-
+			if (this.item.role_realname == null) {
+				this.name = '无名氏'
+			} else {
+				this.name = this.item.role_realname + ' · ' + this.item.role_dynasty
+			}
 		},
 		methods: {
 			// 点赞评论

@@ -3,8 +3,18 @@
 		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue",
 		"^uc-(.*)": "@/components/uc-$1/uc-$1.vue"
 	},
-	"pages": [
+	"pages": [{
+			"path": "pages/start/start",
+			"name": "start",
+			"title": "启动",
+			"style": {
+				"navigationBarTitleText": "启动"
+			},
+			"meta": {
+				"auth": false
+			}
 
+		},
 		{
 			"path": "pages/index/index",
 			"name": "index",
@@ -21,8 +31,7 @@
 			"path": "pages/index/square",
 			"name": "square",
 			"style": {
-				"navigationBarTitleText": "动态",
-				"enablePullDownRefresh": true
+				"navigationBarTitleText": "动态"
 			},
 			"meta": {
 				"auth": false
@@ -33,6 +42,15 @@
 			"name": "message",
 			"style": {
 				"navigationBarTitleText": "消息"
+			},
+			"meta": {
+				"auth": true
+			}
+		}, {
+			"path": "pages/chat/trendsMsg",
+			"name": "trendsMsg",
+			"style": {
+				"navigationBarTitleText": "动态消息"
 			},
 			"meta": {
 				"auth": true
@@ -156,6 +174,15 @@
 			"meta": {
 				"auth": true
 			}
+		}, {
+			"path": "pages/mine/recharge",
+			"name": "recharge",
+			"style": {
+				"navigationBarTitleText": "充值"
+			},
+			"meta": {
+				"auth": true
+			}
 		},
 		{
 			"path": "pages/mine/bill",
@@ -191,7 +218,8 @@
 			"path": "pages/public/page",
 			"name": "page",
 			"style": {
-				"navigationBarTitleText": "页面"
+				"navigationBarTitleText": "",
+				"navigationStyle": "default"
 			},
 			"meta": {
 				"auth": false
@@ -202,6 +230,16 @@
 			"name": "center",
 			"style": {
 				"navigationBarTitleText": "帮助中心"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/public/privacySet",
+			"name": "privacySet",
+			"style": {
+				"navigationBarTitleText": "隐私设置"
 			},
 			"meta": {
 				"auth": false
@@ -247,6 +285,16 @@
 			"name": "poetry",
 			"style": {
 				"navigationBarTitleText": "曲水流觞"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/joy/poetryStart",
+			"name": "poetryStart",
+			"style": {
+				"navigationBarTitleText": "曲水流觞启动"
 			},
 			"meta": {
 				"auth": false
@@ -341,6 +389,15 @@
 			"meta": {
 				"auth": true
 			}
+		}, {
+			"path": "pages/public/report",
+			"name": "report",
+			"style": {
+				"navigationBarTitleText": "举报"
+			},
+			"meta": {
+				"auth": true
+			}
 		},
 		{
 			"path": "pages/chat/group",
@@ -371,6 +428,14 @@
 			"meta": {
 				"auth": true
 			}
+		}, {
+			"path": "pages/chat/charSeting",
+			"style": {
+				"navigationBarTitleText": "对话设置"
+			},
+			"meta": {
+				"auth": true
+			}
 		},
 		{
 			"path": "pages/chat/audiosetting",
@@ -381,11 +446,7 @@
 			"meta": {
 				"auth": true
 			}
-		}
-
-
-
-		, {
+		}, {
 			"path": "components/takequestion/takequestion",
 			"style": {
 				"navigationBarTitleText": "",
@@ -415,6 +476,14 @@
 
 		}
 
+		, {
+			"path": "pages/mine/logOff",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
 	],
 	"globalStyle": {
 		"navigationStyle": "custom",
@@ -424,7 +493,7 @@
 		"backgroundColor": "#F8F8F8",
 		"app-plus": {
 			"bounce": "none",
-			"softinputMode":"adjustPan"
+			"softinputMode": "adjustPan"
 		}
 	}
 }

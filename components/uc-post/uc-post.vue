@@ -1,37 +1,45 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
-	<view class="flex px-4 py-2" style="border-bottom: 1rpx solid rgb(238, 238, 238,0.5);padding-top: 20rpx;">
-		<view @click="openUserHome(item.user_id)">
-			<image class="block w-14 h-14 rounded-full" :src="item.user.avatar || '/static/avatar.png'"></image>
+	<view class="flex px-4 py-2" style="border-bottom: 1rpx solid rgb(238, 238, 238,0.5);padding-top: 20rpx;"
+		v-if="item.status == 'normal'">
+		<image class="block rounded-full" @click="showToast" v-if="item.user == null" src="/static/avatar.png"
+			style="width: 85rpx;height: 85rpx;"></image>
+		<view v-else>
+			<image class="block rounded-full" :src="item.user.avatar || '/static/avatar.png'"
+				@click="openUserHome(item.user_id)" style="width: 85rpx;height: 85rpx;"></image>
 		</view>
 		<view class="flex-1" style="margin-left: 20rpx;padding-bottom: 20rpx;">
-
-			<view class="leading-none mt-2" @click="openUserHome(item.user_id)">
+			<view class="leading-none mt-2" v-if="item.user==null">
+				<text style="color: #323232;font-size: 28rpx;">无名氏</text>
+				<text
+					style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: cornsilk; color: rgb(255, 180, 31);">望</text>
+				<text style="color: rgb(255, 180, 31);">0</text>
+			</view>
+			<view class="leading-none mt-2" @click="openUserHome(item.user_id)" v-else>
 				<text v-if="item.user.role_realname"
-					style="color: #323232;font-size: 28rpx;">{{ item.user.role_realname + ' · ' + item.user.role_dynasty }}</text>
+					style="color: #323232;font-size: 28rpx;">{{ item.role.realname + ' · ' + item.role.dynasty }}</text>
 				<text v-else style="color: #323232;font-size: 28rpx;">无名氏</text>
 				<text
 					style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: cornsilk; color: rgb(255, 180, 31);">望</text>
 				<text style="color: rgb(255, 180, 31);">{{item.user.total_mw }}</text>
-
 			</view>
 			<!-- <view class="text-base leading-none text-gray-400 mt-3">{{ $u.timeFrom(item.createtime, 'mm月dd日 hh:MM') }}
 			</view> -->
 
-			<view v-if="item.user.role_achievements" style="font-size: 24rpx;color: #999999;">
-				{{item.user.role_achievements.replace(/,/g,"&nbsp;&nbsp;")}}
+			<view v-if="item.role.achievements" style="font-size: 24rpx;color: #999999;margin-top: 5rpx;">
+				{{item.role.achievements.replace(/,/g,"&nbsp;&nbsp;")}}
 			</view>
 			<view class="mt-4" style="color: #323232;font-size: 26rpx;">
 				<text @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}</text>
 				<!-- 话题 -->
-				<!-- <view @tap="$u.route('/pages/user/topicspeed',{post_cate_id:items.id})"
-					class="text-base leading-none text-gray-500 ml-1" style="color: #6F93BD;margin-top: 20rpx;"
-					v-for="items in item.post_cate">{{ items.title }}</view> -->
+				<view @tap="$u.route('/pages/user/topicspeed',{post_cate_id:items.id})"
+					class="text-base leading-none text-gray-500 ml-1" style="color: #FE4373;margin-top: 20rpx;"
+					v-for="items in item.post_cate"><i class="ri-hashtag mr-1"></i>{{ items.title }}</view>
 			</view>
 			<!-- {{item}} -->
 			<view v-if="item.images" class="mt-4" style="position: relative;">
 				<image @click="onPreviewTap(0)" :src="item.images.split(',')[0]" mode="heightFix"
-					v-if="item.images.split(',').length == 1" style="max-width: 500rpx;">
+					v-if="item.images.split(',').length == 1" style="max-width: 500rpx;border-radius: 10rpx;">
 				</image>
 				<view v-if="item.images.split(',').length != 1" style="width: 100%;display: flex;flex-direction: row;">
 					<image @click="onPreviewTap(0)" :src="item.images.split(',')[0]" mode="aspectFill"
@@ -40,10 +48,8 @@
 						style="width: calc(100% / 2);height: 276rpx;border-radius: 10rpx;"></image>
 					<view v-if="item.images.split(',').length >2"
 						style="position: absolute;right: 0;bottom: 0;color: #FFFFFF;z-index: 1;padding: 20rpx;background: rgba(0,0,0,0.5);font-size: 32rpx;">
-						+{{item.images.split(',').length}}</view>
+						+1</view>
 				</view>
-
-				<!-- <u-album :urls="item.images.split(',')" multipleSize="150" rowCount="3"></u-album> -->
 			</view>
 			<view v-if="item.audio" @click="handlePlayAudio(item.audio)"
 				class="mt-4 flex items-center justify-center rounded-full overflow-hidden w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
@@ -96,8 +102,10 @@
 						style="width: 40rpx;margin-top: 10rpx; height: 40rpx;margin-right: 10rpx;" mode=""></image>
 					<image v-show='is_cai==1' src="../../static/nolove-red.png"
 						style="width: 40rpx;margin-top: 10rpx;height: 40rpx;margin-right: 10rpx;" mode=""></image> -->
-					<text
-						style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 80rpx;">{{item.cainums ==null?'无聊':item.cainums}}</text>
+					<text style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 80rpx;color: #999999;"
+						v-show='is_cai==0'>无聊</text>
+					<text style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 80rpx;color: #fe4373;"
+						v-show='is_cai==1'>无聊</text>
 				</view>
 			</view>
 
@@ -139,21 +147,14 @@
 			</view>
 			<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
 				<view class="p-4">
-					<!-- <view class="text-2xl text-center">操作</view> -->
-					<view class="delete" @click="showFeedback = true, showAction = false" style="margin-top: 50rpx;">
-						<!-- <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i> -->
+					<view class="delete"
+						@click="$u.route('/pages/public/report',{user_id:item.user_id}), showAction = false"
+						style="margin-top: 50rpx;">
 						<view style="font-size: 30rpx;">举报广告/色情等</view>
 					</view>
 					<view class="delete2" @click="showAction = false" style="margin-top: 20rpx;">
-						<!-- <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i> -->
 						<view style="font-size: 30rpx;">取消</view>
 					</view>
-					<!-- <view class="grid grid-cols-5 gap-4 mt-6">
-						<view class="text-center" @click="showFeedback = true, showAction = false">
-							<i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i>
-							<view class="text-base mt-2">举报</view>
-						</view>
-					</view> -->
 				</view>
 			</u-popup>
 
@@ -222,6 +223,12 @@
 		},
 
 		methods: {
+			showToast() {
+				uni.showToast({
+					icon: "none",
+					title: "用户已注销"
+				})
+			},
 			//跳转用户详情
 			openUserHome(id) {
 				var that = this;
@@ -337,7 +344,6 @@
 						return
 					}
 				})
-
 			},
 			getPostDetail() {
 				let that = this

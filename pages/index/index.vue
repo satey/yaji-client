@@ -4,13 +4,10 @@
 		<image src="@/static/embed/sexBg.png"
 			style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: -1;">
 		</image>
-		<view class="px-4 py-2 bg-gradient-to-b to-black" :style="`padding-top: 100rpx;`">
-			<view class="flex justify-between items-center" style="align-items:center;justify-content: center;">
-				<view class="text-2xl font-bold" style="text-align: center;">雅集</view>
-				<!-- <view class="">
-					<i class="ri-user-search-fill text-3xl leading-none bg-gradient-to-b from-rose-500 to-rose-400 bg-clip-text text-transparent"
-						@click="$u.route('/pages/user/newSearch')"></i>
-				</view> -->
+		<view class="px-4 py-2 bg-gradient-to-b to-black" :style="`padding-top: 150rpx;`">
+			<view class="flex justify-between items-center" :style="{background:headBarBgColor}"
+				style="z-index:9999;box-sizing: border-box;width:100%;align-items:center;justify-content: center;position: fixed;top:0;left: 0;padding-top:var(--status-bar-height);padding-bottom: 20rpx;">
+				<view class="text-2xl " style="text-align: center;">雅集</view>
 			</view>
 			<!-- <view class="grid grid-cols-2 gap-4 mt-6">
                 <view class="bg-purple-500 p-4 text-white rounded" @click="$u.route('pages/joy/poetry')">
@@ -22,18 +19,15 @@
                     <view class="mt-4 opacity-75">美酒助兴畅玩嗨翻天</view>
                 </view>
             </view> -->
-			<view class="grid gap-4 mt-6" style="display: flex;align-items: center;">
-				<view class="activity" @click="$u.toast('暂未开放，敬请期待吧')">
-					<image src="../../static/activity1.png" mode=""></image>
-					<!-- <view class="text-xl">曲水流觞</view>
-					<view class="mt-4 opacity-75">美酒助兴畅玩嗨翻天</view> -->
+			<!-- 后续开放 -->
+			<!-- <view class="grid gap-4 mt-6" style="display: flex;align-items: center;">
+				<view class="activity" @click="$u.route('pages/joy/poetryStart')">
+					<image src="../../static/activity1.png" mode="widthFix"></image>
 				</view>
-				<view class=" activity" @click="$u.toast('暂未开放，敬请期待吧')">
-					<image src="../../static/activity2.png" mode=""></image>
-					<!-- <view class="text-xl">诗词结缘</view>
-					<view class="mt-4 opacity-75">美酒助兴畅玩嗨翻天</view> -->
+				<view class=" activity" @click="$u.route('pages/joy/wine')">
+					<image src="../../static/activity2.png" mode="widthFix"></image>
 				</view>
-			</view>
+			</view> -->
 		</view>
 		<!-- 搜索人物 -->
 		<view class="searchContainer">
@@ -66,7 +60,7 @@
 				<uc-user v-for="(item, index) in listUserRecommend2" :key="index" :item="item"></uc-user>
 				<u-loadmore v-if="listUserRecommend.length" :status="loadmore" nomoreText="" color="#a1a1a1"
 					marginTop="20" />
-				<u-empty v-if="!listUserRecommend.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1"
+				<u-empty v-if="!listUserRecommend.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
 					marginTop="100"></u-empty>
 			</block>
 			<block v-if="type === 'post'">
@@ -75,7 +69,7 @@
 				</takequestion>
 				<u-loadmore v-if="listPostRecommend.length" :status="loadmore" nomoreText="" color="#a1a1a1"
 					marginTop="20" />
-				<u-empty v-if="!listPostRecommend.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1"
+				<u-empty v-if="!listPostRecommend.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
 					marginTop="100"></u-empty>
 			</block>
 			<block v-if="type === 'group'">
@@ -94,7 +88,7 @@
 					:item="item"></uc-group>
 				<u-loadmore v-if="listGroupRecommend.length" :status="loadmore" nomoreText="" color="#a1a1a1"
 					marginTop="20" />
-				<u-empty v-if="!listGroupRecommend.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1"
+				<u-empty v-if="!listGroupRecommend.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
 					marginTop="100"></u-empty>
 			</block>
 		</view>
@@ -105,6 +99,20 @@
 				</view>
 			</view>
 		</u-popup> -->
+		<!-- 充值 -->
+		<view v-if="authority">
+			<u-modal :show="authority" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+				confirmText="去开启" cancelText="取消" @cancel="authority=false" @confirm="openSet">
+				<view style="display: flex;flex-direction: column;">
+					<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">权限未开启</view>
+					<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
+						<text>将无法获得聊天的消息通知。
+							请在手机的 “设置” — ”通知与控制中心“ — “通知管理” — “雅集” 中打开“允许通知”。
+						</text>
+					</view>
+				</view>
+			</u-modal>
+		</view>
 		<u-modal :show="$store.state.renew.isRenew" :showConfirmButton="true"
 			:showCancelButton="$store.state.renew.isEnforce==1?false:true" confirmColor="#FE4373" @confirm="download"
 			@cancel="renewCancel">
@@ -123,27 +131,28 @@
 	</view>
 </template>
 <script>
+	import permision from "@/js_sdk/wa-permission/permission.js"
 	export default {
 		name: 'index',
 		components: {},
 		data() {
 			return {
-				// tablist: [{
-				// 		name: '每日邂逅',
-				// 		type: 'user',
-				// 		count: 0
-				// 	},
-				// 	{
-				// 		name: '话题速配',
-				// 		type: 'post',
-				// 		count: 0
-				// 	},
-				// ],
 				tablist: [{
-					name: '每日邂逅',
-					type: 'user',
-					count: 0
-				}],
+						name: '每日邂逅',
+						type: 'user',
+						count: 0
+					},
+					{
+						name: '话题速配',
+						type: 'post',
+						count: 0
+					},
+				],
+				// tablist: [{
+				// 	name: '每日邂逅',
+				// 	type: 'user',
+				// 	count: 0
+				// }],
 				type: 'user',
 				listUserRecommend: [],
 				listUserRecommend2: [],
@@ -172,7 +181,10 @@
 				renewPopup: false,
 				downloadUrl: "",
 				progress: true,
-				progressNum: 0
+				progressNum: 0,
+				headBarBgColor: "",
+				downloadFlag: true,
+				authority: false,
 			}
 		},
 		watch: {
@@ -187,14 +199,21 @@
 				deep: true,
 			}
 		},
+		onPageScroll(e) {
+			if (parseInt(e.scrollTop) > 30) {
+				this.headBarBgColor = "#fff"
+			} else {
+				this.headBarBgColor = ""
+			}
+		},
 		onReachBottom() {
-			let that = this
-			if (that.loadmore === 'nomore') return false
+			let that = this;
+			// if (that.loadmore === 'nomore') return false
 			that.loadmore = 'loading'
-			that.params.page = ++that.params.page
+			that.params.page = ++that.params.page;
 			switch (that.type) {
 				case 'user':
-					that.getUserRecommend()
+					that.loadmore = 'nomore'
 					break
 				case 'post':
 					that.getPostRecommend()
@@ -213,6 +232,7 @@
 			let that = this;
 			that.searchName()
 			that.getUserRecommend();
+			that.isPush();
 			var count = uni.getStorageSync('pageCount') || 0;
 			count++;
 			uni.setStorageSync('pageCount', count);
@@ -294,6 +314,42 @@
 			uni.removeStorageSync('titleItem')
 		},
 		methods: {
+			openSet() {
+				// #ifdef APP-PLUS
+				permision.gotoAppPermissionSetting()
+				// #endif
+			},
+			//查看push权限
+			async isPush() {
+				// #ifdef APP-PLUS
+				// var flag = push.isOn();
+				// if (flag) {
+				// 	push.on();
+				// } else {
+				// 	push.off();
+				// }
+				var main = plus.android.runtimeMainActivity();
+				var NotificationManagerCompat = plus.android.importClass(
+					"androidx.core.app.NotificationManagerCompat");
+				let pkName = main.getPackageName();
+				let packageNames = NotificationManagerCompat.from(main);
+				console.log('通知权限', packageNames.areNotificationsEnabled())
+				if (packageNames.areNotificationsEnabled()) {
+					push.on();
+				} else {
+					this.authority = true;
+					// uni.showModal({
+					// 	title: "请开启通知权限",
+					// 	content: "请去设置里面开启通知权限！",
+					// 	success(push) {
+					// 		if (push.confirm) {
+					// 			permision.gotoAppPermissionSetting()
+					// 		}
+					// 	}
+					// })
+				}
+				// #endif
+			},
 			//关闭更新弹窗
 			renewCancel() {
 				this.$store.commit("setisRenew", false)
@@ -301,39 +357,50 @@
 			//下载新版本
 			download() {
 				var that = this;
-				console.log(that.$store.state.renew.downloadUrl)
-				this.progress = false;
-				var downloadTask = uni.downloadFile({
-					url: that.$store.state.renew.downloadUrl,
-					success: function(res) {
-						uni.hideLoading()
-						// 安装新版本
-						uni.showModal({
-							title: '安装新版本',
-							content: '新版本已下载完成，是否安装？',
-							success: function(msg) {
-								if (msg.confirm) {
-									// #ifdef APP-PLUS
-									plus.runtime.install(res.tempFilePath)
-									// #endif
+				if (that.downloadFlag) {
+					this.progress = false;
+					that.downloadFlag = false;
+					var downloadTask = uni.downloadFile({
+						url: that.$store.state.renew.downloadUrl,
+						success: function(res) {
+							uni.hideLoading()
+							// 安装新版本
+							uni.showModal({
+								title: '安装新版本',
+								content: '新版本已下载完成，是否安装？',
+								success: function(msg) {
+									if (msg.confirm) {
+										console.log(that.downloadFlag)
+										if (that.downloadFlag) {
+											// #ifdef APP-PLUS
+
+											plus.runtime.install(res.tempFilePath);
+											// #endif
+										}
+									}
 								}
-							}
-						});
-					}
-				});
-				downloadTask.onProgressUpdate((res) => {
-					that.progressNum = res.progress
-				})
+							});
+						}
+					});
+					downloadTask.onProgressUpdate((res) => {
+						that.progressNum = res.progress;
+						if (parseInt(res.progress) == 100) {
+							that.downloadFlag = true;
+						}
+					})
+				} else {
+					that.$u.toast("正在下载中")
+				}
+
 			},
 			// 搜索中的角色称号
 			searchName() {
 				let that = this
 				that.$api('role_title.lists').then(res => {
 					if (res.code === 1) {
-						that.searchList.push(res.data[0], res.data[1], res.data[2])
+						that.searchList.push(res.data[0], res.data[1], res.data[2]);
 					}
 				})
-
 			},
 
 			// 搜索
@@ -398,7 +465,7 @@
 						break
 					case 'post':
 						that.params.page = 1
-						that.listPostRecommend = []
+						that.listPostRecommend = [];
 						that.getPostRecommend()
 						break
 					case 'group':
@@ -415,7 +482,6 @@
 				that.loadmore = 'loading'
 				that.$api('user.recommend_user', that.params).then(res => {
 					if (res.code === 1) {
-						console.log(res)
 						that.listUserRecommend = res.data
 						if (that.params.page < res.data.last_page) {
 							that.loadmore = 'loadmore'
@@ -428,12 +494,13 @@
 			async getPostRecommend() {
 				let that = this
 				that.loadmore = 'loading'
-				that.params.limit = 3
+				that.params.limit = 10
 				that.$api('post_cate.lst', that.params).then(res => {
 					if (res.code === 1) {
 						// that.paginator.total = res.data.total
 						// // that.paginator.last_page = res.data.last_page
-						that.listPostRecommend = res.data
+						// that.listPostRecommend.concat(res.data);
+						that.listPostRecommend = [...that.listPostRecommend, ...res.data];
 						if (that.params.page < res.data.last_page) {
 							that.loadmore = 'loadmore'
 						} else {

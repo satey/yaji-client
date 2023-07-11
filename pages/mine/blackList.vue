@@ -6,16 +6,23 @@
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
-		<view class="blackList" v-if="isB">
-			<view class="blackList-item" v-for="(item,index) in blackList">
-				<image class="blackList-item-pic" :src="item.avatar" mode=""></image>
-				<view class="blackList-item-name">{{item.realname}}.{{item.dynasty}}</view>
-				<view class="blackList-item-type">{{item.achievements}}</view>
+		<view class="blackList" style="padding:0 30rpx;" v-if="blackList.length">
+			<view style="display: flex;margin-top: 30rpx;" v-for="(item,index) in blackList"
+				@click="$u.route('/pages/user/home', { user_id: item.black_user_id })">
+				<view>
+					<image :src="item.avatar" style="width: 92rpx;height: 92rpx;border-radius: 50%;"></image>
+				</view>
+				<view
+					style="flex:1;height: 92rpx;display: flex;flex-direction: column;justify-content: space-around;margin-left: 20rpx;border-bottom: 1rpx solid #ECECEC;padding-bottom: 30rpx;">
+					<view style="font-size: 30rpx;color: #323232;">{{item.realname}}·{{item.dynasty}}</view>
+					<view style="font-size: 26rpx;color: #999999;">{{item.achievements}}</view>
+				</view>
 			</view>
 
 		</view>
 		<!-- <u-loadmore v-if="blackList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" /> -->
-		<u-empty v-else icon="/static/null.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
+		<u-empty v-if="blackList.length==0" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+			marginTop="100"></u-empty>
 	</view>
 </template>
 
@@ -36,22 +43,19 @@
 
 		},
 		created() {
-
-			this.initBlackList()
+			this.initBlackList(this.params)
+		},
+		onReachBottom() {
+			this.params.page += 1
+			this.initBlackList(this.params)
 		},
 		methods: {
-			initBlackList() {
-				let that = this
-				// console.log('that.params',that.params);
-				that.$api('user_black.lists', that.params).then(res => {
+			initBlackList(params) {
+				let that = this;
+				that.$api('user_black.lists', params).then(res => {
+					console.log(res)
 					if (res.code == 1) {
-						console.log('ss', res.data);
-						that.blackList = res.data.data
-						if (that.blackList) {
-							// /此时显示数据为空
-							that.isB = true
-						}
-
+						that.blackList.push(...res.data);
 					} else {
 						that.$u.toast(res.msg)
 					}

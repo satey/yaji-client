@@ -97,7 +97,6 @@
 			// 历史记录搜索
 			LishandleSearch() {
 				let that = this
-
 				that.params.page = 1
 				that.type = 'search'
 				that.listUserSearch = []
@@ -123,7 +122,6 @@
 				that.getUserSearch()
 			},
 			handleSearchTitle(item) {
-				console.log('handleSearchTitle', item);
 				let that = this
 				that.params.role_title_id = item.id
 				that.params.page = 1
@@ -146,7 +144,6 @@
 				that.$api('user.search_log', {}).then(res => {
 					if (res.code === 1) {
 						that.listUserRecommend = res.data
-						console.log(res.data);
 					}
 				})
 			},
@@ -155,7 +152,6 @@
 				that.loadmore = 'loading'
 				that.$api('user.recommend', that.params).then(res => {
 					if (res.code === 1) {
-						console.log('recommed', res.data);
 						// if(res.data.is_free==0){
 						// 	that.isfree=true
 						// }
@@ -193,7 +189,6 @@
 				let that = this
 				that.$api('role_title.lists').then(res => {
 					if (res.code === 1) {
-						console.log('cbsdcvsc', res.data);
 						that.listRoleTitle = res.data
 					}
 				})

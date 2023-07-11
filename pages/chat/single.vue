@@ -1,25 +1,38 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="" style="height: 100vh;width: 100%;display: flex;flex-direction: column;box-sizing: border-box;">
-		<u-navbar :title="user.role_realname" :safeAreaInsetTop="true" :placeholder="true">
+		<u-navbar title="qwe" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
 				<i class="ri-arrow-left-s-line text-3xl" @click="backUrl()"></i>
 			</view>
 			<view slot="center" style="display: flex;align-items: center;">
 				<image :src="user.avatar" style="width:50rpx;height:50rpx;border-radius:50%;margin-right: 10rpx;">
-				</image>
-				<!-- <text>{{user.role.realname}}·{{user.role.dynasty}}</text> -->
+				</image>{{name}}
 			</view>
-			<!-- <view slot="right">
-				<i class="ri-more-fill text-3xl" @click="$u.route('pages/chat/groupsetting')"></i>
-			</view> -->
+			<view slot="right">
+				<i class="ri-more-fill text-3xl"
+					@click="$u.route('/pages/chat/charSeting',{user_id:$Route.query.user_id})"></i>
+			</view>
 		</u-navbar>
+		<!-- 充值 -->
+		<view v-if="recharge">
+			<u-modal :show="recharge" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+				confirmText="充值" cancelText="放弃" @cancel="recharge=false" @confirm="$u.route('/pages/mine/recharge')">
+				<view style="display: flex;flex-direction: column;">
+					<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">铜钱不足</view>
+					<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
+						<text>铜钱不足,是否前往充值页面</text>
+					</view>
+				</view>
+			</u-modal>
+		</view>
 
-		<scroll-view class="h-screen" scroll-y="true" scroll-with-animation="true" show-scrollbar="false"
-			:scroll-into-view="scrollInto" style="flex: 1;height: 0;box-sizing: border-box;"
+		<scroll-view class="h-screen" scroll-y="true" :scroll-with-animation="false" show-scrollbar="false"
+			:scroll-into-view="scrollInto" style="flex: 1;height: 0;box-sizing: border-box;background: #F7F7F7;"
 			:refresher-enabled="isScrollDown" :refresher-triggered="scrollFlag" @refresherrefresh="scrollTop">
 			<view class="text-center text-xs text-gray-500" v-if="!messageList || messageList.length === 0"></view>
-			<view v-if="showSvga" id="svgaPlayer" class="fixed w-full h-screen top-0 right-0 bottom-0 left-0">
+			<view v-if="showSvga" id="svgaPlayer" class="fixed w-full h-screen top-0 right-0 bottom-0 left-0"
+				style="z-index: 999;">
 				<l-svga ref="svgaPlayer"></l-svga>
 			</view>
 			<uc-auth></uc-auth>
@@ -32,7 +45,8 @@
 					<view class="flex justify-end w-4/6">
 						<view class="mr-3">
 							<view v-if="item.type === 'text'"
-								class="rounded-3xl rounded-tr-none p-3 text-base text-white bg-gradient-to-r from-fuchsia-400 to-fuchsia-500 whitespace-pre-wrap">
+								class="rounded-3xl rounded-tr-none p-3 text-base text-white bg-gradient-to-r  to-fuchsia-500 whitespace-pre-wrap"
+								style="background: #FE4373;">
 								{{ item.content }}
 							</view>
 							<view v-if="item.type === 'image'">
@@ -64,7 +78,8 @@
 						</view>
 						<view class="ml-3">
 							<view v-if="item.type === 'text'"
-								class="rounded-3xl rounded-tl-none p-3 text-base text-white bg-gradient-to-r from-fuchsia-400 to-fuchsia-500 whitespace-pre-wrap">
+								class="rounded-3xl rounded-tl-none p-3 text-base bg-gradient-to-r to-fuchsia-500 whitespace-pre-wrap"
+								style="background: #fff;color: #333;">
 								{{ item.content }}
 							</view>
 							<view v-if="item.type === 'image'">
@@ -106,8 +121,8 @@
 					<i class="ri-add-circle-fill text-4xl leading-none text-gray-400"></i>
 				</view>
 				<view class="flex items-center" v-if="text" @click="handleTextSend">
-					<text
-						class="rounded-full p-2 px-3 text-base text-white bg-gradient-to-r from-fuchsia-400 to-fuchsia-500">发送</text>
+					<text class="rounded-full p-2 px-3 text-base text-white bg-gradient-to-r to-fuchsia-500"
+						style="background: rgb(254, 67, 115);">发送</text>
 				</view>
 			</view>
 			<!-- 语音 -->
@@ -130,16 +145,17 @@
 			<view class="grid grid-cols-8 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
 				<view class="flex" v-for="(item, index) in emojiList" :key="index" :item="item"
 					@click="handleEmojiSend(item)">
-					<text class="text-2xl leading-none">{{ item }}</text>
+					<text class="leading-none" style="font-size: 1.8rem;">{{ item }}</text>
 				</view>
 			</view>
 			<!-- 礼物 -->
 			<view class="grid grid-cols-4 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showGift">
-				<view class="flex flex-col items-center" v-for="(item, index) in giftList" :key="index" :item="item"
-					@click="handleGiftSend(item)">
-					<image class="block w-20 h-20" :src="item.image" mode="aspectFill" lazy-load="false"></image>
-					<text class="mt-1">{{ item.title }}</text>
-					<text class="text-xs leading-none text-fuchsia-500 mt-2">{{ item.price }}铜币</text>
+				<view v-for="(item, index) in giftList" :key="index" :item="item" v-if="item.status!='hidden'">
+					<view class="flex flex-col items-center" @click="handleGiftSend(item)">
+						<image class="block w-20 h-20" :src="item.image" lazy-load="false"></image>
+						<text class="mt-1">{{ item.title }}</text>
+						<text class="text-xs leading-none text-fuchsia-500 mt-2">{{ item.price }}铜钱</text>
+					</view>
 				</view>
 			</view>
 			<!-- 操作 -->
@@ -177,6 +193,7 @@
 	import {
 		mapState
 	} from 'vuex'
+	import permision from "@/js_sdk/wa-permission/permission.js"
 	// import Socket from '@/common/chat.js'
 	export default {
 		name: 'mine',
@@ -237,6 +254,8 @@
 				isScrollDown: true,
 				msgPage: false,
 				newMsg: [],
+				name: "",
+				recharge: false,
 			}
 		},
 		computed: {
@@ -246,27 +265,29 @@
 		},
 		created() {
 			let that = this
+			that.getGiftList()
 			that.getUserProfile()
 			that.getEmojiList()
-			that.getGiftList()
 		},
-		onShow() {
-			this.initSingleSocket()
-		},
-		onHide() {
-			getApp().globalData.socketTask.close();
+		destroyed() {
+			// getApp().globalData.socketTask.close();
 		},
 		onLoad(e) {
 			var that = this;
 			this.msgPage = Boolean(e.megPgae);
-			this.$nextTick(() => {
+			var delay = setTimeout(() => {
 				that.init();
 				that.watchKeyboard();
-			})
-
+				that.initSingleSocket()
+				this.$nextTick(() => {
+					that.scrollBottom();
+				})
+				clearTimeout(delay)
+			}, 200)
 		},
 		onUnload() {
-			this.$store.commit("setReceiverId", "")
+			this.$store.commit("setReceiverId", "");
+			getApp().globalData.socketTask.close()
 		},
 		methods: {
 			//聊天页面socket监听
@@ -275,15 +296,39 @@
 				var newMeg = [];
 				that.$store.commit("setReceiverId", that.$Route.query.user_id);
 				getApp().globalData.socketTask.onMessage((res) => {
+					console.log(JSON.parse(res.data))
 					var userInfo = uni.getStorageSync("userInfo");
 					if (JSON.parse(res.data).type == "history") {
 						that.parseMsg(res.data)
+						that.scrollBottom()
+						var data = JSON.parse(res.data).last_gift_data;
+						if (data == null) {
+							return;
+						}
+						if (userInfo.id != data.user_id) {
+							if (data.readtime == null) {
+								if (data.type == "gift") {
+									that.showSvga = true;
+									that.$nextTick(() => {
+										that.giftList.forEach((val, index) => {
+											if (val.id == data.gift_id) {
+												var setTime1 = setTimeout(() => {
+													that.gift = val;
+													that.handleGiftPlay()
+													that.handleTextSend()
+													clearTimeout(setTime1)
+												}, 500)
+											}
+										})
+									})
+								}
+							}
+						}
 					} else {
 						if (JSON.parse(res.data).data.user_id == userInfo.id || JSON.parse(res.data).data
-							.user_id ==
-							that.$Route.query.user_id) {
+							.user_id == that.$Route.query.user_id) {
 							this.unread(); //后台标记已读
-							this.parseMsg(res.data)
+							this.parseMsg(res.data);
 						}
 					}
 					that.scrollBottom()
@@ -365,7 +410,6 @@
 							that.recordStart(e)
 						})
 						that.recorder.onStop((e) => {
-							console.log("fei")
 							that.recordStop(e)
 						})
 					} else {
@@ -384,6 +428,7 @@
 					page: page,
 					to_user_id: that.$Route.query.user_id, //接收者的id,
 				}
+				console.log(params)
 				getApp().globalData.socketTask.send({
 					data: JSON.stringify(params),
 					success() {
@@ -434,6 +479,17 @@
 							that.messageList.push(msg.data)
 							that.scrollBottom()
 							break
+						case 'gift':
+							that.giftList.forEach((val, index) => {
+								if (val.id == msg.data.gift_id) {
+									that.gift = val;
+									that.handleGiftPlay()
+									that.handleTextSend()
+								}
+							})
+							that.messageList.push(msg.data)
+							that.scrollBottom()
+							break
 						case 'history':
 							if (that.historyPage == 1) {
 								that.messageList = msg.data.data
@@ -459,13 +515,13 @@
 				}
 			},
 			// 发送服务数据
-			sendMessage(data, type = 'text') {
-				let that = this
-				// console.log('page',that.page++);
+			sendMessage(data, type = 'text', gift_id = "") {
+				let that = this;
 				let params = {
 					type: type,
 					msg: 'send',
 					data: data,
+					gift_id: gift_id,
 					to_user_id: that.$Route.query.user_id, //接收者的id,
 				}
 				console.log("-------发送消息----------")
@@ -481,27 +537,38 @@
 				});
 			},
 			backUrl() {
-				if (this.msgPage) {
-					uni.reLaunch({
-						url: '/pages/index/message'
-					});
-				} else {
-					this.$u.route({
-						type: 'navigateBack',
-						delta: 1
-					})
-				}
+				var that = this;
+				this.$u.route({
+					type: 'navigateBack',
+					delta: 1
+				})
 				// uni.navigateTo();
 			},
 			//发送文本消息
 			handleTextSend() {
-				let that = this
+				let that = this;
 				if (that.text === '') {
 					return
+				} else {
+					// that.$api('user_black.lists').then(res => {
+					// 	if (res.code == 1) {
+					// 		var result = res.data.filter((res, index) => {
+					// 			return res.black_user_id == that.$Route.query.user_id ? true : false;
+					// 		})
+					// 		if (result.length == 0) {
+					// 			console.log("fei")
+					// 			that.showEmoji = false;
+					// 			that.sendMessage(that.text, 'text');
+					// 			that.text = '';
+					// 		} else {
+					// 			that.$u.toast('对方在黑名单内');
+					// 		}
+					// 	}
+					// })
+					that.showEmoji = false;
+					that.sendMessage(that.text, 'text');
+					that.text = '';
 				}
-				that.sendMessage(that.text, 'text')
-				that.showEmoji = false
-				that.text = '';
 			},
 			handleEmoji() {
 				this.scrollBottom()
@@ -511,17 +578,31 @@
 				that.showPlus = false
 				that.showGift = false
 			},
-			handleVoice() {
-				this.scrollBottom();
+			async handleVoice() {
 				let that = this
-				that.showRecord = !that.showRecord
-				that.showEmoji = false
-				that.showPlus = false
-				that.showGift = false
+				var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+				if (result == 1) {
+					this.scrollBottom();
+					that.showRecord = !that.showRecord
+					that.showEmoji = false
+					that.showPlus = false
+					that.showGift = false
+					return
+				} else {
+					uni.showModal({
+						title: "请开启录音权限",
+						content: "请去设置里面开启录音权限！",
+						success(res1) {
+							if (res1.confirm) {
+								permision.gotoAppPermissionSetting()
+							}
+						}
+					})
+				}
 			},
 			handlePlus() {
-				this.scrollBottom()
 				let that = this
+				that.scrollBottom()
 				that.showPlus = !that.showPlus
 				that.showRecord = false
 				that.showEmoji = false
@@ -537,24 +618,33 @@
 				that.showPlus = false
 			},
 			handleGiftSend(item) {
-				let that = this
-				that.gift = item
-				if (that.userInfo.money < that.gift.price) {
-					that.$u.toast('账户铜币不足')
-					return
-				}
-				that.sendMessage(that.gift.image, 'gift')
-				that.showGift = false
-				that.handleGiftPlay()
-				// that.handleTextSend()
-				// 强制刷新
-				setTimeout(() => {
-					this.$router.go(0)
-				}, 10)
+				let that = this;
+				that.gift = item;
+				that.sending(item);
+			},
+			sending(item) {
+				var that = this;
+				that.$api("gift.giveGift", {
+					"receiver_user_id": that.$Route.query.user_id,
+					"nums": 1,
+					"gift_id": item.id
+				}).then(data => {
+					if (data.code == 1) {
+						if (data.msg == "赠送成功") {
+							that.sendMessage(that.gift.image, 'gift', item.id)
+							that.showGift = false;
+							that.showSvga = true
+							// that.handleGiftPlay()
+							that.handleTextSend();
+						}
+					} else {
+						that.recharge = true;
+					}
+				})
 			},
 			handleGiftPlay() {
-				let that = this
-				that.showSvga = true
+				let that = this;
+				that.showSvga = true;
 				that.$nextTick(() => {
 					that.$refs.svgaPlayer.render(async (parser, player) => {
 						let videoItem = await parser.load(that.gift.url)
@@ -573,6 +663,14 @@
 					user_id: that.$Route.query.user_id
 				}).then(res => {
 					if (res.code === 1) {
+						if (res.data == null) {
+							uni.showToast({
+								icon: "none",
+								title: "用户已注销"
+							})
+							return;
+						}
+						that.name = res.data.role.realname + "·" + res.data.role.dynasty
 						that.user = res.data;
 					}
 				})
@@ -606,19 +704,13 @@
 
 				}
 			},
-			async getGiftList() {
+			getGiftList() {
 				let that = this
-				if (uni.getStorageSync('GIFTLIST')) {
-					that.giftList = uni.getStorageSync('GIFTLIST')
-				} else {
-					that.$api('gift.lists').then(res => {
-						console.log(res.data);
-						if (res.code === 1) {
-							that.giftList = res.data.data
-							uni.setStorageSync('GIFTLIST', that.giftList)
-						}
-					})
-				}
+				that.$api('gift.lists').then(res => {
+					if (res.code === 1) {
+						that.giftList = res.data;
+					}
+				})
 			},
 			handlePlayAudio(audio) {
 				let that = this

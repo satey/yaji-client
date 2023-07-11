@@ -176,7 +176,6 @@
 				that.$api('user.smslogin', data).then(res => {
 					that.isClick = true;
 					if (res.code === 1) {
-						console.log(res)
 						uni.setStorageSync('token', res.data.token)
 						that.getUserInfo(res.data.token).then(() => {
 							//#ifdef APP-PLUS
@@ -187,7 +186,17 @@
 							// #endif
 							that.$store.commit("setIslogout", false);
 							uni.hideLoading();
-							getApp().globalData.getHistoryCronyList()
+							getApp().globalData.getHistoryCronyList();
+
+							//统计
+							uni.getPushClientId({
+								success(res) {
+									console.log(res.cid)
+									that.$api('stat.init', {
+										"push_clientid": res.cid
+									}).then(res => {})
+								}
+							})
 							that.$nextTick(() => {
 								if (!that.userInfo.realname && !that.userInfo.dynasty && that
 									.userInfo

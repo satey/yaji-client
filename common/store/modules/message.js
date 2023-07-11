@@ -5,6 +5,8 @@ export default {
 		receiverId: "",
 		messageListTotal: [], //全部消息列表
 		islogout: false,
+		topMessageList: [], //置顶消息
+		historyMsgList: [],
 	},
 	mutations: {
 		//设置登录状态
@@ -59,9 +61,15 @@ export default {
 				return;
 			}
 			if (state.messageList.length != 0) {
+				var arr = [];
+				state.messageList.forEach((val, index) => {
+					if (val.user_id != undefined) {
+						arr.push(val)
+					}
+				})
 				var obj = {
 					id: userInfo.id,
-					messageList: state.messageList
+					messageList: arr
 				}
 				uni.setStorageSync("historyCronyList" + userInfo.id, obj)
 			}
@@ -96,6 +104,10 @@ export default {
 		appendUnRead(state, arr) {
 			state.messageList = arr
 		},
+		//用户聊天记录
+		setHistoryMsgList(state, arr) {
+			state.historyMsgList = arr;
+		}
 	},
 	getters: {
 

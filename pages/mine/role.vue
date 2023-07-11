@@ -40,11 +40,11 @@
 						</view>
 						<view class="contentText text-xl">{{ userRole.content || '暂无介绍' }} </view>
 						<view style="padding:0rpx 38rpx;margin-top: 120rpx;">
-
-							<view v-if="fei_num == 0"
+							<!-- 后续开放 -->
+							<view v-if="fei_num <= 0"
 								class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-								style="text-align: center;" @click="handleHuoQu()">重新获取({{ price }} 铜币)</view>
-							<view v-if="fei_num != 0"
+								style="text-align: center;" @click="handleHuoQu()">重新获取({{ price }}铜钱)</view>
+							<view v-if="fei_num > 0"
 								class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
 								style="text-align: center;" @click="handleRematch()">重新穿越 免费({{fei_num}}次)
 							</view>
@@ -104,6 +104,16 @@
 				</scroll-view>
 			</view>
 		</u-modal>
+		<!-- 充值 -->
+		<u-modal :show="recharge" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+			confirmText="充值" cancelText="放弃" @cancel="recharge=false" @confirm="$u.route('/pages/mine/recharge')">
+			<view style="display: flex;flex-direction: column;">
+				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">铜钱不足</view>
+				<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
+					<text>铜钱不足,是否前往充值页面</text>
+				</view>
+			</view>
+		</u-modal>
 		<!-- 确认角色 -->
 		<u-modal :show="showRole" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
 			confirmText="使用" cancelText="放弃" @cancel="showRole=false" @confirm="roleConfirm">
@@ -157,7 +167,7 @@
 				role: {},
 				dynasty: {},
 				times: 0,
-				price: 50,
+				price: 5,
 				listRoleDynasty: [],
 				showRole: false,
 				showUserRole: true,
@@ -173,6 +183,7 @@
 				dynastyPopup: false,
 				role_fei: [],
 				fei_num: 0,
+				recharge: false,
 			}
 		},
 		onLoad(option) {
@@ -199,7 +210,6 @@
 		methods: {
 			//确认角色
 			roleConfirm() {
-				console.log("fei")
 				var that = this;
 				that.$api('user.bindrole', {
 					"role_id": this.role_fei.id
@@ -244,7 +254,6 @@
 						return;
 					}
 				}
-				console.log(this.selectDynastyName)
 				// uni.showLoading()
 				this.dynastyPopup = false;
 				uni.showLoading()
@@ -313,8 +322,13 @@
 			},
 			// 重新获取
 			handleHuoQu() {
-				let that = this
-				that.$u.toast('铜币不足')
+				let that = this;
+				var userInfo = uni.getStorageSync("userInfo");
+				if (userInfo.money < that.price) {
+					that.recharge = true;
+				} else {
+					that.handleRematch()
+				}
 			},
 			handleReborn() {
 				let that = this

@@ -1,391 +1,628 @@
 <template>
-    <page-meta :root-font-size="'13px'"></page-meta>
-    <view class="p-4 h-screen bg-gradient-to-b from-purple-900 to-indigo-900">
-        <view class="flex justify-between">
-            <view class="rounded-full bg-black bg-opacity-20 px-5 py-3">
-                <view class="leading-none text-white">曲水流觞</view>
-                <view class="text-base leading-none text-white opacity-50 mt-1">语音交友</view>
-            </view>
-            <view class="flex flex-row items-center">
-                <view class="rounded-full w-10 h-10 flex items-center justify-center bg-black bg-opacity-20 mr-4" @click="showHelp = true">
-                    <i class="ri-question-line text-2xl leading-none text-white opacity-70"></i>
-                </view>
-                <view class="rounded-full w-10 h-10 flex items-center justify-center bg-black bg-opacity-20" @click="$u.route({ type: 'navigateBack', delta: 1 })">
-                    <i class="ri-close-fill text-2xl leading-none text-white opacity-70"></i>
-                </view>
-            </view>
-        </view>
-        <view class="grid grid-cols-4 gap-6 mt-10">
-            <view class="flex flex-col truncate">
-                <view class="flex m-auto relative rounded-full bg-red-500 bg-opacity-80 p-1">
-                    <image class="rounded-full w-14 h-14 block" :src="userInfo.avatar" />
-                    <view class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500"></view>
-                </view>
-                <view class="flex items-center m-auto mt-1">
-                    <view class="text-white">{{ userInfo.role_realname }}</view>
-                </view>
-            </view>
-            <view class="flex flex-col truncate">
-                <view class="flex m-auto relative rounded-full bg-black bg-opacity-10 p-1">
-                    <image class="rounded-full w-14 h-14 block" :src="userInfo.avatar" />
-                </view>
-                <view class="flex items-center m-auto mt-1">
-                    <!-- <i class="ri-vip-crown-2-fill text-base leading-none text-pink-500 mr-1"></i> -->
-                    <view class="text-white">{{ userInfo.role_realname }}</view>
-                </view>
-            </view>
-            <view class="flex flex-col truncate">
-                <view class="flex m-auto relative rounded-full bg-black bg-opacity-10 p-1">
-                    <image class="rounded-full w-14 h-14 block" :src="userInfo.avatar" />
-                </view>
-                <view class="flex items-center m-auto mt-1">
-                    <view class="text-white">{{ userInfo.role_realname }}</view>
-                </view>
-            </view>
-            <view class="flex flex-col truncate">
-                <view class="flex m-auto relative rounded-full bg-black bg-opacity-10 p-1">
-                    <image class="rounded-full w-14 h-14 block" :src="userInfo.avatar" />
-                </view>
-                <view class="flex items-center m-auto mt-1">
-                    <view class="text-white">{{ userInfo.role_realname }}</view>
-                </view>
-            </view>
-            <view class="flex flex-col truncate">
-                <view class="flex m-auto relative rounded-full bg-black bg-opacity-10 p-1">
-                    <image class="rounded-full w-14 h-14 block" :src="userInfo.avatar" />
-                </view>
-                <view class="flex items-center m-auto mt-1">
-                    <view class="text-white">{{ userInfo.role_realname }}</view>
-                </view>
-            </view>
-            <view class="flex flex-col truncate">
-                <view class="flex m-auto relative rounded-full bg-black bg-opacity-10 p-1">
-                    <image class="rounded-full w-14 h-14 block" :src="userInfo.avatar" />
-                </view>
-                <view class="flex items-center m-auto mt-1">
-                    <view class="text-white">{{ userInfo.role_realname }}</view>
-                </view>
-            </view>
-            <view class="flex flex-col truncate">
-                <view class="flex m-auto relative rounded-full bg-black bg-opacity-10 p-1">
-                    <image class="rounded-full w-14 h-14 block" :src="userInfo.avatar" />
-                </view>
-                <view class="flex items-center m-auto mt-1">
-                    <view class="text-white">{{ userInfo.role_realname }}</view>
-                </view>
-            </view>
-            <view class="flex flex-col truncate">
-                <view class="flex m-auto relative rounded-full bg-black bg-opacity-10 p-1">
-                    <image class="rounded-full w-14 h-14 block" :src="userInfo.avatar" />
-                </view>
-                <view class="flex items-center m-auto mt-1">
-                    <view class="text-white">{{ userInfo.role_realname }}</view>
-                </view>
-            </view>
-        </view>
-        <view class="flex mt-4">
-            <view class="flex items-center m-auto relative rounded-full bg-black bg-opacity-10 px-10 py-2">
-                <i class="ri-user-fill text-base leading-none text-white opacity-50 mr-1"></i>
-                <text class="text-base text-white opacity-50 mr-3">6</text>
-                <i class="ri-arrow-drop-down-line text-base leading-none text-white opacity-50"></i>
-            </view>
-        </view>
-
-        <view class="fixed bottom-28 left-0 right-0 p-4 w-9/12">
-            <view class="rounded text-cyan-300 bg-black bg-opacity-5 p-1 mt-1">倡导绿色健康直播，严禁未成年人的直播和打赏行为。对任何违法违规、低俗色情、暴力伤害、吸烟酗酒的行为严令禁止。</view>
-            <view class="text-white mt-2">
-                <i class="ri-vip-crown-2-fill text-pink-500 mr-1"></i>
-                <text class="text-yellow-300 mr-3">{{ userInfo.role_realname }}</text>
-                <text class="text-white">来了</text>
-            </view>
-            <view class="text-white mt-2">
-                <text class="text-white mr-3">酒杯现在转到</text>
-                <i class="ri-vip-crown-2-fill text-pink-500 mr-1"></i>
-                <text class="text-yellow-300 mr-3">{{ userInfo.role_realname }}</text>
-                <text class="text-white">身边啦</text>
-            </view>
-            <view class="text-white mt-2">
-                <text class="text-white mr-3">酒杯继续往下一位转动……</text>
-            </view>
-        </view>
-
-        <view class="fixed bottom-0 left-0 right-0">
-            <view class="flex p-4">
-                <view class="mr-4 flex items-center" @click="handleVoice">
-                    <i class="ri-mic-2-fill block text-4xl leading-none text-gray-300"></i>
-                </view>
-                <view class="flex-1 mr-4 rounded-full h-10 flex items-center px-4 bg-gray-300">
-                    <u-input v-model="message" @confirm="handleMessageSend" type="text" placeholder="说点什么吧" :clearable="true" customStyle="border: none; background: none; padding: 0;">
-                    </u-input>
-                </view>
-                <view class="mr-4 flex items-center" @click="handleEmoji">
-                    <i class="ri-emotion-fill block text-4xl leading-none text-gray-300"></i>
-                </view>
-                <view class="flex items-center" v-if="!message" @click="handleGift">
-                    <i class="ri-gift-fill text-4xl leading-none text-gray-300"></i>
-                </view>
-                <view class="flex items-center" v-if="message" @click="handleMessageSend">
-                    <text class="rounded-full p-2 px-3 text-base text-white bg-gradient-to-r from-purple-800 to-purple-900">发送</text>
-                </view>
-            </view>
-            <!-- 语音 -->
-            <view class="flex flex-col items-center bg-indigo-900 p-4 h-60 overflow-y-scroll" v-if="showRecord">
-                <view class="text-xs leading-none text-gray-300">{{ recordTip }}</view>
-                <view class="flex justify-center items-center mt-16" @touchstart="handleRecordStart" @touchmove.stop.prevent="handleRecordDoing" @touchend="handleRecordStop">
-                    <view class="relative flex justify-center items-center rounded-full">
-                        <view class="flex justify-center items-center rounded-full w-20 h-20 bg-purple-800 z-10">
-                            <i class="ri-mic-fill text-4xl leading-none text-white"></i>
-                        </view>
-                        <view v-if="recording" class="animate-ping absolute rounded-full p-2 bg-purple-900 opacity-20">
-                            <view class="rounded-full w-20 h-20 p-2 bg-purple-800 opacity-50"></view>
-                        </view>
-                    </view>
-                </view>
-            </view>
-            <!-- 表情 -->
-            <view class="grid grid-cols-12 gap-2 bg-indigo-900 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
-                <view class="flex" v-for="(item, index) in emojiList" :key="index" :item="item" @click="handleEmojiSend(item)">
-                    <text class="text-xl leading-none">{{ item }}</text>
-                </view>
-            </view>
-            <!-- 礼物 -->
-            <view class="grid grid-cols-4 gap-4 bg-indigo-900 p-4 h-60 overflow-y-scroll" v-if="showGift">
-                <view class="flex flex-col items-center" v-for="(item, index) in giftList" :key="index" :item="item" @click="handleGiftSend(item)">
-                    <image class="block w-20 h-20" :src="item.image" mode="aspectFill" lazy-load="false"></image>
-                    <text class="mt-1">{{ item.title }}</text>
-                    <text class="text-xs leading-none text-fuchsia-500 mt-2">{{ item.price }}铜币</text>
-                </view>
-            </view>
-        </view>
-
-        <u-modal :show="showHelp" :showConfirmButton="false" :showCancelButton="false">
-            <view class="w-full text-center">
-                <view class="text-4xl mt-4">小贴士</view>
-                <view class="mt-6 text-left">{{ help }}</view>
-                <view class="grid gap-4 mt-8">
-                    <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="showHelp = false">确定</view>
-                </view>
-            </view>
-        </u-modal>
-        <view v-if="showSvga" id="svgaPlayer" class="fixed w-full h-screen top-0 right-0 bottom-0 left-0">
-            <l-svga ref="svgaPlayer"></l-svga>
-        </view>
-        <uc-auth></uc-auth>
-    </view>
+	<view class="poetry">
+		<u-navbar title="曲水流觞" :safeAreaInsetTop="true" :placeholder="true">
+			<view slot="left">
+				<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
+					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+			</view>
+		</u-navbar>
+		<view class="poetryBox">
+			<view class="position" v-for="(item,index) in 6">
+				<view>
+					<image class="positionImg"
+						src="https://axhub.im/ax10/2b3b58ba49e03e44/images/%E6%9B%B2%E6%B0%B4%E6%B5%81%E8%A7%9E-%E8%BF%9B%E5%85%A5/u26.svg">
+					</image>
+				</view>
+				<view class="positionText">空位</view>
+			</view>
+			<view class="tipsBox">
+				1
+			</view>
+			<image src="/static/beizi.png" :animation="animationData" :class="fei_AnimationName" class="cup"></image>
+		</view>
+		<view class="poetryFooter">
+			<input type="text" v-model="valueA">
+			<button type="button" @click="aaaaa">点我</button>
+		</view>
+	</view>
 </template>
 <script>
-import { mapState } from 'vuex'
-export default {
-    data() {
-        return {
-            params: {
-                type: 'all',
-                page: 1,
-            },
-            paginator: {
-                total: 0,
-                last_page: 0,
-            },
-            loadmore: false,
-            help: '小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士',
-            showHelp: false,
-            message: '',
-            messageList: [],
-            emojiList: ['😀','😁','😂','🤣','😃','😄','😅','😆','😉','😊','😋','😎','😍','😘','🥰','😗','😙','🥲','😚','🙂','🤗','🤩','🤔','🫡','🤨','😐','😑','😶','🫥','😶‍🌫️','🙄','😏','😣','😥','😮','🤐','😯','😪','😫','🥱','😴','😌','😛','😜','😝','🤤','😒','😓','😔','😕','🫤','🙃','🫠','🤑','😲','☹️','🙁','😖','😞','😟','😤','😢','😭','😦','😧','😨','😩','🤯','😬','😮‍💨','😰','😱','🥵','🥶','😳','🤪','😵','😵‍💫','🥴','😠','😡','🤬','😷','🤒','🤕','🤢','🤮','🤧','😇','🥳','🥸','🥺','🥹','🤠','🤡','🤥','🤫','🤭','🫢','🫣','🧐','🤓','😈','👿','👹','👺','💀','☠️','👻','👽','👾','🤖','💩','😺','😸','😹','😻','😼','😽','🙀','😿','😾','🙈','🙉','🙊','🐵','🐶','🐺','🐱','🦁','🐯','🦒','🦊','🦝','🐮','🐷','🐗','🐭','🐹','🐰','🐻','🐻‍❄️','🐨','🐼','🐸','🦓','🐴','🦄','🐔','🐲','🐽','🐾','🐒','🦍','🦧','🦮','🐕‍🦺','🐩','🐕','🐈','🐈‍⬛','🐅','🐆','🐎','🦌','🦬','🦏','🦛','🐂','🐃','🐄','🐖','🐏','🐑','🐐','🐪','🐫','🦙','🦘','🦥','🦨','🦡','🐘','🦣','🐁','🐀','🦔','🐇','🐿️','🦫','🦎','🐊','🐢','🐍','🐉','🦕','🦖','🦦','🦈','🐬','🦭','🐳','🐋','🐟','🐠','🐡','🦐','🦑','🐙','🦞','🦀','🐚','🪸','🦆','🐓','🦃','🦅','🕊️','🦢','🦜','🦩','🦚','🦉','🦤','🪶','🐦','🐧','🐥','🐤','🐣','🦇','🦋','🐌','🐛','🦟','🪰','🪱','🦗','🐜','🪳','🐝','🪲','🐞','🦂','🕷️','🕸️','🦠','🧞‍♀️','🧞‍♂️','🧞','🧟‍♀️','🧟‍♂️','🧟','🧌','🗣️','👤','👥','🫂','👁️','👀','🦴','🦷','👅','👄','🫦','🧠','🫀','🫁','🦾','🦿','👣','🤺','⛷️'],
-            giftList: [],
-            showSvga: false,
-            showEmoji: false,
-            showRecord: false,
-            showGift: false,
-            audio: uni.createInnerAudioContext(),
-            recorder: uni.getRecorderManager(),
-            recordTip: "按住说话",
-            recording: true,
-            recordStoping: false,
-            recordTimer: null,
-            recordLength: 0,
-            recordPoint: {
-                identifier: 0,
-                Y: 0
-            },
-        }
-    },
-    computed: {
-        ...mapState({
-            userInfo: state => state.user.userInfo,
-        })
-    },
-    onLoad() {
-        let that = this
-        that.getProfile()
-        that.getMessageList()
-        that.getGiftList()
-        // #ifndef H5
-        this.recorder.onStart((e) => {
-            this.recordStart(e)
-        })
-        this.recorder.onStop((e) => {
-            this.recordStop(e)
-        })
-        // #endif
-    },
-    methods: {
-        handleMessageSend() {
-            let that = this
-            if (that.message === '') {
-                return
-            }
-            that.message = ''
-        },
-        handleEmoji() {
-            let that = this
-            that.showEmoji = !that.showEmoji
-            that.showRecord = false
-            that.showGift = false
-        },
-        handleVoice() {
-            let that = this
-            that.showRecord = !that.showRecord
-            that.showEmoji = false
-            that.showGift = false
-        },
-        handleEmojiSend(item) {
-            let that = this
-            that.message += item
-        },
-        handleGift() {
-            let that = this
-            that.showGift = !that.showGift
-            that.showRecord = false
-            that.showEmoji = false
-        },
-        handleGiftSend(item) {
-            let that = this
-            that.showGift = false
-            that.gift = item
-            if (that.userInfo.money < that.gift.price) {
-                that.$api.msg('账户铜币不足')
-                return
-            }
-            that.handleGiftPlay()
-        },
-        handleGiftPlay() {
-            let that = this
-            that.showSvga = true
-            that.$nextTick(() => {
-                that.$refs.svgaPlayer.render(async (parser, player) => {
-                    let svga = ''
-                    if (uni.getStorageSync(this.gift.title)) {
-                        let a = uni.getStorageSync(this.gift.title)
-                        svga = await parser.load(String(a))
-                    } else {
-                        svga = await parser.load(this.gift.url)
-                    }
-                    await player.setVideoItem(svga)
-                    player.loops = 1
-                    player.startAnimation()
-                    player.onFinished(() => {
-                        that.showSvga = false
-                    })
-                })
-            })
-        },
-        recordStart(e) {
-            let that = this
-            that.recording = true
-            that.recordLength = 0
-            that.recordTimer = setInterval(() => {
-                that.recordLength++
-            }, 1000)
-        },
-        recordStop(e) {
-            let that = this
-            clearInterval(that.recordTimer)
-            if (!that.recordStoping) {
-                that.$request.upfile(e.tempFilePath).then(resf => {
-                    that.$u.toast('TODO')
-                    // that.$request.http('/Conversation/CreateDetail', {
-                    //     ConversationId: that.id,
-                    //     OperateType: 5,
-                    //     MsgContent: resf.data,
-                    //     DurationTime: msg.length
-                    // }).then((res) => {
-                    //     that.hindlist()
-                    //     that.keyword = ''
-                    // })
-                })
-            }
-            that.recordStoping = false
-        },
-        handleRecordStart(e) {
-            let that = this
-            console.log('touch start')
-            if (e.touches.length > 1) {
-                // return
-            }
-            that.recordPoint.Y = e.touches[0].clientY
-            that.recordPoint.identifier = e.touches[0].identifier
-            // that.recorder.start({
-            //     format: "mp3"
-            // })
-        },
-        handleRecordStop(e) {
-            let that = this
-            console.log('touch stop')
-            if (!that.recording) {
-                // return
-            }
-            that.recording = false
-            that.recordTip = '按住说话'
-            that.recorder.stop()
-        },
-        handleRecordDoing(e) {
-            let that = this
-            console.log('touch move')
-            if (!that.recording) {
-                // return
-            }
-            if (that.recordPoint.Y - e.touches[0].clientY >= uni.upx2px(100)) {
-                that.recordStoping = true
-                that.recordTip = '松开手指，取消发送'
-            }
-        },
-        async getProfile() {
-            let that = this
-            that.$api('user.profile', { user_id: that.$Route.query.user_id }).then(res => {
-                if (res.code === 1) {
-                    that.user = res.data
-                }
-            })
-        },
-        async getMessageList() {
-            let that = this
-            that.loadmore = 'loading'
-            that.$api('post.user', { user_id: that.$Route.query.user_id }).then(res => {
-                if (res.code === 1) {
-                    that.paginator.total = res.data.total
-                    that.paginator.last_page = res.data.last_page
-                    that.messageList = [...that.messageList, ...res.data.data]
-                    if (that.params.page < res.data.last_page) {
-                        that.loadmore = 'loadmore'
-                    } else {
-                        that.loadmore = 'nomore'
-                    }
-                }
-            })
-        },
-        async getGiftList() {
-            let that = this
-            that.$api('gift.lists').then(res => {
-                if (res.code === 1) {
-                    that.giftList = res.data.data
-                }
-            })
-        },
-    }
-}
+	import {
+		mapState
+	} from 'vuex';
+	var animation = uni.createAnimation({
+		duration: "2000",
+		timingFunction: "linear",
+	});
+	export default {
+		data() {
+			return {
+				valueA: "",
+				params: {
+					type: 'all',
+					page: 1,
+				},
+				paginator: {
+					total: 0,
+					last_page: 0,
+				},
+				loadmore: false,
+				help: '小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士小贴士',
+				showHelp: false,
+				message: '',
+				messageList: [],
+				emojiList: ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '🥰', '😗',
+					'😙', '🥲', '😚', '🙂', '🤗', '🤩', '🤔', '🫡', '🤨', '😐', '😑', '😶', '🫥', '😶‍🌫️', '🙄', '😏',
+					'😣', '😥', '😮', '🤐', '😯', '😪', '😫', '🥱', '😴', '😌', '😛', '😜', '😝', '🤤', '😒', '😓',
+					'😔', '😕', '🫤', '🙃', '🫠', '🤑', '😲', '☹️', '🙁', '😖', '😞', '😟', '😤', '😢', '😭', '😦',
+					'😧', '😨', '😩', '🤯', '😬', '😮‍💨', '😰', '😱', '🥵', '🥶', '😳', '🤪', '😵', '😵‍💫', '🥴',
+					'😠', '😡', '🤬', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '😇', '🥳', '🥸', '🥺', '🥹', '🤠', '🤡',
+					'🤥', '🤫', '🤭', '🫢', '🫣', '🧐', '🤓', '😈', '👿', '👹', '👺', '💀', '☠️', '👻', '👽', '👾',
+					'🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊', '🐵', '🐶',
+					'🐺', '🐱', '🦁', '🐯', '🦒', '🦊', '🦝', '🐮', '🐷', '🐗', '🐭', '🐹', '🐰', '🐻', '🐻‍❄️', '🐨',
+					'🐼', '🐸', '🦓', '🐴', '🦄', '🐔', '🐲', '🐽', '🐾', '🐒', '🦍', '🦧', '🦮', '🐕‍🦺', '🐩', '🐕',
+					'🐈', '🐈‍⬛', '🐅', '🐆', '🐎', '🦌', '🦬', '🦏', '🦛', '🐂', '🐃', '🐄', '🐖', '🐏', '🐑', '🐐',
+					'🐪', '🐫', '🦙', '🦘', '🦥', '🦨', '🦡', '🐘', '🦣', '🐁', '🐀', '🦔', '🐇', '🐿️', '🦫', '🦎',
+					'🐊', '🐢', '🐍', '🐉', '🦕', '🦖', '🦦', '🦈', '🐬', '🦭', '🐳', '🐋', '🐟', '🐠', '🐡', '🦐',
+					'🦑', '🐙', '🦞', '🦀', '🐚', '🪸', '🦆', '🐓', '🦃', '🦅', '🕊️', '🦢', '🦜', '🦩', '🦚', '🦉',
+					'🦤', '🪶', '🐦', '🐧', '🐥', '🐤', '🐣', '🦇', '🦋', '🐌', '🐛', '🦟', '🪰', '🪱', '🦗', '🐜',
+					'🪳', '🐝', '🪲', '🐞', '🦂', '🕷️', '🕸️', '🦠', '🧞‍♀️', '🧞‍♂️', '🧞', '🧟‍♀️', '🧟‍♂️', '🧟',
+					'🧌', '🗣️', '👤', '👥', '🫂', '👁️', '👀', '🦴', '🦷', '👅', '👄', '🫦', '🧠', '🫀', '🫁', '🦾',
+					'🦿', '👣', '🤺', '⛷️'
+				],
+				giftList: [],
+				showSvga: false,
+				showEmoji: false,
+				showRecord: false,
+				showGift: false,
+				audio: uni.createInnerAudioContext(),
+				recorder: uni.getRecorderManager(),
+				recordTip: "按住说话",
+				recording: true,
+				recordStoping: false,
+				recordTimer: null,
+				recordLength: 0,
+				recordPoint: {
+					identifier: 0,
+					Y: 0
+				},
+				// -----------------
+				fei_currentIndex: 1,
+				animationData: {},
+				fei_AnimationName: "",
+			}
+		},
+		computed: {
+			...mapState({
+				userInfo: state => state.user.userInfo,
+			})
+		},
+		onLoad() {
+			let that = this;
+			this.cupAnimation();
+			that.getProfile()
+			that.getMessageList()
+			that.getGiftList()
+			// #ifndef H5
+			this.recorder.onStart((e) => {
+				this.recordStart(e)
+			})
+			this.recorder.onStop((e) => {
+				this.recordStop(e)
+			})
+			// #endif
+		},
+		methods: {
+			aaaaa() {
+				console.log(this.valueA)
+				var that = this;
+				var num = parseInt(this.valueA)
+				switch (num) {
+					case 1:
+						that.fei_AnimationName = "cup1";
+						break;
+					case 2:
+						that.fei_AnimationName = "cup2"
+						break;
+					case 3:
+						that.fei_AnimationName = "cup3"
+						break;
+					case 4:
+						that.fei_AnimationName = "cup4"
+						break;
+					case 5:
+						that.fei_AnimationName = "cup5"
+						break;
+					case 6:
+						that.fei_AnimationName = "cup6"
+						break;
+				}
+				console.log(that.fei_AnimationName)
+			},
+			//动画
+			cupAnimation(index) {
+				var that = this;
+				switch (index) {
+					case 1:
+						animation.left("13%").bottom("8%").step({
+							duration: 500
+						});
+						that.animationData = animation.export()
+						break;
+					case 2:
+						animation.left("65%").bottom("28%").step();
+						that.animationData = animation.export()
+						break;
+					case 3:
+						animation.left("65%").bottom("28%").scale(1).step({
+							duration: 2000
+						});
+						animation.scale(0.1).left("16%").bottom("45%").scale(1).step({
+							duration: 2000
+						});
+						that.animationData = animation.export()
+						break;
+					case 4:
+						animation.left("65%").bottom("28%").scale(1).step({
+							duration: 2000
+						});
+						animation.scale(0.1).left("16%").bottom("45%").scale(1).step({
+							duration: 2000
+						});
+						animation.scale(0.1).left("66%").bottom("57%").scale(1).step({
+							duration: 2000
+						});
+						that.animationData = animation.export()
+						break;
+				}
+			},
+			handleMessageSend() {
+				let that = this
+				if (that.message === '') {
+					return
+				}
+				that.message = ''
+			},
+			handleEmoji() {
+				let that = this
+				that.showEmoji = !that.showEmoji
+				that.showRecord = false
+				that.showGift = false
+			},
+			handleVoice() {
+				let that = this
+				that.showRecord = !that.showRecord
+				that.showEmoji = false
+				that.showGift = false
+			},
+			handleEmojiSend(item) {
+				let that = this
+				that.message += item
+			},
+			handleGift() {
+				let that = this
+				that.showGift = !that.showGift
+				that.showRecord = false
+				that.showEmoji = false
+			},
+			handleGiftSend(item) {
+				let that = this
+				that.showGift = false
+				that.gift = item
+				if (that.userInfo.money < that.gift.price) {
+					that.$api.msg('账户铜币不足')
+					return
+				}
+				that.handleGiftPlay()
+			},
+			handleGiftPlay() {
+				let that = this
+				that.showSvga = true
+				that.$nextTick(() => {
+					that.$refs.svgaPlayer.render(async (parser, player) => {
+						let svga = ''
+						if (uni.getStorageSync(this.gift.title)) {
+							let a = uni.getStorageSync(this.gift.title)
+							svga = await parser.load(String(a))
+						} else {
+							svga = await parser.load(this.gift.url)
+						}
+						await player.setVideoItem(svga)
+						player.loops = 1
+						player.startAnimation()
+						player.onFinished(() => {
+							that.showSvga = false
+						})
+					})
+				})
+			},
+			recordStart(e) {
+				let that = this
+				that.recording = true
+				that.recordLength = 0
+				that.recordTimer = setInterval(() => {
+					that.recordLength++
+				}, 1000)
+			},
+			recordStop(e) {
+				let that = this
+				clearInterval(that.recordTimer)
+				if (!that.recordStoping) {
+					that.$request.upfile(e.tempFilePath).then(resf => {
+						that.$u.toast('TODO')
+						// that.$request.http('/Conversation/CreateDetail', {
+						//     ConversationId: that.id,
+						//     OperateType: 5,
+						//     MsgContent: resf.data,
+						//     DurationTime: msg.length
+						// }).then((res) => {
+						//     that.hindlist()
+						//     that.keyword = ''
+						// })
+					})
+				}
+				that.recordStoping = false
+			},
+			handleRecordStart(e) {
+				let that = this
+				console.log('touch start')
+				if (e.touches.length > 1) {
+					// return
+				}
+				that.recordPoint.Y = e.touches[0].clientY
+				that.recordPoint.identifier = e.touches[0].identifier
+				// that.recorder.start({
+				//     format: "mp3"
+				// })
+			},
+			handleRecordStop(e) {
+				let that = this
+				console.log('touch stop')
+				if (!that.recording) {
+					// return
+				}
+				that.recording = false
+				that.recordTip = '按住说话'
+				that.recorder.stop()
+			},
+			handleRecordDoing(e) {
+				let that = this
+				console.log('touch move')
+				if (!that.recording) {
+					// return
+				}
+				if (that.recordPoint.Y - e.touches[0].clientY >= uni.upx2px(100)) {
+					that.recordStoping = true
+					that.recordTip = '松开手指，取消发送'
+				}
+			},
+			async getProfile() {
+				let that = this
+				that.$api('user.profile', {
+					user_id: that.$Route.query.user_id
+				}).then(res => {
+					if (res.code === 1) {
+						that.user = res.data
+					}
+				})
+			},
+			async getMessageList() {
+				let that = this
+				that.loadmore = 'loading'
+				that.$api('post.user', {
+					user_id: that.$Route.query.user_id
+				}).then(res => {
+					if (res.code === 1) {
+						that.paginator.total = res.data.total
+						that.paginator.last_page = res.data.last_page
+						that.messageList = [...that.messageList, ...res.data.data]
+						if (that.params.page < res.data.last_page) {
+							that.loadmore = 'loadmore'
+						} else {
+							that.loadmore = 'nomore'
+						}
+					}
+				})
+			},
+			async getGiftList() {
+				let that = this
+				that.$api('gift.lists').then(res => {
+					if (res.code === 1) {
+						that.giftList = res.data.data
+					}
+				})
+			},
+		}
+	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+	.poetry {
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+	}
 
+	.poetryBox {
+		height: 80%;
+		background: url(@/static/poetry.jpg);
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		position: relative;
+	}
+
+	.poetryFooter {
+		height: 500rpx;
+	}
+
+	.position {
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.position:nth-child(1) {
+		position: absolute;
+		left: 4%;
+		top: 11%;
+	}
+
+	.position:nth-child(2) {
+		position: absolute;
+		right: 4%;
+		top: 11%;
+	}
+
+	.position:nth-child(3) {
+		position: absolute;
+		left: 4%;
+		top: 35%;
+	}
+
+	.position:nth-child(4) {
+		position: absolute;
+		right: 4%;
+		top: 35%;
+	}
+
+	.position:nth-child(5) {
+		position: absolute;
+		left: 4%;
+		top: 60%;
+	}
+
+	.position:nth-child(6) {
+		position: absolute;
+		right: 4%;
+		top: 60%;
+	}
+
+	.positionImg {
+		width: 80rpx;
+		height: 80rpx;
+		border-radius: 50%;
+	}
+
+	.positionText {
+		font-size: 28rpx;
+		color: #fff;
+	}
+
+	.tipsBox {
+		height: 13%;
+		background: rgba(255, 255, 255, 0.5);
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		z-index: 10;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.cup {
+		position: absolute;
+		width: 110rpx;
+		height: 80rpx;
+		left: 0;
+		bottom: 0;
+		z-index: 5;
+		transition: all 0.3s;
+		
+		animation-direction: normal;
+		animation-timing-function: linear;
+		animation-iteration-count: 1;
+		animation-fill-mode: forwards;
+	}
+
+	.cup1 {
+		animation-duration: 1s;
+		animation-name: cup1;
+	}
+
+	.cup2 {
+		animation-duration: 1.5s;
+		animation-name: cup2;
+	}
+
+	.cup3 {
+		animation-duration: 3s;
+		animation-name: cup3;
+	}
+
+	.cup4 {
+		animation-duration: 5s;
+		animation-name: cup4;
+	}
+
+	.cup5 {
+		animation-duration: 5s;
+		animation-name: cup5;
+	}
+
+	.cup6 {
+		animation-duration: 7s;
+		animation-name: cup6;
+	}
+
+	@keyframes cup1 {
+		form {
+			left: 0%;
+			bottom: 0%;
+		}
+
+		to {
+			left: 28%;
+			bottom: 14%;
+		}
+	}
+
+	@keyframes cup2 {
+		form {
+			left: 0%;
+			bottom: 0%;
+		}
+
+		to {
+			left: 65%;
+			bottom: 28%;
+		}
+	}
+
+	@keyframes cup3 {
+		0% {
+			left: 0%;
+			bottom: 0%;
+		}
+
+		50% {
+			left: 65%;
+			bottom: 28%;
+			transform: scale(1);
+		}
+
+		90% {
+			transform: scale(0.5);
+		}
+
+		97% {
+			transform: scale(1);
+		}
+
+		100% {
+			left: 16%;
+			bottom: 45%;
+		}
+	}
+
+	@keyframes cup4 {
+		0% {
+			left: 0%;
+			bottom: 0%;
+		}
+
+		25% {
+			left: 65%;
+			bottom: 28%;
+			transform: scale(1);
+		}
+
+		75% {
+			left: 16%;
+			bottom: 45%;
+		}
+
+		95% {
+			bottom: 50%;
+			transform: scale(0.7);
+		}
+
+		98% {
+			transform: scale(0.8);
+		}
+
+		100% {
+			transform: scale(0.8);
+			left: 65%;
+			bottom: 57%;
+		}
+	}
+
+	@keyframes cup5 {
+		0% {
+			left: 0%;
+			bottom: 0%;
+		}
+
+		25% {
+			left: 65%;
+			bottom: 28%;
+			transform: scale(0.7);
+		}
+
+		50% {
+			transform: scale(0.8);
+			left: 16%;
+			bottom: 45%;
+		}
+
+		60% {
+			transform: scale(0.7);
+			bottom: 50%;
+		}
+
+		75% {
+			transform: scale(0.8);
+			left: 65%;
+			bottom: 55%;
+		}
+
+		80% {
+			left: 60%;
+			bottom: 57%;
+		}
+
+		97% {
+			transform: scale(0.6);
+		}
+
+		98% {
+			transform: scale(0.8);
+		}
+
+		100% {
+			transform: scale(0.8);
+			left: 17%;
+			bottom: 75%;
+		}
+	}
+
+	@keyframes cup6 {
+
+		20% {
+			left: 65%;
+			bottom: 28%;
+
+		}
+
+		40% {
+			left: 16%;
+			bottom: 45%;
+		}
+
+		60% {
+			left: 65%;
+			bottom: 57%;
+		}
+
+		80% {
+			left: 17%;
+			bottom: 75%;
+		}
+
+		100% {
+			left: 64%;
+			bottom: 82%;
+		}
+	}
 </style>

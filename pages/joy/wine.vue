@@ -1,122 +1,229 @@
 <template>
-    <page-meta :root-font-size="'13px'"></page-meta>
-    <view class="p-4 h-screen bg-gradient-to-b from-rose-800 to-red-900">
-        <view class="flex justify-between">
-            <view class="rounded-full bg-black bg-opacity-20 px-5 py-3">
-                <view class="leading-none text-white">诗词结缘</view>
-                <view class="text-base leading-none text-white opacity-50 mt-1">交友</view>
-            </view>
-            <view class="flex flex-row items-center">
-                <view class="mr-4">
-                    <view class="rounded-full w-10 h-10 flex items-center justify-center bg-black bg-opacity-20">
-                        <i class="ri-question-fill text-2xl leading-none text-white opacity-70"></i>
-                    </view>
-                </view>
-                <view class="">
-                    <view class="rounded-full w-10 h-10 flex items-center justify-center bg-black bg-opacity-20">
-                        <i class="ri-close-fill text-2xl leading-none text-white opacity-70"></i>
-                    </view>
-                </view>
-            </view>
-        </view>
-        <view class="mt-10">
-            <view class="rounded-xl p-6 bg-white bg-opacity-10">
-                <view class="text-2xl leading-none text-white mr-5">窈窕淑女，<text class="text-lime-500">君</text>子好逑</view>
-                <view class="flex items-center truncate mt-4">
-                    <image class="rounded-full w-8 h-8 block mr-2" :src="userInfo.avatar" />
-                    <view class="text-white">{{ userInfo.role_realname }}</view>
-                </view>
-            </view>
-        </view>
-        <view class="flex mt-6">
-            <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
-            <view class="flex-1 mr-5">
-                <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
-                <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
-            </view>
-            <view class="flex items-center">
-                <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-base leading-none text-white ml-1">385</view>
-            </view>
-        </view>
-        <view class="flex mt-6">
-            <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
-            <view class="flex-1 mr-5">
-                <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
-                <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
-            </view>
-            <view class="flex items-center">
-                <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-base leading-none text-white ml-1">385</view>
-            </view>
-        </view>
-        <view class="flex mt-6">
-            <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
-            <view class="flex-1 mr-5">
-                <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
-                <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
-            </view>
-            <view class="flex items-center">
-                <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-base leading-none text-white ml-1">385</view>
-            </view>
-        </view>
-        <view class="flex mt-6">
-            <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
-            <view class="flex-1 mr-5">
-                <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
-                <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
-            </view>
-            <view class="flex items-center">
-                <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-base leading-none text-white ml-1">385</view>
-            </view>
-        </view>
-
-        <view class="fixed bottom-0 left-0 right-0 flex p-4">
-            <view class="flex-1 mr-4">
-                <view class="rounded-full h-10 flex items-center px-4 bg-white bg-opacity-20">
-                    <u-input type="text" placeholder="说点什么吧" :clearable="true" customStyle="border: none; background: none; padding: 0;">
-                        <i slot="suffix" class="ri-message-3-fill text-base leading-none text-white opacity-70"></i>
-                    </u-input>
-                </view>
-            </view>
-            <view class="">
-                <view class="rounded-full h-10 flex items-center px-4 bg-white bg-opacity-20">
-                    <i class="ri-send-plane-fill text-white mr-1"></i>
-                    <view class="text-white text-center">发布诗令</view>
-                </view>
-            </view>
-        </view>
-
-        <uc-auth></uc-auth>
-    </view>
+	<page-meta :root-font-size="'13px'"></page-meta>
+	<u-navbar title="诗词结缘" :safeAreaInsetTop="true" :placeholder="true">
+		<view slot="left">
+			<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
+				@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+		</view>
+		<view slot="right">
+			<i class="ri-align-justify text-3xl" style="color: #333 !important;"
+				@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+		</view>
+	</u-navbar>
+	<view class="contentBox">
+		<view style="font-size: 26rpx;color: #323232;">请小主根据今天的心情，选择一个关键字：</view>
+		<view class="ballBox">
+			<view class="ball" :class="ballIndex==index?'ballActive':''" v-for="(item,index) in 11" :key="index"
+				@click="clickBall(index)"
+				:style="'background: linear-gradient(to top, '+colors[index%7]+', #ffffff);animation: bounce 1s infinite;animation-delay:'+index*0.2+'s;'">
+				<view class="ballItem">
+					<text>春{{index}}</text>
+					<view class="animate-ping ping" v-if="ballIndex!=index" :style="{background:colors[index%7]}">
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class="next">换一批</view>
+		<view style="margin-top: 50rpx;">
+			<view>请填写一句含关键字的古诗词：</view>
+			<input type="text" class="myInput">
+			<view class="okBtn">发布结缘</view>
+		</view>
+		<view style="display: flex;align-items: center;margin-top: 20rpx;">
+			<view>cid</view>
+			<input type="text" style="border: 1px solid red;" v-model="cid">
+		</view>
+		<view style="display: flex;align-items: center;margin-top: 20rpx;">
+			<view>标题</view>
+			<input type="text" style="border: 1px solid red;" v-model="title">
+		</view>
+		<view style="display: flex;align-items: center;margin-top: 20rpx;">
+			<view>内容</view>
+			<input type="text" style="border: 1px solid red;" v-model="content">
+		</view>
+		<view class="okBtn" style="margin-top: 50rpx;" @click="requestPush">请求push</view>
+	</view>
 </template>
 <script>
-import { mapState } from 'vuex'
-export default {
-    data() {
-        return {
-            showAction: false,
-        }
-    },
-    computed: {
-        ...mapState({
-            userInfo: state => state.user.userInfo,
-        })
-    },
-    onLoad() {
-        let that = this
-    },
-    methods: {
-    }
-}
+	export default {
+		data() {
+			return {
+				colors: ["#F53F3F", "#F77234", "#483D8B", "#008080", "#2E8B57", "#808000", "#CD853F"],
+				ballIndex: -1,
+				cid: "",
+				title: "",
+				content: ""
+			}
+		},
+		computed: {
+
+		},
+		onLoad() {
+			let that = this;
+		},
+		methods: {
+			requestPush() {
+				var that = this;
+				uni.request({
+					url: "https://fc-mp-15e70763-0ed0-4cbb-afb0-10b1b3db8c43.next.bspapp.com/push",
+					method: "POST",
+					dataType: "json",
+					header: {
+						"Content-Type": "application/json"
+					},
+					data: {
+						"push_clientid": that.cid,
+						"title": that.title,
+						"content": that.content,
+						"force_notification": true,
+						"payload": {
+							"title": that.title,
+							"content": that.content
+						}
+					},
+					success(res) {
+						console.log(res)
+					}
+				})
+			},
+			//点击小球
+			clickBall(i) {
+				this.ballIndex = i;
+			}
+		}
+	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+	.contentBox {
+		padding: 30rpx;
+	}
 
+	.ballBox {
+		margin-top: 20rpx;
+		width: 100%;
+		height: 700rpx;
+		position: relative;
+	}
+
+	.ball {
+		position: absolute;
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50%;
+		text-align: center;
+		line-height: 100rpx;
+		color: #fff;
+		font-size: 30rpx;
+		transition: all 0.1s;
+	}
+
+	.ballActive {
+		animation: none !important;
+		box-shadow: 0rpx 0rpx 50rpx #333;
+	}
+
+	.myInput {
+		margin: 30rpx 0rpx;
+		height: 72rpx;
+		background: #F7F7F7;
+		border-radius: 36rpx;
+		padding-left: 20rpx;
+		font-size: 28rpx;
+		color: #323232;
+		border: 1rpx solid #ccc;
+	}
+
+	.okBtn {
+		background: #FE4373;
+		border-radius: 43px;
+		height: 85rpx;
+		text-align: center;
+		line-height: 85rpx;
+		color: #fff;
+	}
+
+	.next {
+		color: #FE4373;
+		text-align: center;
+		font-size: 26rpx;
+	}
+
+	.ball:nth-child(1) {
+		left: 80rpx;
+		top: 50rpx;
+	}
+
+	.ball:nth-child(2) {
+		left: 300rpx;
+		top: 100rpx;
+	}
+
+	.ball:nth-child(3) {
+		left: 500rpx;
+		top: 100rpx;
+	}
+
+	.ball:nth-child(4) {
+		left: 50rpx;
+		top: 200rpx;
+	}
+
+	.ball:nth-child(5) {
+		left: 350rpx;
+		top: 260rpx;
+	}
+
+	.ball:nth-child(6) {
+		left: 550rpx;
+		top: 300rpx;
+	}
+
+	.ball:nth-child(7) {
+		left: 360rpx;
+		top: 550rpx;
+	}
+
+	.ball:nth-child(8) {
+		left: 100rpx;
+		top: 400rpx;
+	}
+
+	.ball:nth-child(9) {
+		left: 260rpx;
+		top: 450rpx;
+	}
+
+	.ball:nth-child(10) {
+		left: 500rpx;
+		top: 450rpx;
+	}
+
+	.ball:nth-child(11) {
+		left: 20rpx;
+		top: 550rpx;
+	}
+
+	.ball:nth-child(12) {
+		left: 0rpx;
+		top: 550rpx;
+	}
+
+	.ballItem {
+		position: relative;
+		z-index: 99;
+	}
+
+	.ping {
+		width: 80rpx;
+		height: 80rpx;
+		border-radius: 50%;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-left: -40rpx;
+		margin-top: -40rpx;
+		z-index: -1;
+		opacity: 0.3;
+	}
 </style>

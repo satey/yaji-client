@@ -24,13 +24,13 @@
 			<uc-post v-for="(item, index) in postRecommendList" :key="index" :item="item"></uc-post>
 			<u-loadmore v-if="postRecommendList.length" :status="loadmore" nomoreText="" color="#a1a1a1"
 				marginTop="20" />
-			<u-empty v-if="!postRecommendList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+			<u-empty v-if="!postRecommendList.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</block>
 		<block v-if="type === 'follow'">
 			<uc-post v-for="(item, index) in postFollowList" :key="index" :item="item"></uc-post>
 			<u-loadmore v-if="postFollowList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
-			<u-empty v-if="!postFollowList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+			<u-empty v-if="!postFollowList.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</block>
 
@@ -69,12 +69,13 @@
 				loadmore: false,
 				follow_user_id: null,
 				// -----------
-				headBarBgColor: ""
+				headBarBgColor: "",
 			}
 		},
 		onLoad(option) {
 			let that = this
-			that.getPostRecommend()
+			that.postRecommendList = [];
+			// that.getPostRecommend()
 		},
 		onReachBottom() {
 			let that = this
@@ -93,13 +94,10 @@
 			}
 		},
 		onShow() {
-			let that = this
-			// that.getPostRecommend()
-		},
-		onPullDownRefresh() {
-			this.getPostRecommend()
-			uni.stopPullDownRefresh()
-
+			let that = this;
+			this.params.page = 1;
+			that.postRecommendList = [];
+			that.getPostRecommend();
 		},
 		onPageScroll(e) {
 			if (parseInt(e.scrollTop) > 30) {
@@ -168,9 +166,9 @@
 				that.$api('post.follow_user_post_list', data).then(res => {
 					if (res.code === 1) {
 						console.log(res.data);
-						that.paginator.total = res.data.total
-						that.paginator.last_page = res.data.last_page
-						that.postFollowList = [...that.postFollowList, ...res.data.data]
+						that.paginator.total = res.data.total;
+						that.paginator.last_page = res.data.last_page;
+						that.postFollowList = [...that.postFollowList, ...res.data.data];
 						if (that.params.page < res.data.last_page) {
 							that.loadmore = 'loadmore'
 						} else {

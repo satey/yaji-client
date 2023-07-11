@@ -1,6 +1,84 @@
 <template>
-    <page-meta :root-font-size="'13px'"></page-meta>
-    <view class="px-4">
+	<page-meta :root-font-size="'13px'"></page-meta>
+	<u-navbar title="我的钱包" :safeAreaInsetTop="true" :placeholder="true">
+		<view slot="left">
+			<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
+				@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+		</view>
+	</u-navbar>
+	<view style="padding: 30rpx 40rpx 30rpx 30rpx;">
+		<view class="walletBox">
+			<view style="font-size: 26rpx;color: #fff;">钱包余额</view>
+			<view style="margin-top: 35rpx;display: flex;align-items: center;">
+				<image src="../../static/qian.png" style="width: 60rpx;height: 60rpx;margin-right: 15rpx;" mode="">
+				</image>
+				<text style="font-size: 56rpx;color: #fff;font-weight: bold;">{{money}}</text>
+			</view>
+			<view class="purchase" @click="$u.route('/pages/mine/recharge')">充值铜钱</view>
+		</view>
+	</view>
+	<view style="padding: 0rpx 30rpx;">
+		<u-tabs :list="tablist" lineColor="#FE4373" lineWidth="120rpx" lineHeight="16rpx" itemStyle="height: 72rpx;"
+			inactiveStyle="color: #808080; transform: scale(1);font-weight:normal;transition:all 0.3s;"
+			activeStyle="color: #323232 ; font-weight: blod; transform: scale(1.2);transition:all 0.3s;"
+			@change="changeTab">
+		</u-tabs>
+		<view v-show="tabIndex == 0">
+			<view style="margin-top: 30rpx;" v-for="(item,index) in rechargeList">
+				<view
+					style="display: flex;align-items: center;justify-content: space-between;border-bottom: 1rpx solid #ECECEC;padding-bottom: 30rpx;">
+					<view>
+						<view style="color: #323232;font-size: 30rpx;display: flex;align-items: center;">
+							<image src="../../static/qian.png" style="width: 45rpx;height: 45rpx;margin-right: 15rpx;"
+								mode="">
+							</image>
+							<view style="display: flex;align-items: center;">
+								<text style="font-size:20rpx;">x</text>
+								<view>{{item.money}}</view>
+							</view>
+
+						</view>
+						<view style="color: #999;font-size: 26rpx;margin-top: 10rpx;">
+							{{item.createtime}}
+						</view>
+					</view>
+					<view style="color: #323232;font-size: 36rpx;font-weight: bold;">￥{{item.pay_money}}</view>
+				</view>
+			</view>
+			<u-loadmore v-if="rechargeList.lenth" :loadmoreText="nomoreText" color="#a1a1a1" marginTop="20" />
+			<u-empty v-if="!rechargeList.length" icon="/static/null3.png" text="暂无记录" textColor="#a1a1a1"
+				marginTop="100"></u-empty>
+		</view>
+		<view v-show="tabIndex == 1">
+			<view style="margin-top: 30rpx;" v-for="(item,index) in rechargeList">
+				<view
+					style="display: flex;align-items: center;justify-content: space-between;border-bottom: 1rpx solid #ECECEC;padding-bottom: 30rpx;">
+					<view>
+						<view style="color: #323232;font-size: 30rpx;display: flex;align-items: center;">
+							<image src="../../static/qian.png" style="width: 45rpx;height: 45rpx;margin-right: 15rpx;"
+								mode="">
+							</image>
+							<view style="display: flex;align-items: center;">
+								<view>{{item.remark}}</view>
+							</view>
+
+						</view>
+						<view style="color: #999;font-size: 26rpx;margin-top: 10rpx;">
+							{{item.createtime}}
+						</view>
+					</view>
+					<view style="color: #323232;font-size: 36rpx;font-weight: bold;">-{{item.money}}</view>
+				</view>
+			</view>
+			<u-loadmore v-if="rechargeList.lenth" :loadmoreText="nomoreText" color="#a1a1a1" marginTop="20" />
+			<u-empty v-if="!rechargeList.length" icon="/static/null3.png" text="暂无记录" textColor="#a1a1a1"
+				marginTop="100"></u-empty>
+		</view>
+
+	</view>
+
+
+	<!-- <view class="px-4">
         <u-navbar title="钱包" :safeAreaInsetTop="true" :placeholder="true">
             <view slot="left">
                 <i class="ri-arrow-left-s-line text-2xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
@@ -52,76 +130,97 @@
         </view>
 
         <uc-auth></uc-auth>
-    </view>
+    </view> -->
 </template>
 <script>
-import { mapActions, mapState } from 'vuex'
-export default {
-    name: 'wallet',
-    components: {
-    },
-    data() {
-        return {
-            recharge: [
-                { money: 100, amount: 10 },
-                { money: 500, amount: 50 },
-                { money: 1000, amount: 100 },
-                { money: 2000, amount: 200 },
-                { money: 5000, amount: 500 },
-                { money: 10000, amount: 1000 },
-            ],
-            money: 100,
-            amount: 10,
-            payment: 'wxpay'
-        }
-    },
-    onLoad(option) {
-        let that = this
-        that.getUserInfo()
-    },
-    computed: {
-        ...mapState({
-            userInfo: state => state.user.userInfo,
-        })
-    },
-    methods: {
-        ...mapActions(['getUserInfo']),
-        onCheckMoney(value) {
-            let that = this
-            if (value < 10) {
-                that.money = 10
-            }
-            if (value > 10000) {
-                that.money = 10000
-                that.$u.toast('单笔充值不超过10000哦')
-            }
-            that.amount = that.money / 10
-        },
-        handleChoose(item) {
-            let that = this
-            that.money = item.money
-            that.amount = item.amount
-        },
-        handleRecharge() {
-            let that = this
-            if (!that.money || that.money < 1) {
-                that.$u.toast('充值金额填写错误')
-                return
-            }
-            that.$api('user_recharge.apply', {
-                amount: that.amount,
-            }).then(res => {
-                if (res.code === 1) {
-                    that.$u.toast('充值成功')
-                    that.getUserInfo()
-                } else {
-                    that.$u.toast(res.msg)
-                }
-            })
-        },
-    }
-}
+	export default {
+		name: 'wallet',
+		components: {},
+		data() {
+			return {
+				tabIndex: 0,
+				money: 0,
+				current_page: 1,
+				last_page: 0,
+				rechargeList: [],
+				nomoreText: "加载更多",
+				tablist: [{
+					name: '购买记录',
+					type: 1
+				}, {
+					name: '使用记录',
+					type: 2
+				}],
+			}
+		},
+		onShow() {
+			this.rechargeList = [];
+			this.getUserInfo();
+			this.getRechargeList(this.tablist[0].type, this.current_page);
+		},
+		onReachBottom() {
+			if (this.current_page == this.last_page) {
+				this.nomoreText = "没有更多了"
+				return;
+			} else {
+				this.current_page++;
+				this.getRechargeList(this.current_page)
+			}
+		},
+		methods: {
+			//tab切换
+			changeTab(e) {
+				this.tabIndex = e.index;
+				this.current_page = 1;
+				this.rechargeList = [];
+				this.getRechargeList(e.type, this.current_page);
+			},
+			//获取用户信息
+			getUserInfo() {
+				var that = this;
+				that.$api("user.info").then(res => {
+					if (res.code == 1) {
+						that.money = res.data.money;
+					}
+				})
+			},
+			getRechargeList(type, page) {
+				var that = this;
+				that.$api("user_recharge.lists", {
+					"page": page,
+					"money_type": type,
+				}).then(res => {
+					if (res.code == 1) {
+						that.rechargeList.push(...res.data.data)
+						that.last_page = res.data.last_page;
+						if (that.current_page >= that.last_page) {
+							this.nomoreText = "没有更多了"
+							return;
+						}
+					}
+				})
+			}
+		}
+	}
 </script>
 <style lang="scss" scoped>
+	.walletBox {
+		height: 298rpx;
+		background: url(/static/qianbaoBg.png);
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		padding: 40rpx;
+		box-sizing: border-box;
+	}
 
+	.purchase {
+		width: 156rpx;
+		height: 62rpx;
+		text-align: center;
+		line-height: 62rpx;
+		color: #FE4373;
+		border-radius: 30rpx;
+		background: #fff;
+		float: right;
+	}
 </style>

@@ -1,18 +1,12 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="">
-		<u-navbar :title="data.title" :safeAreaInsetTop="true" :placeholder="true">
-			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
-			</view>
-		</u-navbar>
 		<view v-if="!isAboutOur">
 			<web-view :src="currentSrc"></web-view>
 		</view>
 
 		<!-- 关于我们 -->
-		<view v-if="isAboutOur" style="color:rgba(0, 0, 0, 0.7);">
-			<view style="text-align: center;margin-bottom: 50rpx;">关于我们</view>
+		<view v-if="isAboutOur" style="color:rgba(0, 0, 0, 0.7);padding: 30rpx;">
 			<view class="">产品不删档公测阶段，欢迎朋友们提供各种建议。可通过问题反馈或以下方式与我们联系。</view>
 			<br> 联系我们：
 			<br><br>
@@ -71,11 +65,14 @@
 			getRichText() {
 				let that = this;
 				if (that.$Route.query.id == 1) {
+					// 用户协议
 					this.currentId = 1;
 					this.currentSrc = "https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/protocol.html"
 					this.isUserAgreement = true;
+					uni.hideNavBar()
 				}
 				if (that.$Route.query.id == 2) {
+					//隐私
 					this.currentId = 2;
 					this.currentSrc = "https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacy.html"
 					this.isProvicy = true
@@ -83,8 +80,16 @@
 				if (that.$Route.query.id == 3) {
 					this.currentId = 3;
 					this.isAboutOur = true
+					uni.setNavigationBarTitle({
+						title: "关于我们"
+					})
 				}
+				if (that.$Route.query.id == 4) {
+					this.currentId = 4;
+					this.currentSrc = "https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/Recharge.html"
+					this.isUserAgreement = true;
 
+				}
 
 				// that.$api('richtext.detail', {
 				// 	id: that.$Route.query.id

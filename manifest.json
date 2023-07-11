@@ -2,8 +2,8 @@
     "name" : "雅集",
     "appid" : "__UNI__5018490",
     "description" : "雅集",
-    "versionName" : "1.0.0",
-    "versionCode" : 100,
+    "versionName" : "1.0.1",
+    "versionCode" : 101,
     "transformPx" : false,
     "app" : {
         "launch_path" : "/pages/auth/login"
@@ -19,7 +19,7 @@
         "splashscreen" : {
             "alwaysShowBeforeRender" : false,
             "waiting" : false,
-            "autoclose" : true,
+            "autoclose" : false,
             "delay" : 0
         },
         "privacy" : {
@@ -37,22 +37,21 @@
         },
         "modules" : {
             "VideoPlayer" : {},
-            "Record" : {}
+            "Record" : {},
+            "Payment" : {},
+            "Push" : {}
         },
         "distribute" : {
             "android" : {
                 "permissions" : [
-                    // "<uses-feature android:name=\"android.hardware.camera\"/>",
-                    // "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-                    // "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
-                    // "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
-                    // "<uses-permission android:name=\"android.permission.CAMERA\"/>",
-                    // "<uses-permission android:name=\"android.permission.GET_TASKS\"/>",
-                    // "<uses-permission android:name=\"android.permission.INJECT_EVENTS\"/>",
-                    // "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
-                    // "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
-                    // "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
-                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>"
+                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>"
                 ],
                 "autoSdkPermissions" : false,
                 "permissionPhoneState" : {
@@ -70,7 +69,33 @@
                 "dSYMs" : false
             },
             "sdkConfigs" : {
-                "ad" : {}
+                "ad" : {},
+                "payment" : {
+                    "weixin" : {
+                        "__platform__" : [ "android" ],
+                        "appid" : "wx946846daf718d666",
+                        "UniversalLinks" : ""
+                    },
+                    "alipay" : {
+                        "__platform__" : [ "android" ]
+                    }
+                },
+                "push" : {
+                    "unipush" : {
+                        "version" : "2",
+                        "offline" : true,
+                        "icons" : {
+                            "small" : {
+                                "ldpi" : "static/logo-28.png",
+                                "mdpi" : "static/logo-28.png",
+                                "hdpi" : "static/logo-28.png",
+                                "xhdpi" : "static/logo-28.png",
+                                "xxhdpi" : "static/logo-28.png"
+                            }
+                        },
+                        "mi" : {}
+                    }
+                }
             },
             // "push" : {
             //     "unipush" : {
@@ -131,7 +156,12 @@
             "splashscreen" : {
                 "androidStyle" : "common",
                 "iosStyle" : "common",
-                "useOriginalMsgbox" : true
+                "useOriginalMsgbox" : true,
+                "android" : {
+                    "hdpi" : "C:/Users/Administrator/Desktop/qq.png",
+                    "xhdpi" : "C:/Users/Administrator/Desktop/qq.png",
+                    "xxhdpi" : "C:/Users/Administrator/Desktop/qq.png"
+                }
             }
         }
     },

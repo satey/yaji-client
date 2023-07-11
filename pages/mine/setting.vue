@@ -21,6 +21,18 @@
 				<u-cell title="帮助" :isLink="true" @click="$u.route('/pages/public/page', { id: 3 })">
 					<i slot="icon" class="ri-question-fill text-white p-2 bg-orange-500 rounded-lg mr-2"></i>
 				</u-cell>
+				<u-cell title="注销账号" :isLink="true" @click="$u.route('/pages/mine/logOff', { id: 3 })">
+					<i slot="icon" class="ri-shut-down-line text-white p-2 rounded-lg mr-2"
+						style="background: #CD853F;"></i>
+				</u-cell>
+			</u-cell-group>
+		</view>
+		<view class="bg-white mt-4">
+			<u-cell-group>
+				<u-cell title="隐私设置" :isLink="true" @click="$u.route('/pages/public/privacySet')">
+					<i slot="icon" class="ri-edit-box-fill text-white p-2 rounded-lg mr-2"
+						style="background: #2E8B57;"></i>
+				</u-cell>
 				<!-- <u-cell title="意见反馈" :isLink="true" @click="$u.toast('功能开发中，敬请期待')"> -->
 				<u-cell title="意见反馈" :isLink="true" @click="$u.route('/pages/public/feedback')">
 					<i slot="icon" class="ri-edit-box-fill text-white p-2 bg-blue-500 rounded-lg mr-2"></i>
@@ -44,12 +56,17 @@
 
             </u-cell-group>
         </view> -->
-		<view class="bg-white mt-4">
+		<!-- 	<view class="bg-white mt-4">
 			<u-cell-group>
 				<u-cell title="退出登录" :isLink="true" @click="onLogout()">
 					<i slot="icon" class="ri-login-box-fill text-white p-2 bg-red-500 rounded-lg mr-2"></i>
 				</u-cell>
 			</u-cell-group>
+		</view> -->
+		<view class="logout">
+			<view class="logoutBtn" @click="onLogout()">
+				退出登录
+			</view>
 		</view>
 	</view>
 </template>
@@ -136,7 +153,6 @@
 					url: 'https://yaji.ixiaojin.cn/api/version/index',
 					success(res) {
 						console.log(res.data.data.oldversion);
-
 						that.$u.toast('当前版本为' + res.data.data.oldversion)
 					},
 					fail(err) {
@@ -150,5 +166,24 @@
 <style>
 	page {
 		background: #f2f2f2;
+	}
+
+	.logout {
+		padding: 30rpx;
+		width: 100%;
+		position: absolute;
+		bottom: 0rpx;
+		left: 0rpx;
+		box-sizing: border-box;
+	}
+
+	.logoutBtn {
+		border-radius: 43rpx;
+		background: #FE4373;
+		color: #fff;
+		text-align: center;
+		line-height: 85rpx;
+		margin: 0 auto;
+		height: 85rpx;
 	}
 </style>

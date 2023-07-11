@@ -1,6 +1,26 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
-
+	<view class="fixedHead" v-if="headFlag">
+		<view style="display: flex;align-items: center;">
+			<image class="rounded-full bg-gray-100" :src="userInfo.avatar || '/static/avatar.png'"
+				style="width: 50rpx;height: 50rpx;margin-right: 30rpx;">
+			</image>
+			<view>
+				<text style="font-size: 28rpx;color: #333;">
+					{{ userInfo.realname || '无名氏' }}·{{ userInfo.dynasty || '未知朝代' }}</text>
+			</view>
+		</view>
+		<view style="display: flex;align-items: center;">
+			<view style="margin-right: 30rpx;">
+				<i @click="$u.route('/pages/mine/contact')" class="ri-user-heart-fill"
+					style="font-size:50rpx;color: #FE4373;"></i>
+			</view>
+			<view>
+				<i @click="$u.route('/pages/mine/setting')" class="ri-settings-3-fill"
+					style="font-size:50rpx;color: #FE4373;"></i>
+			</view>
+		</view>
+	</view>
 	<!-- ${CustomBar} -->
 	<view>
 		<!-- <image class="fixed w-full h-screen top-0 left-0 right-0 -z-10" src='@/static/user_background.png' /> -->
@@ -48,7 +68,7 @@
 			</view>
 		</view>
 		<view class="containerBox">
-			<view class="select" style="display: flex;align-items: center;justify-content: space-between;">
+			<view class="select" style="display: flex;align-items: center;justify-content: space-around;">
 				<view @click="$u.route('/pages/post/add')">
 					<image src="@/static/dongtai.png" class="selectImg"></image>
 					<view>发布动态</view>
@@ -61,7 +81,8 @@
 					<image src="@/static/jiaose.png" class="selectImg"></image>
 					<view>我的角色</view>
 				</view>
-				<view @click="$u.toast('暂未开放哦')">
+				<!-- 后续开放 -->
+				<view @click="$u.route('/pages/mine/wallet')">
 					<image src="@/static/qianbao.png" class="selectImg"></image>
 					<view>我的钱包</view>
 				</view>
@@ -71,7 +92,7 @@
 				<uc-mine v-for="(item,index) in listPostMine" :item="item" :key="index"></uc-mine>
 				<u-loadmore v-if="listPostMine.length" :status="loadmore" nomoreText="" color="#a1a1a1"
 					marginTop="20" />
-				<u-empty v-if="!listPostMine.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1"
+				<u-empty v-if="!listPostMine.length" icon="/static/null3.png" text="数据为空" textColor="#a1a1a1"
 					marginTop="100"></u-empty>
 				<view style="height: 100rpx;"></view>
 			</view>
@@ -120,6 +141,7 @@
 				},
 				loadmore: false,
 				showIp: false,
+				headFlag: false,
 			}
 		},
 		computed: {
@@ -143,6 +165,13 @@
 			that.loadmore = 'loading'
 			that.params.page = ++that.params.page
 			that.getPostMine()
+		},
+		onPageScroll(e) {
+			if (parseInt(e.scrollTop) >= 150) {
+				this.headFlag = true;
+			} else {
+				this.headFlag = false;
+			}
 		},
 		methods: {
 			...mapActions(['getUserInfo']),
@@ -201,6 +230,27 @@
 	}
 </script>
 <style lang="scss" scoped>
+	.fixedHead {
+		padding-top: calc(var(--status-bar-height) + 20rpx);
+		background: #fff;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 99999;
+		padding-left: 30rpx;
+		padding-right: 30rpx;
+		padding-bottom: 20rpx;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		box-sizing: border-box;
+		transition: all 0.2s;
+		border-bottom: 1rpx solid rgba(238, 238, 238, 0.5);
+	}
+
+
+
 	.mineHead {
 		height: 710rpx;
 		background: url(@/static/userBg.png);

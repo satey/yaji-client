@@ -56,7 +56,11 @@
 
 
 		<!-- 确定按钮 -->
-		<view class="btn" @click="submit"> 确定 </view>
+		<view style="padding: 30rpx;box-sizing: border-box;">
+			<view
+				style="border-radius: 20px;background: #FE4373;color: #fff;text-align: center;line-height: 40px;margin: 0 auto;height: 40px;"
+				@click="submit"> 确定 </view>
+		</view>
 
 	</view>
 </template>
@@ -75,6 +79,7 @@
 				id: null,
 				images: '',
 				imgs: [],
+				flag:true,
 			}
 		},
 		computed: {
@@ -115,7 +120,12 @@
 				})
 			},
 			submit() {
-				let that = this
+				let that = this;
+				if(that.flag){
+					that.flag = false;
+				}else{
+					return;
+				}
 				let id = uni.getStorageSync('id');
 				//描述
 				if (that.content.length == 0) {
@@ -157,10 +167,10 @@
 							})
 							that.content = ""
 							that.title = ""
-
 						} else {
 							that.$u.toast(res.msg)
 						}
+						that.flag = true;
 					})
 				} else {
 					that.imgs.forEach(async (val, index) => {
@@ -175,7 +185,6 @@
 							},
 							success: res => {
 								var data = JSON.parse(res.data)
-								console.log(data)
 								imgArr.push(data.data.fullurl)
 								if (index == that.imgs.length - 1) {
 									var data = {
@@ -192,10 +201,10 @@
 											})
 											that.content = ""
 											that.title = ""
-
 										} else {
 											that.$u.toast(res.msg)
 										}
+										that.flag = true;
 									})
 								}
 							},
