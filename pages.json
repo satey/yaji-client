@@ -284,7 +284,10 @@
 			"path": "pages/joy/poetry",
 			"name": "poetry",
 			"style": {
-				"navigationBarTitleText": "曲水流觞"
+				"navigationBarTitleText": "曲水流觞",
+				"app-plus": {
+					"popGesture": "none"
+				}
 			},
 			"meta": {
 				"auth": false
@@ -304,7 +307,50 @@
 			"path": "pages/joy/wine",
 			"name": "wine",
 			"style": {
-				"navigationBarTitleText": "诗词结缘"
+				"navigationBarTitleText": "诗词结缘",
+				"navigationStyle": "default",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"color": "#333333",
+							"colorPressed": "#333333",
+							"float": "right",
+							"fontSize": "30rpx",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"text": "\ue605"
+						}]
+					}
+				}
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/joy/wineList",
+			"name": "wineList",
+			"style": {
+				"navigationBarTitleText": "诗词结缘列表"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/joy/wineContent",
+			"name": "wineContent",
+			"style": {
+				"navigationBarTitleText": "诗词结缘内容"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/joy/wineDetails",
+			"name": "wineDetails",
+			"style": {
+				"navigationBarTitleText": "诗缘详情"
 			},
 			"meta": {
 				"auth": false

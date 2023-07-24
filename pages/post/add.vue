@@ -282,7 +282,8 @@
 				isPlay: false,
 				timer: 0,
 				inter: null,
-				tpsTitle: "已录制"
+				tpsTitle: "已录制",
+				isClick: true,
 			}
 		},
 		onLoad() {
@@ -546,8 +547,11 @@
 				})
 			},
 			doPublish() {
-				let that = this
-
+				let that = this;
+				if (that.isClick == false) {
+					return;
+				}
+				that.isClick = false;
 				// let data = {
 				//     content: that.form.content,
 				//     images: that.form.images.toString(),
@@ -576,12 +580,14 @@
 				}
 				that.$api('post.add', data).then(res => {
 					if (res.code === 1) {
+						that.isClick = true;
 						that.form.content = ''
 						that.$u.toast('发布成功')
 						uni.reLaunch({
 							url: '/pages/index/square',
 						});
 					} else {
+						that.isClick = true;
 						that.$u.toast(res.msg)
 					}
 

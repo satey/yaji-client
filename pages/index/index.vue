@@ -20,14 +20,14 @@
                 </view>
             </view> -->
 			<!-- 后续开放 -->
-			<!-- <view class="grid gap-4 mt-6" style="display: flex;align-items: center;">
+			<view class="grid gap-4 mt-6" style="display: flex;align-items: center;">
 				<view class="activity" @click="$u.route('pages/joy/poetryStart')">
 					<image src="../../static/activity1.png" mode="widthFix"></image>
 				</view>
-				<view class=" activity" @click="$u.route('pages/joy/wine')">
+				<view class=" activity" @click="openWine">
 					<image src="../../static/activity2.png" mode="widthFix"></image>
 				</view>
-			</view> -->
+			</view>
 		</view>
 		<!-- 搜索人物 -->
 		<view class="searchContainer">
@@ -314,6 +314,27 @@
 			uni.removeStorageSync('titleItem')
 		},
 		methods: {
+			//打开诗词结缘
+			openWine() {
+				var that = this;
+				var userInfo = uni.getStorageSync("userInfo");
+				if (userInfo.role_id > 0) {
+					that.$api("poetry.isRelease").then(res => {
+						if (res.code == 1) {
+							if (res.data == 0) {
+								that.$u.route('pages/joy/wine')
+							} else {
+								uni.navigateTo({
+									url: '/pages/joy/wineContent'
+								})
+							}
+						}
+					})
+				} else {
+					that.$u.toast("无名氏无法进入哦")
+				}
+			},
+			//打开手机设置
 			openSet() {
 				// #ifdef APP-PLUS
 				permision.gotoAppPermissionSetting()

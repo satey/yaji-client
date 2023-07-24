@@ -7,7 +7,7 @@
 
 		<!-- 关于我们 -->
 		<view v-if="isAboutOur" style="color:rgba(0, 0, 0, 0.7);padding: 30rpx;">
-			<view class="">产品不删档公测阶段，欢迎朋友们提供各种建议。可通过问题反馈或以下方式与我们联系。</view>
+			<view class="">欢迎朋友们提供各种建议。可通过问题反馈或以下方式与我们联系。</view>
 			<br> 联系我们：
 			<br><br>
 			邮箱：kefu@suoeryoude.cn
@@ -74,8 +74,19 @@
 				if (that.$Route.query.id == 2) {
 					//隐私
 					this.currentId = 2;
-					this.currentSrc = "https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacy.html"
-					this.isProvicy = true
+					uni.getSystemInfo({
+						success(res) {
+							console.log(res.deviceBrand)
+							if (res.deviceBrand == "huawei") {
+								that.currentSrc =
+									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacyHuawei.html";
+							} else {
+								that.currentSrc =
+									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacy.html";
+							}
+						}
+					})
+					this.isProvicy = true;
 				}
 				if (that.$Route.query.id == 3) {
 					this.currentId = 3;

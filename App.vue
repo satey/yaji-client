@@ -55,7 +55,7 @@
 			renew() {
 				var that = this;
 				uni.request({
-					url: 'https://yaji.suoeryoude.cn/api/version/index',
+					url: 'https://yaji.ixiaojin.cn/api/version/index',
 					method: "POST",
 					success: function(res) {
 						if (res.data.data == null) {
@@ -89,9 +89,7 @@
 						success(res) {
 							that.$api('stat.init', {
 								"push_clientid": res.cid
-							}).then(data => {
-								console.log(data)
-							})
+							}).then(data => {})
 						}
 					})
 				}
@@ -216,7 +214,7 @@
 				if (token == '') {
 					return;
 				}
-				that.socKetUrl = `wss://yaji.suoeryoude.cn/websocket?token=${token}&session_id=${session_id}`;
+				that.socKetUrl = `wss://yaji.ixiaojin.cn/websocket?token=${token}&session_id=${session_id}`;
 				getApp().globalData.socketTask = uni.connectSocket({
 					url: that.socKetUrl, //仅为示例，并非真实接口地址。
 					complete: () => {
@@ -233,17 +231,20 @@
 				})
 				//监听 WebSocket 接受到服务器的消息事件
 				getApp().globalData.socketTask.onMessage((res) => {
+					if(JSON.parse(res.data).cate != 1){
+						return;
+					}
 					if (JSON.parse(res.data).type == 'text' || JSON.parse(res.data).type == 'image' || JSON.parse(
 							res.data).type == 'audio' || JSON.parse(res.data).type == 'gift') {
 						console.log(JSON.parse(res.data))
 						var userInfo = uni.getStorageSync("userInfo")
 						//别人给我发消息
-						if (JSON.parse(res.data).data.user.id != userInfo.id) {
+						if (JSON.parse(res.data).data.user_id != userInfo.id) {
 							var messageList = that.$store.state.message.messageList;
 							var is_topping = "";
 							var topping_time = ""
 							messageList.forEach((val, index) => {
-								if (val.user_id == JSON.parse(res.data).data.user.id) {
+								if (val.user_id == JSON.parse(res.data).data.user_id) {
 									is_topping = val.is_topping;
 									topping_time = val.topping_time;
 									messageList.splice(index, 1);
@@ -251,10 +252,10 @@
 							})
 							var sData = JSON.parse(res.data).data;
 							var obj = {};
-							obj.avatar = sData.user.avatar;
+							obj.avatar = sData.avatar;
 							obj.user_id = sData.user_id;
-							obj.role_realname = sData.user.role_realname;
-							obj.role_dynasty = sData.user.role_dynasty;
+							obj.role_realname = sData.role_realname;
+							obj.role_dynasty = sData.role_dynasty;
 							obj.createtime = sData.createtime;
 							obj.type = sData.type;
 							obj.content = sData.content;
@@ -265,7 +266,7 @@
 							//添加未读数量
 							if (that.$store.state.message.receiverId == "") {
 								messageList.forEach((val, index) => {
-									if (val.user_id == JSON.parse(res.data).data.user.id) {
+									if (val.user_id == JSON.parse(res.data).data.user_id) {
 										val.msgNum = true;
 									}
 								})
@@ -541,4 +542,5 @@
 	// @import 'static/style/main.scss';
 	@import "static/tailwindcss/tailwind.css";
 	@import 'static/remixicon/remixicon.css';
+	@import 'static/iconfont/icons.css';
 </style>

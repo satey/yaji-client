@@ -27,7 +27,7 @@
 						</view>
 					</view>
 					<view class="contentBody">
-						<view class="types flex">
+						<view class="types flex" style="display: flex;flex-wrap: wrap;align-items: center;">
 							<!-- {{userRole.achievements.indexOf(",")}} -->
 							<view v-if="typeof(tags) == 'string'">
 								<text class="ri-price-tag-3-line lable" :style="'color:'+colors[0]"></text>
@@ -294,7 +294,6 @@
 				that.$api('user.info', {
 					user_id: that.userInfo.id
 				}).then(res => {
-					console.log(res)
 					if (res.code === 1) {
 						if (res.data.achievements != null) {
 							if (res.data.achievements.indexOf(",") == -1) {
@@ -303,7 +302,6 @@
 								that.tags = res.data.achievements.split(",")
 							}
 						}
-
 						that.userRole = res.data;
 						that.fei_num = res.data.choose_num
 						that.showUserRole = true
@@ -323,12 +321,17 @@
 			// 重新获取
 			handleHuoQu() {
 				let that = this;
-				var userInfo = uni.getStorageSync("userInfo");
-				if (userInfo.money < that.price) {
-					that.recharge = true;
-				} else {
-					that.handleRematch()
-				}
+				that.$api('user.info', {
+					user_id: that.userInfo.id
+				}).then(res => {
+					if (res.code === 1) {
+						if (res.data.money <= 4) {
+							that.recharge = true;
+						} else {
+							that.handleRematch()
+						}
+					}
+				})
 			},
 			handleReborn() {
 				let that = this

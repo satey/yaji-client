@@ -41,7 +41,7 @@
 					<text
 						class="p-1 px-2 rounded text-xs leading-none text-gray-400 bg-gray-50">{{ $u.timeFormat(item.createtime, 'yyyy-mm-dd hh:MM') }}</text>
 				</view>
-				<view class="flex justify-end mt-6" v-if="item.user.id === userInfo.id">
+				<view class="flex justify-end mt-6" v-if="item.user_id === userInfo.id">
 					<view class="flex justify-end w-4/6">
 						<view class="mr-3">
 							<view v-if="item.type === 'text'"
@@ -60,12 +60,9 @@
 								<i class="ri-voiceprint-line text-2xl text-white"
 									:class="audioStatus ? 'animate-pulse' : ''"></i>
 							</view>
-							<!-- <view v-if="item.type === 'video'" @click="handlePlayVideo(item.content)" class="flex items-center justify-center rounded w-60 bg-gray-200">
-                                <video class="z-0" :src="item.content" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
-                            </view> -->
 						</view>
 						<view class="flex">
-							<image class="block rounded-full w-10 h-10" :src="item.user.avatar || '/static/avatar.png'">
+							<image class="block rounded-full w-10 h-10" :src="item.avatar || '/static/avatar.png'">
 							</image>
 						</view>
 					</view>
@@ -73,7 +70,7 @@
 				<view class="flex justify-start mt-6" v-else>
 					<view class="flex justify-start w-4/6">
 						<view class="flex">
-							<image class="block rounded-full w-10 h-10" :src="item.user.avatar || '/static/avatar.png'">
+							<image class="block rounded-full w-10 h-10" :src="item.avatar || '/static/avatar.png'">
 							</image>
 						</view>
 						<view class="ml-3">
@@ -93,9 +90,6 @@
 								<i class="ri-voiceprint-line text-2xl text-white"
 									:class="audioStatus ? 'animate-pulse' : ''"></i>
 							</view>
-							<!--<view v-if="item.type === 'video'" @click="handlePlayVideo(item.content)" class="flex items-center justify-center rounded w-60 bg-gray-200">
-                                <video class="z-0" :src="item.content" id="video" direction="0" object-fit="fill" page-gesture="true" controls="false"></video>
-                            </view> -->
 						</view>
 					</view>
 				</view>
@@ -109,7 +103,7 @@
 					<i class="ri-mic-2-fill block text-4xl leading-none text-gray-400"></i>
 				</view>
 				<view class="flex-1 mr-4 rounded-full h-10 flex items-center px-4 bg-gray-100">
-					<u-input v-model="text" @focus="focus" @blur="blur" :adjustPosition="false"
+					<u-input :auto-blur="false" v-model="text" @focus="focus" @blur="blur" :adjustPosition="false"
 						@confirm="handleTextSend" type="text" placeholder="说点什么吧" :clearable="true"
 						customStyle="border: none; background: none; padding: 0;">
 					</u-input>
@@ -120,7 +114,7 @@
 				<view class="flex items-center" v-if="!text" @click="handlePlus">
 					<i class="ri-add-circle-fill text-4xl leading-none text-gray-400"></i>
 				</view>
-				<view class="flex items-center" v-if="text" @click="handleTextSend">
+				<view class="flex items-center" v-if="text" @touchend.prevent="handleTextSend">
 					<text class="rounded-full p-2 px-3 text-base text-white bg-gradient-to-r to-fuchsia-500"
 						style="background: rgb(254, 67, 115);">发送</text>
 				</view>
@@ -131,10 +125,12 @@
 				<view class="flex justify-center items-center mt-16" @touchstart="handleRecordStart"
 					@touchmove.stop.prevent="handleRecordDoing" @touchend="handleRecordStop">
 					<view class="relative flex justify-center items-center rounded-full">
-						<view class="flex justify-center items-center rounded-full w-20 h-20 bg-fuchsia-500 z-10">
+						<view class="flex justify-center items-center rounded-full w-20 h-20 bg-fuchsia-500 z-10"
+							style="background: #FE4373 !important;">
 							<i class="ri-mic-fill text-4xl leading-none text-white"></i>
 						</view>
-						<view v-if="recording" class="animate-ping absolute rounded-full p-2 bg-fuchsia-200 opacity-50">
+						<view v-if="recording" class="animate-ping absolute rounded-full p-2 bg-fuchsia-200 opacity-50"
+							style="background: #FE4373 !important;">
 							<view class="rounded-full w-20 h-20 p-2 bg-fuchsia-500 opacity-50">
 							</view>
 						</view>
@@ -278,7 +274,8 @@
 			var delay = setTimeout(() => {
 				that.init();
 				that.watchKeyboard();
-				that.initSingleSocket()
+				that.initSingleSocket();
+				that.poetry()
 				this.$nextTick(() => {
 					that.scrollBottom();
 				})
@@ -290,13 +287,33 @@
 			getApp().globalData.socketTask.close()
 		},
 		methods: {
+			//诗词结缘
+			poetry() {
+				var that = this;
+				var poetryItem = uni.getStorageSync("poetryItem");
+				if (poetryItem != '') {
+					that.$api("poetry.single", {
+						poetry_id: poetryItem.id,
+						receiver_id: poetryItem.user_id
+					}).then(res => {
+						console.log(res)
+						if (res.code == 0) {
+							that.sendMessage(res.msg, 'text');
+						}
+						uni.removeStorageSync("poetryItem");
+					})
+				}
+			},
 			//聊天页面socket监听
 			initSingleSocket() {
 				var that = this;
 				var newMeg = [];
 				that.$store.commit("setReceiverId", that.$Route.query.user_id);
 				getApp().globalData.socketTask.onMessage((res) => {
-					console.log(JSON.parse(res.data))
+					if (JSON.parse(res.data).cate != 1) {
+						return;
+					}
+
 					var userInfo = uni.getStorageSync("userInfo");
 					if (JSON.parse(res.data).type == "history") {
 						that.parseMsg(res.data)
@@ -492,16 +509,16 @@
 							break
 						case 'history':
 							if (that.historyPage == 1) {
-								that.messageList = msg.data.data
+								that.messageList = msg.data
 								that.messageList.sort((a, b) => {
-									return a.id - b.id
+									return a.createtime - b.createtime
 								})
 							} else {
 								that.scrollFlag = false;
 								that.messageList = [...that.messageList, ...msg.data.data];
 								that.loadingmMore = true;
 								that.messageList.sort((a, b) => {
-									return a.id - b.id
+									return a.receiver_id - b.receiver_id
 								})
 								if (msg.data.data.length == 0) {
 									that.isScrollDown = false;
@@ -522,7 +539,7 @@
 					msg: 'send',
 					data: data,
 					gift_id: gift_id,
-					to_user_id: that.$Route.query.user_id, //接收者的id,
+					to_user_id: that.$Route.query.user_id //接收者的id,
 				}
 				console.log("-------发送消息----------")
 				getApp().globalData.socketTask.send({
@@ -565,7 +582,7 @@
 					// 		}
 					// 	}
 					// })
-					that.showEmoji = false;
+					// that.showEmoji = false;
 					that.sendMessage(that.text, 'text');
 					that.text = '';
 				}
@@ -632,7 +649,7 @@
 					if (data.code == 1) {
 						if (data.msg == "赠送成功") {
 							that.sendMessage(that.gift.image, 'gift', item.id)
-							that.showGift = false;
+							// that.showGift = false;
 							that.showSvga = true
 							// that.handleGiftPlay()
 							that.handleTextSend();

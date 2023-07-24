@@ -7,6 +7,70 @@ export default {
 			desc: '更新版本',
 		},
 	},
+	game: {
+		joinRoom: {
+			url: 'game_room/join_room',
+			auth: false,
+			method: 'GET',
+			desc: '加入曲水流觞房间',
+		},
+		is_in_game_room: {
+			url: 'game_room/is_in_game_room',
+			auth: false,
+			method: 'POST',
+			desc: '是否在游戏房间',
+		}
+	},
+	poetry: {
+		isRelease: {
+			url: 'poetry/today_is_exist_data',
+			auth: false,
+			method: 'GET',
+			desc: '诗词结缘字是否发过',
+		},
+		textList: {
+			url: 'poetry_word/lists',
+			auth: false,
+			method: 'GET',
+			desc: '诗词结缘字列表',
+		},
+		poetryAdd: {
+			url: 'poetry/add',
+			auth: false,
+			method: 'POST',
+			desc: '诗词结缘字添加诗词',
+		},
+		details: {
+			url: 'poetry/details',
+			auth: false,
+			method: 'GET',
+			desc: '诗词结缘详情',
+		},
+		lists: {
+			url: 'poetry/lists',
+			auth: false,
+			method: 'GET',
+			desc: '诗词结缘列表',
+		},
+		single: {
+			url: '/poetry_chat_log/details',
+			auth: false,
+			method: 'POST',
+			desc: '诗词结缘聊天',
+		},
+		zan: {
+			url: 'poetry/zan',
+			auth: false,
+			method: 'GET',
+			desc: '诗词结缘赞',
+		},
+		myList: {
+			url: 'poetry/my_poetry_list',
+			auth: false,
+			method: 'GET',
+			desc: '我的诗词结缘列表',
+		}
+	},
 	stat: {
 		init: {
 			url: 'user/today_last_online_time',

@@ -4,7 +4,6 @@ import store from '@/common/store'
 import {
 	LOGIN_TIP
 } from './store/types';
-
 Vue.use(Router)
 //初始化
 const router = new Router({

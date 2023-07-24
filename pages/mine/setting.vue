@@ -29,10 +29,10 @@
 		</view>
 		<view class="bg-white mt-4">
 			<u-cell-group>
-				<u-cell title="隐私设置" :isLink="true" @click="$u.route('/pages/public/privacySet')">
+			<!-- 	<u-cell title="隐私设置" :isLink="true" @click="$u.route('/pages/public/privacySet')">
 					<i slot="icon" class="ri-edit-box-fill text-white p-2 rounded-lg mr-2"
 						style="background: #2E8B57;"></i>
-				</u-cell>
+				</u-cell> -->
 				<!-- <u-cell title="意见反馈" :isLink="true" @click="$u.toast('功能开发中，敬请期待')"> -->
 				<u-cell title="意见反馈" :isLink="true" @click="$u.route('/pages/public/feedback')">
 					<i slot="icon" class="ri-edit-box-fill text-white p-2 bg-blue-500 rounded-lg mr-2"></i>

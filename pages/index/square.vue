@@ -75,6 +75,7 @@
 		onLoad(option) {
 			let that = this
 			that.postRecommendList = [];
+			that.getPostRecommend();
 			// that.getPostRecommend()
 		},
 		onReachBottom() {
@@ -93,12 +94,12 @@
 					break
 			}
 		},
-		onShow() {
-			let that = this;
-			this.params.page = 1;
-			that.postRecommendList = [];
-			that.getPostRecommend();
-		},
+		// onShow() {
+		// 	let that = this;
+		// 	this.params.page = 1;
+		// 	that.postRecommendList = [];
+		// 	that.getPostRecommend();
+		// },
 		onPageScroll(e) {
 			if (parseInt(e.scrollTop) > 30) {
 				this.headBarBgColor = "#fff"

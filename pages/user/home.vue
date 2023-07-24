@@ -57,7 +57,7 @@
 			<block v-if="type === 'post'">
 				<uc-mypost v-for="(item, index) in postList" :key="index" :item="item"></uc-mypost>
 				<u-loadmore v-if="postList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
-				<u-empty v-if="!postList.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1"
+				<u-empty v-if="!postList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
 					marginTop="100"></u-empty>
 			</block>
 			<block v-if="type === 'role'">
