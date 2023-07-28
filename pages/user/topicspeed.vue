@@ -5,14 +5,23 @@
 		</image>
 		<u-navbar title="话题详情" :safeAreaInsetTop="true" :placeholder="true" :bgColor="headColor">
 			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+				<i class="ri-arrow-left-s-line text-3xl" @click="pageBack"></i>
 			</view>
 		</u-navbar>
 		<view style="display: flex;justify-content: space-between;padding: 20rpx 30rpx;">
-			<view class="face"><i class="ri-hashtag"></i>{{title}}</view>
+			<view class="face" style="display: flex;align-items: center;">
+				<view>
+					<i class="ri-hashtag"></i>{{title}}
+				</view>
+				<view style="display: flex;">
+					<text class="ri-fire-fill" style="color: #FE4373;font-size: 40rpx;"></text>
+					<view class="mw" style="color: #FE4373;">{{hot}}</view>
+				</view>
+			</view>
 			<view style="display: flex;">
-				<text class="ri-fire-fill" style="color: #FE4373;font-size: 40rpx;"></text>
-				<view class="mw" style="color: #FE4373;">{{hot}}</view>
+				<view @click="is_ok()"
+					style="color:#fff;width: 118rpx;height: 60rpx;background: #FE4373;border-radius: 10rpx;text-align: center;line-height: 60rpx;">
+					发动态</view>
 			</view>
 		</view>
 		<view class="topic">
@@ -39,7 +48,8 @@
 				headColor: "rgba(0,0,0,0)"
 			}
 		},
-		onLoad(options) {
+		onShow(options) {
+			this.topicspeedList = []
 			this.getLists()
 		},
 		onReachBottom() {
@@ -58,6 +68,29 @@
 			}
 		},
 		methods: {
+			pageBack() {
+				uni.reLaunch({
+					url: '/pages/index/square',
+				});
+			},
+			is_ok() {
+				let that = this;
+				that.$api('post.is_add').then(res => {
+					console.log('ii', res);
+					if (res.data === 0) {
+						that.$u.toast('无角色暂不能发布动态')
+						return
+					} else {
+						var obj = {
+							title: that.title,
+							post_cate_id: this.$Route.query.post_cate_id
+						}
+						uni.navigateTo({
+							url: '/pages/post/add?postData=' + JSON.stringify(obj)
+						})
+					}
+				})
+			},
 			openUrl(id) {
 				var userInfo = uni.getStorageSync("userInfo");
 				if (id == userInfo.id) {
@@ -169,7 +202,6 @@
 				that.$api('post.search', {
 					"id": that.$Route.query.post_cate_id
 				}).then(res => {
-					console.log(res)
 					if (res.code == 1) {
 						that.title = res.data.title;
 						that.hot = res.data.hot_num;

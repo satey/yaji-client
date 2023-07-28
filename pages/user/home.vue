@@ -9,7 +9,8 @@
 			</view>
 			<view slot="center">
 				<view style="color: #323232;" v-if="headColor=='#fff'">
-					{{ role.realname || '无名氏' }}·{{role.dynasty || '未知朝代' }}</view>
+					{{ role.realname || '无名氏' }}·{{role.dynasty || '未知朝代' }}
+				</view>
 			</view>
 		</u-navbar>
 		<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
@@ -24,7 +25,7 @@
 		<view class="homeHead">
 			<view style="margin-top: 80rpx;">
 				<image class="rounded-full bg-gray-100" :src="user.avatar || '/static/avatar.png'"
-					style="width: 140rpx;height: 140rpx;">
+					style="width: 140rpx;height: 140rpx;" @click="viewUserImg(user.avatar || '/static/avatar.png')">
 				</image>
 			</view>
 			<view class="text-xl mt-2">
@@ -96,7 +97,6 @@
 
 			</block>
 		</view>
-		<!-- --------------------- -->
 		<view style="height: 220rpx;"></view>
 	</view>
 
@@ -183,6 +183,12 @@
 			that.user_id = that.$Route.query.user_id
 		},
 		methods: {
+			viewUserImg(item) {
+				uni.previewImage({
+					current: 1,
+					urls: [item]
+				})
+			},
 			look_user_home() {
 				var that = this;
 				that.$api('user.look_user_home', {

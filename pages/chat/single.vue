@@ -70,7 +70,8 @@
 				<view class="flex justify-start mt-6" v-else>
 					<view class="flex justify-start w-4/6">
 						<view class="flex">
-							<image class="block rounded-full w-10 h-10" :src="item.avatar || '/static/avatar.png'">
+							<image class="block rounded-full w-10 h-10" :src="item.avatar || '/static/avatar.png'"
+								@click="$u.route('/pages/user/home',{user_id:item.user_id})">
 							</image>
 						</view>
 						<view class="ml-3">
@@ -102,12 +103,17 @@
 				<view class="mr-4 flex items-center" @click="handleVoice">
 					<i class="ri-mic-2-fill block text-4xl leading-none text-gray-400"></i>
 				</view>
-				<view class="flex-1 mr-4 rounded-full h-10 flex items-center px-4 bg-gray-100">
+				<textarea class="flex-1 mr-4 flex items-center bg-gray-100" :auto-height="true" @blur="blur"
+					:auto-blur="false" @focus="focus" @confirm="handleTextSend" :adjustPosition="false"
+					style="padding:20rpx;border-radius: 10rpx;font-size:28rpx;color: rgb(48, 49, 51);"
+					placeholder="说点什么吧" v-model="text"
+					placeholder-style="color: rgb(192, 196, 204);font-size:30rpx"></textarea>
+				<!-- <view class="flex-1 mr-4 rounded-full h-10 flex items-center px-4 bg-gray-100">
 					<u-input :auto-blur="false" v-model="text" @focus="focus" @blur="blur" :adjustPosition="false"
 						@confirm="handleTextSend" type="text" placeholder="说点什么吧" :clearable="true"
 						customStyle="border: none; background: none; padding: 0;">
 					</u-input>
-				</view>
+				</view> -->
 				<view class="mr-4 flex items-center" @click="handleEmoji">
 					<i class="ri-emotion-fill block text-4xl leading-none text-gray-400"></i>
 				</view>
@@ -687,7 +693,11 @@
 							})
 							return;
 						}
-						that.name = res.data.role.realname + "·" + res.data.role.dynasty
+						if (res.data.role.realname != null && res.data.role.realname != '') {
+							that.name = res.data.role.realname + "·" + res.data.role.dynasty
+						} else {
+							that.name = "无名氏"
+						}
 						that.user = res.data;
 					}
 				})

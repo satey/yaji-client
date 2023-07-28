@@ -1,7 +1,7 @@
 export default {
 	state: {
 		messageList: [], //消息列表
-		messageCount: false, //总消息数量
+		messageCount: 0, //总消息数量
 		receiverId: "",
 		messageListTotal: [], //全部消息列表
 		islogout: false,
@@ -32,30 +32,36 @@ export default {
 		setMsgCount(state, arr) {
 			var num = 0;
 			for (var i = 0; i < arr.length; i++) {
-				if (arr[i].msgNum != undefined) {
-					if (arr[i].msgNum == true) {
-						state.messageCount = true;
-						break;
-					}
-				}
+				num += state.messageList[i].msgNum;
+				console.log(state.messageCount)
+				// if (arr[i].msgNum != undefined) {
+				// 	if (arr[i].msgNum == true) {
+				// 		state.messageCount = true;
+				// 		break;
+				// 	}
+				// }
 			}
+			state.messageCount = num
 		},
 		//设置各个列表的角标
 		setMsgCount2(state) {
 			if (state.messageList.length == 0) {
-				state.messageCount = false;
+				state.messageCount = 0;
 				return;
 			}
+			var num = 0;
 			for (var i = 0; i < state.messageList.length; i++) {
 				if (state.messageList[i].msgNum != undefined) {
-					if (state.messageList[i].msgNum == true) {
-						state.messageCount = true;
-						break;
-					} else {
-						state.messageCount = false;
-					}
+					num += state.messageList[i].msgNum;
+					// if (state.messageList[i].msgNum == true) {
+					// 	state.messageCount = true;
+					// 	break;
+					// } else {
+					// 	state.messageCount = false;
+					// }
 				}
 			}
+			state.messageCount = num
 			var userInfo = uni.getStorageSync("userInfo");
 			if (!userInfo) {
 				return;
@@ -79,7 +85,7 @@ export default {
 			var arr = state.messageList;
 			arr.forEach((item, index) => {
 				if (arr[index].user_id == id) {
-					arr[index].msgNum = false;
+					arr[index].msgNum = 0;
 				}
 			})
 			state.messageList = arr;
@@ -107,7 +113,7 @@ export default {
 		//用户聊天记录
 		setHistoryMsgList(state, arr) {
 			state.historyMsgList = arr;
-		}
+		},
 	},
 	getters: {
 

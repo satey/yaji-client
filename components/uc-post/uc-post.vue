@@ -53,7 +53,10 @@
 			</view>
 			<view v-if="item.audio" @click="handlePlayAudio(item.audio)"
 				class="mt-4 flex items-center justify-center rounded-full overflow-hidden w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
-				<i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
+				<view v-if="!audioStatus" style="display: flex;align-items: center;">
+					<i class="ri-voiceprint-line text-2xl text-white" v-for="(item,index) in 3"></i>
+				</view>
+				<image v-else src="/static/bofang.gif" style="width: 100rpx;height: 35rpx;" mode=""></image>
 			</view>
 			<view v-if="item.video" @click="handlePlayVideo(item.video)"
 				class="mt-4 flex items-center justify-center rounded overflow-hidden w-60 bg-gray-200">

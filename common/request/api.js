@@ -1,4 +1,12 @@
 export default {
+	ad:{
+		lists: {
+			url: 'adv/lists',
+			auth: false,
+			method: 'GET',
+			desc: '广告列表',
+		},
+	},
 	renew: {
 		init: {
 			url: 'version/index',
@@ -538,6 +546,12 @@ export default {
 			auth: true,
 			method: 'GET',
 			desc: '注销账号',
+		},
+		update_avatar: {
+			url: 'user/update_avatar',
+			auth: true,
+			method: 'POST',
+			desc: '更换头像',
 		}
 	},
 	user_gift: {

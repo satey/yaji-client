@@ -94,7 +94,11 @@
                                 "xxhdpi" : "static/logo-28.png"
                             }
                         },
-                        "mi" : {}
+                        "mi" : {},
+                        "hms" : {},
+                        "oppo" : {},
+                        "vivo" : {},
+                        "meizu" : {}
                     }
                 }
             },

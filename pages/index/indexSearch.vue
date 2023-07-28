@@ -8,7 +8,6 @@
 			<view slot="center">
 				{{titleItem.title}}
 			</view>
-
 		</u-navbar>
 		</block>
 		<view class="pt-4">
@@ -57,11 +56,14 @@
 			}
 		},
 		onLoad(option) {
-			let that = this
+			console.log()
+			var titleItem = JSON.parse(option.titleItem)
+			let that = this;
 			that.getUserRecommend()
 			that.getRoleDynasty()
 			that.getRoleAchievement()
 			that.getRoleTitle()
+			that.handleSearchTitle(titleItem)
 		},
 		onReachBottom() {
 			let that = this
@@ -70,21 +72,6 @@
 			that.params.page = ++that.params.page
 			that.getUserSearch()
 		},
-		mounted() {
-			console.log(uni.getStorageSync('titleItem'));
-			if (Boolean(uni.getStorageSync('titleItem'))) {
-				let that = this
-				let titleItem = uni.getStorageSync('titleItem')
-				that.handleSearchTitle(titleItem)
-			};
-		},
-		onHide() {
-			uni.removeStorageSync('titleItem')
-		},
-		// onShow() {
-		// 	uni.removeStorageSync('titleItem')
-		// },
-
 		methods: {
 			// 清除历史记录
 			clearAll() {
@@ -151,6 +138,7 @@
 				let that = this
 				that.loadmore = 'loading'
 				that.$api('user.recommend', that.params).then(res => {
+					console.log(res)
 					if (res.code === 1) {
 						// if(res.data.is_free==0){
 						// 	that.isfree=true

@@ -29,7 +29,7 @@
 		</view>
 		<view class="bg-white mt-4">
 			<u-cell-group>
-			<!-- 	<u-cell title="隐私设置" :isLink="true" @click="$u.route('/pages/public/privacySet')">
+				<!-- 	<u-cell title="隐私设置" :isLink="true" @click="$u.route('/pages/public/privacySet')">
 					<i slot="icon" class="ri-edit-box-fill text-white p-2 rounded-lg mr-2"
 						style="background: #2E8B57;"></i>
 				</u-cell> -->
@@ -105,37 +105,61 @@
 					return
 				}
 				that.isClick == false;
-				uni.request({
-					url: 'https://yaji.suoeryoude.cn/api/user/logout',
-					method: 'POST',
-					headers: {
-						'token': that.tokens,
-					},
-					success(res) {
-						that.isClick == true;
-						getApp().globalData.socketTask.close();
-						var userInfo = uni.getStorageSync("userInfo");
-						that.$store.commit("setIslogout", true);
+				that.$api("user.logout").then(res => {
+					that.isClick == true;
+					getApp().globalData.socketTask.close();
+					var userInfo = uni.getStorageSync("userInfo");
+					that.$store.commit("setIslogout", true);
+					that.$nextTick(() => {
+						uni.removeStorageSync('token')
+						uni.removeStorageSync('userInfo')
+						uni.removeStorageSync('msgCount')
+						uni.removeStorageSync('pageCount')
+						uni.removeStorageSync('gender')
+						that.$store.commit("setMessageList", []);
+						that.$store.commit("setMsgCount", 0);
+						that.$store.commit("setMsgCount2");
+						that.$store.commit("messageListTotal", [])
 						that.$nextTick(() => {
-							uni.removeStorageSync('token')
-							uni.removeStorageSync('userInfo')
-							uni.removeStorageSync('msgCount')
-							uni.removeStorageSync('pageCount')
-							that.$store.commit("setMessageList", []);
-							that.$store.commit("setMsgCount", 0);
-							that.$store.commit("setMsgCount2");
-							that.$store.commit("messageListTotal", [])
-							that.$nextTick(() => {
-								uni.reLaunch({
-									url: '/pages/auth/login'
-								})
+							uni.reLaunch({
+								url: '/pages/auth/login'
 							})
 						})
-					},
-					fail(err) {
-						console.log('err', err);
-					}
+					})
 				})
+				// uni.request({
+				// 	url: 'https://yaji.suoeryoude.cn/api/user/logout',
+				// 	method: 'POST',
+				// 	headers: {
+				// 		'token': that.tokens,
+				// 	},
+				// 	success(res) {
+				// 		console.log(res)
+				// 		that.isClick == true;
+				// 		getApp().globalData.socketTask.close();
+				// 		var userInfo = uni.getStorageSync("userInfo");
+				// 		that.$store.commit("setIslogout", true);
+				// 		that.$nextTick(() => {
+				// 			uni.removeStorageSync('token')
+				// 			uni.removeStorageSync('userInfo')
+				// 			uni.removeStorageSync('msgCount')
+				// 			uni.removeStorageSync('pageCount')
+				// 			uni.removeStorageSync('gender')
+				// 			that.$store.commit("setMessageList", []);
+				// 			that.$store.commit("setMsgCount", 0);
+				// 			that.$store.commit("setMsgCount2");
+				// 			that.$store.commit("messageListTotal", [])
+				// 			that.$nextTick(() => {
+				// 				uni.reLaunch({
+				// 					url: '/pages/auth/login'
+				// 				})
+				// 			})
+				// 		})
+				// 	},
+				// 	fail(err) {
+				// 		console.log('err', err);
+				// 	}
+				// })
 
 			},
 			onClear() {

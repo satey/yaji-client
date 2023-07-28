@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="commentItem" style="margin-top: 30rpx;display: flex;">
+		<view class="commentItem" style="margin-top: 30rpx;display: flex;" v-if="item.status != 'hidden'">
 			<u-avatar size="85" :src="item.avatar || '/static/avatar.png'"
 				@click="$u.route('/pages/user/home', { user_id: item.user_id })"></u-avatar>
 			<view style="flex: 1;margin-left: 16rpx;">

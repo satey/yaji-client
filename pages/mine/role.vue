@@ -229,43 +229,46 @@
 			//确认朝代
 			dynastyConfirm() {
 				var that = this;
-				var gender = uni.getStorageSync("gender");
-				if (that.selectIndex == null) {
-					uni.showToast({
-						icon: "none",
-						title: "请选择朝代"
+				that.$api("user.info").then(userData => {
+					var gender = userData.data.gender;
+					if (that.selectIndex == null) {
+						uni.showToast({
+							icon: "none",
+							title: "请选择朝代"
+						})
+						return;
+					}
+					if (gender == 1) {
+						if (that.listRoleDynasty[that.selectIndex].role_man_count == 0) {
+							uni.showToast({
+								icon: "none",
+								title: "男性角色不足"
+							})
+							return;
+						}
+					} else if (gender == 2) {
+						if (that.listRoleDynasty[that.selectIndex].role_woman_count == 0) {
+							uni.showToast({
+								icon: "none",
+								title: "女性角色不足"
+							})
+							return;
+						}
+					}
+					// uni.showLoading()
+					this.dynastyPopup = false;
+					uni.showLoading()
+					that.$api('role.match', {
+						"dynasty": this.selectDynastyName
+					}).then(res => {
+						console.log(res);
+						that.role_fei = res.data;
+						uni.hideLoading();
+						that.fei_num = that.fei_num - 1;
+						that.showRole = true;
 					})
-					return;
-				}
-				if (gender == 1) {
-					if (that.listRoleDynasty[that.selectIndex].role_man_count == 0) {
-						uni.showToast({
-							icon: "none",
-							title: "男性角色不足"
-						})
-						return;
-					}
-				} else {
-					if (that.listRoleDynasty[that.selectIndex].role_woman_count == 0) {
-						uni.showToast({
-							icon: "none",
-							title: "女性角色不足"
-						})
-						return;
-					}
-				}
-				// uni.showLoading()
-				this.dynastyPopup = false;
-				uni.showLoading()
-				that.$api('role.match', {
-					"dynasty": this.selectDynastyName
-				}).then(res => {
-					console.log(res);
-					that.role_fei = res.data;
-					uni.hideLoading();
-					that.fei_num = that.fei_num - 1;
-					that.showRole = true;
 				})
+
 			},
 			//选择朝代
 			selectDynasty(index, id, name) {

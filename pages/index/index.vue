@@ -131,7 +131,12 @@
 	</view>
 </template>
 <script>
-	import permision from "@/js_sdk/wa-permission/permission.js"
+	import permision from "@/js_sdk/wa-permission/permission.js";
+	import {
+		mapMutations,
+		mapActions,
+		mapState
+	} from 'vuex'
 	export default {
 		name: 'index',
 		components: {},
@@ -303,6 +308,7 @@
 			}
 		},
 		onShow: function() {
+			this.getUserInfo()
 			var lastVisitTime = uni.getStorageSync('lastVisitTime') || 0;
 			var now = Date.now();
 			if (now - lastVisitTime > 24 * 60 * 60 * 1000) {
@@ -314,6 +320,7 @@
 			uni.removeStorageSync('titleItem')
 		},
 		methods: {
+			...mapActions(['getUserInfo']),
 			//打开诗词结缘
 			openWine() {
 				var that = this;
@@ -426,18 +433,10 @@
 
 			// 搜索
 			handleSearchTitle(item) {
-				uni.setStorageSync('titleItem', item)
-				let that = this
+				let that = this;
 				uni.navigateTo({
-					url: '/pages/index/indexSearch',
-					success: () => {
-						uni.setStorageSync('titleItem', item)
-					},
-					fail: (err) => {
-						console.log(err);
-					}
+					url: '/pages/index/indexSearch?titleItem=' + JSON.stringify(item),
 				})
-
 			},
 			async getUserSearch() {
 				let that = this

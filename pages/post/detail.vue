@@ -92,7 +92,9 @@
 						<view class="followActive" v-show="is_follow==1" @click="interest(2)">已关注</view>
 					</view>
 				</view>
-				<view class="detailsText">{{ content || '' }}</view>
+				<view class="detailsText">
+					<text>{{ content || '' }}</text>
+				</view>
 				<view class="topic">
 					<view class="topicItem" @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id})"
 						v-for="(item,index) in post.post_cate"><i class="ri-hashtag mr-1"></i>{{item.title}}</view>

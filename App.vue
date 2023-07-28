@@ -33,6 +33,7 @@
 			...mapActions(['getAppInit', 'getRoutes', 'getUserInfo']),
 			//监听通知
 			pushMsg() {
+				var that = this;
 				uni.onPushMessage((res) => {
 					console.log(res)
 					if (res.type == 'receive') {
@@ -49,6 +50,18 @@
 							}
 						})
 					}
+					var list = that.$store.state.message.messageList;
+					list.forEach((val, index) => {
+						if (res.data.title == val.role_realname) {
+							var tmp = Date.parse(new Date()).toString();
+							tmp = tmp.substr(0, 10);
+							val.content = res.data.content;
+							val.msgNum = true;
+							val.createtime = tmp
+						}
+					})
+					that.$store.commit("setMessageList", list)
+					that.$store.commit("setMsgCount", list)
 				})
 			},
 			//更新
@@ -110,7 +123,7 @@
 							obj.role_dynasty = val.dynasty;
 							obj.content = val.chat_message_content;
 							obj.receiver_id = val.user_id;
-							obj.msgNum = val.no_read_count == 0 ? false : true;
+							obj.msgNum = val.no_read_count;
 							obj.is_topping = val.is_topping;
 							obj.topping_time = val.topping_time;
 							for (var i = 0; i < arr.length; i++) {
@@ -135,7 +148,7 @@
 				if (historyCronyList != "") {
 					if (historyCronyList.messageList.length != 0) {
 						this.$store.commit("setMessageList", historyCronyList.messageList);
-						this.$store.commit("setMsgCount2");
+						this.$store.commit("setMsgCount2", historyCronyList.messageList);
 						uni.removeStorageSync("historyCronyList")
 					}
 				}
@@ -231,7 +244,7 @@
 				})
 				//监听 WebSocket 接受到服务器的消息事件
 				getApp().globalData.socketTask.onMessage((res) => {
-					if(JSON.parse(res.data).cate != 1){
+					if (JSON.parse(res.data).cate != 1) {
 						return;
 					}
 					if (JSON.parse(res.data).type == 'text' || JSON.parse(res.data).type == 'image' || JSON.parse(
@@ -242,16 +255,18 @@
 						if (JSON.parse(res.data).data.user_id != userInfo.id) {
 							var messageList = that.$store.state.message.messageList;
 							var is_topping = "";
-							var topping_time = ""
+							var topping_time = "";
+							var sData = JSON.parse(res.data).data;
+							var obj = {};
+							var num = 0;
 							messageList.forEach((val, index) => {
 								if (val.user_id == JSON.parse(res.data).data.user_id) {
 									is_topping = val.is_topping;
 									topping_time = val.topping_time;
 									messageList.splice(index, 1);
+									num = ++val.msgNum
 								}
 							})
-							var sData = JSON.parse(res.data).data;
-							var obj = {};
 							obj.avatar = sData.avatar;
 							obj.user_id = sData.user_id;
 							obj.role_realname = sData.role_realname;
@@ -262,15 +277,18 @@
 							obj.receiver_id = sData.receiver_id;
 							obj.is_topping = is_topping;
 							obj.topping_time = topping_time;
+							obj.msgNum = num
 							messageList.unshift(obj);
-							//添加未读数量
-							if (that.$store.state.message.receiverId == "") {
-								messageList.forEach((val, index) => {
-									if (val.user_id == JSON.parse(res.data).data.user_id) {
-										val.msgNum = true;
-									}
-								})
-							};
+							// console.log(messageList)
+							// //添加未读数量
+							// if (that.$store.state.message.receiverId == "") {
+							// 	messageList.forEach((val, index) => {
+							// 		if (val.user_id == JSON.parse(res.data).data.user_id) {
+							// 			val.msgNum = true;
+							// 		}
+							// 	})
+							// };
+							console.log(messageList)
 							that.$store.commit("setMessageList", messageList);
 							that.$store.commit("setMsgCount", messageList);
 						} else if (JSON.parse(res.data).data.receiver_id == Number(that.$store.state.message

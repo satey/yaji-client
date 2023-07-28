@@ -2,9 +2,16 @@
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="fixedHead" v-if="headFlag">
 		<view style="display: flex;align-items: center;">
-			<image class="rounded-full bg-gray-100" :src="userInfo.avatar || '/static/avatar.png'"
-				style="width: 50rpx;height: 50rpx;margin-right: 30rpx;">
-			</image>
+			<block v-if="userImg!=''">
+				<image class="rounded-full bg-gray-100" :src="userImg"
+					style="width: 50rpx;height: 50rpx;margin-right: 30rpx;">
+				</image>
+			</block>
+			<block v-else>
+				<image class="rounded-full bg-gray-100" :src="userInfo.avatar || '/static/avatar.png'"
+					style="width: 50rpx;height: 50rpx;margin-right: 30rpx;">
+				</image>
+			</block>
 			<view>
 				<text style="font-size: 28rpx;color: #333;">
 					{{ userInfo.realname || '无名氏' }}·{{ userInfo.dynasty || '未知朝代' }}</text>
@@ -25,8 +32,7 @@
 	<view>
 		<!-- <image class="fixed w-full h-screen top-0 left-0 right-0 -z-10" src='@/static/user_background.png' /> -->
 		<view class="mineHead">
-			<view class="flex px-4 justify-end text-white"
-				style="position: absolute;right: 0;top: 150rpx;z-index: 999;">
+			<view class="flex px-4 justify-end text-white" style="position: absolute;right: 0;top: 150rpx;z-index: 99;">
 				<view
 					style="background: rgba(255,255,255,0.8);border-radius: 50%;width: 82rpx;height: 82rpx;text-align: center;line-height: 82rpx;margin-right: 10rpx;">
 					<i @click="$u.route('/pages/mine/contact')" class="ri-user-heart-fill"
@@ -39,9 +45,17 @@
 				</view>
 			</view>
 			<view style="margin-top: 80rpx;">
-				<image class="rounded-full bg-gray-100" :src="userInfo.avatar || '/static/avatar.png'"
-					style="width: 140rpx;height: 140rpx;">
-				</image>
+				<block v-if="userImg!=''">
+					<image class="rounded-full bg-gray-100" :src="userImg || '/static/avatar.png'"
+						style="width: 140rpx;height: 140rpx;" @click="changeImage">
+					</image>
+				</block>
+				<block v-else>
+					<image class="rounded-full bg-gray-100" :src="userInfo.avatar || '/static/avatar.png'"
+						style="width: 140rpx;height: 140rpx;" @click="changeImage">
+					</image>
+				</block>
+
 			</view>
 			<view class="text-xl mt-2">
 				<text style="font-size: 36rpx;color: #fff;" class="font-bold">
@@ -69,7 +83,7 @@
 		</view>
 		<view class="containerBox">
 			<view class="select" style="display: flex;align-items: center;justify-content: space-around;">
-				<view @click="$u.route('/pages/post/add')">
+				<view @click="openPostAdd">
 					<image src="@/static/dongtai.png" class="selectImg"></image>
 					<view>发布动态</view>
 				</view>
@@ -87,7 +101,17 @@
 					<view>我的钱包</view>
 				</view>
 			</view>
-
+			<!-- banner -->
+			<view class="bannerBox" v-if="bannerData.length != 0">
+				<swiper class="mineSwiper" :circular="true" :indicator-dots="false" :autoplay="true" :interval="3000"
+					:duration="1000">
+					<block v-for="(item,index) in bannerData">
+						<swiper-item v-if="item.status == 'normal'">
+							<image class="banner" :src="item.image" @click="jumpBanner(item.url)"></image>
+						</swiper-item>
+					</block>
+				</swiper>
+			</view>
 			<view class="userTrends">
 				<uc-mine v-for="(item,index) in listPostMine" :item="item" :key="index"></uc-mine>
 				<u-loadmore v-if="listPostMine.length" :status="loadmore" nomoreText="" color="#a1a1a1"
@@ -108,12 +132,14 @@
 				</view>
 			</view>
 		</u-modal>
-
+		<clipper :image-url="imgurl" v-if="imgurl" @cancel="imgCancel" @success="imgSuccess" :is-limit-move="true"
+			:isReduce="true" :max-width="400" :isRound="true" />
 		<!-- <uc-auth></uc-auth> -->
 		<uc-tabbar></uc-tabbar>
 	</view>
 </template>
 <script>
+	import clipper from '@/components/lime-clipper/components/l-clipper/l-clipper.vue'
 	import {
 		mapMutations,
 		mapActions,
@@ -121,9 +147,13 @@
 	} from 'vuex'
 	export default {
 		name: 'mine',
-		components: {},
+		components: {
+			clipper
+		},
 		data() {
 			return {
+				userImg: "",
+				imgurl: "",
 				tablist: [{
 					name: '动态',
 					type: 'post',
@@ -142,6 +172,7 @@
 				loadmore: false,
 				showIp: false,
 				headFlag: false,
+				bannerData: []
 			}
 		},
 		computed: {
@@ -154,6 +185,7 @@
 			var that = this;
 			that.getUserData()
 			that.getPostMine()
+			that.getAd()
 		},
 		onShow() {
 			let that = this
@@ -175,13 +207,75 @@
 		},
 		methods: {
 			...mapActions(['getUserInfo']),
+			jumpBanner(url) {
+				if (url != '') {
+					this.$u.route(url)
+				}
+			},
+			//广告
+			getAd() {
+				var that = this;
+				that.$api("ad.lists", {
+					type: 3
+				}).then(res => {
+					console.log(res)
+					if (res.code == 1) {
+						that.bannerData = res.data;
+					}
+				})
+			},
+			openPostAdd() {
+				let that = this;
+				that.$api('post.is_add').then(res => {
+					console.log('ii', res);
+					if (res.data === 0) {
+						that.$u.toast('无角色暂不能发布动态')
+						return
+					} else {
+						uni.navigateTo({
+							url: '/pages/post/add'
+						})
+					}
+				})
+			},
+			imgCancel() {
+				this.imgurl = '';
+			},
+			imgSuccess(e) {
+				var that = this;
+				var token = uni.getStorageSync("token");
+				uni.uploadFile({
+					url: that.$API_URL + 'index/upload',
+					filePath: e.url,
+					name: 'file',
+					formData: {
+						"token": token
+					},
+					success: res => {
+						var data = JSON.parse(res.data);
+						if (data.code == 1) {
+							that.$api("user.update_avatar", {
+								avatar: data.data.fullurl
+							}).then((resData) => {
+								if (resData.code == 1) {
+									that.userImg = data.data.fullurl
+								}
+							})
+						}
+					},
+					complete: e => {}
+				})
+				this.imgurl = '';
+			},
 			//上传头像
 			changeImage() {
+				const self = this;
 				uni.chooseImage({
 					count: 1,
+					sourceType: ['album'],
 					sizeType: "original",
 					success(res) {
-						console.log(res)
+						self.imgurl = res.tempFilePaths[0];
 					}
 				})
 			},
@@ -277,5 +371,23 @@
 			}
 		}
 
+	}
+
+	.bannerBox {
+		width: 690rpx;
+		height: 140rpx;
+		margin: 0 auto;
+		overflow: hidden;
+		border-radius: 10rpx;
+
+		.mineSwiper {
+			width: 100%;
+			height: 100%;
+
+			.banner {
+				width: 100%;
+				height: 100%;
+			}
+		}
 	}
 </style>

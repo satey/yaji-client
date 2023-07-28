@@ -24,6 +24,7 @@
 				</view>
 			</view>
 		</block>
+		<view class="mt-8"></view>
 		<view class="pt-4">
 
 			<block v-if="type === 'hot'">

@@ -20,6 +20,10 @@
 			</view>
 		</view>
 		<view style="height: 100rpx;"></view>
+		<view class="bannerBox" v-if="bannerData.length != 0">
+			<image class="banner" :src="bannerData.image" mode="scaleToFill" v-if="bannerData.status == 'normal'" @click="jumpBanner(bannerData.url)">
+			</image>
+		</view>
 		<block v-if="type === 'recommend'">
 			<uc-post v-for="(item, index) in postRecommendList" :key="index" :item="item"></uc-post>
 			<u-loadmore v-if="postRecommendList.length" :status="loadmore" nomoreText="" color="#a1a1a1"
@@ -70,12 +74,14 @@
 				follow_user_id: null,
 				// -----------
 				headBarBgColor: "",
+				bannerData: []
 			}
 		},
 		onLoad(option) {
 			let that = this
 			that.postRecommendList = [];
 			that.getPostRecommend();
+			that.getAd()
 			// that.getPostRecommend()
 		},
 		onReachBottom() {
@@ -108,12 +114,27 @@
 			}
 		},
 		methods: {
+			jumpBanner(url){
+				if (url != '') {
+					this.$u.route(url)
+				}
+			},
+			//广告
+			getAd() {
+				var that = this;
+				that.$api("ad.lists", {
+					type: 1
+				}).then(res => {
+					if (res.code == 1) {
+						that.bannerData = res.data[0];
+					}
+				})
+			},
 			is_ok() {
-				let that = this
+				let that = this;
 				that.$api('post.is_add').then(res => {
 					console.log('ii', res);
-					if (res.code === 0) {
-						console.log(res.code);
+					if (res.data === 0) {
 						that.$u.toast('无角色暂不能发布动态')
 						return
 					} else {
@@ -182,5 +203,16 @@
 	}
 </script>
 <style lang="scss" scoped>
+	.bannerBox {
+		width: 690rpx;
+		height: 140rpx;
+		margin: 0 auto;
+		border-radius: 10rpx;
+		overflow: hidden;
+	}
 
+	.banner {
+		width: 100%;
+		height: 100%;
+	}
 </style>

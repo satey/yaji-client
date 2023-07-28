@@ -11,8 +11,11 @@
 		</u-navbar>
 
 		<view class="rounded-lg p-4 mt-6">
-			<u-textarea v-model="form.content" :focus="true" maxlength="500" :count="true" height="300"
-				placeholder="记录此刻想法，分享给有趣的人看…"></u-textarea>
+			<textarea v-model="form.content" name="" id="" cols="30" :focus="true" rows="10"
+				style="height: 300rpx;font-size: 28rpx;color: #606266;" placeholder="记录此刻想法，分享给有趣的人看…"
+				placeholder-style="font-size:28rpx;color:rgb(192, 196, 204);"></textarea>
+			<!-- <u-textarea v-model="form.content" :focus="true" maxlength="500" :count="true" height="300"
+				placeholder="记录此刻想法，分享给有趣的人看…"></u-textarea> -->
 			<!-- <view class="flex flex-wrap">
 				<view class="flex items-center bg-gray-100 rounded-full p-3 text-orange-500 mr-2 mt-2"
 					v-for="(item, index) in form.tags" :key="index" :item="item" @click="delTag(index)">
@@ -44,11 +47,12 @@
 				<view @click="handlePlayAudio(form.audio)"
 					style="width: 400rpx;background: #FE4373;justify-content: center;"
 					class="flex items-center  rounded-full w-32 h-12 bg-gradient-to-r  to-rose-400">
-					<image src="../../static/111.jpg" style="width: 200rpx;height: 50rpx;"
-						:class="audioStatus ? 'animate-pulse' : ''"></image>
+					<image src="../../static/111.jpg" style="width: 200rpx;height: 50rpx;" v-if="audioStatus==false">
+					</image>
+					<image src="/static/bofang.gif" style="width: 200rpx;height: 45rpx;" v-else mode=""></image>
 					<!-- <i class="ri-voiceprint-line text-2xl text-white" style="flex: 1;" :class="audioStatus ? 'animate-pulse' : ''"></i> -->
 					<text style="color: #FFFFFF;font-size: 28rpx;margin-left: 20rpx;"
-						v-if="form.timer !=0">{{form.timer}}</text>
+						v-if="form.timer !=0">{{form.timer}}s</text>
 				</view>
 				<view class="ri-close-line" @click="clearAudio"
 					style="padding: 0rpx;background: rgba(0,0,0,0.5);margin-left: 30rpx;color: #fff;font-size: 40rpx;border-radius: 50%;box-sizing: border-box;">
@@ -124,8 +128,7 @@
 							<view class="flex justify-center items-center rounded-full w-20 h-20  z-10"
 								style="background: #FE4373;">
 								<i class="ri-play-fill text-4xl leading-none text-white" v-if="isPlay==false"></i>
-								<image src="../../static/bofang.gif" style="width: 100rpx;height: 100rpx;"
-									v-if="isPlay">
+								<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;" v-if="isPlay">
 								</image>
 							</view>
 						</view>
@@ -284,10 +287,19 @@
 				inter: null,
 				tpsTitle: "已录制",
 				isClick: true,
+				isBack: false,
 			}
 		},
-		onLoad() {
-			let that = this
+		onLoad(e) {
+			let that = this;
+			if (e.postData != undefined) {
+				var postData = JSON.parse(e.postData);
+				that.fei_cate.push({
+					id: postData.post_cate_id,
+					content: postData.title
+				})
+				that.isBack = true;
+			}
 			that.recorder.onStart((e) => {
 				that.recordStart(e)
 			})
@@ -583,9 +595,17 @@
 						that.isClick = true;
 						that.form.content = ''
 						that.$u.toast('发布成功')
-						uni.reLaunch({
-							url: '/pages/index/square',
-						});
+						if (that.isBack == true) {
+							that.$u.route({
+								type: 'navigateBack',
+								delta: 1
+							})
+						} else {
+							uni.reLaunch({
+								url: '/pages/index/square',
+							});
+						}
+
 					} else {
 						that.isClick = true;
 						that.$u.toast(res.msg)

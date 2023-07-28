@@ -162,11 +162,111 @@
 				// 	that.$u.toast('请正确填写信息')
 				// 	return false
 				// }
+				// #ifdef APP-PLUS
+				uni.getPushClientId({
+					success(res) {
+						// res.cid
+						let data = {
+							mobile: Number(that.form.mobile),
+							code: Number(that.form.code),
+							event: 'register',
+							push_clientid: res.cid
+						}
+						if (that.isClick == false) {
+							return;
+						}
+						uni.showLoading();
+						that.isClick = false;
+						that.$api('user.smslogin', data).then(res => {
+							that.isClick = true;
+							if (res.code === 1) {
+								uni.setStorageSync('token', res.data.token)
+								that.getUserInfo(res.data.token).then(() => {
+									//#ifdef APP-PLUS
+									getApp().globalData.initFun()
+									// #endif
+									//#ifdef H5
+									getApp().globalData.islogout = false;
+									// #endif
+									that.$store.commit("setIslogout", false);
+									uni.hideLoading();
+									getApp().globalData.getHistoryCronyList();
 
+									//统计
+									uni.getPushClientId({
+										success(res) {
+											console.log(res.cid)
+											that.$api('stat.init', {
+												"push_clientid": res.cid
+											}).then(res => {})
+										}
+									})
+									that.$nextTick(() => {
+										if (!that.userInfo.realname && !that.userInfo
+											.dynasty && that
+											.userInfo
+											.gender == 0) {
+											uni.reLaunch({
+												url: '/pages/auth/s1'
+											});
+										} else if (that.userInfo.gender != 0) {
+											if (that.userInfo.realname != '' && that
+												.userInfo.dynasty !=
+												'') {
+												uni.reLaunch({
+													url: '/pages/index/index'
+												});
+											} else {
+												console.log('不知道是否有免费次数');
+											}
+
+										} else {
+											console.log('ok')
+											that.$u.route('/pages/auth/login')
+										}
+										if (!that.userInfo.role_id) {
+											console.log('no')
+											uni.reLaunch({
+												url: '/pages/auth/s1'
+											});
+										}
+										if (that.userInfo.gender == 0) {
+											console.log('111');
+											uni.reLaunch({
+												url: '/pages/auth/s1'
+											});
+										}
+										if (that.userInfo.realname != '' && that.userInfo
+											.dynasty != '' &&
+											that
+											.userInfo.gender !=
+											0) {
+											uni.reLaunch({
+												url: '/pages/index/index'
+											});
+										} else {
+											console.log('ok')
+											uni.reLaunch({
+												url: '/pages/auth/s1'
+											});
+										}
+
+									})
+
+								})
+							} else {
+								that.$u.toast(res.msg)
+							}
+						})
+					}
+				})
+				// #endif
+				// #ifdef H5
 				let data = {
 					mobile: Number(that.form.mobile),
 					code: Number(that.form.code),
-					event: 'register'
+					event: 'register',
+					push_clientid: ''
 				}
 				if (that.isClick == false) {
 					return;
@@ -198,14 +298,16 @@
 								}
 							})
 							that.$nextTick(() => {
-								if (!that.userInfo.realname && !that.userInfo.dynasty && that
+								if (!that.userInfo.realname && !that.userInfo
+									.dynasty && that
 									.userInfo
 									.gender == 0) {
 									uni.reLaunch({
 										url: '/pages/auth/s1'
 									});
 								} else if (that.userInfo.gender != 0) {
-									if (that.userInfo.realname != '' && that.userInfo.dynasty !=
+									if (that.userInfo.realname != '' && that
+										.userInfo.dynasty !=
 										'') {
 										uni.reLaunch({
 											url: '/pages/index/index'
@@ -230,7 +332,8 @@
 										url: '/pages/auth/s1'
 									});
 								}
-								if (that.userInfo.realname != '' && that.userInfo.dynasty != '' &&
+								if (that.userInfo.realname != '' && that.userInfo
+									.dynasty != '' &&
 									that
 									.userInfo.gender !=
 									0) {
@@ -251,6 +354,8 @@
 						that.$u.toast(res.msg)
 					}
 				})
+				// #endif
+
 			},
 		}
 	}

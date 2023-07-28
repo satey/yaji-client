@@ -26,7 +26,10 @@
 			<text @click="showAction = true" class="ri-more-fill" style="font-size: 30rpx;color: #999;"></text>
 		</view>
 		<view class="itemCntent">
-			<view class="contentText" @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}
+			<view>
+				<text class="contentText"
+					@click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}
+				</text>
 			</view>
 			<!-- image -->
 			<view class="img" v-if="item.images">

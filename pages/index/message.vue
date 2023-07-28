@@ -3,6 +3,11 @@
 	<u-navbar title="消息" :safeAreaInsetTop="true" :placeholder="true">
 		<view slot="left"></view>
 	</u-navbar>
+	<view class="bannerBox" v-if="bannerData.length != 0">
+		<image class="banner" :src="bannerData.image" v-if="bannerData.status == 'normal'"
+			@click="jumpBanner(bannerData.url)">
+		</image>
+	</view>
 	<!-- <view class="" style="margin-left: 340rpx; font-size: 35rpx;padding-top:var(--status-bar-height)"> 消息</view> -->
 	<view class="px-4 ">
 		<!-- 动态消息 -->
@@ -35,23 +40,26 @@
 				</view>
 			</view>
 		</view>
+
 		<!-- 用户消息 -->
 		<view v-if="fei_list.length>0">
 			<view v-for="(item,index) in topMsgList2" @click="openChat(item,index,item.msgNum)">
 				<view
 					style="display: flex;align-items: center;justify-content: space-between;border-bottom:1px solid #ededed;padding: 30rpx 0rpx;position: relative;"
 					v-if="item.user_id!=undefined  && item.is_topping == 1">
-					<!-- <view class="notice">
-				<text class="ri-notification-3-fill icon"></text>
-			</view> -->
 					<image class="userImg" :fade-show="true" :src="item.avatar"></image>
 					<view
 						style="position: absolute;top: -22rpx;left: -22rpx;transform: rotate(46deg);font-size: 50rpx;color: #EB3446;"
 						class="ri-arrow-left-s-fill"></view>
 					<view class="noticeRight">
 						<view style="display: flex;align-items: center;justify-content: space-between;">
-							<text
-								style="font-size: 30rpx;color:#323232;">{{item.role_realname}}·{{item.role_dynasty}}</text>
+							<block v-if="item.role_realname!=''&&item.role_realname!=null">
+								<text
+									style="font-size: 30rpx;color:#323232;">{{item.role_realname}}·{{item.role_dynasty}}</text>
+							</block>
+							<block v-else>
+								<text style="font-size: 30rpx;color:#323232;">无名氏</text>
+							</block>
 							<text
 								style="font-size: 24rpx;color:#999999;">{{ $u.timeFormat(item.createtime, 'mm-dd hh:MM') }}</text>
 						</view>
@@ -77,8 +85,13 @@
 					<image class="userImg" :src="item.avatar"></image>
 					<view class="noticeRight">
 						<view style="display: flex;align-items: center;justify-content: space-between;">
-							<text
-								style="font-size: 30rpx;color:#323232;">{{item.role_realname}}·{{item.role_dynasty}}</text>
+							<block v-if="item.role_realname!=''&&item.role_realname!=null">
+								<text
+									style="font-size: 30rpx;color:#323232;">{{item.role_realname}}·{{item.role_dynasty}}</text>
+							</block>
+							<block v-else>
+								<text style="font-size: 30rpx;color:#323232;">无名氏</text>
+							</block>
 							<text
 								style="font-size: 24rpx;color:#999999;">{{ $u.timeFormat(item.createtime, 'mm-dd hh:MM') }}</text>
 						</view>
@@ -89,7 +102,7 @@
 							<text style="font-size: 26rpx;color:#808080;" v-if="item.type=='image'">[ 图片 ]</text>
 							<text style="font-size: 26rpx;color:#808080;" v-if="item.type=='audio'">[ 语音 ]</text>
 							<text style="font-size: 26rpx;color:#808080;" v-if="item.type=='gift'">[ 礼物 ]</text>
-							<text class="tips" v-if="item.msgNum"></text>
+							<text class="tips" v-if="item.msgNum !=0">{{item.msgNum}}</text>
 						</view>
 					</view>
 				</view>
@@ -160,11 +173,13 @@
 				realname: "",
 				no_read_count: "",
 				topMsgList: [],
-				topMsgList2: []
+				topMsgList2: [],
+				bannerData: []
 			}
 		},
 		onLoad(option) {
 			let that = this;
+			that.getAd()
 		},
 		onShow() {
 			this.trendsMsg();
@@ -185,6 +200,22 @@
 			that.params.page = ++that.params.page
 		},
 		methods: {
+			jumpBanner(url) {
+				if (url != '') {
+					this.$u.route(url)
+				}
+			},
+			//广告
+			getAd() {
+				var that = this;
+				that.$api("ad.lists", {
+					type: 2
+				}).then(res => {
+					if (res.code == 1) {
+						that.bannerData = res.data[0];
+					}
+				})
+			},
 			sortMsg(oldv) {
 				var arr = []
 				arr = oldv.filter((val, index) => {
@@ -215,6 +246,7 @@
 				this.fei_list = this.$store.state.message.messageList;
 				this.topMsgList = this.$store.state.message.messageList
 			},
+
 			openChat(item, index, itemCount) {
 				this.$store.commit("setMessageListCount", item.user_id);
 				this.$store.commit("setMsgCount2");
@@ -223,24 +255,24 @@
 					this.$u.route(`pages/chat/single?user_id=${item.user_id}&megPgae=true`);
 				})
 			},
-			async getMessage() {
-				let that = this
-				that.loadmore = 'loading'
-				that.$api('message.lists', that.params).then(res => {
-					if (res.code === 1) {
-						console.log(res)
-						that.paginator.total = res.data.total
-						that.paginator.last_page = res.data.last_page
-						that.listMessage = [...that.listMessage, ...res.data]
-						// 监听消息
-						if (that.params.page < res.data.last_page) {
-							that.loadmore = 'loadmore'
-						} else {
-							that.loadmore = 'nomore'
-						}
-					}
-				})
-			},
+			// async getMessage() {
+			// 	let that = this
+			// 	that.loadmore = 'loading'
+			// 	that.$api('message.lists', that.params).then(res => {
+			// 		if (res.code === 1) {
+			// 			console.log(res)
+			// 			that.paginator.total = res.data.total
+			// 			that.paginator.last_page = res.data.last_page
+			// 			that.listMessage = [...that.listMessage, ...res.data]
+			// 			// 监听消息
+			// 			if (that.params.page < res.data.last_page) {
+			// 				that.loadmore = 'loadmore'
+			// 			} else {
+			// 				that.loadmore = 'nomore'
+			// 			}
+			// 		}
+			// 	})
+			// },
 			// async doReadMessage() {
 			//     let that = this
 			//     that.showRead = false
@@ -289,10 +321,9 @@
 	.tips {
 		background: #EB3446;
 		color: #fff;
-		width: 30rpx;
-		height: 30rpx;
-		border-radius: 50%;
 		text-align: center;
+		padding: 0rpx 15rpx;
+		border-radius: 50rpx;
 	}
 
 	.msgContent {
@@ -300,5 +331,18 @@
 		width: 100%;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+
+	.bannerBox {
+		width: 690rpx;
+		height: 140rpx;
+		margin: 0 auto;
+		border-radius: 10rpx;
+		overflow: hidden;
+	}
+
+	.banner {
+		width: 100%;
+		height: 100%;
 	}
 </style>

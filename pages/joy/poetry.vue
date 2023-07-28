@@ -51,21 +51,21 @@
 			<scroll-view scroll-y="true" class="msgScroll" :scroll-into-view="scrollInto" :scroll-with-animation="true">
 				<view class="msgList">
 					<view v-for="(item,index) in msgList">
-						<block v-if="item.type=='video'">
-							<view v-if="item.type=='video'" style="display: flex;margin-top: 20rpx;">
+						<block v-if="item.type=='taskAudio'">
+							<view v-if="item.type=='taskAudio'" style="display: flex;margin-top: 20rpx;">
 								<image :src="item.avatar"
 									style="width: 60rpx;height: 60rpx;border-radius: 50%;margin-right:10rpx ;">
 								</image>
 								<view>
 									<view>{{item.role_realname}}·{{item.role_dynasty}}</view>
 									<view style="display: flex;align-items: center;margin-top: 10rpx;">
-										<view class="recording" @click="openRecord3(item.content,index)">
+										<view class="recording" @click="openRecord1(item.content,index)">
 											<view style="display: flex;align-items: center;font-size: 35rpx;"
 												v-if="item.isPlay==false">
 												<view class="ri-voiceprint-line" v-for="(item,index) in 3" :key="index">
 												</view>
 											</view>
-											<image src="../../static/bofang.gif" style="width: 100rpx;height: 100rpx;"
+											<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;"
 												v-if="item.isPlay">
 											</image>
 										</view>
@@ -92,8 +92,10 @@
 						<!-- 命中 -->
 						<view v-if="item.type == 'hit'">
 							系统提示：本轮命中<text
-								style="color: #FE4373;">{{item.user.role.realname}}·{{item.user.role.dynasty}}</text>，请在120秒内完成【{{item.taskType ==1?'唱歌':''}}
-							{{item.taskType ==2?'吟诗':''}}{{item.taskType ==3?'读口令':''}}】任务。
+								style="color: #FE4373;">{{item.user.role.realname}}·{{item.user.role.dynasty}}</text>，请在120秒内完成
+							<text v-if="item.taskType ==1">【唱歌】</text>
+							<text v-if="item.taskType ==2">【吟诗】</text>
+							<text v-if="item.taskType ==3">【读口令】</text>
 						</view>
 						<!-- 开始 -->
 						<view v-if="item.type == 'start'">
@@ -165,13 +167,13 @@
 							<image :src="item.data.avatar"
 								style="width: 60rpx;height: 60rpx;border-radius: 50%;margin-right:30rpx ;"></image>
 							<view>
-								<view class="recording" @click="openRecord2(item.data.content,index)">
+								<view class="recording" @click="openRecord1(item.data.content,index)">
 									<view style="display: flex;align-items: center;font-size: 35rpx;"
 										v-if="item.isPlay==false">
 										<view class="ri-voiceprint-line" v-for="(item,index) in 3" :key="index">
 										</view>
 									</view>
-									<image src="../../static/bofang.gif" style="width: 100rpx;height: 100rpx;"
+									<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;"
 										v-if="item.isPlay">
 									</image>
 								</view>
@@ -188,12 +190,17 @@
 					<view class="mr-4 flex items-center" @click="handleVoice">
 						<i class="ri-mic-2-fill block text-4xl leading-none text-gray-400"></i>
 					</view>
-					<view class="flex-1 mr-4 rounded-full h-10 flex items-center px-4 bg-gray-100">
+					<textarea class="flex-1 mr-4 flex items-center bg-gray-100" :auto-height="true" @blur="blur"
+						:auto-blur="false" @focus="focus" @confirm="handleTextSend" :adjustPosition="false"
+						style="padding: 20rpx;border-radius: 10rpx;font-size:28rpx;color: rgb(48, 49, 51);"
+						placeholder="说点什么吧" v-model="text"
+						placeholder-style="color: rgb(192, 196, 204);font-size:30rpx"></textarea>
+					<!-- <view class="flex-1 mr-4 rounded-full h-10 flex items-center px-4 bg-gray-100">
 						<u-input v-model="text" @focus="focus" @blur="blur" :adjustPosition="false"
 							@confirm="handleTextSend" type="text" placeholder="说点什么吧" :clearable="true"
 							customStyle="border: none; background: none; padding: 0;">
 						</u-input>
-					</view>
+					</view> -->
 					<view class="mr-4 flex items-center" @click="handleEmoji">
 						<i class="ri-emotion-fill block text-4xl leading-none text-gray-400"></i>
 					</view>
@@ -261,18 +268,19 @@
 					{{taskData.type == 3?'读出下面的话':''}}
 				</view>
 				<view class="title3" v-if="taskData.length!=0">{{taskData.content}}</view>
-				<view style="display: flex;align-items: center;margin-top: 50rpx;justify-content: center;"
+				<view
+					style="display: flex;align-items: center;margin-top: 50rpx;justify-content: center;position: relative;"
 					:style="{visibility:Isrecord?'visible':'hidden'}">
 					<view class="recording" @click="openRecord(recordUrl)">
 						<text style="margin-right: 10rpx;">{{recordLength}}s</text>
 						<view style="display: flex;align-items: center;font-size: 35rpx;" v-if="isPlay==false">
 							<view class="ri-voiceprint-line" v-for="(item,index) in 3" :key="index"></view>
 						</view>
-						<image src="../../static/bofang.gif" style="width: 100rpx;height: 100rpx;" v-if="isPlay">
+						<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;" v-if="isPlay">
 						</image>
 					</view>
 					<view v-if="Isrecord" @click="delectRecord"
-						style="width: 95rpx;height: 70rpx;background: #ECECEC;border-radius: 35rpx;text-align: center;line-height: 70rpx;margin-left: 10rpx;">
+						style="width: 95rpx;height: 70rpx;background: #ECECEC;border-radius: 35rpx;text-align: center;line-height: 70rpx;position: absolute;top: 0;right: 0;">
 						<text class="ri-delete-bin-5-line" style="font-size: 35rpx;"></text>
 					</view>
 				</view>
@@ -347,7 +355,8 @@
 			<view class="userBox">
 				<view class="userTop">
 					<view style="display: flex;align-items: center;">
-						<image :src="userItem.avatar" style="height: 80rpx;width: 80rpx;border-radius: 50%;">
+						<image :src="userItem.avatar" @click="$u.route('pages/user/home?user_id='+userItem.id)"
+							style="height: 80rpx;width: 80rpx;border-radius: 50%;">
 						</image>
 						<!-- 女 -->
 						<text class="ri-women-line" v-if="userItem.gender == 2"
@@ -373,7 +382,8 @@
 								<text class="ri-star-line" style="font-size: 28rpx;"></text>
 								<text style="margin-left: 10rpx;" @click="interest(2)">关注</text>
 							</view>
-							<view class="ri-alert-line" style="font-size: 35rpx;margin-left: 20rpx;"
+							<view class="ri-alert-line"
+								style="font-size: 35rpx;margin-left: 20rpx;color: #999;opacity: 0.8;"
 								@click="$u.route('pages/public/report?user_id='+userItem.id)"></view>
 						</view>
 					</view>
@@ -533,9 +543,7 @@
 			});
 			getApp().globalData.socketTask.close();
 			if (that.audio != null) {
-				that.audioStatus = false;
 				that.audio.destroy();
-				that.isPlay = false;
 				that.audio = null;
 			}
 			// #ifdef APP-PLUS
@@ -698,20 +706,13 @@
 				});
 			},
 			//试听2
-			openRecord2(video, index) {
-				console.log(this.msgList[index].data.content)
-				if (this.msgList[index].isPlay == true) {
-					return;
-				}
-				this.handlePlayAudio(this.msgList[index].data.content, index);
-			},
-			//试听3
-			openRecord3(audio, index) {
+			openRecord1(audio, index) {
 				var that = this;
 				if (!audio) {
 					that.$u.toast('语音不能为空')
 					return false
 				}
+				console.log(audio)
 				if (!that.audio) {
 					that.audio = uni.createInnerAudioContext()
 					that.audio.src = audio;
@@ -720,7 +721,6 @@
 				that.$nextTick(function() {
 					that.audio.play();
 					that.audio.onEnded((e) => {
-						that.audioStatus = false;
 						that.audio.destroy();
 						that.msgList[index].isPlay = false;
 						that.audio = null;
@@ -1242,7 +1242,7 @@
 						that.interValTaskNum = 120;
 						that.taskPopup = false;
 						that.msgList.push({
-							type: "video",
+							type: "taskAudio",
 							content: socketDate.data.content,
 							isZan: 0,
 							role_dynasty: socketDate.data.role_dynasty,
@@ -1301,6 +1301,7 @@
 						that.openGame(socketDate, 2);
 						that.fei_AnimationName = "";
 						that.interValNum = 100;
+						that.interValTaskNum = 120;
 					} else if (socketDate.type == "text") {
 						that.msgList.push({
 							type: "text",
@@ -1406,8 +1407,8 @@
 				switch (parseInt(indexKey)) {
 					case 0:
 						that.fei_AnimationName = "cup5";
+						that.sendMsg("game_task")
 						that.gameTime = setTimeout(() => {
-							that.sendMsg("game_task")
 							console.log("cup5");
 							that.taskUser = that.hitUser;
 							that.gameTip = `命中 ${that.hitUser.role.realname}·${that.hitUser.role.dynasty}`;
@@ -1418,13 +1419,14 @@
 							})
 							that.ainimationFlag = false;
 							that.scrollBottom();
+							that.interValTaskNum = 120;
 							clearTimeout(that.gameTime);
 						}, 5200)
 						break;
 					case 1:
 						that.fei_AnimationName = "cup6";
+						that.sendMsg("game_task")
 						that.gameTime = setTimeout(() => {
-							that.sendMsg("game_task")
 							console.log("cup6");
 							that.taskUser = that.hitUser;
 							that.gameTip = `命中 ${that.hitUser.role.realname}·${that.hitUser.role.dynasty}`;
@@ -1435,13 +1437,14 @@
 							})
 							that.ainimationFlag = false;
 							that.scrollBottom();
+							that.interValTaskNum = 120;
 							clearTimeout(that.gameTime);
 						}, 7200)
 						break;
 					case 2:
 						that.fei_AnimationName = "cup3";
+						that.sendMsg("game_task")
 						that.gameTime = setTimeout(() => {
-							that.sendMsg("game_task")
 							console.log("cup3");
 							that.taskUser = that.hitUser;
 							that.gameTip = `命中 ${that.hitUser.role.realname}·${that.hitUser.role.dynasty}`;
@@ -1452,13 +1455,14 @@
 							})
 							that.ainimationFlag = false;
 							that.scrollBottom();
+							that.interValTaskNum = 120;
 							clearTimeout(that.gameTime);
 						}, 3200)
 						break;
 					case 3:
 						that.fei_AnimationName = "cup4";
+						that.sendMsg("game_task")
 						that.gameTime = setTimeout(() => {
-							that.sendMsg("game_task")
 							console.log("cup4");
 							that.taskUser = that.hitUser;
 							that.gameTip = `命中 ${that.hitUser.role.realname}·${that.hitUser.role.dynasty}`;
@@ -1469,13 +1473,14 @@
 							})
 							that.ainimationFlag = false;
 							that.scrollBottom();
+							that.interValTaskNum = 120;
 							clearTimeout(that.gameTime);
 						}, 5200)
 						break;
 					case 4:
 						that.fei_AnimationName = "cup1";
+						that.sendMsg("game_task")
 						that.gameTime = setTimeout(() => {
-							that.sendMsg("game_task")
 							console.log("cup1");
 							that.taskUser = that.hitUser;
 							that.gameTip = `命中 ${that.hitUser.role.realname}·${that.hitUser.role.dynasty}`;
@@ -1486,13 +1491,14 @@
 							})
 							that.ainimationFlag = false;
 							that.scrollBottom();
+							that.interValTaskNum = 120;
 							clearTimeout(that.gameTime);
 						}, 1200)
 						break;
 					case 5:
 						that.fei_AnimationName = "cup2";
+						that.sendMsg("game_task")
 						that.gameTime = setTimeout(() => {
-							that.sendMsg("game_task")
 							console.log("cup2");
 							that.taskUser = that.hitUser;
 							that.gameTip = `命中 ${that.hitUser.role.realname}·${that.hitUser.role.dynasty}`;
@@ -1503,6 +1509,7 @@
 							})
 							that.ainimationFlag = false;
 							that.scrollBottom();
+							that.interValTaskNum = 120;
 							clearTimeout(that.gameTime);
 						}, 1700)
 						break;
