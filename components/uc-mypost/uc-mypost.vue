@@ -1,6 +1,6 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
-	<view style="margin-top: 50rpx;">
+	<view style="margin-top: 50rpx;" v-if="item.status !='hidden'">
 		<view class="">
 			<view style="display: flex;align-items: center;justify-content: space-between;">
 				<text class="date">
@@ -12,7 +12,8 @@
 			</view>
 		</view>
 		<view class="itemCntent">
-			<view class="contentText" @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}
+			<view class="contentText" @click="$u.route('/pages/post/detail', { post_id: item.id })">
+				<text>{{ item.content }}</text>
 			</view>
 			<view class="img" v-if="item.images">
 				<view v-if="images.length<=1">

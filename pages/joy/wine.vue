@@ -1,15 +1,14 @@
 <template>
-	<view>
-		<web-view v-if="isShow" class="webView" @message="message" :src="src" :fullscreen="false"
+	<view class="wine">
+		<web-view v-if="isShow" class="webView" @message="message" :src="webUrl" :fullscreen="false"
 			:webview-styles="webviewStyles"></web-view>
-		<view class="flooter">
-			<view class="next" @click="nextBall">换一批</view>
+		<!-- <view class="flooter">
 			<view style="margin-top: 50rpx;">
 				<view>请填写一句含关键字<text v-show="selectText!=''" style="color:#FE4373;">【{{selectText}}】</text>的古诗词：</view>
 				<input type="text" class="myInput" placeholder="请输入5字以上的诗句" v-model="conetnt">
 				<view class="okBtn" @click="submit">发布结缘</view>
 			</view>
-		</view>
+		</view> -->
 	</view>
 </template>
 <script>
@@ -21,24 +20,17 @@
 						color: '#ffffff',
 					},
 					width: uni.getSystemInfoSync().screenWidth,
-					height: "330"
 				},
 				src: "",
 				selectText: "",
 				conetnt: "",
 				selectId: "",
 				isShow: false,
+				webUrl: ""
 			}
 		},
 		onLoad() {
-			let that = this;
-			that.$api("poetry.textList", {
-				type: 0
-			}).then((res) => {
-				if (res.code == 1) {
-					that.src = "/hybrid/html/ball.html?data=" + JSON.stringify(res.data);
-				}
-			})
+			this.webUrl = "/hybrid/html/ball.html?url=" + this.$API_URL
 		},
 		onShow() {
 			var that = this;
@@ -106,22 +98,64 @@
 			},
 			//html发回来的数据
 			message(event) {
-				this.selectText = event.detail.data[0].action;
-				this.selectId = event.detail.data[0].actionId;
+				var data = event.detail.data;
+				console.log(data)
+				var that = this;
+				if (data[0].actionId == "") {
+					that.$u.toast("请选择关键字")
+					return;
+				}
+				if (data[0].actionText.length == 0) {
+					that.$u.toast("请输入诗句")
+					return;
+				}
+				if (data[0].actionText.length < 5) {
+					that.$u.toast("请输入5字以上的诗句")
+					return;
+				}
+				if (data[0].actionText.indexOf(data[0].activeZi) == -1) {
+					that.$u.toast(`请输入包含${data[0].activeZi}的诗句`)
+					return;
+				} else {
+					that.$api("poetry.poetryAdd", {
+						poetry: data[0].actionText,
+						poetry_word_id: data[0].actionId
+					}).then((res) => {
+						if (res.code == 1) {
+							uni.redirectTo({
+								url: '/pages/joy/wineContent'
+							});
+							// that.$u.route(`/pages/joy/wineContent?data=${JSON.stringify(res.data)}`);
+						} else {
+							that.$u.toast(res.msg)
+						}
+					})
+				}
 			}
 		}
 	}
 </script>
 
 <style scoped lang="scss">
+	.wine {
+		width: 100vw;
+		height: 100vh;
+		box-sizing: border-box;
+	}
+
 	.flooter {
-		padding: 30rpx;
+		padding: 0rpx 30rpx;
 		box-sizing: border-box;
 		position: absolute;
-		bottom: 260rpx;
+		bottom: 0;
 		left: 0;
 		width: 100%;
 		z-index: 999999999;
+		background: url(/static/bgBtm.png);
+		background-size: 100% 100%;
+		background-position: 100% 100%;
+		background-repeat: no-repeat;
+		height: calc(100% - 345px);
 	}
 
 	.ballItem {

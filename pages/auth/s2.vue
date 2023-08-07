@@ -352,7 +352,38 @@
 						})
 						uni.hideLoading()
 					} else {
-						that.$u.toast(res.msg)
+						uni.hideLoading()
+						uni.showModal({
+							title: '提示',
+							content: '免费获取角色次数不足，将以【无名氏】身份进入。',
+							confirmText: "确定", //这块是确定按钮的文字
+							cancelText: "取消", //这块是取消的文字
+							confirmColor: "#FE4373",
+							success: function(res) {
+								if (res.confirm) {
+									console.log(that.formGender)
+									that.$api('user.only_choose_gender', {
+										gender: that.formGender
+									}).then(res => {
+										if (res.code === 1) {
+											var userInfo = uni.getStorageSync("userInfo");
+											uni.setStorageSync("skip", userInfo.id)
+											uni.reLaunch({
+												url: '/pages/index/index',
+												success: (res) => {},
+												fail: (err) => {
+													console.log(err);
+												}
+											})
+										} else {
+											that.$u.toast(res.msg)
+										}
+									})
+								} else if (res.cancel) {
+									console.log('用户点击取消');
+								}
+							}
+						});
 					}
 				})
 				if (that.times == 0) {
@@ -402,16 +433,12 @@
 			skip() {
 				let that = this
 				let gender = uni.getStorageSync('gender');
-				console.log()
 				var userInfo = uni.getStorageSync("userInfo");
 				that.formGender = gender
-				console.log(gender);
 				//记得清除
 				let data = {
 					gender: that.formGender
 				}
-				// uni.removeStorageSync('gender')
-
 				uni.showModal({
 					title: '提示',
 					content: '您所选朝代没有可用角色。若继续，将以【无名氏】身份进入。建议您选择别的朝代进入。仍然要继续吗？',

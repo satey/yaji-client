@@ -15,9 +15,11 @@
 				style="border-bottom: 1rpx solid #ECECEC;flex: 1;display: flex;justify-content: space-between;align-items: center;">
 				<view class="flex-1" @click="$u.route(' /pages/user/home', { user_id: item.id })">
 					<view class="mt-2">
-						{{ item.realname + ' · ' + item.dynasty || '无名氏' }}
+						<text v-if="item.role_id !=0">{{ item.realname + ' · ' + item.dynasty || '无名氏' }}</text>
+						<text v-else>无名氏</text>
 					</view>
-					<view style="margin-top: 10rpx;margin-bottom: 15rpx;color: #999999;font-size: 26rpx;">
+					<view style="margin-top: 10rpx;margin-bottom: 15rpx;color: #999999;font-size: 26rpx;"
+						v-if="item.role_id !=0">
 						{{ item.achievements.replace(/,/g,"&nbsp;&nbsp;") }}
 					</view>
 				</view>

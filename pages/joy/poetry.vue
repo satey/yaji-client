@@ -328,7 +328,7 @@
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
 				<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
-					<text>确定要离开房间吗？^.^</text>
+					<text>确定要离开房间吗？</text>
 				</view>
 			</view>
 		</u-modal>

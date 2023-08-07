@@ -172,16 +172,10 @@
 				// #endif
 			},
 			onVersion() {
-				let that = this
-				uni.request({
-					url: 'https://yaji.ixiaojin.cn/api/version/index',
-					success(res) {
-						console.log(res.data.data.oldversion);
-						that.$u.toast('当前版本为' + res.data.data.oldversion)
-					},
-					fail(err) {
-						console.log('err', err);
-					}
+				let that = this;
+				that.$api("versions.index").then(res => {
+					console.log(res.data.newversion);
+					that.$u.toast('当前版本为' + res.data.newversion)
 				})
 			}
 		}

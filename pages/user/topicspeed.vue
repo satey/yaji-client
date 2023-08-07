@@ -45,15 +45,22 @@
 				title: '',
 				audioStatus: false,
 				nomoreText: "加载更多",
-				headColor: "rgba(0,0,0,0)"
+				headColor: "rgba(0,0,0,0)",
+				isImg: false,
 			}
 		},
 		onShow(options) {
-			this.topicspeedList = []
-			this.getLists()
+			if (this.isImg) {
+				this.page = 1;
+				this.isImg = false;
+				this.topicspeedList = [];
+				this.getLists();
+			} else {
+				this.getLists();
+			}
 		},
 		onReachBottom() {
-			if (this.page != this.last_page) {
+			if (this.page > this.last_page) {
 				this.page++;
 				this.getLists()
 			} else {
@@ -85,6 +92,7 @@
 							title: that.title,
 							post_cate_id: this.$Route.query.post_cate_id
 						}
+						that.isImg = true;
 						uni.navigateTo({
 							url: '/pages/post/add?postData=' + JSON.stringify(obj)
 						})

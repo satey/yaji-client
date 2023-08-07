@@ -19,7 +19,7 @@
 			</u-tabs>
 		</view>
 		<uc-follow v-for="(item, index) in listUserFollow" :key="index" :item="item" :tabIndex="tabsIndex"></uc-follow>
-		<u-loadmore v-if="listUserFollow.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
+		<!-- <u-loadmore v-if="listUserFollow.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" /> -->
 		<u-empty v-if="!listUserFollow.length" icon="/static/wurenwu.png" text="数据为空" textColor="#a1a1a1"
 			marginTop="100"></u-empty>
 
@@ -70,10 +70,10 @@
 		},
 		onReachBottom() {
 			let that = this;
-			if (that.loadmore === 'nomore') return false
-			that.loadmore = 'loading'
+			// if (that.loadmore === 'nomore') return false
+			// that.loadmore = 'nomore'
 			that.params.page = ++that.params.page
-			that.getUserFollow()
+			that.getUserFollow();
 		},
 		methods: {
 			click(e) {
@@ -97,6 +97,7 @@
 				let that = this
 				that.params.type = e.type
 				that.listUserFollow = []
+				that.params.page = 1
 				that.getUserFollow()
 			},
 			async getUserFollow(e) {
@@ -108,11 +109,11 @@
 						// that.paginator.last_page = res.data.last_page
 						// that.listUserFollow = [...that.listUserFollow, ...res.data.data]
 						that.listUserFollow.push(...res.data);
-						if (that.params.page < res.data.last_page) {
-							that.loadmore = 'loadmore'
-						} else {
-							that.loadmore = 'nomore'
-						}
+						// if (that.params.page < res.data.last_page) {
+						// 	that.loadmore = 'loadmore'
+						// } else {
+						// 	that.loadmore = 'nomore'
+						// }
 					}
 				})
 			}

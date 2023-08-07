@@ -21,7 +21,8 @@
 		</view>
 		<view style="height: 100rpx;"></view>
 		<view class="bannerBox" v-if="bannerData.length != 0">
-			<image class="banner" :src="bannerData.image" mode="scaleToFill" v-if="bannerData.status == 'normal'" @click="jumpBanner(bannerData.url)">
+			<image class="banner" :src="bannerData.image" mode="scaleToFill" v-if="bannerData.status == 'normal'"
+				@click="jumpBanner(bannerData.url)">
 			</image>
 		</view>
 		<block v-if="type === 'recommend'">
@@ -114,10 +115,10 @@
 			}
 		},
 		methods: {
-			jumpBanner(url){
-				if (url != '') {
-					this.$u.route(url)
-				}
+			jumpBanner(url) {
+				this.$u.route('/pages/joy/activity', {
+					url: url
+				})
 			},
 			//广告
 			getAd() {
@@ -126,7 +127,9 @@
 					type: 1
 				}).then(res => {
 					if (res.code == 1) {
-						that.bannerData = res.data[0];
+						if (res.data.length != 0) {
+							that.bannerData = res.data[0];
+						}
 					}
 				})
 			},
@@ -182,10 +185,7 @@
 			async getPostFollow() {
 				let that = this
 				that.loadmore = 'loading'
-				let data = {
-					page: 1
-				}
-				that.$api('post.follow_user_post_list', data).then(res => {
+				that.$api('post.follow_user_post_list', that.params).then(res => {
 					if (res.code === 1) {
 						console.log(res.data);
 						that.paginator.total = res.data.total;

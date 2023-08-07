@@ -42,7 +42,10 @@
 							{{item.createtime}}
 						</view>
 					</view>
-					<view style="color: #323232;font-size: 36rpx;font-weight: bold;">￥{{item.pay_money}}</view>
+					<view style="color: #323232;font-size: 36rpx;font-weight: bold;">
+						<text v-if="item.type != '4'">￥{{item.pay_money}}</text>
+						<text v-else>活动赠送</text>
+					</view>
 				</view>
 			</view>
 			<u-loadmore v-if="rechargeList.lenth" :loadmoreText="nomoreText" color="#a1a1a1" marginTop="20" />
@@ -145,7 +148,7 @@
 				rechargeList: [],
 				nomoreText: "加载更多",
 				tablist: [{
-					name: '购买记录',
+					name: '获取记录',
 					type: 1
 				}, {
 					name: '使用记录',

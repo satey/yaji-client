@@ -6,7 +6,8 @@ export default {
 		messageListTotal: [], //全部消息列表
 		islogout: false,
 		topMessageList: [], //置顶消息
-		historyMsgList: [],
+		historyMsgList: [], //历史消息
+		giftId: ''
 	},
 	mutations: {
 		//设置登录状态
@@ -33,7 +34,6 @@ export default {
 			var num = 0;
 			for (var i = 0; i < arr.length; i++) {
 				num += state.messageList[i].msgNum;
-				console.log(state.messageCount)
 				// if (arr[i].msgNum != undefined) {
 				// 	if (arr[i].msgNum == true) {
 				// 		state.messageCount = true;
@@ -114,6 +114,10 @@ export default {
 		setHistoryMsgList(state, arr) {
 			state.historyMsgList = arr;
 		},
+		// 设置礼包id
+		setGiftId(state, id) {
+			state.giftId = id;
+		}
 	},
 	getters: {
 

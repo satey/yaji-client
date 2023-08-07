@@ -189,6 +189,7 @@
 			</view>
 		</view>
 		<view class="sdasdas" :style="{height:pageHeight+'px'}"></view>
+		<reward :giftIsShow="giftIsShow" @changend="changend"></reward>
 	</view>
 </template>
 <script>
@@ -196,10 +197,13 @@
 		mapState
 	} from 'vuex'
 	import permision from "@/js_sdk/wa-permission/permission.js"
+	import reward from "@/components/fei-reward/fei-reward.vue"
 	// import Socket from '@/common/chat.js'
 	export default {
 		name: 'mine',
-		components: {},
+		components: {
+			reward
+		},
 		data() {
 			return {
 				chat: {},
@@ -258,6 +262,7 @@
 				newMsg: [],
 				name: "",
 				recharge: false,
+				giftIsShow: false,
 			}
 		},
 		computed: {
@@ -270,6 +275,18 @@
 			that.getGiftList()
 			that.getUserProfile()
 			that.getEmojiList()
+
+			// #ifdef APP-PLUS
+			var pages = getCurrentPages();
+			var page = pages[pages.length - 1];
+			that.$store.watch((state, getters) => {
+				if (state.message.giftId != '') {
+					if (page.route == "pages/chat/single") {
+						that.giftIsShow = true;
+					}
+				}
+			})
+			// #endif
 		},
 		destroyed() {
 			// getApp().globalData.socketTask.close();
@@ -278,10 +295,11 @@
 			var that = this;
 			this.msgPage = Boolean(e.megPgae);
 			var delay = setTimeout(() => {
-				that.init();
+				// that.init();
+				that.poetry()
 				that.watchKeyboard();
 				that.initSingleSocket();
-				that.poetry()
+				that.unread();
 				this.$nextTick(() => {
 					that.scrollBottom();
 				})
@@ -293,6 +311,9 @@
 			getApp().globalData.socketTask.close()
 		},
 		methods: {
+			changend() {
+				this.giftIsShow = false;
+			},
 			//诗词结缘
 			poetry() {
 				var that = this;
@@ -302,12 +323,16 @@
 						poetry_id: poetryItem.id,
 						receiver_id: poetryItem.user_id
 					}).then(res => {
-						console.log(res)
 						if (res.code == 0) {
 							that.sendMessage(res.msg, 'text');
+							that.init();
+						} else {
+							that.init();
 						}
 						uni.removeStorageSync("poetryItem");
 					})
+				} else {
+					that.init();
 				}
 			},
 			//聊天页面socket监听
@@ -316,6 +341,7 @@
 				var newMeg = [];
 				that.$store.commit("setReceiverId", that.$Route.query.user_id);
 				getApp().globalData.socketTask.onMessage((res) => {
+					console.log(JSON.parse(res.data))
 					if (JSON.parse(res.data).cate != 1) {
 						return;
 					}
@@ -323,7 +349,9 @@
 					var userInfo = uni.getStorageSync("userInfo");
 					if (JSON.parse(res.data).type == "history") {
 						that.parseMsg(res.data)
-						that.scrollBottom()
+						if (that.historyPage == 1) {
+							that.scrollBottom()
+						}
 						var data = JSON.parse(res.data).last_gift_data;
 						if (data == null) {
 							return;
@@ -353,8 +381,8 @@
 							this.unread(); //后台标记已读
 							this.parseMsg(res.data);
 						}
+						that.scrollBottom()
 					}
-					that.scrollBottom()
 				})
 			},
 			//后台标记已读
@@ -392,6 +420,7 @@
 			},
 			//scroll下拉
 			scrollTop() {
+				console.log("fei")
 				var that = this;
 				that.scrollFlag = true;
 				that.historyPage++;
@@ -425,6 +454,9 @@
 				}).then(res => {
 					if (res.code === 1) {
 						that.chat = res.data;
+						if (res.data.send_message != '') {
+							that.sendMessage(res.data.send_message)
+						}
 						uni.setStorageSync('CHATSESSIONID', res.data.session_id)
 						// 监听消息
 						that.fei_getMessageList(that.historyPage)
@@ -521,12 +553,13 @@
 								})
 							} else {
 								that.scrollFlag = false;
-								that.messageList = [...that.messageList, ...msg.data.data];
+								that.messageList.unshift(...msg.data)
+								// that.messageList = [...that.messageList, ...msg.data.data];
 								that.loadingmMore = true;
 								that.messageList.sort((a, b) => {
-									return a.receiver_id - b.receiver_id
+									return a.createtime - b.createtime
 								})
-								if (msg.data.data.length == 0) {
+								if (msg.data.length == 0) {
 									that.isScrollDown = false;
 								}
 							}

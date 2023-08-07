@@ -34,7 +34,7 @@
 							<text v-if="cate == 4">回复您的评论了！</text>
 							<text v-if="cate == 5">查看您的主页了！</text>
 						</view>
-						<view v-if="no_read_count!=0" class="tips">
+						<view v-if="no_read_count!=0" class="tips2">
 						</view>
 					</view>
 				</view>
@@ -107,7 +107,6 @@
 					</view>
 				</view>
 			</view>
-
 		</view>
 
 		<u-empty v-if="!$store.state.message.messageList.length" icon="/static/wupinglun.png" text="暂无消息"
@@ -201,9 +200,9 @@
 		},
 		methods: {
 			jumpBanner(url) {
-				if (url != '') {
-					this.$u.route(url)
-				}
+				this.$u.route('/pages/joy/activity', {
+					url: url
+				})
 			},
 			//广告
 			getAd() {
@@ -212,7 +211,9 @@
 					type: 2
 				}).then(res => {
 					if (res.code == 1) {
-						that.bannerData = res.data[0];
+						if (res.data.length > 0) {
+							that.bannerData = res.data[0];
+						}
 					}
 				})
 			},
@@ -250,6 +251,7 @@
 			openChat(item, index, itemCount) {
 				this.$store.commit("setMessageListCount", item.user_id);
 				this.$store.commit("setMsgCount2");
+				this.$store.commit("setGiftId", false);
 				this.$nextTick(() => {
 					this.initList();
 					this.$u.route(`pages/chat/single?user_id=${item.user_id}&megPgae=true`);
@@ -323,6 +325,14 @@
 		color: #fff;
 		text-align: center;
 		padding: 0rpx 15rpx;
+		border-radius: 50rpx;
+	}
+
+	.tips2 {
+		background: #EB3446;
+		text-align: center;
+		width: 35rpx;
+		height: 35rpx;
 		border-radius: 50rpx;
 	}
 

@@ -10,15 +10,14 @@
 		</view>
 		<view class="flex-1" style="margin-left: 20rpx;padding-bottom: 20rpx;">
 			<view class="leading-none mt-2" v-if="item.user==null">
-				<text style="color: #323232;font-size: 28rpx;">无名氏</text>
+				<text style="color: #323232;font-size: 28rpx;">无名氏1</text>
 				<text
 					style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: cornsilk; color: rgb(255, 180, 31);">望</text>
 				<text style="color: rgb(255, 180, 31);">0</text>
 			</view>
 			<view class="leading-none mt-2" @click="openUserHome(item.user_id)" v-else>
-				<text v-if="item.user.role_realname"
+				<text
 					style="color: #323232;font-size: 28rpx;">{{ item.role.realname + ' · ' + item.role.dynasty }}</text>
-				<text v-else style="color: #323232;font-size: 28rpx;">无名氏</text>
 				<text
 					style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: cornsilk; color: rgb(255, 180, 31);">望</text>
 				<text style="color: rgb(255, 180, 31);">{{item.user.total_mw }}</text>

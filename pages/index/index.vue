@@ -242,47 +242,43 @@
 			count++;
 			uni.setStorageSync('pageCount', count);
 			if (count < 1) {
-				uni.request({
-					url: 'https://yaji.ixiaojin.cn/api/version/index',
-					success: function(res) {
-						console.log(res)
-						var latestVersion = res.data.data.oldversion;
-						var currentVersion = res.data.data.newversion;
-						// console.log('currentVersion',currentVersion);
-						// console.log('latestVersion',latestVersion);
-						// 比较版本号
-						if (compareVersion(currentVersion, latestVersion) > 0) {
-							// 提示用户更新
-							uni.showModal({
-								title: '版本更新',
-								content: '有新版本可用，是否更新？',
-								success: function(res) {
-									if (res.confirm) {
-										// 下载最新版本
-										uni.downloadFile({
-											url: 'http://example.com/latestVersion.apk',
-											success: function(res) {
-												// 安装新版本
-												uni.showModal({
-													title: '安装新版本',
-													content: '新版本已下载完成，是否安装？',
-													success: function(res) {
-														if (res.confirm) {
-															uni.install({
-																filePath: res
-																	.tempFilePath
-															});
-														}
+				that.$api("versions.index").then(res => {
+					var latestVersion = res.data.oldversion;
+					var currentVersion = res.data.newversion;
+					// console.log('currentVersion',currentVersion);
+					// console.log('latestVersion',latestVersion);
+					// 比较版本号
+					if (compareVersion(currentVersion, latestVersion) > 0) {
+						// 提示用户更新
+						uni.showModal({
+							title: '版本更新',
+							content: '有新版本可用，是否更新？',
+							success: function(res) {
+								if (res.confirm) {
+									// 下载最新版本
+									uni.downloadFile({
+										url: 'http://example.com/latestVersion.apk',
+										success: function(res) {
+											// 安装新版本
+											uni.showModal({
+												title: '安装新版本',
+												content: '新版本已下载完成，是否安装？',
+												success: function(res) {
+													if (res.confirm) {
+														uni.install({
+															filePath: res
+																.tempFilePath
+														});
 													}
-												});
-											}
-										});
-									}
+												}
+											});
+										}
+									});
 								}
-							});
-						}
+							}
+						});
 					}
-				});
+				})
 				// 比较版本号
 				function compareVersion(v1, v2) {
 					v1 = v1.split('.');

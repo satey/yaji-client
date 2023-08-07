@@ -298,6 +298,7 @@
 					page: that.params.page,
 					user_id: that.$Route.query.user_id
 				}).then(res => {
+					console.log(res)
 					if (res.code === 1) {
 						that.paginator.total = res.data.total
 						that.paginator.last_page = res.data.last_page

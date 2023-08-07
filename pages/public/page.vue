@@ -79,7 +79,7 @@
 							console.log(res.deviceBrand)
 							if (res.deviceBrand == "huawei") {
 								that.currentSrc =
-									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacyHuawei.html";
+									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacy.html";
 							} else {
 								that.currentSrc =
 									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacy.html";

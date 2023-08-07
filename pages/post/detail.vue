@@ -48,14 +48,15 @@
 					<i class="ri-emotion-fill text-4xl text-gray-500"></i>
 				</view>
 				<view class="flex-1 flex">
-					<u-textarea v-model="message" :focus="inputFocus" :autoHeight="true" :placeholder="placeholder"
-						type="text" maxlength="200"></u-textarea>
+					<u-textarea v-model="message" :focus="inputFocus" @focus="focus" @blur="blur" :autoHeight="true"
+						:placeholder="placeholder" type="text" maxlength="200"></u-textarea>
 				</view>
 				<view class="flex items-center">
 					<view
 						class="p-3 rounded-full text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
 						@click="doComment()">发送</view>
 				</view>
+
 			</view>
 			<!-- 表情 -->
 			<view class="grid grid-cols-8 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
@@ -64,7 +65,9 @@
 					<text class="leading-none" style="font-size: 1.8rem;">{{ item }}</text>
 				</view>
 			</view>
+			<view class="sdasdas" :style="{height:pageHeight+'px'}"></view>
 		</view>
+
 		<!-- 内容 -->
 		<view class="userContent">
 			<view class="" v-if="detailContent!=null">
@@ -120,6 +123,7 @@
 				<view style="height: 120rpx;"></view>
 			</view>
 		</view>
+
 	</view>
 </template>
 <script>
@@ -171,6 +175,7 @@
 				avatar: "",
 				content: "",
 				followModule: false,
+				pageHeight: 0,
 			}
 		},
 		created() {
@@ -183,9 +188,31 @@
 			that.userInfo = uni.getStorageSync("userInfo");
 			that.getPostDetail()
 			that.getPostComment()
+			that.watchKeyboard();
 			// that.getDigCommentDetail()
 		},
 		methods: {
+			// 获得焦点后
+			focus(e) {
+				this.watchKeyboard()
+				this.pageHeight = 30
+			},
+			// 失去焦点后
+			blur() {
+				this.pageHeight = 0
+			},
+			//监听键盘
+			watchKeyboard() {
+				var that = this;
+				uni.onKeyboardHeightChange(res => {
+					if (res.height > 0) {
+						this.pageHeight = 30
+					} else {
+						this.pageHeight = 0
+					}
+					// that.pageHeight = res.height+50
+				})
+			},
 			//取消关注
 			unfollow() {
 				var that = this;
@@ -409,7 +436,7 @@
 				let that = this
 				that.placeholder = `回复${item.user.role_realname}`
 				that.post_comment_id = item.id
-				that.inputFocus = true
+				that.inputFocus = true;
 			},
 			handlePostDig() {
 				let that = this

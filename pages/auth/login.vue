@@ -102,7 +102,6 @@
 			commitWork() {
 				let that = this
 				//开始你的表演
-				console.log('noClick', that.noClick);
 			},
 
 			handleInput(key) {
@@ -202,57 +201,16 @@
 										}
 									})
 									that.$nextTick(() => {
-										if (!that.userInfo.realname && !that.userInfo
-											.dynasty && that
-											.userInfo
-											.gender == 0) {
+										if (res.msg == "注册成功") {
 											uni.reLaunch({
 												url: '/pages/auth/s1'
 											});
-										} else if (that.userInfo.gender != 0) {
-											if (that.userInfo.realname != '' && that
-												.userInfo.dynasty !=
-												'') {
-												uni.reLaunch({
-													url: '/pages/index/index'
-												});
-											} else {
-												console.log('不知道是否有免费次数');
-											}
-
-										} else {
-											console.log('ok')
-											that.$u.route('/pages/auth/login')
-										}
-										if (!that.userInfo.role_id) {
-											console.log('no')
-											uni.reLaunch({
-												url: '/pages/auth/s1'
-											});
-										}
-										if (that.userInfo.gender == 0) {
-											console.log('111');
-											uni.reLaunch({
-												url: '/pages/auth/s1'
-											});
-										}
-										if (that.userInfo.realname != '' && that.userInfo
-											.dynasty != '' &&
-											that
-											.userInfo.gender !=
-											0) {
+										} else if (res.msg == "登录成功") {
 											uni.reLaunch({
 												url: '/pages/index/index'
 											});
-										} else {
-											console.log('ok')
-											uni.reLaunch({
-												url: '/pages/auth/s1'
-											});
 										}
-
 									})
-
 								})
 							} else {
 								that.$u.toast(res.msg)
@@ -321,13 +279,11 @@
 									that.$u.route('/pages/auth/login')
 								}
 								if (!that.userInfo.role_id) {
-									console.log('no')
 									uni.reLaunch({
 										url: '/pages/auth/s1'
 									});
 								}
 								if (that.userInfo.gender == 0) {
-									console.log('111');
 									uni.reLaunch({
 										url: '/pages/auth/s1'
 									});

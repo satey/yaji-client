@@ -1,5 +1,5 @@
 export default {
-	ad:{
+	ad: {
 		lists: {
 			url: 'adv/lists',
 			auth: false,
@@ -27,6 +27,12 @@ export default {
 			auth: false,
 			method: 'POST',
 			desc: '是否在游戏房间',
+		},
+		countNum: {
+			url: "game_room/game_room_user_count",
+			auth: false,
+			method: 'GET',
+			desc: '房间总人数',
 		}
 	},
 	poetry: {
@@ -449,6 +455,12 @@ export default {
 		},
 	},
 	user: {
+		openBox: {
+			url: 'user/open_blind_box',
+			auth: false,
+			method: 'GET',
+			desc: '开盲盒',
+		},
 		look_user_home: {
 			url: 'user/look_user_home',
 			auth: false,

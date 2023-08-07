@@ -44,7 +44,7 @@
 						style="font-size:50rpx;color: #FE4373;"></i>
 				</view>
 			</view>
-			<view style="margin-top: 80rpx;">
+			<view style="margin-top: 80rpx;position: relative;">
 				<block v-if="userImg!=''">
 					<image class="rounded-full bg-gray-100" :src="userImg || '/static/avatar.png'"
 						style="width: 140rpx;height: 140rpx;" @click="changeImage">
@@ -55,7 +55,8 @@
 						style="width: 140rpx;height: 140rpx;" @click="changeImage">
 					</image>
 				</block>
-
+				<view class="tips text-base text-white " v-if="userInfo.is_change_avatar!=1||is_change_avatar == 1">
+					换头像加名望</view>
 			</view>
 			<view class="text-xl mt-2">
 				<text style="font-size: 36rpx;color: #fff;" class="font-bold">
@@ -172,7 +173,8 @@
 				loadmore: false,
 				showIp: false,
 				headFlag: false,
-				bannerData: []
+				bannerData: [],
+				is_change_avatar: 0,
 			}
 		},
 		computed: {
@@ -208,9 +210,9 @@
 		methods: {
 			...mapActions(['getUserInfo']),
 			jumpBanner(url) {
-				if (url != '') {
-					this.$u.route(url)
-				}
+				this.$u.route('/pages/joy/activity', {
+					url: url
+				})
 			},
 			//广告
 			getAd() {
@@ -218,7 +220,6 @@
 				that.$api("ad.lists", {
 					type: 3
 				}).then(res => {
-					console.log(res)
 					if (res.code == 1) {
 						that.bannerData = res.data;
 					}
@@ -258,7 +259,8 @@
 								avatar: data.data.fullurl
 							}).then((resData) => {
 								if (resData.code == 1) {
-									that.userImg = data.data.fullurl
+									that.userImg = data.data.fullurl;
+									that.getUserInfo()
 								}
 							})
 						}
@@ -324,6 +326,18 @@
 	}
 </script>
 <style lang="scss" scoped>
+	.tips {
+		position: absolute;
+		top: -30rpx;
+		left: 110rpx;
+		background: rgb(254, 67, 115);
+		border-bottom-left-radius: 0rpx;
+		padding: 10rpx 15rpx;
+		border-radius: 50rpx;
+		box-sizing: border-box;
+		border-bottom-left-radius: 0rpx;
+	}
+
 	.fixedHead {
 		padding-top: calc(var(--status-bar-height) + 20rpx);
 		background: #fff;

@@ -36,57 +36,82 @@
 				var that = this;
 				uni.onPushMessage((res) => {
 					console.log(res)
-					if (res.type == 'receive') {
-						uni.createPushMessage({
-							title: res.data.title,
-							content: res.data.content,
-							icon: "./static/logo-28.png",
-							sound: "system",
-							fail() {
-								uni.showToast({
-									icon: "error",
-									title: "通知栏失败"
-								})
-							}
-						})
+					// -----礼包
+					var isPush = false;
+					if (res.data.title == "礼包") {
+						that.$store.commit("setGiftId", res.data.content);
+						isPush = true;
 					}
-					var list = that.$store.state.message.messageList;
-					list.forEach((val, index) => {
-						if (res.data.title == val.role_realname) {
-							var tmp = Date.parse(new Date()).toString();
-							tmp = tmp.substr(0, 10);
-							val.content = res.data.content;
-							val.msgNum = true;
-							val.createtime = tmp
+					if (res.type == 'receive') {
+						if (!isPush) {
+							uni.createPushMessage({
+								title: res.data.title,
+								content: res.data.content,
+								icon: "./static/logo-28.png",
+								sound: "system",
+								fail() {
+									uni.showToast({
+										icon: "error",
+										title: "通知栏失败"
+									})
+								}
+							})
 						}
-					})
-					that.$store.commit("setMessageList", list)
-					that.$store.commit("setMsgCount", list)
+					}
+					if (res.data.title == "小雅") {
+						if (res.data.content.indexOf("的世界") != -1) {
+							var list = that.$store.state.message.messageList;
+							var obj = {
+								"avatar": "https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/uploads/20230727/245306ec74804174043aa9e55a2c4b3cc4de7c.png",
+								"user_id": 1,
+								"role_realname": res.data.title,
+								"role_dynasty": "秦",
+								"createtime": Date.parse(new Date()).toString(),
+								"type": "text",
+								"content": res.data.content,
+								"is_topping": "",
+								"topping_time": "",
+								"msgNum": 1
+							}
+							list.push(obj)
+							that.$store.commit("setMessageList", list)
+							that.$store.commit("setMsgCount", list)
+						}
+					}
+					// var list = that.$store.state.message.messageList;
+					// list.forEach((val, index) => {
+					// 	if (res.data.title == val.role_realname) {
+					// 		console.log(val.msgNum)
+					// 		var tmp = Date.parse(new Date()).toString();
+					// 		tmp = tmp.substr(0, 10);
+					// 		val.content = res.data.content;
+					// 		val.msgNum = ++val.msgNum;
+					// 		val.createtime = tmp
+					// 	}
+					// })
+					// that.$store.commit("setMessageList", list)
+					// that.$store.commit("setMsgCount", list)
 				})
 			},
 			//更新
 			renew() {
 				var that = this;
-				uni.request({
-					url: 'https://yaji.ixiaojin.cn/api/version/index',
-					method: "POST",
-					success: function(res) {
-						if (res.data.data == null) {
-							return;
-						}
-						that.$store.commit("setRenewContent", res.data.data.content);
-						that.$store.commit("setDownloadUrl", res.data.data.downloadurl);
-						that.$store.commit("setisEnforce", res.data.data.enforce);
-						var version = res.data.data.newversion.slice(1);
-						// #ifdef APP-PLUS
-						plus.runtime.getProperty(plus.runtime.appid, (info) => {
-							if (info.version != version) {
-								that.$store.commit("setisRenew", true)
-							}
-						})
-						// #endif
+				that.$api("versions.index").then(res => {
+					if (res.data == null) {
+						return;
 					}
-				});
+					that.$store.commit("setRenewContent", res.data.content);
+					that.$store.commit("setDownloadUrl", res.data.downloadurl);
+					that.$store.commit("setisEnforce", res.data.enforce);
+					var version = res.data.newversion.slice(1);
+					// #ifdef APP-PLUS
+					plus.runtime.getProperty(plus.runtime.appid, (info) => {
+						if (info.version != version) {
+							that.$store.commit("setisRenew", true)
+						}
+					})
+					// #endif
+				})
 			},
 			//统计
 			isLogin() {
@@ -100,6 +125,7 @@
 					//统计
 					uni.getPushClientId({
 						success(res) {
+							console.log(res)
 							that.$api('stat.init', {
 								"push_clientid": res.cid
 							}).then(data => {})
@@ -227,7 +253,7 @@
 				if (token == '') {
 					return;
 				}
-				that.socKetUrl = `wss://yaji.ixiaojin.cn/websocket?token=${token}&session_id=${session_id}`;
+				that.socKetUrl = `wss://yaji.suoeryoude.cn/websocket?token=${token}&session_id=${session_id}`;
 				getApp().globalData.socketTask = uni.connectSocket({
 					url: that.socKetUrl, //仅为示例，并非真实接口地址。
 					complete: () => {
@@ -258,7 +284,7 @@
 							var topping_time = "";
 							var sData = JSON.parse(res.data).data;
 							var obj = {};
-							var num = 0;
+							var num = 1;
 							messageList.forEach((val, index) => {
 								if (val.user_id == JSON.parse(res.data).data.user_id) {
 									is_topping = val.is_topping;
