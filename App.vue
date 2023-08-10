@@ -253,7 +253,7 @@
 				if (token == '') {
 					return;
 				}
-				that.socKetUrl = `wss://yaji.suoeryoude.cn/websocket?token=${token}&session_id=${session_id}`;
+				that.socKetUrl = `wss://yaji.ixiaojin.cn/websocket?token=${token}&session_id=${session_id}`;
 				getApp().globalData.socketTask = uni.connectSocket({
 					url: that.socKetUrl, //仅为示例，并非真实接口地址。
 					complete: () => {
@@ -314,7 +314,6 @@
 							// 		}
 							// 	})
 							// };
-							console.log(messageList)
 							that.$store.commit("setMessageList", messageList);
 							that.$store.commit("setMsgCount", messageList);
 						} else if (JSON.parse(res.data).data.receiver_id == Number(that.$store.state.message

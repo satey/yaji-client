@@ -299,7 +299,7 @@
 				that.poetry()
 				that.watchKeyboard();
 				that.initSingleSocket();
-				that.unread();
+				// that.unread();
 				this.$nextTick(() => {
 					that.scrollBottom();
 				})
@@ -341,7 +341,6 @@
 				var newMeg = [];
 				that.$store.commit("setReceiverId", that.$Route.query.user_id);
 				getApp().globalData.socketTask.onMessage((res) => {
-					console.log(JSON.parse(res.data))
 					if (JSON.parse(res.data).cate != 1) {
 						return;
 					}
@@ -368,6 +367,7 @@
 													that.handleGiftPlay()
 													that.handleTextSend()
 													clearTimeout(setTime1)
+													that.scrollBottom()
 												}, 500)
 											}
 										})

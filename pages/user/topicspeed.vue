@@ -25,7 +25,8 @@
 			</view>
 		</view>
 		<view class="topic">
-			<fei-post v-for="(item, index) in topicspeedList" :key="index" :item="item"></fei-post>
+			<fei-post @clickDetails="clickDetails" v-for="(item, index) in topicspeedList" :key="index"
+				:item="item"></fei-post>
 			<u-loadmore v-if="topicspeedList.length" :loadmoreText="nomoreText" color="#a1a1a1" marginTop="20" />
 			<u-empty v-if="!topicspeedList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
@@ -47,7 +48,12 @@
 				nomoreText: "加载更多",
 				headColor: "rgba(0,0,0,0)",
 				isImg: false,
+				path: "",
+				isOpenDetail: false,
 			}
+		},
+		onLoad(options) {
+			this.path = options.type == 'index' ? 'index' : 'square'
 		},
 		onShow(options) {
 			if (this.isImg) {
@@ -56,7 +62,11 @@
 				this.topicspeedList = [];
 				this.getLists();
 			} else {
-				this.getLists();
+				if (this.isOpenDetail) {
+					this.isOpenDetail = false;
+				} else {
+					this.getLists();
+				}
 			}
 		},
 		onReachBottom() {
@@ -75,10 +85,21 @@
 			}
 		},
 		methods: {
+			//是否点跳转内容页
+			clickDetails() {
+				this.isOpenDetail = true;
+			},
 			pageBack() {
-				uni.reLaunch({
-					url: '/pages/index/square',
-				});
+				if (this.path == 'index') {
+					this.$u.route({
+						type: 'navigateBack',
+						delta: 1
+					})
+				} else {
+					uni.reLaunch({
+						url: '/pages/index/square',
+					});
+				}
 			},
 			is_ok() {
 				let that = this;

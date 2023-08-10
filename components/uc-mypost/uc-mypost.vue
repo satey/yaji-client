@@ -17,7 +17,7 @@
 			</view>
 			<view class="img" v-if="item.images">
 				<view v-if="images.length<=1">
-					<image mode="heightFix" @click="onPreviewTap(0)"
+					<image mode="widthFix" @click="onPreviewTap(0)"
 						style="max-width: 500rpx;margin-top:25rpx;border-radius: 12rpx;" :src="images[0]">
 					</image>
 				</view>

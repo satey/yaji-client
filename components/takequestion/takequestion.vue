@@ -2,28 +2,20 @@
 
 	<view class="takeQuestion">
 		<!-- {{item}} -->
-		<view class="takeQuestion-item" @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id})"
+		<view class="takeQuestion-item" @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id,type:'index'})"
 			:style="{background:colors[index % 4 ]}">
 			<view style="display: flex;align-items: center;margin-right: 10rpx;">
 				<text class="ri-fire-fill" style="color: #FE4373;font-size: 40rpx;"></text>
 				<view class="question-title">
-					<!-- <i class="ri-hashtag mr-1"></i> -->
 					{{item.title}}
 				</view>
 			</view>
 			<!-- 话题 -->
-
 			<view class="pics">
-				<!-- <image src="../../static/vv.png" class="pics-item" v-for="(items,index) in 5" mode=""></image> -->
 				<image :src="items" class="pics-item" v-for="(items,index) in item.avatar" v-if="index<=5">
 				</image>
 			</view>
-			<!-- <view style="display: flex;align-items: center;">
-				
-				<view style="color: #FE4373;font-size: 30rpx;width: 50rpx;">{{item.hot_num}}</view>
-			</view> -->
 		</view>
-
 	</view>
 
 </template>

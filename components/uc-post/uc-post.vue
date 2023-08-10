@@ -37,7 +37,7 @@
 			</view>
 			<!-- {{item}} -->
 			<view v-if="item.images" class="mt-4" style="position: relative;">
-				<image @click="onPreviewTap(0)" :src="item.images.split(',')[0]" mode="heightFix"
+				<image @click="onPreviewTap(0)" :src="item.images.split(',')[0]" mode="widthFix"
 					v-if="item.images.split(',').length == 1" style="max-width: 500rpx;border-radius: 10rpx;">
 				</image>
 				<view v-if="item.images.split(',').length != 1" style="width: 100%;display: flex;flex-direction: row;">
