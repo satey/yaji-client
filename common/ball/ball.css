@@ -1,0 +1,290 @@
+.ballItem0 {
+	animation:
+		moveX1 2s linear infinite alternate,
+		moveY1 2.5s linear infinite alternate;
+}
+
+.ballItem1 {
+	animation:
+		moveX2 3s linear infinite alternate,
+		moveY2 3.5s linear infinite alternate;
+}
+
+.ballItem2 {
+	animation:
+		moveX3 2.3s linear infinite alternate,
+		moveY3 3.3s linear infinite alternate;
+}
+
+.ballItem3 {
+	animation:
+		moveX4 3s linear infinite alternate,
+		moveY4 3.5s linear infinite alternate;
+}
+
+.ballItem4 {
+	animation:
+		moveX5 7s linear infinite alternate,
+		moveY5 7.5s linear infinite alternate;
+}
+
+.ballItem5 {
+	background: black !important;
+	animation:
+		moveX6 7s linear infinite alternate,
+		moveY6 7.5s linear infinite alternate;
+}
+
+.ballItem6 {
+	background: black !important;
+	animation:
+		moveX7 7s linear infinite alternate,
+		moveY7 7.5s linear infinite alternate;
+}
+
+.ballItem7 {
+	background: black !important;
+	animation:
+		moveX8 9s linear infinite alternate,
+		moveY8 9.5s linear infinite alternate;
+}
+
+@keyframes moveX1 {
+	from {
+		left: 0;
+	}
+
+	to {
+		left: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveY1 {
+	0% {
+		top: 0;
+	}
+
+	100% {
+		top: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveX2 {
+	0% {
+		left: 300rpx;
+	}
+
+	50% {
+		left: 0;
+	}
+
+	100% {
+		left: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveY2 {
+	from {
+		top: 0;
+	}
+
+	to {
+		top: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveX3 {
+	from {
+		left: 0rpx;
+	}
+
+	to {
+		left: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveY3 {
+	from {
+		top: 0rpx;
+	}
+
+	to {
+		top: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveX4 {
+	from {
+		left: 0rpx;
+	}
+
+	to {
+		left: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveY4 {
+	from {
+		top: 0rpx;
+	}
+
+	to {
+		top: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveX5 {
+	0% {
+		left: 505rpx;
+	}
+
+	20% {
+		left: 0rpx;
+	}
+
+	50% {
+		left: calc(100% - 100rpx);
+	}
+
+	70% {
+		left: 200rpx;
+	}
+
+	to {
+		left: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveY5 {
+	from {
+		top: 0rpx;
+	}
+
+	to {
+		top: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveX6 {
+	0% {
+		left: 505rpx;
+	}
+
+	20% {
+		left: 0rpx;
+	}
+
+	50% {
+		left: calc(100% - 100rpx);
+	}
+
+	70% {
+		left: 0rpx;
+	}
+
+	to {
+		left: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveY6 {
+	0% {
+		top: 100rpx;
+	}
+
+	25% {
+		top: 0rpx;
+	}
+
+	50% {
+		top: calc(100% - 100rpx);
+	}
+
+	70% {
+		top: calc(100% - 300rpx);
+	}
+
+	100% {
+		top: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveX7 {
+	0% {
+		left: 0rpx;
+	}
+
+	50% {
+		left: calc(100% - 100rpx);
+	}
+
+	70% {
+		left: 100rpx;
+	}
+
+	80% {
+		left: 0;
+	}
+
+	to {
+		left: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveY7 {
+	0% {
+		top: 100rpx;
+	}
+
+	25% {
+		top: calc(100% - 100rpx)
+	}
+
+	50% {
+		top: 200rpx;
+	}
+
+	100% {
+		top: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveX8 {
+	0% {
+		left: 0rpx;
+	}
+
+	50% {
+		left: calc(100% - 100rpx);
+	}
+
+	70% {
+		left: 100rpx;
+	}
+
+	80% {
+		left: 0;
+	}
+
+	to {
+		left: calc(100% - 100rpx);
+	}
+}
+
+@keyframes moveY8 {
+	0% {
+		top: 100rpx;
+	}
+
+	25% {
+		top: calc(100% - 100rpx)
+	}
+
+	50% {
+		top: 200rpx;
+	}
+
+	100% {
+		top: calc(100% - 100rpx);
+	}
+}
