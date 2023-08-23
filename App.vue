@@ -20,7 +20,7 @@
 			initFun: null, //缓存socket初始化的方法
 			getHistoryCronyList: null, //进来获取storege的聊天列表
 			isSelectImage: false, //如果是选择图片的话不关闭socket
-			renew: {}
+			renew: {},
 		},
 		updated() {
 			if (getApp().globalData.islogout == false) {
@@ -38,6 +38,7 @@
 					console.log(res)
 					// -----礼包
 					var isPush = false;
+					console.log(res.data.title)
 					if (res.data.title == "礼包") {
 						that.$store.commit("setGiftId", res.data.content);
 						isPush = true;
@@ -253,7 +254,7 @@
 				if (token == '') {
 					return;
 				}
-				that.socKetUrl = `wss://yaji.ixiaojin.cn/websocket?token=${token}&session_id=${session_id}`;
+				that.socKetUrl = `wss://yaji.suoeryoude.cn/websocket?token=${token}&session_id=${session_id}`;
 				getApp().globalData.socketTask = uni.connectSocket({
 					url: that.socKetUrl, //仅为示例，并非真实接口地址。
 					complete: () => {
@@ -442,20 +443,19 @@
 		//       })
 		//     }
 		//   },
-		onLaunch: async function(options) {
-			await this.setAppInfo();
-			try {
-				let init = await this.getAppInit(options);
-				await this.autoLogin(init.data);
-				if (process.env.NODE_ENV === 'development') {
-					await this.getRoutes();
-				}
-			} catch (e) {
-				console.log(e);
-			}
-		},
+		// onLaunch: async function(options) {
+		// 	await this.setAppInfo();
+		// 	try {
+		// 		let init = await this.getAppInit(options);
+		// 		await this.autoLogin(init.data);
+		// 		if (process.env.NODE_ENV === 'development') {
+		// 			await this.getRoutes();
+		// 		}
+		// 	} catch (e) {
+		// 		console.log(e);
+		// 	}
+		// },
 		onShow() {
-			// this.initSocket(); //启动socket
 			this.getHistoryCronyList();
 		},
 		onLaunch: async function() {
@@ -574,8 +574,6 @@
 			if (getApp().globalData.isSelectImage) {
 				return;
 			}
-			// getApp().globalData.islogout = true;
-			// getApp().globalData.socketTask.close();
 		},
 	};
 </script>

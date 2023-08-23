@@ -540,6 +540,20 @@
 			"meta": {
 				"auth": true
 			}
+		}, {
+			"path": "pages/user/famousRole",
+			"style": {
+				"navigationBarTitleText": "知名角色",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/user/roleDetails",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
 	],
 	"globalStyle": {
@@ -555,6 +569,37 @@
 			"bounce": "none",
 			"softinputMode": "adjustPan"
 		}
+	},
+	"tabBar": {
+		"borderStyle": "white",
+		"color": "#808080",
+		"selectedColor": "#FE4373",
+		"backgroundColor": "#fff",
+		"list": [{
+				"text": "首页",
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/index1.png",
+				"selectedIconPath": "static/tabbar/index1On.png"
+			},
+			{
+				"text": "动态",
+				"pagePath": "pages/index/square",
+				"iconPath": "static/tabbar/square1.png",
+				"selectedIconPath": "static/tabbar/ssquare1On.png"
+			},
+			{
+				"text": "消息",
+				"pagePath": "pages/index/message",
+				"iconPath": "static/tabbar/message1.png",
+				"selectedIconPath": "static/tabbar/message1On.png"
+			},
+			{
+				"text": "我的",
+				"pagePath": "pages/index/mine",
+				"iconPath": "static/tabbar/mine1.png",
+				"selectedIconPath": "static/tabbar/mine1On.png"
+			}
+		]
 	},
 	"condition": { //模式配置，仅开发期间生效
 		"current": 0, //当前激活的模式(list 的索引项)
