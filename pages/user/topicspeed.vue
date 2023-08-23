@@ -47,30 +47,25 @@
 				audioStatus: false,
 				nomoreText: "加载更多",
 				headColor: "rgba(0,0,0,0)",
-				isImg: false,
 				path: "",
-				isOpenDetail: false,
+				isClick: false,
 			}
 		},
 		onLoad(options) {
 			this.path = options.type == 'index' ? 'index' : 'square'
 		},
 		onShow(options) {
-			if (this.isImg) {
+			console.log(this.isClick)
+			if (this.isClick == false) {
 				this.page = 1;
-				this.isImg = false;
 				this.topicspeedList = [];
 				this.getLists();
 			} else {
-				if (this.isOpenDetail) {
-					this.isOpenDetail = false;
-				} else {
-					this.getLists();
-				}
+				this.isClick = false;
 			}
 		},
 		onReachBottom() {
-			if (this.page > this.last_page) {
+			if (this.page < this.last_page) {
 				this.page++;
 				this.getLists()
 			} else {
@@ -87,7 +82,7 @@
 		methods: {
 			//是否点跳转内容页
 			clickDetails() {
-				this.isOpenDetail = true;
+				this.isClick = true;
 			},
 			pageBack() {
 				if (this.path == 'index') {
@@ -113,7 +108,6 @@
 							title: that.title,
 							post_cate_id: this.$Route.query.post_cate_id
 						}
-						that.isImg = true;
 						uni.navigateTo({
 							url: '/pages/post/add?postData=' + JSON.stringify(obj)
 						})
@@ -219,7 +213,8 @@
 					"post_cate_id": this.$Route.query.post_cate_id
 				}).then(res => {
 					if (res.code === 1) {
-						that.topicspeedList.push(...res.data.data)
+						that.topicspeedList = [...that.topicspeedList, ...res.data.data];
+						that.last_page = res.data.last_page;
 						if (that.page < res.data.last_page) {
 							that.loadmore = 'loadmore'
 						} else {

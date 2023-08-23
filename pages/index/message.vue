@@ -27,12 +27,13 @@
 					<view style="display: flex;align-items: center;justify-content: space-between;"
 						v-if="realname!= undefined">
 						<view style="color: #808080;font-size: 26rpx;">
-							<text>{{realname}}.{{dynasty}}</text>
+							<text>{{realname}}·{{dynasty}}</text>
 							<text v-if="cate == 1">给您评论了！</text>
 							<text v-if="cate == 2">给您动态点赞了！</text>
 							<text v-if="cate == 3">给您评论点赞了！</text>
 							<text v-if="cate == 4">回复您的评论了！</text>
 							<text v-if="cate == 5">查看您的主页了！</text>
+							<text v-if="cate == 6">给您的诗词点赞！</text>
 						</view>
 						<view v-if="no_read_count!=0" class="tips2">
 						</view>
@@ -134,7 +135,7 @@
         </u-modal> -->
 
 		<!-- <uc-auth></uc-auth> -->
-		<uc-tabbar></uc-tabbar>
+		<!-- <uc-tabbar></uc-tabbar> -->
 	</view>
 </template>
 <script>
@@ -321,7 +322,7 @@
 	}
 
 	.tips {
-		background: #EB3446;
+		background: #f43530;
 		color: #fff;
 		text-align: center;
 		padding: 0rpx 15rpx;
@@ -329,7 +330,7 @@
 	}
 
 	.tips2 {
-		background: #EB3446;
+		background: #f43530;
 		text-align: center;
 		width: 35rpx;
 		height: 35rpx;

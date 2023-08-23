@@ -42,21 +42,21 @@
 		</u-modal>
 		<!-- 底部 -->
 		<view class="fixed bottom-0 left-0 right-0 !border-t border-0 border-solid border-gray-100 bg-white"
-			style="z-index: 90;">
+			style="z-index: 90;" v-if="detailContent!=null">
 			<view class="flex p-4">
 				<view class="flex items-center" @click="showEmoji = !showEmoji">
 					<i class="ri-emotion-fill text-4xl text-gray-500"></i>
 				</view>
 				<view class="flex-1 flex">
-					<u-textarea v-model="message" :focus="inputFocus" @focus="focus" @blur="blur" :autoHeight="true"
-						:placeholder="placeholder" type="text" maxlength="200"></u-textarea>
+					<u-textarea v-model="message" :auto-blur="true" :focus="inputFocus" @focus="focus" @blur="blur"
+						:autoHeight="true" :placeholder="placeholder" :adjustPosition="false" type="text"
+						maxlength="200"></u-textarea>
 				</view>
 				<view class="flex items-center">
 					<view
 						class="p-3 rounded-full text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-						@click="doComment()">发送</view>
+						@click="doComment1()">发送</view>
 				</view>
-
 			</view>
 			<!-- 表情 -->
 			<view class="grid grid-cols-8 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
@@ -69,7 +69,7 @@
 		</view>
 
 		<!-- 内容 -->
-		<view class="userContent">
+		<view class="userContent" v-if="detailContent!=null">
 			<view class="" v-if="detailContent!=null">
 				<view class="userImg" v-if="userInfo.id == user_id"
 					@click="$u.route('/pages/index/mine', { user_id: detailContent.user_id })">
@@ -112,18 +112,16 @@
 				</view>
 			</view>
 		</view>
-		<view class="comment" style="padding: 30rpx;">
+		<view class="comment" style="padding: 30rpx;" v-if="detailContent!=null">
 			<view class="title" style="color: #323232;font-size: 28rpx;font-weight: bold;">全部评论({{post.commentnums }})
 			</view>
 			<view class="commentList">
-				<uc-comment v-for="(item, index) in listPostComment" :key="index" :item="item"
-					:id='post.id'></uc-comment>
-				<u-empty v-if="!listPostComment.length" icon="/static/wupinglun.png" text="暂无评论" textColor="#a1a1a1"
-					marginTop="100"></u-empty>
+				<uc-comment ref="comment" @reply="reply" @reply2="reply2"></uc-comment>
 				<view style="height: 120rpx;"></view>
 			</view>
 		</view>
-
+		<u-empty v-if="detailContent == null" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+			marginTop="100"></u-empty>
 	</view>
 </template>
 <script>
@@ -176,6 +174,9 @@
 				content: "",
 				followModule: false,
 				pageHeight: 0,
+				replyData: [],
+				replyFalg: false,
+				flagNum: 0,
 			}
 		},
 		created() {
@@ -192,25 +193,46 @@
 			// that.getDigCommentDetail()
 		},
 		methods: {
-			// 获得焦点后
-			focus(e) {
-				this.watchKeyboard()
-				this.pageHeight = 30
+			reply(e) {
+				this.replyData = e;
+				this.placeholder = `回复${e.role_realname}${e.role_dynasty}用户`;
+				this.inputFocus = false;
+				this.$nextTick(() => {
+					this.inputFocus = true;
+					this.flagNum = 1
+				})
 			},
+			reply2(e) {
+				console.log(e)
+				this.replyData = e;
+				this.placeholder = `回复${e.role_realname}${e.role_dynasty}用户`;
+				this.inputFocus = false;
+				this.$nextTick(() => {
+					this.inputFocus = true;
+					this.flagNum = 2
+				})
+			},
+			// 获得焦点后
+			focus(e) {},
 			// 失去焦点后
 			blur() {
-				this.pageHeight = 0
+				if (this.message.length != 0) {
+					if (this.replyData.length != 0) {
+						this.replyFalg = true;
+					} else {
+						this.replyFalg = false;
+						this.replyData = []
+						this.placeholder = '发表评论'
+						this.flagNum = 0
+					}
+				}
+				// this.placeholder = '发表评论'
 			},
 			//监听键盘
 			watchKeyboard() {
 				var that = this;
 				uni.onKeyboardHeightChange(res => {
-					if (res.height > 0) {
-						this.pageHeight = 30
-					} else {
-						this.pageHeight = 0
-					}
-					// that.pageHeight = res.height+50
+					that.pageHeight = res.height
 				})
 			},
 			//取消关注
@@ -337,6 +359,8 @@
 						} else {
 							that.loadmore = 'nomore'
 						}
+					} else {
+						that.$u.toast(res.msg)
 					}
 				})
 			},
@@ -350,7 +374,8 @@
 						// that.paginator.total = res.data.total
 						// that.paginator.last_page = res.data.last_page
 						// that.listPostComment = [...that.listPostComment, ...res.data.data]
-						that.listPostComment = res.data;
+						var list = res.data
+						that.listPostComment = list;
 						// if (that.params.page < res.data.last_page) {
 						// that.loadmore = 'loadmore'
 						// } else
@@ -432,12 +457,6 @@
 					})
 				}
 			},
-			addComment(item) {
-				let that = this
-				that.placeholder = `回复${item.user.role_realname}`
-				that.post_comment_id = item.id
-				that.inputFocus = true;
-			},
 			handlePostDig() {
 				let that = this
 				that.$api('post.dig', {
@@ -478,25 +497,68 @@
 					}
 				})
 			},
-			doComment() {
+			doComment1() {
+				var that = this;
+				switch (that.flagNum) {
+					case 0:
+						var obj = {
+							post_id: that.$Route.query.post_id,
+							post_comment_id: 0,
+							top_post_comment_id: 0,
+							content: that.message
+						}
+						that.doComment(obj, 0)
+						break;
+					case 1:
+						var obj = {
+							post_id: that.$Route.query.post_id,
+							post_comment_id: that.replyData.id,
+							top_post_comment_id: that.replyData.id,
+							content: that.message
+						}
+						that.doComment(obj, 1)
+						break;
+					case 2:
+						var obj = {
+							post_id: that.$Route.query.post_id,
+							post_comment_id: that.replyData.id,
+							top_post_comment_id: that.replyData.top_post_comment_id,
+							content: that.message
+						}
+						that.doComment(obj, 2)
+						break;
+				}
+
+			},
+			doComment(obj, type) {
 				let that = this
 				if (!that.message) {
 					that.$u.toast('内容不能为空')
 					return false
 				}
-				that.$api('comment.add', {
-					content: that.message,
-					post_comment_id: that.post_comment_id,
-					post_id: that.post.id
-				}).then(res => {
+				that.$api('comment.add', obj).then(res => {
 					if (res.code === 1) {
-						that.message = ''
 						that.$u.toast('评论成功')
 						that.showEmoji = false
 						that.getPostDetail()
-						that.params.page = 1
-						that.listPostComment = []
-						that.getPostComment()
+						that.params.page = 1;
+						switch (type) {
+							case 0:
+								that.$refs.comment.pinglun0(res.data, that.message, that.replyData);
+								break;
+							case 1:
+								that.$refs.comment.pinglun1(res.data, that.message, that.replyData);
+								break;
+							case 2:
+								that.$refs.comment.pinglun2(res.data, that.message, that.replyData);
+								break;
+						}
+						that.replyData = []
+						that.message = ''
+						this.replyFalg = false;
+						this.replyData = []
+						this.placeholder = '发表评论'
+						this.flagNum = 0
 					} else {
 						that.$u.toast(res.msg)
 					}

@@ -67,9 +67,9 @@
 				if (that.$Route.query.id == 1) {
 					// 用户协议
 					this.currentId = 1;
-					this.currentSrc = "https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/protocol.html"
+					this.currentSrc =
+						"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/index.html?type=2"
 					this.isUserAgreement = true;
-					uni.hideNavBar()
 				}
 				if (that.$Route.query.id == 2) {
 					//隐私
@@ -79,10 +79,10 @@
 							console.log(res.deviceBrand)
 							if (res.deviceBrand == "huawei") {
 								that.currentSrc =
-									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacy.html";
+									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/index.html?type=1";
 							} else {
 								that.currentSrc =
-									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/privacy.html";
+									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/index.html?type=1";
 							}
 						}
 					})

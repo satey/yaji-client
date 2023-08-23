@@ -19,10 +19,6 @@
 				<view style="width: 20rpx;height: 20rpx;border-radius: 50%;background: #13D898;"></view>
 				<text style="font-size: 28rpx;color: #767373;margin-left: 10rpx;">{{countNum}}在线</text>
 			</view>
-			<view class="tips">
-				<view>1. 将杯置入水中，杯子顺水漂流。漂到谁跟前谁需要按要求进行发言。</view>
-				<view>2. 发语音完成发言后，得到其他人点赞可增加名望值。</view>
-			</view>
 		</view>
 		<view class="module" v-show="isModule">
 			<image class="lodding" src="@/static/lodding.gif" mode=""></image>

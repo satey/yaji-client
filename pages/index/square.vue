@@ -26,21 +26,23 @@
 			</image>
 		</view>
 		<block v-if="type === 'recommend'">
-			<uc-post v-for="(item, index) in postRecommendList" :key="index" :item="item"></uc-post>
+			<uc-post v-for="(item, index) in postRecommendList" :key="index" :item="item"
+				@openDetail="openDetail"></uc-post>
 			<u-loadmore v-if="postRecommendList.length" :status="loadmore" nomoreText="" color="#a1a1a1"
 				marginTop="20" />
 			<u-empty v-if="!postRecommendList.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</block>
 		<block v-if="type === 'follow'">
-			<uc-post v-for="(item, index) in postFollowList" :key="index" :item="item"></uc-post>
+			<uc-post v-for="(item, index) in postFollowList" :key="index" :item="item"
+				@openDetail="openDetail"></uc-post>
 			<u-loadmore v-if="postFollowList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
 			<u-empty v-if="!postFollowList.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</block>
 
 		<!-- <uc-auth></uc-auth>/ -->
-		<uc-tabbar></uc-tabbar>
+		<!-- <uc-tabbar></uc-tabbar> -->
 	</view>
 </template>
 <script>
@@ -75,15 +77,23 @@
 				follow_user_id: null,
 				// -----------
 				headBarBgColor: "",
-				bannerData: []
+				bannerData: [],
+				ispage: false,
+				oldPostRecommendList: []
 			}
 		},
 		onLoad(option) {
 			let that = this
-			that.postRecommendList = [];
-			that.getPostRecommend();
 			that.getAd()
-			// that.getPostRecommend()
+		},
+		onShow() {
+			let that = this;
+			if (that.ispage == true) {
+				that.ispage = false;
+			} else {
+				that.getPostRecommend1()
+			}
+
 		},
 		onReachBottom() {
 			let that = this
@@ -115,10 +125,11 @@
 			}
 		},
 		methods: {
+			openDetail() {
+				this.ispage = true;
+			},
 			jumpBanner(url) {
-				this.$u.route('/pages/joy/activity', {
-					url: url
-				})
+				this.$u.route('/pages/joy/activity')
 			},
 			//广告
 			getAd() {
@@ -141,6 +152,7 @@
 						that.$u.toast('无角色暂不能发布动态')
 						return
 					} else {
+						that.ispage = true;
 						uni.navigateTo({
 							url: '/pages/post/add'
 						})
@@ -166,13 +178,33 @@
 						break
 				}
 			},
+			getPostRecommend1() {
+				let that = this
+				that.loadmore = 'loading'
+				that.$api('post.recommend', {
+					'page': 1
+				}).then(res => {
+					if (res.code === 1) {
+						that.oldPostRecommendList = res.data.data;
+						if (that.postRecommendList.length == 0) {
+							that.getPostRecommend()
+						} else {
+							if (that.postRecommendList[0].id != res.data.data[0].id) {
+								that.params.page = 1;
+								that.postRecommendList = [];
+								that.getPostRecommend()
+							}
+						}
+					}
+				})
+			},
 			async getPostRecommend() {
 				let that = this
 				that.loadmore = 'loading'
 				that.$api('post.recommend', that.params).then(res => {
 					if (res.code === 1) {
 						that.paginator.total = res.data.total
-						that.paginator.last_page = res.data.last_page
+						that.paginator.last_page = res.data.last_page;
 						that.postRecommendList = [...that.postRecommendList, ...res.data.data]
 						if (that.params.page < res.data.last_page) {
 							that.loadmore = 'loadmore'
@@ -187,7 +219,6 @@
 				that.loadmore = 'loading'
 				that.$api('post.follow_user_post_list', that.params).then(res => {
 					if (res.code === 1) {
-						console.log(res.data);
 						that.paginator.total = res.data.total;
 						that.paginator.last_page = res.data.last_page;
 						that.postFollowList = [...that.postFollowList, ...res.data.data];

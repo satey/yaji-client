@@ -45,11 +45,11 @@
 			<!--  -->
 			<view class="mt-4" v-if="form.audio" style="display: flex;align-items: center;">
 				<view @click="handlePlayAudio(form.audio)"
-					style="width: 400rpx;background: #FE4373;justify-content: center;"
-					class="flex items-center  rounded-full w-32 h-12 bg-gradient-to-r  to-rose-400">
-					<image src="../../static/111.jpg" style="width: 200rpx;height: 50rpx;" v-if="audioStatus==false">
+					style="width: 300rpx;background: #FE4373;justify-content: center;"
+					class="flex items-center  rounded-full w-32 h-10 bg-gradient-to-r  to-rose-400">
+					<image src="../../static/111.jpg" style="width: 180rpx;height: 45rpx;" v-if="audioStatus==false">
 					</image>
-					<image src="/static/bofang.gif" style="width: 200rpx;height: 45rpx;" v-else mode=""></image>
+					<image src="/static/bofang.gif" style="width: 180rpx;height: 45rpx;" v-else mode=""></image>
 					<!-- <i class="ri-voiceprint-line text-2xl text-white" style="flex: 1;" :class="audioStatus ? 'animate-pulse' : ''"></i> -->
 					<text style="color: #FFFFFF;font-size: 28rpx;margin-left: 20rpx;"
 						v-if="form.timer !=0">{{form.timer}}s</text>
@@ -81,7 +81,7 @@
 		</view>
 
 		<!-- 工具栏 -->
-		<view class="border-0  border-gray-200 fixed bottom-200 left-0 right-0">
+		<view class="">
 			<view class="flex flex-row-center p-4 bg-white">
 				<view class="flex-1 flex">
 					<view class="flex items-center  p-3 rounded-full mr-4" @click="handleImage">
@@ -140,6 +140,14 @@
 				</view>
 			</view>
 		</view>
+		<!-- 推荐话题 -->
+		<view style="display: flex;flex-wrap: wrap;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="showTopic">
+			<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in cateList"
+				:key="index" :item="item" @click="addTag(item)">
+				<i class="ri-hashtag mr-1"></i>
+				<view class="text-base">{{ item.title }}</view>
+			</view>
+		</view>
 
 		<!-- 话题 -->
 		<u-popup :show="showTag" @close="showTag = false" :closeable="true" :round="30"
@@ -157,22 +165,15 @@
 				<!-- <view class="text-gray-500 mt-6">热门话题</view> -->
 				<view class="flex flex-wrap rounded-full">
 					<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4"
-						v-for="(item, index) in cateList" :key="index" :item="item" @click="addTag(item)">
+						v-for="(item, index) in searchTag" :key="index" :item="item" @click="addTag(item)">
 						<i class="ri-hashtag mr-1"></i>
 						<view class="text-base">{{ item.title }}</view>
 					</view>
-					<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4"
-						v-for="(item, index) in searchTag" :key="index" :item="item">
-						<i class="ri-hashtag mr-1"></i>
-						<view class="text-base">{{ item }}</view>
-					</view>
 				</view>
-				<u-empty v-if="!listHotTag.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1"
-					marginTop="100"></u-empty>
-
-				<u-empty v-if="!listNewTag.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1"
-					marginTop="100"></u-empty>
+				<!-- <u-empty v-if="!searchTag.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+					marginTop="100"></u-empty> -->
 			</view>
+			<view class="sdasdas" :style="{height:pageHeight+'px'}"></view>
 		</u-popup>
 		<!-- 圈子 -->
 		<!-- <u-popup :show="showGroup" @close="showGroup = false" :closeable="true" :round="30" customStyle="min-height: 500rpx;">
@@ -288,6 +289,8 @@
 				tpsTitle: "已录制",
 				isClick: true,
 				isBack: false,
+				pageHeight: 0,
+				showTopic: true,
 			}
 		},
 		onLoad(e) {
@@ -304,11 +307,11 @@
 				that.recordStart(e)
 			})
 			that.recorder.onStop((e) => {
-				console.log(e)
 				that.recordStop(e)
 			})
 			// ---------
-			that.cateInit(1, 5)
+			that.cateInit(1, 5);
+			that.watchKeyboard();
 		},
 
 		computed: {
@@ -323,6 +326,7 @@
 			async clickRecord() {
 				var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
 				if (result == 1) {
+					this.showTopic = !this.showTopic;
 					this.showRecord = !this.showRecord;
 					return
 				} else {
@@ -337,12 +341,24 @@
 					})
 				}
 			},
+			//监听键盘
+			watchKeyboard() {
+				var that = this;
+				uni.onKeyboardHeightChange(res => {
+					console.log(res)
+					if (res.height != 0) {
+						that.pageHeight = res.height - 100
+					} else {
+						that.pageHeight = res.height
+					}
+					console.log(that.pageHeight)
+				})
+			},
 			//打开话题弹窗
 			addCate() {
 				this.showTag = true;
-				this.cateList = []
+				this.searchTag = []
 				this.tag = ""
-				this.cateInit(1, 5)
 			},
 			//删除图片
 			delImg(index) {
@@ -359,6 +375,7 @@
 				this.showRecord = false;
 				this.form.timer = this.timer;
 				this.timer = 0;
+				this.showTopic = true;
 			},
 			//试听
 			openRecord() {
@@ -402,23 +419,14 @@
 			searchAdd() {
 				let that = this
 				// console.log("没获取到输入框的值",that.$refs.ipt.value);
-				if (that.tag == '') {
-					that.cateList = []
-					that.cateInit(1, 5)
-					return;
-				}
 				let data = {
 					keyword: that.tag
 				}
 				that.$api('post_cate.search_list', {
 					"keyword": that.tag
 				}).then(res => {
-					console.log(res)
 					if (res.code == 1) {
-						// that.searchTag=res.data[0].title
-						// console.log(that.searchTag,'1');
-						// console.log(res.data[0].title,'111');
-						that.cateList = res.data
+						that.searchTag = res.data
 					} else {
 						that.$u.toast(res.msg)
 					}
@@ -487,13 +495,15 @@
 					that.$u.toast("已添加该话题");
 					return;
 				}
-				that.fei_cate.push({
-					id: item.id,
-					content: item.title
-				})
 				if (that.fei_cate.length >= 3) {
 					that.isAddTake = false;
 					that.showTag = false;
+					that.$u.toast("只能添加三个话题");
+				} else {
+					that.fei_cate.push({
+						id: item.id,
+						content: item.title
+					})
 				}
 				// if (that.form.tags.indexOf(item) >= 0 || that.form.tags.length >= 3) {
 				// 	that.isAddTake = false

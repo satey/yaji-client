@@ -70,6 +70,7 @@
 			},
 			//选择类型
 			selectType(text, index) {
+				console.log(this.$Route.query.type)
 				this.reportType = text;
 				this.selectIndex = index;
 			},
@@ -114,7 +115,8 @@
 				that.$api('feedback.add', {
 					type: 'report',
 					content: that.reportValue,
-					remark: that.reportType,
+					remark: that.reportType +
+						`,类型:${that.$Route.query.type},${that.$Route.query.type}id:${that.$Route.query.selectId}`,
 					title: "",
 					images: imgArr,
 					feedback_user_id: that.$Route.query.user_id

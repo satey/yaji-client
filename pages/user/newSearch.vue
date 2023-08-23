@@ -51,7 +51,7 @@
 					<text @click="LishandleSearch(item)" style="color: #808080;font-size: 24rpx;"> {{ item}}</text>
 				</view>
 
-				<view class="text-xl text-gray-500 mt-8"
+				<!-- <view class="text-xl text-gray-500 mt-8"
 					style="font-weight: bold;color: #323232;font-size: 30rpx;margin-top: 80rpx;">
 					热门搜索</view>
 				<view class="flex flex-wrap flex-direction-row ">
@@ -61,7 +61,7 @@
 						style="color: #808080;font-size: 24rpx;">
 						{{ item.title }}
 					</view>
-				</view>
+				</view> -->
 				<!-- <view class="text-xl text-gray-500 mt-8">角色成就</view>
 	            <view class="flex flex-wrap flex-direction-row">
 	                <view v-for="(item, index) in listRoleAchievement" :key="index" :item="item" @click="handleSearchAchievement(item)" class="rounded text-base leading-none p-2 bg-gray-100 mt-4 mr-4">

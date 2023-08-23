@@ -1,19 +1,20 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
-	<view class="" style="height: 100vh;width: 100%;display: flex;flex-direction: column;box-sizing: border-box;">
-		<u-navbar title="qwe" :safeAreaInsetTop="true" :placeholder="true">
+	<view class="single">
+		<u-navbar id="navbar" title="qwe" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" @click="backUrl()"></i>
+				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({type: 'navigateBack',delta: 1})"></i>
 			</view>
 			<view slot="center" style="display: flex;align-items: center;">
-				<image :src="user.avatar" style="width:50rpx;height:50rpx;border-radius:50%;margin-right: 10rpx;">
-				</image>{{name}}
+				<image :src="toUserData.avatar" style="width:50rpx;height:50rpx;border-radius:50%;margin-right: 10rpx;">
+				</image>{{toUserData.name}}
 			</view>
 			<view slot="right">
 				<i class="ri-more-fill text-3xl"
 					@click="$u.route('/pages/chat/charSeting',{user_id:$Route.query.user_id})"></i>
 			</view>
 		</u-navbar>
+
 		<!-- 充值 -->
 		<view v-if="recharge">
 			<u-modal :show="recharge" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
@@ -27,57 +28,34 @@
 			</u-modal>
 		</view>
 
-		<scroll-view class="h-screen" scroll-y="true" :scroll-with-animation="false" show-scrollbar="false"
-			:scroll-into-view="scrollInto" style="flex: 1;height: 0;box-sizing: border-box;background: #F7F7F7;"
-			:refresher-enabled="isScrollDown" :refresher-triggered="scrollFlag" @refresherrefresh="scrollTop">
-			<view class="text-center text-xs text-gray-500" v-if="!messageList || messageList.length === 0"></view>
+		<scroll-view class="chatContainer" id="chatContainer" :scroll-into-view="scrollTop" @click="boxClick"
+			scroll-y="true" show-scrollbar="false" :scroll-with-animation="false" v-show="slideShow"
+			:refresher-enabled="isScrollDown" :refresher-triggered="scrollFlag" @refresherrefresh="refresher"
+			refresher-background="#F7F7F7">
 			<view v-if="showSvga" id="svgaPlayer" class="fixed w-full h-screen top-0 right-0 bottom-0 left-0"
 				style="z-index: 999;">
 				<l-svga ref="svgaPlayer"></l-svga>
 			</view>
-			<uc-auth></uc-auth>
-			<view class="mt-6 px-4" v-for="(item, index) in messageList" :key="index" :item="item">
-				<view class="text-center">
-					<text
-						class="p-1 px-2 rounded text-xs leading-none text-gray-400 bg-gray-50">{{ $u.timeFormat(item.createtime, 'yyyy-mm-dd hh:MM') }}</text>
-				</view>
-				<view class="flex justify-end mt-6" v-if="item.user_id === userInfo.id">
-					<view class="flex justify-end w-4/6">
-						<view class="mr-3">
-							<view v-if="item.type === 'text'"
-								class="rounded-3xl rounded-tr-none p-3 text-base text-white bg-gradient-to-r  to-fuchsia-500 whitespace-pre-wrap"
-								style="background: #FE4373;">
-								{{ item.content }}
-							</view>
-							<view v-if="item.type === 'image'">
-								<u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
-							</view>
-							<view v-if="item.type === 'gift'">
-								<u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
-							</view>
-							<view v-if="item.type === 'audio'" @click="handlePlayAudio(item.content)"
-								class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
-								<i class="ri-voiceprint-line text-2xl text-white"
-									:class="audioStatus ? 'animate-pulse' : ''"></i>
-							</view>
-						</view>
-						<view class="flex">
-							<image class="block rounded-full w-10 h-10" :src="item.avatar || '/static/avatar.png'">
-							</image>
-						</view>
+			<view style="padding: 0rpx 30rpx;box-sizing: border-box;">
+				<block v-for="(item,index) in chatMsgList" :key="index">
+					<!-- 时间 -->
+					<view class="text-center" style="padding-top: 10rpx;">
+						<text
+							class="p-1 px-2 rounded text-xs leading-none text-gray-400 bg-gray-50">{{ $u.timeFormat(item.createtime, 'yyyy-mm-dd hh:MM') }}</text>
 					</view>
-				</view>
-				<view class="flex justify-start mt-6" v-else>
-					<view class="flex justify-start w-4/6">
+					<!-- 左边 -->
+					<view class="chatLeft mt-6" :id="index==0?'scrollLeftTop':''"
+						v-if="item.user_id == $Route.query.user_id">
 						<view class="flex">
-							<image class="block rounded-full w-10 h-10" :src="item.avatar || '/static/avatar.png'"
+							<image class="block rounded-full w-10 h-10 mr-3" sty
+								:src="item.avatar || '/static/avatar.png'"
 								@click="$u.route('/pages/user/home',{user_id:item.user_id})">
 							</image>
 						</view>
-						<view class="ml-3">
+						<view>
 							<view v-if="item.type === 'text'"
 								class="rounded-3xl rounded-tl-none p-3 text-base bg-gradient-to-r to-fuchsia-500 whitespace-pre-wrap"
-								style="background: #fff;color: #333;">
+								style="background: #fff;color: #333;margin-right: 90rpx;">
 								{{ item.content }}
 							</view>
 							<view v-if="item.type === 'image'">
@@ -86,19 +64,60 @@
 							<view v-if="item.type === 'gift'">
 								<u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
 							</view>
-							<view v-if="item.type === 'audio'" @click="handlePlayAudio(item.content)"
+							<view v-if="item.type === 'audio'" @click="handlePlayAudio(item,index)"
 								class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
-								<i class="ri-voiceprint-line text-2xl text-white"
-									:class="audioStatus ? 'animate-pulse' : ''"></i>
+								<block v-if="item.isPlay==false">
+									<view class="ri-voiceprint-line" style="color: #fff;" v-for="(item,index) in 3"
+										:key="index">
+									</view>
+								</block>
+								<block v-else>
+									<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;"
+										v-if="item.isPlay == true">
+									</image>
+								</block>
 							</view>
 						</view>
 					</view>
-				</view>
+					<!-- 右边 -->
+					<view class="chatRight mt-6" :id="index==0?'scrollRightTop':''" v-else>
+						<view>
+							<view v-if="item.type === 'text'"
+								class="rounded-3xl rounded-tr-none p-3 text-base text-white bg-gradient-to-r  to-fuchsia-500 whitespace-pre-wrap"
+								style="background: #FE4373;max-width:80%;margin-left: 90rpx;">
+								{{ item.content }}
+							</view>
+							<view v-if="item.type === 'image'">
+								<u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
+							</view>
+							<view v-if="item.type === 'gift'">
+								<u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
+							</view>
+							<view v-if="item.type === 'audio'" @click="handlePlayAudio(item,index)"
+								class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
+								<block v-if="item.isPlay==false">
+									<view class="ri-voiceprint-line" style="color: #fff;" v-for="(item,index) in 3"
+										:key="index">
+									</view>
+								</block>
+								<block v-else>
+									<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;"
+										v-if="item.isPlay == true">
+									</image>
+								</block>
+							</view>
+						</view>
+						<view class="flex">
+							<image class="block rounded-full w-10 h-10 ml-3" :src="item.avatar || '/static/avatar.png'">
+							</image>
+						</view>
+					</view>
+				</block>
 			</view>
-			<view class="h-24" id="scrollBottom"></view>
+			<view id="scrollBottom" style="height: 20rpx;"></view>
 		</scroll-view>
-
-		<view class="bottom-0  left-0 right-0 !border-t border-0 border-solid border-gray-100 bg-white">
+		<!-- 底部 -->
+		<view class="singleFooter">
 			<view class="flex p-4">
 				<view class="mr-4 flex items-center" @click="handleVoice">
 					<i class="ri-mic-2-fill block text-4xl leading-none text-gray-400"></i>
@@ -108,12 +127,6 @@
 					style="padding:20rpx;border-radius: 10rpx;font-size:28rpx;color: rgb(48, 49, 51);"
 					placeholder="说点什么吧" v-model="text"
 					placeholder-style="color: rgb(192, 196, 204);font-size:30rpx"></textarea>
-				<!-- <view class="flex-1 mr-4 rounded-full h-10 flex items-center px-4 bg-gray-100">
-					<u-input :auto-blur="false" v-model="text" @focus="focus" @blur="blur" :adjustPosition="false"
-						@confirm="handleTextSend" type="text" placeholder="说点什么吧" :clearable="true"
-						customStyle="border: none; background: none; padding: 0;">
-					</u-input>
-				</view> -->
 				<view class="mr-4 flex items-center" @click="handleEmoji">
 					<i class="ri-emotion-fill block text-4xl leading-none text-gray-400"></i>
 				</view>
@@ -168,18 +181,6 @@
 					</view>
 					<view class="text-base leading-none mt-2">相册</view>
 				</view>
-				<!--                <view class="flex flex-col justify-center text-center" @tap="handleVideo">
-                    <view class="rounded-lg bg-white p-4 mx-auto">
-                        <i class="ri-camera-fill block text-2xl leading-none text-black"></i>
-                    </view>
-                    <view class="text-base leading-none mt-2">拍摄</view>
-                </view>
-                <view class="flex flex-col justify-center text-center" @tap="handleVideo">
-                    <view class="rounded-lg bg-white p-4 mx-auto">
-                        <i class="ri-vidicon-fill block text-2xl leading-none text-black"></i>
-                    </view>
-                    <view class="text-base leading-none mt-2">录制</view>
-                </view> -->
 				<view class="flex flex-col justify-center text-center" @click="handleGift">
 					<view class="rounded-lg bg-white p-4 mx-auto">
 						<i class="ri-gift-fill block text-2xl leading-none text-black"></i>
@@ -198,42 +199,30 @@
 	} from 'vuex'
 	import permision from "@/js_sdk/wa-permission/permission.js"
 	import reward from "@/components/fei-reward/fei-reward.vue"
-	// import Socket from '@/common/chat.js'
 	export default {
-		name: 'mine',
+		name: 'single',
 		components: {
 			reward
 		},
 		data() {
 			return {
-				chat: {},
-				user: {},
-				socket: null,
-				params: {
-					type: 'all',
-					page: 1,
+				scrollAnimation: false,
+				toUserData: {
+					"avatar": "",
+					"name": ""
 				},
-				paginator: {
-					total: 0,
-					last_page: 0,
-				},
-				scrollInto: '',
-				loadmore: false,
-				text: '',
-				messageList: [],
-				showEmoji: false,
-				emojiList: [],
+				chatMsgList: [],
 				giftList: [],
-				showSvga: false,
-				showPlus: false,
-				showImage: false,
-				showCamera: false,
+				scrollTop: "",
+				slideShow: true,
 				showRecord: false,
+				showEmoji: false,
+				showPlus: false,
 				showGift: false,
-				audio: null,
-				audioStatus: false,
-				video: null,
-				videoStatus: false,
+				showSvga: false,
+				text: '',
+				pageHeight: 0,
+				recordTip: "按住说话",
 				recorder: uni.getRecorderManager(),
 				recording: false,
 				recordStoping: false,
@@ -244,25 +233,32 @@
 					identifier: 0,
 					Y: 0
 				},
-				pageHeight: 0,
-				page: 1,
-				// ----------
-				sessionList: [],
-				// fei-------
-				timeout: 1000, // 30s
-				timeoutObj: null,
-				historyPage: 1,
-				loadingmMore: false,
-				wsOnlion: false, //websocket是否在线,
-				socKetUrl: "",
-				timmer: null,
-				scrollFlag: true,
-				isScrollDown: true,
-				msgPage: false,
-				newMsg: [],
-				name: "",
-				recharge: false,
+				audio: uni.createInnerAudioContext(),
 				giftIsShow: false,
+				recharge: false,
+				isScrollDown: true,
+				scrollFlag: true,
+				historyPage: 1,
+				emojiList: ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍',
+					'😘', '🥰', '😗', '😙', '🥲', '😚', '🙂', '🤗', '🤩', '🤔', '🫡', '🤨', '😐', '😑', '😶',
+					'🫥', '😶‍🌫️', '🙄', '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '🥱', '😴', '😌',
+					'😛', '😜', '😝', '🤤', '😒', '😓', '😔', '😕', '🫤', '🙃', '🫠', '🤑', '😲', '☹️', '🙁',
+					'😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😩', '🤯', '😬', '😮‍💨', '😰',
+					'😱', '🥵', '🥶', '😳', '🤪', '😵', '😵‍💫', '🥴', '😠', '😡', '🤬', '😷', '🤒', '🤕',
+					'🤢', '🤮', '🤧', '😇', '🥳', '🥸', '🥺', '🥹', '🤠', '🤡', '🤥', '🤫', '🤭', '🫢', '🫣',
+					'🧐', '🤓', '😈', '👿', '👹', '👺', '💀', '☠️', '👻', '👽', '👾', '🤖', '💩', '😺', '😸',
+					'😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊', '🐵', '🐶', '🐺', '🐱', '🦁',
+					'🐯', '🦒', '🦊', '🦝', '🐮', '🐷', '🐗', '🐭', '🐹', '🐰', '🐻', '🐻‍❄️', '🐨', '🐼',
+					'🐸', '🦓', '🐴', '🦄', '🐔', '🐲', '🐽', '🐾', '🐒', '🦍', '🦧', '🦮', '🐕‍🦺', '🐩',
+					'🐕', '🐈', '🐈‍⬛', '🐅', '🐆', '🐎', '🦌', '🦬', '🦏', '🦛', '🐂', '🐃', '🐄', '🐖', '🐏',
+					'🐑', '🐐', '🐪', '🐫', '🦙', '🦘', '🦥', '🦨', '🦡', '🐘', '🦣', '🐁', '🐀', '🦔', '🐇',
+					'🐿️', '🦫', '🦎', '🐊', '🐢', '🐍', '🐉', '🦕', '🦖', '🦦', '🦈', '🐬', '🦭', '🐳', '🐋',
+					'🐟', '🐠', '🐡', '🦐', '🦑', '🐙', '🦞', '🦀', '🐚', '🪸', '🦆', '🐓', '🦃', '🦅', '🕊️',
+					'🦢', '🦜', '🦩', '🦚', '🦉', '🦤', '🪶', '🐦', '🐧', '🐥', '🐤', '🐣', '🦇', '🦋', '🐌',
+					'🐛', '🦟', '🪰', '🪱', '🦗', '🐜', '🪳', '🐝', '🪲', '🐞', '🦂', '🕷️', '🕸️', '🦠',
+					'🧞‍♀️', '🧞‍♂️', '🧞', '🧟‍♀️', '🧟‍♂️', '🧟', '🧌', '🗣️', '👤', '👥', '🫂', '👁️', '👀',
+					'🦴', '🦷', '👅', '👄', '🫦', '🧠', '🫀', '🫁', '🦾', '🦿', '👣', '🤺', '⛷️'
+				]
 			}
 		},
 		computed: {
@@ -270,12 +266,26 @@
 				userInfo: state => state.user.userInfo,
 			})
 		},
-		created() {
-			let that = this
-			that.getGiftList()
-			that.getUserProfile()
-			that.getEmojiList()
+		onLoad() {
+			var that = this;
+			this.getUserProfile();
+			// this.initSocKet();
+			// this.getChatList();
+			this.watchKeyboard();
+			this.getGiftList()
+			this.watchRecorder()
+			this.single()
+		},
 
+		onShow() {
+			this.$nextTick(function() {
+				this.chatMsgList = [];
+				this.getChatList();
+				this.initSocKet();
+			})
+		},
+		created() {
+			var that = this;
 			// #ifdef APP-PLUS
 			var pages = getCurrentPages();
 			var page = pages[pages.length - 1];
@@ -288,31 +298,56 @@
 			})
 			// #endif
 		},
-		destroyed() {
-			// getApp().globalData.socketTask.close();
-		},
-		onLoad(e) {
-			var that = this;
-			this.msgPage = Boolean(e.megPgae);
-			var delay = setTimeout(() => {
-				// that.init();
-				that.poetry()
-				that.watchKeyboard();
-				that.initSingleSocket();
-				// that.unread();
-				this.$nextTick(() => {
-					that.scrollBottom();
-				})
-				clearTimeout(delay)
-			}, 200)
-		},
 		onUnload() {
-			this.$store.commit("setReceiverId", "");
-			getApp().globalData.socketTask.close()
+			getApp().globalData.socketTask.close();
+			this.audio.destroy()
 		},
 		methods: {
-			changend() {
-				this.giftIsShow = false;
+			single() {
+				let that = this
+				that.$api('chat.single', {
+					user_id: that.$Route.query.user_id
+				}).then(res => {
+					if (res.code === 1) {
+						if (res.data.send_message != '') {
+							var poetryItem = uni.getStorageSync("poetryItem");
+							if (poetryItem == '') {
+								var obj = {
+									avatar: that.userInfo.avatar,
+									content: res.data.send_message,
+									createtime: that.getDate(),
+									type: "text",
+									user_id: that.userInfo.id,
+								};
+								that.chatMsgList.push(obj);
+								that.sendMessage(res.data.send_message, 'text');
+							} else {
+								that.poetry()
+							}
+						}
+						uni.setStorageSync('CHATSESSIONID', res.data.session_id)
+					} else {
+						that.$u.toast(res.msg)
+					}
+				})
+			},
+			boxClick() {
+				this.showRecord = false;
+				this.showEmoji = false;
+				this.showPlus = false;
+				this.showGift = false;
+			},
+			//下拉刷新
+			refresher() {
+				var that = this;
+				that.scrollFlag = true;
+				that.historyPage++;
+				that.getChatList()
+				that.$nextTick(() => {
+					that.scrollLeftTop()
+					that.scrollRightTop()
+				})
+
 			},
 			//诗词结缘
 			poetry() {
@@ -324,66 +359,23 @@
 						receiver_id: poetryItem.user_id
 					}).then(res => {
 						if (res.code == 0) {
+							var obj = {
+								avatar: that.userInfo.avatar,
+								content: res.msg,
+								createtime: that.getDate(),
+								type: "text",
+								user_id: that.userInfo.id,
+							};
+							that.chatMsgList.push(obj);
 							that.sendMessage(res.msg, 'text');
-							that.init();
-						} else {
-							that.init();
-						}
+						} else {}
 						uni.removeStorageSync("poetryItem");
 					})
-				} else {
-					that.init();
 				}
 			},
-			//聊天页面socket监听
-			initSingleSocket() {
-				var that = this;
-				var newMeg = [];
-				that.$store.commit("setReceiverId", that.$Route.query.user_id);
-				getApp().globalData.socketTask.onMessage((res) => {
-					if (JSON.parse(res.data).cate != 1) {
-						return;
-					}
-
-					var userInfo = uni.getStorageSync("userInfo");
-					if (JSON.parse(res.data).type == "history") {
-						that.parseMsg(res.data)
-						if (that.historyPage == 1) {
-							that.scrollBottom()
-						}
-						var data = JSON.parse(res.data).last_gift_data;
-						if (data == null) {
-							return;
-						}
-						if (userInfo.id != data.user_id) {
-							if (data.readtime == null) {
-								if (data.type == "gift") {
-									that.showSvga = true;
-									that.$nextTick(() => {
-										that.giftList.forEach((val, index) => {
-											if (val.id == data.gift_id) {
-												var setTime1 = setTimeout(() => {
-													that.gift = val;
-													that.handleGiftPlay()
-													that.handleTextSend()
-													clearTimeout(setTime1)
-													that.scrollBottom()
-												}, 500)
-											}
-										})
-									})
-								}
-							}
-						}
-					} else {
-						if (JSON.parse(res.data).data.user_id == userInfo.id || JSON.parse(res.data).data
-							.user_id == that.$Route.query.user_id) {
-							this.unread(); //后台标记已读
-							this.parseMsg(res.data);
-						}
-						that.scrollBottom()
-					}
-				})
+			//礼包
+			changend() {
+				this.giftIsShow = false;
 			},
 			//后台标记已读
 			unread() {
@@ -402,175 +394,146 @@
 					}
 				});
 			},
-			//去重
-			deWeight(arr) {
-				var a = 0;
-				var newArr = []
-				for (var i = 0; i < arr.length - 1; i++) {
-					for (var j = i + 1; j < arr.length; j++) {
-						if (arr[i].data.user.id == arr[j].data.user.id) {
-							arr.splice(i, 1);
-							a++;
-							//因为数组长度减小1，所以直接 j++ 会漏掉一个元素，所以要 j--
-							j--;
-						}
-					}
-				}
-				return arr;
-			},
-			//scroll下拉
-			scrollTop() {
-				console.log("fei")
+			//初始化socket
+			initSocKet() {
 				var that = this;
-				that.scrollFlag = true;
-				that.historyPage++;
-				that.fei_getMessageList(this.historyPage)
-			},
-			//监听键盘
-			watchKeyboard() {
-				var that = this;
-				uni.onKeyboardHeightChange(res => {
-					that.pageHeight = res.height
-				})
-			},
-			// 获得焦点后
-			focus(e) {
-				this.scrollBottom();
-				this.watchKeyboard()
-				this.showRecord = false;
-				this.showEmoji = false;
-				this.showGift = false;
-				this.showPlus = false;
-				// 可用区域高度减去软键盘高度，最后加上px转为字符串
-			},
-			// 失去焦点后
-			blur() {
-				this.pageHeight = 0
-			},
-			init() {
-				let that = this
-				that.$api('chat.single', {
-					user_id: that.$Route.query.user_id
-				}).then(res => {
-					if (res.code === 1) {
-						that.chat = res.data;
-						if (res.data.send_message != '') {
-							that.sendMessage(res.data.send_message)
-						}
-						uni.setStorageSync('CHATSESSIONID', res.data.session_id)
-						// 监听消息
-						that.fei_getMessageList(that.historyPage)
-						// 监听录音
-						that.recorder.onStart((e) => {
-							that.recordStart(e)
-						})
-						that.recorder.onStop((e) => {
-							that.recordStop(e)
-						})
-					} else {
-						that.$u.toast(res.msg)
+				getApp().globalData.socketTask.onMessage((res) => {
+					if (JSON.parse(res.data).cate != 1) {
+						return;
 					}
-				})
-			},
+					var socketData = JSON.parse(res.data);
+					that.unread()
+					if (socketData.type == "history") {
+						console.log(socketData)
+						var list = socketData.data;
+						var list2 = [];
+						if (that.historyPage != 1) {
+							if (socketData.data.length == 0) {
+								that.isScrollDown = false;
+								return;
+							} else {
+								list.unshift(...that.chatMsgList);
+								that.scrollFlag = false;
 
-			//获取历史记录
-			fei_getMessageList(page) {
-				let that = this
+							}
+
+						}
+						list.sort((a, b) => {
+							return a.createtime - b.createtime
+						})
+						list.forEach((val, index) => {
+							list2.push({
+								avatar: val.avatar,
+								content: val.content,
+								createtime: val.createtime,
+								type: val.type,
+								user_id: val.user_id,
+								isPlay: false
+							})
+						})
+						that.chatMsgList = list2;
+						if (that.historyPage == 1) {
+							that.scrollBottom();
+						}
+
+						//------
+						var data = JSON.parse(res.data).last_gift_data;
+						if (data == null) {
+							return;
+						}
+						if (socketData.last_gift_data.readtime == null) {
+							if (data.type == "gift") {
+								that.showSvga = true;
+								that.$nextTick(() => {
+									that.giftList.forEach((val, index) => {
+										if (val.id == data.gift_id) {
+											var setTime1 = setTimeout(() => {
+												that.gift = val;
+												that.handleGiftPlay()
+												clearTimeout(setTime1)
+												that.scrollBottom()
+											}, 200)
+										}
+									})
+								})
+							}
+						}
+					} else if (socketData.type == "text") {
+						if (socketData.data.user_id == that.$Route.query.user_id) {
+							that.scrollAnimation = true;
+							that.chatMsgList.push(socketData.data);
+							that.scrollBottom();
+						}
+					} else if (socketData.type == "image") {
+						if (socketData.data.user_id == that.$Route.query.user_id) {
+							that.scrollAnimation = true;
+							that.chatMsgList.push(socketData.data);
+							that.scrollBottom();
+						}
+					} else if (socketData.type == "gift") {
+						if (socketData.data.user_id == that.$Route.query.user_id) {
+							that.giftList.forEach((val, index) => {
+								if (val.id == socketData.data.gift_id) {
+									that.gift = val;
+									that.handleGiftPlay()
+								}
+							})
+							that.scrollAnimation = true;
+							that.chatMsgList.push(socketData.data);
+							that.scrollBottom();
+						}
+					} else if (socketData.type == "audio") {
+						if (socketData.data.user_id == that.$Route.query.user_id) {
+							var list = socketData.data;
+							list.isPlay = false;
+							that.scrollAnimation = true;
+							that.chatMsgList.push(list);
+							that.scrollBottom();
+						}
+					}
+				})
+			},
+			//获取聊天信息
+			getChatList() {
+				var that = this;
 				let params = {
 					type: 'history',
 					msg: 'send',
 					data: '',
-					page: page,
-					to_user_id: that.$Route.query.user_id, //接收者的id,
+					page: that.historyPage,
+					to_user_id: this.$Route.query.user_id, //接收者的id,
 				}
-				console.log(params)
 				getApp().globalData.socketTask.send({
 					data: JSON.stringify(params),
 					success() {
-						console.log("webscoket发送信息成功");
-						that.sendStr = "";
+						console.log("获取历史聊天记录成功");
 					},
 					fail() {
-						console.log("webscoket发送信息失败");
+						console.log("获取历史聊天记录失败");
 					}
 				});
 			},
-			changeTab(e) {
-				let that = this
-				that.type = e.type
-			},
-			scrollBottom() {
-				let that = this
-				let timeout = null
-				that.scrollInto = ''
-				clearTimeout(timeout)
-				timeout = setTimeout(() => {
-					that.scrollInto = 'scrollBottom'
-				}, 300)
-			},
-			// 解析消息
-			parseMsg(message) {
+			//发送文本消息
+			handleTextSend() {
 				let that = this;
-				let msg = JSON.parse(message);
-				if (msg.code === 1) {
-					switch (msg.type) {
-						case 'init':
-							that.sendMessage('', 'history')
-							that.scrollBottom()
-							break
-						case 'text':
-							that.messageList.push(msg.data)
-							that.scrollBottom()
-							break
-						case 'image':
-							that.messageList.push(msg.data)
-							that.scrollBottom()
-							break
-						case 'audio':
-							that.messageList.push(msg.data)
-							that.scrollBottom()
-							break
-						case 'video':
-							that.messageList.push(msg.data)
-							that.scrollBottom()
-							break
-						case 'gift':
-							that.giftList.forEach((val, index) => {
-								if (val.id == msg.data.gift_id) {
-									that.gift = val;
-									that.handleGiftPlay()
-									that.handleTextSend()
-								}
-							})
-							that.messageList.push(msg.data)
-							that.scrollBottom()
-							break
-						case 'history':
-							if (that.historyPage == 1) {
-								that.messageList = msg.data
-								that.messageList.sort((a, b) => {
-									return a.createtime - b.createtime
-								})
-							} else {
-								that.scrollFlag = false;
-								that.messageList.unshift(...msg.data)
-								// that.messageList = [...that.messageList, ...msg.data.data];
-								that.loadingmMore = true;
-								that.messageList.sort((a, b) => {
-									return a.createtime - b.createtime
-								})
-								if (msg.data.length == 0) {
-									that.isScrollDown = false;
-								}
-							}
-							break
-						default:
-					}
+				if (that.text === '') {
+					return
 				} else {
-					that.$u.toast('连接错误：' + msg.msg)
+					that.scrollAnimation = true;
+					var obj = {
+						avatar: that.userInfo.avatar,
+						content: that.text,
+						createtime: that.getDate(),
+						type: "text",
+						user_id: that.userInfo.id,
+					};
+					that.chatMsgList.push(obj);
+					that.sendMessage(that.text, 'text');
+					that.text = '';
+					that.scrollBottom()
 				}
 			},
-			// 发送服务数据
+			//发送socket信息
 			sendMessage(data, type = 'text', gift_id = "") {
 				let that = this;
 				let params = {
@@ -592,50 +555,112 @@
 					}
 				});
 			},
-			backUrl() {
-				var that = this;
-				this.$u.route({
-					type: 'navigateBack',
-					delta: 1
-				})
-				// uni.navigateTo();
-			},
-			//发送文本消息
-			handleTextSend() {
-				let that = this;
-				if (that.text === '') {
-					return
+			//播放语音
+			handlePlayAudio(item, index) {
+				let that = this
+				if (!item.content) {
+					that.$u.toast('语音不能为空');
+					return false
 				} else {
-					// that.$api('user_black.lists').then(res => {
-					// 	if (res.code == 1) {
-					// 		var result = res.data.filter((res, index) => {
-					// 			return res.black_user_id == that.$Route.query.user_id ? true : false;
-					// 		})
-					// 		if (result.length == 0) {
-					// 			console.log("fei")
-					// 			that.showEmoji = false;
-					// 			that.sendMessage(that.text, 'text');
-					// 			that.text = '';
-					// 		} else {
-					// 			that.$u.toast('对方在黑名单内');
-					// 		}
-					// 	}
-					// })
-					// that.showEmoji = false;
-					that.sendMessage(that.text, 'text');
-					that.text = '';
+					that.audio.destroy();
+					that.chatMsgList.forEach((val, index) => {
+						val.isPlay = false;
+					})
+					that.audio = uni.createInnerAudioContext()
+					that.audio.src = item.content;
+					that.chatMsgList[index].isPlay = true;
+					that.audio.play()
+					that.audio.onEnded((e) => {
+						that.chatMsgList[index].isPlay = false;
+					})
 				}
 			},
+			//监听录音
+			watchRecorder() {
+				var that = this;
+				that.recorder.onStart((e) => {
+					that.recordStart(e)
+				})
+				that.recorder.onStop((e) => {
+					that.recordStop(e)
+				})
+			},
+			//表情
 			handleEmoji() {
-				this.scrollBottom()
-				let that = this
-				that.showEmoji = !that.showEmoji
-				that.showRecord = false
+				var that = this;
+				that.showRecord = false;
+				that.showEmoji = true;
 				that.showPlus = false
 				that.showGift = false
+				that.scrollBottom()
 			},
-			async handleVoice() {
+			handleEmojiSend(item) {
 				let that = this
+				that.text += item
+			},
+			//礼物
+			handleGift() {
+				let that = this
+				that.showGift = !that.showGift
+				that.showPlus = false
+			},
+			//礼物列表
+			getGiftList() {
+				let that = this
+				that.$api('gift.lists').then(res => {
+					if (res.code === 1) {
+						that.giftList = res.data;
+					}
+				})
+			},
+			handleGiftSend(item) {
+				let that = this;
+				that.gift = item;
+				that.$api("gift.giveGift", {
+					"receiver_user_id": that.$Route.query.user_id,
+					"nums": 1,
+					"gift_id": item.id
+				}).then(data => {
+					if (data.code == 1) {
+						if (data.msg == "赠送成功") {
+							that.sendMessage(that.gift.image, 'gift', item.id)
+							that.showSvga = true
+							that.handleGiftPlay();
+							that.scrollAnimation = true;
+							var obj = {
+								avatar: that.userInfo.avatar,
+								content: that.gift.image,
+								createtime: that.getDate(),
+								type: "gift",
+								user_id: that.userInfo.id,
+							};
+							that.chatMsgList.push(obj);
+							that.scrollBottom()
+						}
+					} else {
+						that.recharge = true;
+					}
+				})
+			},
+			//播放礼物动画
+			handleGiftPlay() {
+				let that = this;
+				that.showSvga = true;
+				that.$nextTick(() => {
+					that.$refs.svgaPlayer.render(async (parser, player) => {
+						let videoItem = await parser.load(that.gift.url)
+						await player.setVideoItem(videoItem)
+						player.loops = 1
+						player.startAnimation()
+						player.onFinished(() => {
+							that.showSvga = false
+						})
+					})
+				})
+			},
+			//录音
+			async handleVoice() {
+				let that = this;
 				var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
 				if (result == 1) {
 					this.scrollBottom();
@@ -656,167 +681,6 @@
 					})
 				}
 			},
-			handlePlus() {
-				let that = this
-				that.scrollBottom()
-				that.showPlus = !that.showPlus
-				that.showRecord = false
-				that.showEmoji = false
-				that.showGift = false
-			},
-			handleEmojiSend(item) {
-				let that = this
-				that.text += item
-			},
-			handleGift() {
-				let that = this
-				that.showGift = !that.showGift
-				that.showPlus = false
-			},
-			handleGiftSend(item) {
-				let that = this;
-				that.gift = item;
-				that.sending(item);
-			},
-			sending(item) {
-				var that = this;
-				that.$api("gift.giveGift", {
-					"receiver_user_id": that.$Route.query.user_id,
-					"nums": 1,
-					"gift_id": item.id
-				}).then(data => {
-					if (data.code == 1) {
-						if (data.msg == "赠送成功") {
-							that.sendMessage(that.gift.image, 'gift', item.id)
-							// that.showGift = false;
-							that.showSvga = true
-							// that.handleGiftPlay()
-							that.handleTextSend();
-						}
-					} else {
-						that.recharge = true;
-					}
-				})
-			},
-			handleGiftPlay() {
-				let that = this;
-				that.showSvga = true;
-				that.$nextTick(() => {
-					that.$refs.svgaPlayer.render(async (parser, player) => {
-						let videoItem = await parser.load(that.gift.url)
-						await player.setVideoItem(videoItem)
-						player.loops = 1
-						player.startAnimation()
-						player.onFinished(() => {
-							that.showSvga = false
-						})
-					})
-				})
-			},
-			async getUserProfile() {
-				let that = this
-				that.$api('user.profile', {
-					user_id: that.$Route.query.user_id
-				}).then(res => {
-					if (res.code === 1) {
-						if (res.data == null) {
-							uni.showToast({
-								icon: "none",
-								title: "用户已注销"
-							})
-							return;
-						}
-						if (res.data.role.realname != null && res.data.role.realname != '') {
-							that.name = res.data.role.realname + "·" + res.data.role.dynasty
-						} else {
-							that.name = "无名氏"
-						}
-						that.user = res.data;
-					}
-				})
-			},
-			async getEmojiList() {
-				let that = this
-				if (uni.getStorageSync('EMOJILIST')) {
-					that.emojiList = uni.getStorageSync('EMOJILIST')
-				} else {
-					that.emojiList = ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍',
-						'😘', '🥰', '😗', '😙', '🥲', '😚', '🙂', '🤗', '🤩', '🤔', '🫡', '🤨', '😐', '😑', '😶',
-						'🫥', '😶‍🌫️', '🙄', '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '🥱', '😴', '😌',
-						'😛', '😜', '😝', '🤤', '😒', '😓', '😔', '😕', '🫤', '🙃', '🫠', '🤑', '😲', '☹️', '🙁',
-						'😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😩', '🤯', '😬', '😮‍💨', '😰',
-						'😱', '🥵', '🥶', '😳', '🤪', '😵', '😵‍💫', '🥴', '😠', '😡', '🤬', '😷', '🤒', '🤕',
-						'🤢', '🤮', '🤧', '😇', '🥳', '🥸', '🥺', '🥹', '🤠', '🤡', '🤥', '🤫', '🤭', '🫢', '🫣',
-						'🧐', '🤓', '😈', '👿', '👹', '👺', '💀', '☠️', '👻', '👽', '👾', '🤖', '💩', '😺', '😸',
-						'😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🙈', '🙉', '🙊', '🐵', '🐶', '🐺', '🐱', '🦁',
-						'🐯', '🦒', '🦊', '🦝', '🐮', '🐷', '🐗', '🐭', '🐹', '🐰', '🐻', '🐻‍❄️', '🐨', '🐼',
-						'🐸', '🦓', '🐴', '🦄', '🐔', '🐲', '🐽', '🐾', '🐒', '🦍', '🦧', '🦮', '🐕‍🦺', '🐩',
-						'🐕', '🐈', '🐈‍⬛', '🐅', '🐆', '🐎', '🦌', '🦬', '🦏', '🦛', '🐂', '🐃', '🐄', '🐖', '🐏',
-						'🐑', '🐐', '🐪', '🐫', '🦙', '🦘', '🦥', '🦨', '🦡', '🐘', '🦣', '🐁', '🐀', '🦔', '🐇',
-						'🐿️', '🦫', '🦎', '🐊', '🐢', '🐍', '🐉', '🦕', '🦖', '🦦', '🦈', '🐬', '🦭', '🐳', '🐋',
-						'🐟', '🐠', '🐡', '🦐', '🦑', '🐙', '🦞', '🦀', '🐚', '🪸', '🦆', '🐓', '🦃', '🦅', '🕊️',
-						'🦢', '🦜', '🦩', '🦚', '🦉', '🦤', '🪶', '🐦', '🐧', '🐥', '🐤', '🐣', '🦇', '🦋', '🐌',
-						'🐛', '🦟', '🪰', '🪱', '🦗', '🐜', '🪳', '🐝', '🪲', '🐞', '🦂', '🕷️', '🕸️', '🦠',
-						'🧞‍♀️', '🧞‍♂️', '🧞', '🧟‍♀️', '🧟‍♂️', '🧟', '🧌', '🗣️', '👤', '👥', '🫂', '👁️', '👀',
-						'🦴', '🦷', '👅', '👄', '🫦', '🧠', '🫀', '🫁', '🦾', '🦿', '👣', '🤺', '⛷️'
-					]
-					uni.setStorageSync('EMOJILIST', that.emojiList)
-
-				}
-			},
-			getGiftList() {
-				let that = this
-				that.$api('gift.lists').then(res => {
-					if (res.code === 1) {
-						that.giftList = res.data;
-					}
-				})
-			},
-			handlePlayAudio(audio) {
-				let that = this
-				if (!audio) {
-					that.$u.toast('语音不能为空')
-					return false
-				}
-				if (!that.audio) {
-					that.audio = uni.createInnerAudioContext()
-					that.audio.src = audio
-				}
-				that.audioStatus = !that.audioStatus
-				if (that.audioStatus) {
-					that.$nextTick(function() {
-						that.audio.play()
-						that.audio.onEnded((e) => {
-							that.audioStatus = false
-						})
-					})
-				} else {
-					that.$nextTick(function() {
-						that.audio.pause()
-					})
-				}
-			},
-			// handlePlayVideo(video) {
-			//     let that = this
-			//     if (!video) {
-			//         that.$u.toast('视频不能为空')
-			//         return false
-			//     }
-			//     if (!that.video) {
-			//         that.video = uni.createVideoContext('video')
-			//         that.video.src = video
-			//     }
-			//     that.videoStatus = !that.videoStatus
-			//     if(that.videoStatus) {
-			//         that.$nextTick(function () {
-			//             that.video.play()
-			//         })
-			//     } else {
-			//         that.$nextTick(function () {
-			//             that.video.pause()
-			//         })
-			//     }
-			// },
 			handleRecordStart(e) {
 				let that = this
 				// #ifdef APP-PLUS || MP-WEIXIN
@@ -876,6 +740,17 @@
 						res = JSON.parse(res.data)
 						if (res.code === 1) {
 							that.sendMessage(res.data.fullurl, 'audio')
+							that.scrollAnimation = true;
+							var obj = {
+								avatar: that.userInfo.avatar,
+								content: res.data.fullurl,
+								createtime: that.getDate(),
+								type: "audio",
+								user_id: that.userInfo.id,
+								isPlay: false,
+							};
+							that.chatMsgList.push(obj);
+							that.scrollBottom()
 						} else {
 							that.$u.toast(res.msg)
 						}
@@ -883,6 +758,7 @@
 					complete: e => {}
 				})
 			},
+			//发送图片
 			handleImage() {
 				let that = this
 				var token = uni.getStorageSync("token");
@@ -904,7 +780,17 @@
 									res = JSON.parse(res.data)
 									if (res.code === 1) {
 										getApp().globalData.isSelectImage = false;
-										that.sendMessage(res.data.fullurl, 'image')
+										that.sendMessage(res.data.fullurl, 'image');
+										that.scrollAnimation = true;
+										var obj = {
+											avatar: that.userInfo.avatar,
+											content: res.data.fullurl,
+											createtime: that.getDate(),
+											type: "image",
+											user_id: that.userInfo.id,
+										};
+										that.chatMsgList.push(obj);
+										that.scrollBottom()
 									} else {
 										that.$u.toast(res.msg)
 									}
@@ -913,63 +799,122 @@
 							})
 						})
 					}
-					// that.cos.putObject({
-					// 	Bucket: 'yaji-1318192409',
-					// 	/* 填入您自己的存储桶，必须字段 */
-					// 	Region: 'ap-shanghai',
-					// 	/* 存储桶所在地域，例如ap-beijing，必须字段 */
-					// 	Key: "chat/images/" + res.tempFiles[0].name,
-					// 	/* 存储在桶里的对象键（例如1.jpg，a/b/test.txt），必须字段 */
-					// 	Body: res.tempFiles[0],
-					// 	/* 必须，上传文件对象，可以是input[type="file"]标签选择本地文件后得到的file对象 */
-					// 	Headers: {
-					// 		"Content-Type": "image/jpeg"
-					// 	},
-					// 	onProgress: function(progressData) {
-					// 		console.log(JSON.stringify(progressData));
-					// 	}
-					// }, function(err, data) {
-					// 	if (data.statusCode == 200) {
-					// 		that.sendMessage("https://" + data.Location, 'image')
-					// 	} else {
-					// 		that.$u.toast(res.msg)
-					// 	}
-					// });
-					// --------------------------------------
 				})
 			},
-			// handleVideo() {
-			//     let that = this
-			//     uni.chooseVideo({
-			//         maxDuration: 10,
-			//         sourceType: ['album'],
-			//         success: (res) => {
-			//             console.log(res)
-			//             if (res.size > 10 * 1024 * 1024) {
-			//                 that.$u.toast('视频不能超过10M')
-			//                 return false
-			//             }
-			//             uni.uploadFile({
-			//                 url: that.$API_URL + 'index/upload',
-			//                 filePath: res.tempFilePath,
-			//                 name: 'file',
-			//                 success: res => {
-			//                     res = JSON.parse(res.data)
-			//                     console.log(res)
-			//                     if (res.code === 1) {
-			//                         that.sendMessage(res.data.fullurl, 'video')
-			//                     } else {
-			//                         that.$u.toast(res.msg)
-			//                     }
-			//                 },
-			//                 complete: e => {}
-			//             })
-			//         }
-			//     })
-			// },
+			//更多
+			handlePlus() {
+				let that = this
+				that.scrollBottom()
+				that.showPlus = !that.showPlus
+				that.showRecord = false
+				that.showEmoji = false
+				// that.showGift = false
+			},
+			// 获得焦点后
+			focus(e) {
+				this.scrollBottom();
+				this.showRecord = false;
+				this.showEmoji = false;
+				this.showGift = false;
+				this.showPlus = false;
+				// 可用区域高度减去软键盘高度，最后加上px转为字符串
+			},
+			// 失去焦点后
+			blur() {
+				this.pageHeight = 0
+			},
+			//监听键盘
+			watchKeyboard() {
+				var that = this;
+				uni.onKeyboardHeightChange(res => {
+					that.pageHeight = res.height
+				})
+			},
+			//获取聊天对象信息
+			getUserProfile() {
+				let that = this
+				that.$api('user.profile', {
+					user_id: that.$Route.query.user_id
+				}).then(res => {
+					if (res.code === 1) {
+						if (res.data == null) {
+							uni.showToast({
+								icon: "none",
+								title: "用户已注销"
+							})
+							return;
+						}
+						if (res.data.role.realname != null && res.data.role.realname != '') {
+							that.toUserData.name = res.data.role.realname + "·" + res.data.role.dynasty
+						} else {
+							that.toUserData.name = "无名氏"
+						}
+						that.toUserData.avatar = res.data.avatar
+					}
+				})
+			},
+			scrollBottom() {
+				let that = this
+				let timeout = null
+				that.scrollTop = ''
+				clearTimeout(timeout)
+				timeout = setTimeout(() => {
+					that.scrollTop = 'scrollBottom';
+				}, 100)
+			},
+			scrollLeftTop() {
+				let that = this
+				let timeout = null
+				that.scrollTop = ''
+				clearTimeout(timeout)
+				timeout = setTimeout(() => {
+					that.scrollTop = 'scrollLeftTop';
+				}, 50)
+			},
+			scrollRightTop() {
+				let that = this
+				let timeout = null
+				that.scrollTop = ''
+				clearTimeout(timeout)
+				timeout = setTimeout(() => {
+					that.scrollTop = 'scrollRightTop';
+				}, 300)
+			},
+			//获取时间戳
+			getDate() {
+				var tmp = Date.parse(new Date()).toString();
+				tmp = tmp.substr(0, 10);
+				return tmp;
+			}
 		}
 	}
 </script>
-<style lang="scss" scoped>
+<style>
+	.single {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+	}
 
+	.chatContainer {
+		height: 0;
+		flex: 1;
+		background: #F7F7F7;
+		box-sizing: border-box;
+	}
+
+	.chatContainer::-webkit-scrollbar {
+		width: 0;
+		height: 0;
+		background-color: transparent;
+	}
+
+	.chatLeft {
+		display: flex;
+	}
+
+	.chatRight {
+		display: flex;
+		justify-content: flex-end;
+	}
 </style>

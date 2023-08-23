@@ -384,7 +384,7 @@
 							</view>
 							<view class="ri-alert-line"
 								style="font-size: 35rpx;margin-left: 20rpx;color: #999;opacity: 0.8;"
-								@click="$u.route('pages/public/report?user_id='+userItem.id)"></view>
+								@click="$u.route('/pages/public/report',{user_id:item.user_id,type:'曲水流觞'})"></view>
 						</view>
 					</view>
 				</view>

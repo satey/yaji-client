@@ -136,7 +136,7 @@
 		<clipper :image-url="imgurl" v-if="imgurl" @cancel="imgCancel" @success="imgSuccess" :is-limit-move="true"
 			:isReduce="true" :max-width="400" :isRound="true" />
 		<!-- <uc-auth></uc-auth> -->
-		<uc-tabbar></uc-tabbar>
+		<!-- <uc-tabbar></uc-tabbar> -->
 	</view>
 </template>
 <script>
@@ -190,7 +190,8 @@
 			that.getAd()
 		},
 		onShow() {
-			let that = this
+			let that = this;
+			that.imgCancel()
 			that.getUserInfo()
 		},
 		onReachBottom() {

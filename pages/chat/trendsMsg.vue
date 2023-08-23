@@ -8,7 +8,7 @@
 		</u-navbar>
 		<view class="px-4" v-if="trendsMsgList.length != 0">
 			<view style="display: flex;justify-content: space-between;padding: 30rpx 0rpx;"
-				v-for="(item,index) in trendsMsgList">
+				v-for="(item,index) in trendsMsgList" :key="index" @click="openDetail(item)">
 				<view>
 					<image :src="item.avatar"
 						style="width: 92rpx;height: 92rpx;border-radius: 50%;margin-right: 20rpx;"></image>
@@ -24,6 +24,7 @@
 						<text v-if="item.cate == 3">给您评论点赞了！</text>
 						<text v-if="item.cate == 4">回复您的评论了！</text>
 						<text v-if="item.cate == 5">查看您的主页了！</text>
+						<text v-if="item.cate == 6">给您的诗词点赞！</text>
 						<text>{{ $u.timeFormat(item.createtime, 'mm-dd hh:MM') }}</text>
 					</view>
 				</view>
@@ -58,6 +59,43 @@
 						that.trendsMsgList = res.data;
 					}
 				})
+			},
+			openDetail(item) {
+				switch (item.cate) {
+					case 1:
+						this.$u.route('/pages/post/detail', {
+							post_id: item.post_id
+						});
+						break;
+					case 2:
+						this.$u.route('/pages/post/detail', {
+							post_id: item.post_id_or_post_comment_id
+						});
+						break;
+					case 3:
+						this.$u.route('/pages/post/detail', {
+							post_id: item.post_id_or_post_comment_id
+						});
+						break;
+					case 4:
+						this.$u.route('/pages/post/detail', {
+							post_id: item.post_id
+						});
+						break;
+					case 5:
+						this.$u.route('/pages/user/home', {
+							user_id: item.user_id
+						});
+						break;
+					case 6:
+						var data = {
+							id: item.poetry_id
+						}
+						this.$u.route('/pages/joy/wineDetails', {
+							data: JSON.stringify(data)
+						});
+						break;
+				}
 			}
 		}
 	}

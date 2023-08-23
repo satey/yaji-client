@@ -11,15 +11,18 @@
 			</view>
 		</u-navbar>
 		<!-- 关注弹窗 -->
-		<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
-			confirmText="确定" cancelText="取消" @cancel="followModule=false" @confirm='unfollow'>
-			<view style="display: flex;flex-direction: column;">
-				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
-				<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
-					<text>是否取消关注？</text>
+		<view v-if="followModule">
+			<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+				confirmText="确定" cancelText="取消" @cancel="followModule=false" @confirm='unfollow'>
+				<view style="display: flex;flex-direction: column;">
+					<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
+					<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
+						<text>是否取消关注？</text>
+					</view>
 				</view>
-			</view>
-		</u-modal>
+			</u-modal>
+		</view>
+
 		<view class="content">
 			<view class="headTop">
 				<view class="contentTop">
@@ -47,7 +50,10 @@
 				</view> -->
 			</view>
 			<view class="footerBottom">
-				<view style="margin: 30rpx 0rpx 30rpx 30rpx;font-size: 32rpx;color: #323232;">今日诗缘：</view>
+				<view style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
+					<view style="margin: 30rpx 0rpx 30rpx 30rpx;font-size: 32rpx;color: #323232;">今日诗缘：</view>
+					<view class="okBtn1" @click="openball">再发一次</view>
+				</view>
 				<view class="userList">
 					<view class="userItem" v-for="(item,index) in datailLists">
 						<image class="block rounded-full" :src="item.avatar" style="width: 85rpx;height: 85rpx;">
@@ -74,7 +80,8 @@
 										已关注</view>
 									<view class="ri-alert-line"
 										style="font-size: 35rpx;margin-left: 20rpx;color: #999;opacity: 0.8;"
-										@click="$u.route('pages/public/report?user_id='+item.user_id)"></view>
+										@click="$u.route('/pages/public/report',{user_id:item.user_id,type:'诗词',selectId:item.id})">
+									</view>
 								</view>
 							</view>
 							<view class="mt-4" style="color: #323232;font-size: 26rpx;">
@@ -105,12 +112,8 @@
 						marginTop="50"></u-empty>
 					<view v-if="!datailLists.length"
 						style="font-size: 25rpx;color:  #3D3D3D;opacity: 0.7;text-align: center;">
-						<view>暂未发现有同样关键字的其他小主</view>
-						<view>系统会持续匹配，直到明日子时前</view>
+						<text v-html="loadmoreText"></text>
 					</view>
-				</view>
-				<view v-if="data.my_poetry_count<3">
-					<view class="okBtn" v-if="datailLists.length == 0" @click="openball">再发一次</view>
 				</view>
 			</view>
 		</view>
@@ -171,6 +174,7 @@
 			},
 			//返回泡泡页面
 			openball() {
+				var that = this;
 				uni.redirectTo({
 					url: '/pages/joy/wine'
 				});
@@ -233,6 +237,7 @@
 				that.$api("poetry.details", {
 					id: id
 				}).then((res) => {
+					console.log(res)
 					if (res.code == 1) {
 						that.data = res.data;
 						that.detailsData = res.data.poetry_data;
@@ -261,7 +266,7 @@
 					if (res.code == 1) {
 						that.datailLists.push(...res.data);
 					} else {
-						that.loadmoreText = '没有更多了！'
+						that.loadmoreText = res.msg
 					}
 				})
 			}
@@ -378,5 +383,17 @@
 		color: #fff;
 		width: 300rpx;
 		margin: 45rpx auto;
+	}
+
+	.okBtn1 {
+		background: #FE4373;
+		border-radius: 43px;
+		height: 60rpx;
+		text-align: center;
+		line-height: 60rpx;
+		color: #fff;
+		width: 200rpx;
+		margin-right: 30rpx;
+		font-size: 25rpx;
 	}
 </style>

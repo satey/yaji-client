@@ -136,7 +136,8 @@
 			},
 			async getUserSearch() {
 				let that = this
-				that.loadmore = 'loading'
+				that.loadmore = 'loading';
+				console.log(that.params)
 				that.$api('user.recommend', that.params).then(res => {
 					console.log(res)
 					if (res.code === 1) {

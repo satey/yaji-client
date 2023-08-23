@@ -1,6 +1,6 @@
 <template>
 	<view class="wine">
-		<web-view v-if="isShow" class="webView" @message="message" :src="webUrl" :fullscreen="false"
+		<web-view v-if="isShow" class="webView" @message="message" :src="webUrl" :fullscreen="true"
 			:webview-styles="webviewStyles"></web-view>
 		<!-- <view class="flooter">
 			<view style="margin-top: 50rpx;">
@@ -26,7 +26,8 @@
 				conetnt: "",
 				selectId: "",
 				isShow: false,
-				webUrl: ""
+				webUrl: "",
+				numShow: true,
 			}
 		},
 		onLoad() {
@@ -117,21 +118,62 @@
 					that.$u.toast(`请输入包含${data[0].activeZi}的诗句`)
 					return;
 				} else {
-					that.$api("poetry.poetryAdd", {
-						poetry: data[0].actionText,
-						poetry_word_id: data[0].actionId
-					}).then((res) => {
+					that.$api('poetry.today_poetry_count').then(res => {
 						if (res.code == 1) {
-							uni.redirectTo({
-								url: '/pages/joy/wineContent'
-							});
-							// that.$u.route(`/pages/joy/wineContent?data=${JSON.stringify(res.data)}`);
+							uni.showModal({
+								title: "提示",
+								content: res.msg,
+								success: function(modelRes) {
+									if (modelRes.confirm) {
+										if (res.data.user_money >= res.data.spend_money) {
+											that.$api("poetry.poetryAdd", {
+												poetry: data[0].actionText,
+												poetry_word_id: data[0].actionId
+											}).then((res) => {
+												if (res.code == 1) {
+													uni.redirectTo({
+														url: '/pages/joy/wineContent'
+													});
+												} else {
+													that.$u.toast(res.msg)
+												}
+											})
+										} else {
+											uni.showModal({
+												title: "提示",
+												content: "当前没有足够的铜钱，需要前往购买吗？",
+												success: function(res2) {
+													if (res2.confirm) {
+														that.$u.route(
+															'/pages/mine/recharge'
+														)
+													}
+												}
+											})
+										}
+									} else if (res.cancel) {
+										console.log('用户点击取消');
+									}
+								}
+							})
 						} else {
-							that.$u.toast(res.msg)
+							that.$api("poetry.poetryAdd", {
+								poetry: data[0].actionText,
+								poetry_word_id: data[0].actionId
+							}).then((res) => {
+								if (res.code == 1) {
+									uni.redirectTo({
+										url: '/pages/joy/wineContent'
+									});
+								} else {
+									that.$u.toast(res.msg)
+								}
+							})
 						}
 					})
 				}
-			}
+			},
+
 		}
 	}
 </script>

@@ -4,53 +4,45 @@
 		<image src="@/static/embed/sexBg.png"
 			style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: -1;">
 		</image>
-		<view class="px-4 py-2 bg-gradient-to-b to-black" :style="`padding-top: 150rpx;`">
-			<view class="flex justify-between items-center" :style="{background:headBarBgColor}"
-				style="z-index:9999;box-sizing: border-box;width:100%;align-items:center;justify-content: center;position: fixed;top:0;left: 0;padding-top:var(--status-bar-height);padding-bottom: 20rpx;">
-				<view class="text-2xl " style="text-align: center;">雅集</view>
-			</view>
-			<!-- <view class="grid grid-cols-2 gap-4 mt-6">
-                <view class="bg-purple-500 p-4 text-white rounded" @click="$u.route('pages/joy/poetry')">
-                    <view class="text-xl">曲水流觞</view>
-                    <view class="mt-4 opacity-75">美酒助兴畅玩嗨翻天</view>
-                </view>
-                <view class="bg-red-500 p-4 text-white rounded" @click="$u.route('pages/joy/wine')">
-                    <view class="text-xl">诗词结缘</view>
-                    <view class="mt-4 opacity-75">美酒助兴畅玩嗨翻天</view>
-                </view>
-            </view> -->
-			<!-- 后续开放 -->
-			<view class="grid gap-4 mt-6" style="display: flex;align-items: center;">
-				<view class="activity" @click="$u.route('pages/joy/poetryStart')">
-					<image src="../../static/activity1.png" mode="widthFix"></image>
-				</view>
-				<view class=" activity" @click="openWine">
-					<image src="../../static/activity2.png" mode="widthFix"></image>
-				</view>
-			</view>
+		<view class="flex justify-between items-center" :style="{background:headBarBgColor}"
+			style="z-index:9999;box-sizing: border-box;width:100%;align-items:center;justify-content: center;position: fixed;top:0;left: 0;padding-top:var(--status-bar-height);padding-bottom: 20rpx;">
+			<view class="text-2xl " style="text-align: center;">雅集</view>
 		</view>
 		<!-- 搜索人物 -->
-		<view class="searchContainer">
+		<view class="searchContainer" :style="`padding-top: 150rpx;`">
 			<view class="searchBar" @click="$u.route('pages/user/newSearch')">
 				<text class="ri-search-line" style="font-size: 35rpx;"></text>
 				<text style="margin-left: 20rpx;">搜索人物</text>
 			</view>
-			<view class="searchList">
+			<!-- <view class="searchList">
 				<view class="searchItem" v-for="(item,index) in searchList.slice(0,3)" :key="index"
 					@click="handleSearchTitle(item)">
 					{{item.title}}
 				</view>
-
-			</view>
-			<!-- <view class="search-people-small" @click="$u.route('pages/user/newSearch')"><text
-					style="margin-left: 30rpx;">搜索人物</text> </view>
-			<view class="search-example-bottom">
-				<view class="search-example " v-for="(item,index) in searchList" :item=item>
-					<view class="search-example-item" @click="handleSearchTitle(item)">{{item.title}}</view>
-				</view>
 			</view> -->
 		</view>
-		<view class="p-4">
+		<swiper v-if="bannerData.length !=0" class="bannerBox" :circular="true" :indicator-dots="false" :autoplay="true"
+			:interval="3000" :duration="1000">
+			<swiper-item>
+				<block v-for="(item,index) in bannerData" :key="index">
+					<view class="swiper-item" v-if="item.status == 'normal'">
+						<image class="banner" :src="item.image" mode="scaleToFill" @click="jumpBanner(item)"></image>
+					</view>
+				</block>
+			</swiper-item>
+		</swiper>
+		<view class="px-4  bg-gradient-to-b to-black">
+			<view class="grid gap-4" style="display: flex;align-items: center;margin-top: 30rpx;">
+				<view class="activity" @click="$u.route('pages/joy/poetryStart')">
+					<image src="../../static/activity1.png" mode="widthFix"></image>
+				</view>
+				<view class=" activity" @click="openWine">
+					<image src="../../static/activity2.gif" mode="widthFix"></image>
+				</view>
+			</view>
+		</view>
+
+		<view style="padding: 30rpx 30rpx 30rpx 30rpx;box-sizing: border-box;">
 			<u-tabs :list="tablist" lineColor="#FE4373" lineWidth="120rpx" lineHeight="16rpx" itemStyle="height: 72rpx;"
 				inactiveStyle="color: #808080; transform: scale(1);font-weight:normal;transition:all 0.3s;"
 				activeStyle="color: #323232 ; font-weight: blod; transform: scale(1.2);transition:all 0.3s;"
@@ -127,7 +119,7 @@
 			</view>
 		</u-modal>
 		<!-- <uc-auth></uc-auth> -->
-		<uc-tabbar></uc-tabbar>
+		<!-- <uc-tabbar></uc-tabbar> -->
 	</view>
 </template>
 <script>
@@ -190,6 +182,7 @@
 				headBarBgColor: "",
 				downloadFlag: true,
 				authority: false,
+				bannerData: []
 			}
 		},
 		watch: {
@@ -238,6 +231,7 @@
 			that.searchName()
 			that.getUserRecommend();
 			that.isPush();
+			that.getAd()
 			var count = uni.getStorageSync('pageCount') || 0;
 			count++;
 			uni.setStorageSync('pageCount', count);
@@ -317,6 +311,22 @@
 		},
 		methods: {
 			...mapActions(['getUserInfo']),
+			//广告
+			getAd() {
+				var that = this;
+				that.$api("ad.lists", {
+					type: 4
+				}).then(res => {
+					if (res.code == 1) {
+						if (res.data.length != 0) {
+							that.bannerData = res.data;
+						}
+					}
+				})
+			},
+			jumpBanner(item) {
+				this.$u.route(item.url)
+			},
 			//打开诗词结缘
 			openWine() {
 				var that = this;
@@ -561,7 +571,7 @@
 	}
 
 	.searchContainer {
-		margin: 20rpx 30rpx 30rpx 30rpx;
+		padding: 20rpx 30rpx 0rpx 30rpx;
 	}
 
 	.searchBar {
@@ -666,5 +676,22 @@
 
 	.myScroll {
 		max-height: 200rpx;
+	}
+
+	.bannerBox {
+		width: 100%;
+		height: 140rpx;
+		margin: 0 auto;
+		overflow: hidden;
+		border-radius: 10rpx;
+		padding: 0 30rpx;
+		margin-top: 30rpx;
+		box-sizing: border-box;
+
+		.banner {
+			width: 100%;
+			height: 140rpx;
+			border-radius: 10rpx;
+		}
 	}
 </style>

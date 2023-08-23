@@ -1,11 +1,28 @@
 <template>
 	<view class="wineContent">
-		<u-navbar title="结缘详情" :safeAreaInsetTop="true" :placeholder="true">
+		<u-navbar title="诗词结缘" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
 				<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
+			<!-- 	<view slot="right">
+				<i class="ri-menu-line" style="color: #333 !important;font-size: 30rpx;"
+					@click="$u.route('pages/joy/wineList')"></i>
+			</view> -->
 		</u-navbar>
+		<!-- 关注弹窗 -->
+		<view v-if="followModule">
+			<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+				confirmText="确定" cancelText="取消" @cancel="followModule=false" @confirm='unfollow'>
+				<view style="display: flex;flex-direction: column;">
+					<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
+					<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
+						<text>是否取消关注？</text>
+					</view>
+				</view>
+			</u-modal>
+		</view>
+
 		<view class="content">
 			<view class="headTop">
 				<view class="contentTop">
@@ -33,7 +50,10 @@
 				</view>
 			</view>
 			<view class="footerBottom">
-				<view style="margin: 30rpx 0rpx 30rpx 30rpx;font-size: 32rpx;color: #323232;">今日诗缘：</view>
+				<view style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
+					<view style="margin: 30rpx 0rpx 30rpx 30rpx;font-size: 32rpx;color: #323232;">今日诗缘：</view>
+					<view class="okBtn1" @click="openball">再发一次</view>
+				</view>
 				<view class="userList">
 					<view class="userItem" v-for="(item,index) in datailLists">
 						<image class="block rounded-full" :src="item.avatar" style="width: 85rpx;height: 85rpx;">
@@ -52,26 +72,23 @@
 										{{item.achievements}}
 									</view>
 								</view>
-								<view>
-									<view
-										style="color: #999999;display: flex;flex-direction: row;align-items: center;color: #fe4373;"
-										@click="openSingle(item)">
-										<text class="ri-chat-smile-2-line"
-											style="font-size: 40rpx;margin-right: 10rpx;"></text>
-										<text>继续聊</text>
-									</view>
-									<!-- <view v-show="item.is_follow == 0" class="follow" @click="interest(item,1,index)">关注
+								<view style="display: flex;align-items: center;">
+									<view v-show="item.is_follow == 0" class="follow" @click="interest(item,1,index)">关注
 									</view>
 									<view class="followActive" v-show="item.is_follow == 1"
 										@click="interest(item,2,index)">
-										已关注</view> -->
+										已关注</view>
+									<view class="ri-alert-line"
+										style="font-size: 35rpx;margin-left: 20rpx;color: #999;opacity: 0.8;"
+										@click="$u.route('/pages/public/report',{user_id:item.user_id,type:'诗词',selectId:item.id})"></view>
 								</view>
 							</view>
-							<!-- <view class="mt-4" style="color: #323232;font-size: 26rpx;">
+							<view class="mt-4" style="color: #323232;font-size: 26rpx;">
 								<text>{{item.poetry}}</text>
 							</view>
 							<view
 								style="display: flex;flex-direction: row;align-items: center;justify-content: flex-end;width: 100%;margin-right: -50rpx;">
+								<!-- 点赞 -->
 								<view style="display: flex;flex-direction: row;align-items: center;"
 									@click="handlePostDig(item,index)">
 									<text v-if="item.is_zan == 1" class="ri-heart-fill"
@@ -81,20 +98,20 @@
 									<text
 										style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 100rpx;">{{item.is_zan==0?'出彩':item.is_zan}}</text>
 								</view>
+								<!-- 聊天 -->
 								<view style="color: #999999;display: flex;flex-direction: row;align-items: center;"
 									@click="openSingle(item)">
 									<text class="ri-chat-smile-2-line"
 										style="font-size: 40rpx;margin-right: 10rpx;"></text>
 								</view>
-							</view> -->
+							</view>
 						</view>
 					</view>
 					<u-empty v-if="!datailLists.length" text=" " icon="/static/empty2.png" textColor="#a1a1a1"
 						marginTop="50"></u-empty>
 					<view v-if="!datailLists.length"
 						style="font-size: 25rpx;color:  #3D3D3D;opacity: 0.7;text-align: center;">
-						<view>暂未发现有同样关键字的其他小主</view>
-						<view>系统会持续匹配，直到明日子时前</view>
+						<text v-html="loadmoreText"></text>
 					</view>
 				</view>
 			</view>
@@ -156,6 +173,7 @@
 			},
 			//返回泡泡页面
 			openball() {
+				var that = this;
 				uni.redirectTo({
 					url: '/pages/joy/wine'
 				});
@@ -218,6 +236,7 @@
 				that.$api("poetry.details", {
 					id: id
 				}).then((res) => {
+					console.log(res)
 					if (res.code == 1) {
 						that.data = res.data;
 						that.detailsData = res.data.poetry_data;
@@ -246,7 +265,7 @@
 					if (res.code == 1) {
 						that.datailLists.push(...res.data);
 					} else {
-						that.loadmoreText = '没有更多了！'
+						that.loadmoreText = res.msg
 					}
 				})
 			}
@@ -351,17 +370,29 @@
 		font-size: 44rpx;
 		color: #3D3D3D;
 		font-family: font-test;
+		text-align: center;
 	}
 
 	.okBtn {
+		background: #FE4373;
+		border-radius: 43px;
+		height: 80rpx;
+		text-align: center;
+		line-height: 80rpx;
+		color: #fff;
+		width: 300rpx;
+		margin: 45rpx auto;
+	}
+
+	.okBtn1 {
 		background: #FE4373;
 		border-radius: 43px;
 		height: 60rpx;
 		text-align: center;
 		line-height: 60rpx;
 		color: #fff;
-		margin-top: 30rpx;
-		font-size: 28rpx;
-		width: 300rpx;
+		width: 200rpx;
+		margin-right: 30rpx;
+		font-size: 25rpx;
 	}
 </style>
