@@ -10,7 +10,7 @@
 		</view>
 		<view class="flex-1" style="margin-left: 20rpx;padding-bottom: 20rpx;">
 			<view class="leading-none mt-2" v-if="item.user==null">
-				<text style="color: #323232;font-size: 28rpx;">无名氏1</text>
+				<text style="color: #323232;font-size: 28rpx;">无名氏</text>
 				<text
 					style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: cornsilk; color: rgb(255, 180, 31);">望</text>
 				<text style="color: rgb(255, 180, 31);">0</text>
@@ -29,7 +29,10 @@
 				{{item.role.achievements.replace(/,/g,"&nbsp;&nbsp;")}}
 			</view>
 			<view class="mt-4" style="color: #323232;font-size: 26rpx;">
-				<text @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}</text>
+				<text v-if="item.is_system_build == 1" @click="">{{ item.content }} <text @click="openQuShui(item)"
+						style="color:#FE4373">跟随进房 <text class="ri-arrow-right-s-line"
+							style="font-size: 26rpx;margin-left: 5rpx;"></text> </text> </text>
+				<text v-else @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}</text>
 				<!-- 话题 -->
 				<view @tap="$u.route('/pages/user/topicspeed',{post_cate_id:items.id})"
 					class="text-base leading-none text-gray-500 ml-1" style="color: #FE4373;margin-top: 20rpx;"
@@ -78,7 +81,7 @@
 			<view
 				style="display: flex;flex-direction: row;align-items: center;justify-content: flex-end;width: 100%;margin-right: -50rpx;">
 				<!-- 评论 -->
-				<view @click="$u.route('/pages/post/detail', { post_id: item.id })"
+				<view @click="openDetails(item)"
 					style="color: #999999;display: flex;flex-direction: row;align-items: center;">
 					<text class="ri-chat-smile-3-line" style="font-size: 40rpx;margin-right: 10rpx;"></text>
 					<text
@@ -150,7 +153,7 @@
 			<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
 				<view class="p-4">
 					<view class="delete"
-						@click="$u.route('/pages/public/report',{user_id:item.user_id}), showAction = false"
+						@click="$u.route('/pages/public/report',{user_id:item.user_id,type:'动态',selectId:item.id}), showAction = false"
 						style="margin-top: 50rpx;">
 						<view style="font-size: 30rpx;">举报广告/色情等</view>
 					</view>
@@ -225,6 +228,31 @@
 		},
 
 		methods: {
+			openQuShui(item) {
+				var that = this;
+				var userInfo = uni.getStorageSync("userInfo");
+				that.$api("game.joinRoom", {
+					game_room_user_id: item.user_id
+				}).then(res => {
+					if (res.code == 1) {
+						that.isModule = false;
+						uni.navigateTo({
+							url: '/pages/joy/poetry'
+						})
+					} else {
+						uni.showToast({
+							icon: "none",
+							title: res.msg
+						})
+					}
+				})
+			},
+			openDetails(item) {
+				this.$u.route('/pages/post/detail', {
+					post_id: item.id
+				});
+				this.$emit("openDetail")
+			},
 			showToast() {
 				uni.showToast({
 					icon: "none",
@@ -235,8 +263,9 @@
 			openUserHome(id) {
 				var that = this;
 				var userInfo = uni.getStorageSync("userInfo");
+				that.$emit("openDetail");
 				if (id == userInfo.id) {
-					that.$u.route('/pages/index/mine')
+					that.$u.route('/pages/index/mine');
 				} else {
 					that.$u.route('/pages/user/home', {
 						user_id: id
@@ -246,6 +275,7 @@
 			//查看图片
 			onPreviewTap(e) {
 				var that = this;
+				that.$emit("openDetail");
 				uni.previewImage({
 					current: e,
 					urls: that.imgUrl

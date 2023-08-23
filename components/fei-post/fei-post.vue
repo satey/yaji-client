@@ -70,7 +70,7 @@
 			<view
 				style="display: flex;flex-direction: row;align-items: center;justify-content: flex-end;width: 100%;margin-right: -50rpx;">
 				<!-- 评论 -->
-				<view @click="$u.route('/pages/post/detail', { post_id: item.id })"
+				<view @click="openDetails(item)"
 					style="color: #999999;display: flex;flex-direction: row;align-items: center;">
 					<text class="ri-chat-smile-3-line" style="font-size: 40rpx;margin-right: 10rpx;"></text>
 					<text
@@ -233,6 +233,7 @@
 			openUserHome(id) {
 				var that = this;
 				var userInfo = uni.getStorageSync("userInfo");
+				that.$emit("clickDetails")
 				if (id == userInfo.id) {
 					that.$u.route('/pages/index/mine')
 				} else {
@@ -244,6 +245,7 @@
 			//查看图片
 			onPreviewTap(e) {
 				var that = this;
+				this.$emit("clickDetails")
 				uni.previewImage({
 					current: e,
 					urls: that.imgUrl

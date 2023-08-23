@@ -2,7 +2,7 @@
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="">
 
-		<view class="flex mt-8">
+		<view class="flex" style="margin-top: 30rpx;">
 			<view class="mr-4" @click="$u.route('/pages/user/home', { user_id: item.id })">
 				<view v-if="item.gender == 1">
 					<image class="block w-14 h-14 rounded-full" :src="item.avatar || '/static/avatar.png'"></image>
@@ -62,7 +62,9 @@
 				that.isInterduce = true
 			}
 			that.a = that.item.achievements
-			that.achievementsList = that.a.split(',')
+			if (that.a != null) {
+				that.achievementsList = that.a.split(',')
+			}
 		},
 		computed: {},
 		methods: {}
