@@ -83,6 +83,12 @@ export default {
 			auth: false,
 			method: 'GET',
 			desc: '我的诗词结缘列表',
+		},
+		today_poetry_count: {
+			url: 'poetry/today_poetry_count',
+			auth: false,
+			method: 'GET',
+			desc: '今日发布诗词总数',
 		}
 	},
 	stat: {
@@ -263,6 +269,12 @@ export default {
 			auth: false,
 			method: 'GET',
 			desc: '评论列表',
+		},
+		listsMore: {
+			url: 'post_comment/reply_comment_list',
+			auth: false,
+			method: 'GET',
+			desc: '评论列表更多',
 		},
 	},
 	post_comment: {

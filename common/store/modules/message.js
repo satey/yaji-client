@@ -41,7 +41,17 @@ export default {
 				// 	}
 				// }
 			}
-			state.messageCount = num
+			state.messageCount = num;
+			if (num == 0) {
+				uni.removeTabBarBadge({
+					index: 2
+				})
+			} else {
+				uni.setTabBarBadge({
+					index: 2,
+					text: `${num}`
+				})
+			}
 		},
 		//设置各个列表的角标
 		setMsgCount2(state) {
@@ -61,7 +71,7 @@ export default {
 					// }
 				}
 			}
-			state.messageCount = num
+			state.messageCount = num;
 			var userInfo = uni.getStorageSync("userInfo");
 			if (!userInfo) {
 				return;
@@ -78,6 +88,17 @@ export default {
 					messageList: arr
 				}
 				uni.setStorageSync("historyCronyList" + userInfo.id, obj)
+			}
+
+			if (num == 0) {
+				uni.removeTabBarBadge({
+					index: 2
+				})
+			} else {
+				uni.setTabBarBadge({
+					index: 2,
+					text: `${num}`
+				})
 			}
 		},
 		//清楚消息红点
