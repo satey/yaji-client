@@ -66,7 +66,7 @@
 	</view>
 
 </template>
-<!-- fei-dev -->
+<!-- feifeifei -->
 <script>
 	import {
 		mapState,
