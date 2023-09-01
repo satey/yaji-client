@@ -56,7 +56,8 @@
 				</view>
 				<view class="userList">
 					<view class="userItem" v-for="(item,index) in datailLists">
-						<image class="block rounded-full" :src="item.avatar" style="width: 85rpx;height: 85rpx;">
+						<image class="block rounded-full" :src="item.avatar" mode="aspectFill"
+							style="width: 85rpx;height: 85rpx;">
 						</image>
 						<view class="flex-1" style="margin-left: 20rpx;padding-bottom: 20rpx;">
 							<view style="display: flex;align-items: center; justify-content: space-between;">
@@ -117,6 +118,7 @@
 				</view>
 			</view>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 

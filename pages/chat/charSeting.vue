@@ -10,7 +10,7 @@
 		<view style="padding: 30rpx;display: flex;align-items: center;justify-content: space-between;"
 			@click="openUrl('/pages/user/home',{user_id:$Route.query.user_id})">
 			<view style="display: flex;align-items: center;">
-				<image :src="avatar" style="width: 78rpx;height: 78rpx;border-radius: 50%;"></image>
+				<image mode="aspectFill" :src="avatar" style="width: 78rpx;height: 78rpx;border-radius: 50%;"></image>
 				<text
 					style="color: #323232;font-size: 28rpx;margin-left: 16rpx;">{{realname||'无名氏'}}·{{dynasty||''}}</text>
 			</view>
@@ -42,12 +42,13 @@
 			</view>
 		</view> -->
 		<view style="padding:30rpx;display: flex;align-items: center;justify-content: space-between;"
-			@click="openUrl('/pages/public/report',{user_id:$Route.query.user_id})">
+			@click="openUrl('/pages/public/report',{user_id:$Route.query.user_id,type:'聊天',selectId:$Route.query.user_id})">
 			<view style="color: #323232;font-size: 28rpx;">举报</view>
 			<view>
 				<text class="ri-arrow-right-s-line" style="font-size: 40rpx;color: #cccccc;"></text>
 			</view>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 

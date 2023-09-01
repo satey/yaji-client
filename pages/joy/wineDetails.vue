@@ -41,7 +41,8 @@
 					v-if="zanCount != 0">
 					<view style="display: flex;align-items: center;margin-top: 10rpx;" v-for="(item,index) in zanArr"
 						:key="index">
-						<image :src="item.avatar" style="width: 45rpx;height: 45rpx;border-radius: 50%;" mode="">
+						<image mode="aspectFill" :src="item.avatar"
+							style="width: 45rpx;height: 45rpx;border-radius: 50%;">
 						</image>
 						<view style="font-size: 28rpx;color: #323232;margin:0rpx 5rpx;">{{item.role_realname}}</view>
 					</view>
@@ -56,7 +57,8 @@
 				</view>
 				<view class="userList">
 					<view class="userItem" v-for="(item,index) in datailLists">
-						<image class="block rounded-full" :src="item.avatar" style="width: 85rpx;height: 85rpx;">
+						<image mode="aspectFill" class="block rounded-full" :src="item.avatar"
+							style="width: 85rpx;height: 85rpx;">
 						</image>
 						<view class="flex-1" style="margin-left: 20rpx;padding-bottom: 20rpx;">
 							<view style="display: flex;align-items: center; justify-content: space-between;">
@@ -80,7 +82,8 @@
 										已关注</view>
 									<view class="ri-alert-line"
 										style="font-size: 35rpx;margin-left: 20rpx;color: #999;opacity: 0.8;"
-										@click="$u.route('/pages/public/report',{user_id:item.user_id,type:'诗词',selectId:item.id})"></view>
+										@click="$u.route('/pages/public/report',{user_id:item.user_id,type:'诗词',selectId:item.id})">
+									</view>
 								</view>
 							</view>
 							<view class="mt-4" style="color: #323232;font-size: 26rpx;">
@@ -116,6 +119,7 @@
 				</view>
 			</view>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 

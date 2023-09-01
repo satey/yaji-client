@@ -42,12 +42,16 @@
 						<view style="padding:0rpx 38rpx;margin-top: 120rpx;">
 							<!-- 后续开放 -->
 							<view v-if="fei_num <= 0"
-								class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-								style="text-align: center;" @click="handleHuoQu()">重新获取({{ price }}铜钱)</view>
-							<view v-if="fei_num > 0"
-								class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-								style="text-align: center;" @click="handleRematch()">重新穿越 免费({{fei_num}}次)
+								class="rounded-full p-6  leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
+								style="text-align: center;font-size: 32rpx;" @click="handleHuoQu()">重新获取({{ price }}铜钱)
 							</view>
+							<view v-if="fei_num > 0"
+								class="rounded-full p-6  leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
+								style="text-align: center;font-size: 32rpx;" @click="handleRematch()">重新穿越
+								免费({{fei_num}}次)
+							</view>
+							<view style="font-size: 28rpx;color: #808080;text-align: center;margin-top: 20rpx;">
+								（钱包剩余{{money}}铜钱）</view>
 							<!-- <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r"
 								style="text-align: center;color: #323232;border: 1px solid #CCCCCC;margin-top: 30rpx;"
 								@click="handleRematch()" v-if="choose_num!==0">重新穿越（免费{{choose_num}}次）</view> -->
@@ -150,6 +154,7 @@
 			</view>
 		</u-modal>
 		<uc-auth></uc-auth>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>
@@ -184,12 +189,14 @@
 				role_fei: [],
 				fei_num: 0,
 				recharge: false,
+				money: 0
 			}
 		},
 		onLoad(option) {
 			let that = this
 			that.getUserRole()
 			that.getRoleDynasty()
+			that.getMoney()
 		},
 		computed: {
 			...mapState({
@@ -208,6 +215,16 @@
 			that.init()
 		},
 		methods: {
+			getMoney() {
+				let that = this
+				that.$api('user.info', {
+					"role_id": this.role_fei.id
+				}).then(res => {
+					if (res.code == 1) {
+						that.money = res.data.money
+					}
+				})
+			},
 			//确认角色
 			roleConfirm() {
 				var that = this;
@@ -220,6 +237,7 @@
 						uni.setStorageSync("noRole", false);
 						that.getUserRole()
 						that.$forceUpdate()
+						that.getMoney()
 						// uni.reLaunch({
 						// 	url: '/pages/index/mine'
 						// });

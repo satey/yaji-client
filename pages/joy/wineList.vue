@@ -20,6 +20,7 @@
 			<u-empty v-if="!myLists.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 

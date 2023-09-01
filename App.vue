@@ -36,9 +36,21 @@
 				var that = this;
 				uni.onPushMessage((res) => {
 					console.log(res)
-					// -----礼包
 					var isPush = false;
-					console.log(res.data.title)
+					//曲水流觞
+					if (res.data.title == "曲水流觞匹配成功") {
+						isPush = true;
+						if (that.$store.state.game.mateId != '') {
+							that.$store.commit("setMateId", "")
+							that.$store.commit("setGameBarFlag", false)
+							that.$nextTick(() => {
+								uni.navigateTo({
+									url: '/pages/joy/poetry'
+								})
+							})
+						}
+					}
+					// -----礼包
 					if (res.data.title == "礼包") {
 						that.$store.commit("setGiftId", res.data.content);
 						isPush = true;
@@ -254,7 +266,7 @@
 				if (token == '') {
 					return;
 				}
-				that.socKetUrl = `wss://yaji.suoeryoude.cn/websocket?token=${token}&session_id=${session_id}`;
+				that.socKetUrl = `wss://yaji.ixiaojin.cn/websocket?token=${token}&session_id=${session_id}`;
 				getApp().globalData.socketTask = uni.connectSocket({
 					url: that.socKetUrl, //仅为示例，并非真实接口地址。
 					complete: () => {

@@ -33,7 +33,7 @@
 		</swiper>
 		<view class="px-4  bg-gradient-to-b to-black">
 			<view class="grid gap-4" style="display: flex;align-items: center;margin-top: 30rpx;">
-				<view class="activity" @click="$u.route('pages/joy/poetryStart')">
+				<view class="activity" @click="openPoetry">
 					<image src="../../static/activity1.png" mode="widthFix"></image>
 				</view>
 				<view class=" activity" @click="openWine">
@@ -120,6 +120,7 @@
 		</u-modal>
 		<!-- <uc-auth></uc-auth> -->
 		<!-- <uc-tabbar></uc-tabbar> -->
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>
@@ -131,7 +132,7 @@
 	} from 'vuex'
 	export default {
 		name: 'index',
-		components: {},
+
 		data() {
 			return {
 				tablist: [{
@@ -311,6 +312,14 @@
 		},
 		methods: {
 			...mapActions(['getUserInfo']),
+			openPoetry() {
+				var game_room_id = uni.getStorageSync("game_room");
+				if (game_room_id != '') {
+					this.$u.route('pages/joy/poetry?mode=back')
+				} else {
+					this.$u.route('pages/joy/poetryStart')
+				}
+			},
 			//广告
 			getAd() {
 				var that = this;

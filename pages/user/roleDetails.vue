@@ -12,12 +12,12 @@
 					<view style="display: flex;width: 80%;">
 						<view style="margin-right: 20rpx;">
 							<image v-if="item.user_avatar != null" :src="item.user_avatar"
-								style="width: 100rpx;height: 100rpx;border-radius: 50%;" mode=""></image>
+								style="width: 100rpx;height: 100rpx;border-radius: 50%;"mode="aspectFill"></image>
 							<block v-else>
 								<image v-if="item.gender == 2" src="@/static/avatar-female.png"
-									style="width: 100rpx;height: 100rpx;border-radius: 50%;" mode=""></image>
+									style="width: 100rpx;height: 100rpx;border-radius: 50%;"mode="aspectFill"></image>
 								<image v-if="item.gender == 1" src="@/static/avatar.png"
-									style="width: 100rpx;height: 100rpx;border-radius: 50%;" mode=""></image>
+									style="width: 100rpx;height: 100rpx;border-radius: 50%;"mode="aspectFill"></image>
 							</block>
 						</view>
 						<view
@@ -43,6 +43,7 @@
 			<u-empty v-if="!roleList.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 

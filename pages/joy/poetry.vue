@@ -2,7 +2,7 @@
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="poetry">
 		<u-navbar title="曲水流觞" :safeAreaInsetTop="true" :placeholder="true">
-			<view slot="left">
+			<view slot="left" style="display: flex;">
 				<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;" @click="backClick"></i>
 			</view>
 		</u-navbar>
@@ -14,10 +14,10 @@
 			<!-- 流水 -->
 			<view class="position" v-for="(item,index) in gameUserArr" :key="index">
 				<view style="display: flex;align-items: center;justify-content: center;">
-					<image v-if="item!=''" class="positionImg" style="border: 1rpx solid #FE4373;" :src="item.avatar"
-						@click="openUserHome(item.user_id)">
+					<image v-if="item!=''" class="positionImg" style="border: 1rpx solid #FE4373;" mode="aspectFill"
+						:src="item.avatar" @click="openUserHome(item.user_id)">
 					</image>
-					<image v-else class="positionImg" src="@/static/noUser.png">
+					<image v-else class="positionImg" mode="aspectFill" src="@/static/noUser.png">
 					</image>
 				</view>
 				<view class="positionText" :style="{color:item.user_id == userInfo.id?'#FE4373':''}">
@@ -53,7 +53,7 @@
 					<view v-for="(item,index) in msgList">
 						<block v-if="item.type=='taskAudio'">
 							<view v-if="item.type=='taskAudio'" style="display: flex;margin-top: 20rpx;">
-								<image :src="item.avatar"
+								<image mode="aspectFill" :src="item.avatar"
 									style="width: 60rpx;height: 60rpx;border-radius: 50%;margin-right:10rpx ;">
 								</image>
 								<view>
@@ -144,7 +144,7 @@
 						</view>
 						<!-- 聊天文字 -->
 						<view v-if="item.type == 'text'" style="display: flex;margin-top: 20rpx;">
-							<image :src="item.data.avatar"
+							<image mode="aspectFill" :src="item.data.avatar"
 								style="width: 60rpx;height: 60rpx;border-radius: 50%;margin-right:30rpx ;"></image>
 							<view v-if=""
 								:class="item.data.user_id == userInfo.id?'rounded-3xl rounded-tl-none':'rounded-3xl rounded-tl-none'"
@@ -164,7 +164,7 @@
 						</view>
 						<!--聊天语音 -->
 						<view v-if="item.type == 'audio'" style="display: flex;margin-top: 20rpx;">
-							<image :src="item.data.avatar"
+							<image mode="aspectFill" :src="item.data.avatar"
 								style="width: 60rpx;height: 60rpx;border-radius: 50%;margin-right:30rpx ;"></image>
 							<view>
 								<view class="recording" @click="openRecord1(item.data.content,index)">
@@ -319,7 +319,7 @@
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
 				<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
-					<text>您已掉线，请重新进入。</text>
+					<text>{{disconnectText}}</text>
 				</view>
 			</view>
 		</u-modal>
@@ -355,7 +355,8 @@
 			<view class="userBox">
 				<view class="userTop">
 					<view style="display: flex;align-items: center;">
-						<image :src="userItem.avatar" @click="$u.route('pages/user/home?user_id='+userItem.id)"
+						<image mode="aspectFill" :src="userItem.avatar"
+							@click="$u.route('pages/user/home?user_id='+userItem.id)"
 							style="height: 80rpx;width: 80rpx;border-radius: 50%;">
 						</image>
 						<!-- 女 -->
@@ -384,7 +385,8 @@
 							</view>
 							<view class="ri-alert-line"
 								style="font-size: 35rpx;margin-left: 20rpx;color: #999;opacity: 0.8;"
-								@click="$u.route('/pages/public/report',{user_id:item.user_id,type:'曲水流觞'})"></view>
+								@click="$u.route('/pages/public/report',{user_id:userItem.id,type:'曲水流觞',selectId:null})">
+							</view>
 						</view>
 					</view>
 				</view>
@@ -404,7 +406,7 @@
 							style="display: flex;flex-direction: column;text-align: center;justify-content: center;width: calc(100% / 4);box-sizing: border-box;align-items: center;"
 							v-for="(item,index) in giftList" :key="index" v-if="item.status=='normal'"
 							@click="handleGiftSend(item)">
-							<image style="width: 130rpx;height: 130rpx;" :src="item.image" mode=""></image>
+							<image style="width: 130rpx;height: 130rpx;" :src="item.image" mode="aspectFill"></image>
 							<view style="color: #333;">{{item.title}}</view>
 							<view style="display: flex;align-items: center;justify-content: center;">
 								<image style="width: 30rpx;height:30rpx;margin-right: 10rpx;" src="@/static/qian.png"
@@ -489,6 +491,7 @@
 				disconnect: false,
 				ainimationFlag: false,
 				animationsModule: false,
+				disconnectText: ""
 			}
 		},
 		onBeforeBack(args) {
@@ -562,14 +565,43 @@
 						"game_room_id": val.game_room_id,
 						"game_room_place_num": val.game_room_place_num
 					}).then(res => {
+						console.log(res)
 						if (res.code == 0) {
+							that.disconnectText = res.msg;
 							that.disconnect = true;
+						} else if (res.code == 1) {
+							getApp().globalData.socketTask.close();
+							uni.showLoading({
+								title: "重新连接",
+								mask: true,
+							});
+
+							var aaa = setTimeout(() => {
+								that.$nextTick(() => {
+									that.initSocket();
+									that.sendMsg("add_game_room");
+								})
+								uni.hideLoading()
+								that.msgList = [];
+								clearTimeout(aaa)
+							}, 3000)
+
+							// console.log(res.data.game_room_id)
+							// var userInfo = uni.getStorageSync("userInfo");
+							// that.$api("game.joinRoom").then(res2 => {
+							// 	console.log(res2)
+							// 	that.initSocket();
+							// 	that.sendMsg("add_game_room");
+							// })
 						}
 					})
 				}
 			})
 		},
 		methods: {
+			backHome() {
+				this.$u.route('/pages/joy/poetryStart');
+			},
 			backClick() {
 				if (this.ainimationFlag == true) {
 					this.animationsModule = true;

@@ -2,7 +2,7 @@
 	<view>
 		<block v-for="(item,index) in listPostComment">
 			<view class="commentItem" style="margin-top: 30rpx;display: flex;" v-if="item.status != 'hidden'">
-				<u-avatar size="85" :src="item.avatar || '/static/avatar.png'"
+				<u-avatar size="85" :src="item.avatar || '/static/avatar.png'" mode="aspectFill"
 					@click="$u.route('/pages/user/home', { user_id: item.user_id })"></u-avatar>
 				<view style="flex: 1;margin-left: 16rpx;">
 					<view style="display: flex;align-items: center;justify-content: space-between;height: 65rpx;">
@@ -27,14 +27,16 @@
 						<view v-if="item.newList != undefined">
 							<block v-for="(sonItem,index) in item.newList">
 								<view style="display: flex;margin-top: 10rpx;">
-									<image :src="sonItem.avatar"
+									<image :src="sonItem.avatar" 
 										style="width: 50rpx;height: 50rpx;border-radius: 50%;margin-right: 10rpx;"
-										mode="">
+										mode="aspectFill">
 									</image>
 									<view style="width: calc(100% - 50rpx - 10rpx);">
 										<view>
 											<text>{{sonItem.role_realname}}·{{sonItem.role_dynasty}} <text
-													v-if="sonItem.p_role_realname!=undefined">回复{{sonItem.p_role_realname}}·{{sonItem.p_role_dynasty}}</text>
+													v-if="sonItem.p_role_realname!=undefined"> <text
+														style="color: #777;margin: 0rpx 10rpx;">回复</text>
+													{{sonItem.p_role_realname}}·{{sonItem.p_role_dynasty}}</text>
 											</text>
 										</view>
 										<view style="margin-top: 10rpx;">
@@ -67,12 +69,13 @@
 								<view style="display: flex;margin-top: 10rpx;">
 									<image :src="sonItem.avatar"
 										style="width: 50rpx;height: 50rpx;border-radius: 50%;margin-right: 10rpx;"
-										mode="">
+										mode="aspectFill">
 									</image>
 									<view style="width: calc(100% - 50rpx - 10rpx);">
 										<view>
 											<text>{{sonItem.role_realname}}·{{sonItem.role_dynasty}} <text
-													v-if="sonItem.p_role_realname!=undefined">回复{{sonItem.p_role_realname}}·{{sonItem.p_role_dynasty}}</text>
+													v-if="sonItem.p_role_realname!=undefined"><text
+														style="color: #777;margin: 0rpx 10rpx;">回复</text>{{sonItem.p_role_realname}}·{{sonItem.p_role_dynasty}}</text>
 											</text>
 										</view>
 										<view style="margin-top: 10rpx;">
@@ -99,9 +102,10 @@
 								</view>
 							</block>
 						</view>
-						<view v-if="item.children_count > 0" style="color: #FE4373;margin-top: 5rpx;margin-left: 60rpx;"
+						<view v-if="item.children_count > 0" style="color: #FE4373;margin-top: 5rpx;"
 							@click="clickMort(item,index)">
-							展开{{ item.children_count}}条回复
+							~~~ 展开{{ item.children_count}}条回复 <text class="ri-arrow-down-s-line"
+								style="font-size: 30rpx;"></text>
 						</view>
 					</view>
 				</view>
@@ -125,12 +129,17 @@
 				num: 0,
 				userInfo: [],
 				listPostComment: [],
+				onePage: 1
 			}
 		},
 		created() {
 			this.getPostComment()
 		},
 		methods: {
+			scrollBottom() {
+				this.onePage++;
+				this.getPostComment()
+			},
 			pinglun2(data, msg, nullFlag) {
 				var that = this;
 				var currentIndex = null;
@@ -229,10 +238,12 @@
 			getPostComment() {
 				var that = this;
 				that.$api('comment.lists', {
-					post_id: that.$Route.query.post_id
+					post_id: that.$Route.query.post_id,
+					page: that.onePage,
+					limit: 10
 				}).then(res => {
 					if (res.code === 1) {
-						that.listPostComment = res.data;
+						that.listPostComment = [...that.listPostComment, ...res.data];
 					}
 				})
 			},
@@ -253,7 +264,12 @@
 						if (that.listPostComment[index].newList != undefined) {
 							that.listPostComment[index].newList = []
 						}
-						that.listPostComment[index].moreData = [...res.data];
+						if(that.listPostComment[index].moreData != undefined){
+							that.listPostComment[index].moreData = [...that.listPostComment[index].moreData,...res.data];
+						}else{
+							that.listPostComment[index].moreData = [...res.data];
+						}
+						
 						that.listPostComment[index].children_count = that.listPostComment[index].children_count -
 							res.data.length;
 						that.$forceUpdate()
@@ -264,13 +280,11 @@
 				this.$emit("reply", item)
 			},
 			reply2(item) {
-				console.log(item)
 				this.$emit("reply2", item)
 			},
 			// 点赞评论
 			handlePostDigComment(items) {
 				let that = this
-				console.log(items)
 				that.$api('post_comment.dig', {
 					id: items.id
 				}).then(res => {

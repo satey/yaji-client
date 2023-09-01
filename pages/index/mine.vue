@@ -3,12 +3,12 @@
 	<view class="fixedHead" v-if="headFlag">
 		<view style="display: flex;align-items: center;">
 			<block v-if="userImg!=''">
-				<image class="rounded-full bg-gray-100" :src="userImg"
+				<image mode="aspectFill" class="rounded-full bg-gray-100" :src="userImg"
 					style="width: 50rpx;height: 50rpx;margin-right: 30rpx;">
 				</image>
 			</block>
 			<block v-else>
-				<image class="rounded-full bg-gray-100" :src="userInfo.avatar || '/static/avatar.png'"
+				<image mode="aspectFill" class="rounded-full bg-gray-100" :src="userInfo.avatar || '/static/avatar.png'"
 					style="width: 50rpx;height: 50rpx;margin-right: 30rpx;">
 				</image>
 			</block>
@@ -46,13 +46,14 @@
 			</view>
 			<view style="margin-top: 80rpx;position: relative;">
 				<block v-if="userImg!=''">
-					<image class="rounded-full bg-gray-100" :src="userImg || '/static/avatar.png'"
+					<image class="rounded-full bg-gray-100" mode="aspectFill" :src="userImg || '/static/avatar.png'"
 						style="width: 140rpx;height: 140rpx;" @click="changeImage">
 					</image>
 				</block>
 				<block v-else>
-					<image class="rounded-full bg-gray-100" :src="userInfo.avatar || '/static/avatar.png'"
-						style="width: 140rpx;height: 140rpx;" @click="changeImage">
+					<image class="rounded-full bg-gray-100" mode="aspectFill"
+						:src="userInfo.avatar || '/static/avatar.png'" style="width: 140rpx;height: 140rpx;"
+						@click="changeImage">
 					</image>
 				</block>
 				<view class="tips text-base text-white " v-if="userInfo.is_change_avatar!=1||is_change_avatar == 1">
@@ -133,14 +134,17 @@
 				</view>
 			</view>
 		</u-modal>
-		<clipper :image-url="imgurl" v-if="imgurl" @cancel="imgCancel" @success="imgSuccess" :is-limit-move="true"
-			:isReduce="true" :max-width="400" :isRound="true" />
+		<!-- <clipper :image-url="imgurl" v-if="imgurl" @cancel="imgCancel" @success="imgSuccess" :is-limit-move="true"
+			:isReduce="true" :max-width="400" :isRound="true" /> -->
 		<!-- <uc-auth></uc-auth> -->
 		<!-- <uc-tabbar></uc-tabbar> -->
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>
-	import clipper from '@/components/lime-clipper/components/l-clipper/l-clipper.vue'
+	import topPrompt from "@/components/fei-topPrompt/fei-topPrompt.vue"
+	import permision from "@/js_sdk/wa-permission/permission.js"
+	// import clipper from '@/components/lime-clipper/components/l-clipper/l-clipper.vue'
 	import {
 		mapMutations,
 		mapActions,
@@ -149,7 +153,7 @@
 	export default {
 		name: 'mine',
 		components: {
-			clipper
+			topPrompt
 		},
 		data() {
 			return {
@@ -271,16 +275,105 @@
 				this.imgurl = '';
 			},
 			//上传头像
-			changeImage() {
+			async changeImage() {
 				const self = this;
+				const that = this;
+
+				// #ifdef APP-PLUS
+				var result = await permision.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');
+				if (result == 1) {
+					uni.chooseImage({
+						count: 1,
+						sourceType: ['album'],
+						sizeType: "original",
+						success(res) {
+							var token = uni.getStorageSync("token");
+							uni.showLoading()
+							uni.uploadFile({
+								url: that.$API_URL + 'index/upload',
+								filePath: res.tempFilePaths[0],
+								name: 'file',
+								formData: {
+									"token": token
+								},
+								success: res => {
+									var data = JSON.parse(res.data);
+									if (data.code == 1) {
+										that.$api("user.update_avatar", {
+											avatar: data.data.fullurl
+										}).then((resData) => {
+											uni.hideLoading()
+											if (resData.code == 1) {
+												that.userImg = data.data.fullurl +
+													'?imageMogr2/thumbnail/280x280';
+												that.getUserInfo()
+											}
+										})
+									} else {
+										uni.hideLoading()
+									}
+								},
+								complete: e => {
+									uni.hideLoading()
+								}
+							})
+						}
+					})
+				} else {
+					uni.showModal({
+						title: "权限不足",
+						content: "请开启相册读取权限，以便上传图片。！",
+						confirmText: "前往开启",
+						success(res1) {
+							if (res1.confirm) {
+								permision.gotoAppPermissionSetting()
+							}
+						}
+					})
+				}
+				// #endif
+
+
+				// #ifdef H5
 				uni.chooseImage({
 					count: 1,
 					sourceType: ['album'],
 					sizeType: "original",
 					success(res) {
-						self.imgurl = res.tempFilePaths[0];
+						var token = uni.getStorageSync("token");
+						uni.showLoading()
+						uni.uploadFile({
+							url: that.$API_URL + 'index/upload',
+							filePath: res.tempFilePaths[0],
+							name: 'file',
+							formData: {
+								"token": token
+							},
+							success: res => {
+								var data = JSON.parse(res.data);
+								if (data.code == 1) {
+									that.$api("user.update_avatar", {
+										avatar: data.data.fullurl
+									}).then((resData) => {
+										uni.hideLoading()
+										if (resData.code == 1) {
+											that.userImg = data.data.fullurl +
+												'?imageMogr2/thumbnail/280x280';
+											that.getUserInfo()
+										}
+									})
+								} else {
+									uni.hideLoading()
+								}
+							},
+							complete: e => {
+								uni.hideLoading()
+							}
+						})
 					}
 				})
+				// #endif
+
 			},
 			// 跳转角色
 			skipRole() {

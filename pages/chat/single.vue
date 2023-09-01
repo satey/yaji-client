@@ -6,7 +6,7 @@
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({type: 'navigateBack',delta: 1})"></i>
 			</view>
 			<view slot="center" style="display: flex;align-items: center;">
-				<image :src="toUserData.avatar" style="width:50rpx;height:50rpx;border-radius:50%;margin-right: 10rpx;">
+				<image mode="aspectFill" :src="toUserData.avatar" style="width:50rpx;height:50rpx;border-radius:50%;margin-right: 10rpx;">
 				</image>{{toUserData.name}}
 			</view>
 			<view slot="right">
@@ -47,7 +47,7 @@
 					<view class="chatLeft mt-6" :id="index==0?'scrollLeftTop':''"
 						v-if="item.user_id == $Route.query.user_id">
 						<view class="flex">
-							<image class="block rounded-full w-10 h-10 mr-3" sty
+							<image mode="aspectFill" class="block rounded-full w-10 h-10 mr-3" sty
 								:src="item.avatar || '/static/avatar.png'"
 								@click="$u.route('/pages/user/home',{user_id:item.user_id})">
 							</image>
@@ -108,7 +108,7 @@
 							</view>
 						</view>
 						<view class="flex">
-							<image class="block rounded-full w-10 h-10 ml-3" :src="item.avatar || '/static/avatar.png'">
+							<image mode="aspectFill" class="block rounded-full w-10 h-10 ml-3" :src="item.avatar || '/static/avatar.png'">
 							</image>
 						</view>
 					</view>

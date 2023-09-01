@@ -8,12 +8,14 @@
 		</u-navbar>
 		<view>
 			<view style="text-align: center;">
-				<image class="bannerImg" src="@/static/q.png">
+				<image mode="aspectFill" class="bannerImg" src="@/static/q.png">
 				</image>
 			</view>
 			<view class="title">曲水流觞</view>
 			<view class="sunTitle">古代三月初三上巳节的传统习俗，最早可追溯到周代，后发展成为一种聚会雅事。著名的有王羲之的兰亭集会。</view>
-			<view class="okBtn" @click="start">开始体验</view>
+			<view class="okBtn" :style="{background:mateFlag?'#FE4373':'#13D898'}" @click="start">
+				{{mateFlag?'开始匹配':'匹配中...'}}
+			</view>
 			<view
 				style="display: flex;align-items: center;margin-top: 45rpx;justify-content: center;margin-bottom: 50rpx;">
 				<view style="width: 20rpx;height: 20rpx;border-radius: 50%;background: #13D898;"></view>
@@ -25,7 +27,7 @@
 			<view style="margin-top: 10rpx;">匹配房间...</view>
 			<view class="cancel" @click="cancel">取消</view>
 		</view>
-		<!-- <reward></reward> -->
+		<topPrompt></topPrompt>
 	</view>
 </template>
 
@@ -37,6 +39,8 @@
 			return {
 				isModule: false,
 				countNum: 0,
+				mateFlag: true,
+				mateId: ''
 			}
 		},
 		components: {
@@ -44,6 +48,16 @@
 		},
 		onLoad() {
 			var that = this;
+			that.mateId = this.$store.state.game.mateId;
+			that.mateFlag = this.$store.state.game.mateId != '' ? false : true;
+
+			that.$store.watch((state, getters) => {
+				if (state.game.gameBarFlag == false) {
+					that.mateFlag = true;
+					that.mateId = ""
+				}
+			})
+
 			that.$api("game.countNum").then(res => {
 				if (res.code == 1) {
 					that.countNum = res.data
@@ -54,21 +68,45 @@
 			//开始
 			start() {
 				var that = this;
-				that.isModule = true;
-				that.$api("game.joinRoom").then(res => {
-					if (res.code == 1) {
-						that.isModule = false;
-						uni.navigateTo({
-							url: '/pages/joy/poetry'
-						})
-					} else {
-						that.isModule = false;
-						uni.showToast({
-							icon: "none",
-							title: res.msg
-						})
-					}
-				})
+				if (that.mateFlag == true) {
+					that.$api("game.match_room").then(res => {
+						console.log(res)
+						if (res.code == 2) {
+							that.isModule = false;
+							uni.navigateTo({
+								url: '/pages/joy/poetry'
+							})
+						} else if (res.code == 0) {
+							uni.showToast({
+								icon: "error",
+								title: res.msg
+							})
+						} else if (res.code == 1) {
+							uni.showToast({
+								icon: "none",
+								title: res.msg
+							})
+							that.mateId = res.data.match_id;
+							that.$store.commit("setMateId", res.data.match_id)
+							that.$store.commit("setGameBarFlag", true)
+						}
+					})
+				} else {
+					that.$api("game.cancel_match_room", {
+						"match_id": that.mateId
+					}).then(res => {
+						if (res.code == 1) {
+							that.mateId = "";
+							that.$store.commit("setMateId", "")
+							that.$store.commit("setGameBarFlag", false)
+							uni.showToast({
+								icon: "none",
+								title: res.msg
+							})
+						}
+					})
+				}
+				that.mateFlag = !that.mateFlag;
 			},
 			//取消匹配
 			cancel() {
@@ -126,7 +164,6 @@
 		width: 450rpx;
 		height: 85rpx;
 		background: inherit;
-		background-color: #FE4373;
 		border-radius: 43px;
 		color: #fff;
 		text-align: center;

@@ -14,13 +14,14 @@
 					<view>{{item.title}}</view>
 					<view v-if="item.images!=null">
 						<block v-for="(itemImg,indexImg) in item.images" :key="index">
-							<image :src="itemImg" style="width: 50rpx;height: 50rpx;border-radius: 50%;" mode="">
+							<image :src="itemImg" style="width: 50rpx;height: 50rpx;border-radius: 50%;" mode="aspectFill">
 							</image>
 						</block>
 					</view>
 				</view>
 			</block>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 

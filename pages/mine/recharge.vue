@@ -67,6 +67,7 @@
 				<view class="btnOk" @click="recharge">立即充值</view>
 			</view>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 

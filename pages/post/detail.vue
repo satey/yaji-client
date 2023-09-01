@@ -73,14 +73,14 @@
 			<view class="" v-if="detailContent!=null">
 				<view class="userImg" v-if="userInfo.id == user_id"
 					@click="$u.route('/pages/index/mine', { user_id: detailContent.user_id })">
-					<image :src="avatar || '/static/avatar.png'" class="userImg"></image>
+					<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
 				</view>
 				<view v-else class="userImg" @click="$u.route('/pages/user/home', { user_id: detailContent.user_id })">
-					<image :src="avatar || '/static/avatar.png'" class="userImg"></image>
+					<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
 				</view>
 			</view>
 			<view v-else class="userImg" @click="showToast">
-				<image :src="avatar || '/static/avatar.png'" class="userImg"></image>
+				<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
 			</view>
 			<view style="flex: 1;">
 				<view class="userInfo">
@@ -122,6 +122,7 @@
 		</view>
 		<u-empty v-if="detailContent == null" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
 			marginTop="100"></u-empty>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>
@@ -177,12 +178,16 @@
 				replyData: [],
 				replyFalg: false,
 				flagNum: 0,
+				commentFlag: true,
 			}
 		},
 		created() {
 			let that = this
 			that.getEmojiList()
 			// that.isRedLove=false
+		},
+		onReachBottom() {
+			this.$refs.comment.scrollBottom()
 		},
 		onLoad(option) {
 			let that = this;
@@ -195,7 +200,7 @@
 		methods: {
 			reply(e) {
 				this.replyData = e;
-				this.placeholder = `回复${e.role_realname}${e.role_dynasty}用户`;
+				this.placeholder = `回复${e.role_realname}${e.role_dynasty}`;
 				this.inputFocus = false;
 				this.$nextTick(() => {
 					this.inputFocus = true;
@@ -205,7 +210,7 @@
 			reply2(e) {
 				console.log(e)
 				this.replyData = e;
-				this.placeholder = `回复${e.role_realname}${e.role_dynasty}用户`;
+				this.placeholder = `回复${e.role_realname}${e.role_dynasty}`;
 				this.inputFocus = false;
 				this.$nextTick(() => {
 					this.inputFocus = true;
@@ -225,6 +230,11 @@
 						this.placeholder = '发表评论'
 						this.flagNum = 0
 					}
+				} else {
+					this.replyFalg = false;
+					this.replyData = []
+					this.placeholder = '发表评论'
+					this.flagNum = 0
 				}
 				// this.placeholder = '发表评论'
 			},
@@ -499,42 +509,47 @@
 			},
 			doComment1() {
 				var that = this;
-				switch (that.flagNum) {
-					case 0:
-						var obj = {
-							post_id: that.$Route.query.post_id,
-							post_comment_id: 0,
-							top_post_comment_id: 0,
-							content: that.message
-						}
-						that.doComment(obj, 0)
-						break;
-					case 1:
-						var obj = {
-							post_id: that.$Route.query.post_id,
-							post_comment_id: that.replyData.id,
-							top_post_comment_id: that.replyData.id,
-							content: that.message
-						}
-						that.doComment(obj, 1)
-						break;
-					case 2:
-						var obj = {
-							post_id: that.$Route.query.post_id,
-							post_comment_id: that.replyData.id,
-							top_post_comment_id: that.replyData.top_post_comment_id,
-							content: that.message
-						}
-						that.doComment(obj, 2)
-						break;
+				if (that.commentFlag == false) {
+					return false;
+				} else {
+					that.commentFlag = false;
+					switch (that.flagNum) {
+						case 0:
+							var obj = {
+								post_id: that.$Route.query.post_id,
+								post_comment_id: 0,
+								top_post_comment_id: 0,
+								content: that.message
+							}
+							that.doComment(obj, 0)
+							break;
+						case 1:
+							var obj = {
+								post_id: that.$Route.query.post_id,
+								post_comment_id: that.replyData.id,
+								top_post_comment_id: that.replyData.id,
+								content: that.message
+							}
+							that.doComment(obj, 1)
+							break;
+						case 2:
+							var obj = {
+								post_id: that.$Route.query.post_id,
+								post_comment_id: that.replyData.id,
+								top_post_comment_id: that.replyData.top_post_comment_id,
+								content: that.message
+							}
+							that.doComment(obj, 2)
+							break;
+					}
 				}
-
 			},
 			doComment(obj, type) {
 				let that = this
 				if (!that.message) {
-					that.$u.toast('内容不能为空')
-					return false
+					that.$u.toast('内容不能为空');
+					that.commentFlag = true;
+					return false;
 				}
 				that.$api('comment.add', obj).then(res => {
 					if (res.code === 1) {
@@ -558,9 +573,11 @@
 						this.replyFalg = false;
 						this.replyData = []
 						this.placeholder = '发表评论'
-						this.flagNum = 0
+						this.flagNum = 0;
+						that.commentFlag = true;
 					} else {
-						that.$u.toast(res.msg)
+						that.$u.toast(res.msg);
+						that.commentFlag = true;
 					}
 				})
 			},

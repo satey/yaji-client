@@ -32,6 +32,7 @@
 		<u-loadmore v-if="listUserGift.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
 		<u-empty v-if="!listUserGift.length" icon="/static/null3.png" text="数据为空" textColor="#a1a1a1"
 			marginTop="100"></u-empty>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>

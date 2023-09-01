@@ -5,11 +5,11 @@
 		@click="$u.route('/pages/user/home', { user_id: item.user_id })">
 		<view class="mr-4">
 			<view v-if="item.gender == 1">
-				<image style="" class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'">
+				<image mode="aspectFill" style="" class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'">
 				</image>
 			</view>
 			<view v-if="item.gender == 2">
-				<image style="" class="block w-14 h-14 rounded-full"
+				<image mode="aspectFill" style="" class="block w-14 h-14 rounded-full"
 					:src="item.user_avatar || '/static/avatar-female.png'">
 				</image>
 			</view>
@@ -38,11 +38,11 @@
 		style="display: flex;align-items: center;border-bottom: 1px solid #ECECEC;padding: 25rpx 0rpx;box-sizing: border-box;">
 		<view class="mr-4">
 			<view v-if="item.gender == 1">
-				<image style="" class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'">
+				<image mode="aspectFill" style="" class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'">
 				</image>
 			</view>
 			<view v-if="item.gender == 2">
-				<image style="" class="block w-14 h-14 rounded-full"
+				<image mode="aspectFill" style="" class="block w-14 h-14 rounded-full"
 					:src="item.user_avatar || '/static/avatar-female.png'">
 				</image>
 			</view>

@@ -94,7 +94,7 @@
 	            </view>
 	        </view>
 	    </u-modal> -->
-
+		<topPrompt></topPrompt>
 		<uc-auth></uc-auth>
 	</view>
 </template>

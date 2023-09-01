@@ -5,10 +5,10 @@
 		<view class="flex" style="margin-top: 30rpx;">
 			<view class="mr-4" @click="$u.route('/pages/user/home', { user_id: item.id })">
 				<view v-if="item.gender == 1">
-					<image class="block w-14 h-14 rounded-full" :src="item.avatar || '/static/avatar.png'"></image>
+					<image class="block w-14 h-14 rounded-full"  mode="aspectFill" :src="item.avatar || '/static/avatar.png'"></image>
 				</view>
 				<view v-if="item.gender == 2">
-					<image class="block w-14 h-14 rounded-full" :src="item.avatar || '/static/avatar-female.png'">
+					<image class="block w-14 h-14 rounded-full" mode="aspectFill" :src="item.avatar || '/static/avatar-female.png'">
 					</image>
 				</view>
 			</view>

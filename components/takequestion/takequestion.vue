@@ -12,7 +12,7 @@
 			</view>
 			<!-- 话题 -->
 			<view class="pics">
-				<image :src="items" class="pics-item" v-for="(items,index) in item.avatar" v-if="index<=5">
+				<image :src="items" class="pics-item" mode="aspectFill" v-for="(items,index) in item.avatar" v-if="index<=5">
 				</image>
 			</view>
 		</view>

@@ -16,6 +16,24 @@ export default {
 		},
 	},
 	game: {
+		match_success: {
+			url: 'game_room/match_success',
+			auth: false,
+			method: 'GET',
+			desc: '曲水流觞匹配房间成功',
+		},
+		cancel_match_room: {
+			url: 'game_room/cancel_match_room',
+			auth: false,
+			method: 'GET',
+			desc: '曲水流觞取消匹配房间',
+		},
+		match_room: {
+			url: 'game_room/match_room',
+			auth: false,
+			method: 'GET',
+			desc: '曲水流觞匹配房间',
+		},
 		joinRoom: {
 			url: 'game_room/join_room',
 			auth: false,

@@ -9,6 +9,7 @@
 				<view class="okBtn" @click="submit">发布结缘</view>
 			</view>
 		</view> -->
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>

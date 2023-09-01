@@ -10,7 +10,7 @@
 			<view style="display: flex;justify-content: space-between;padding: 30rpx 0rpx;"
 				v-for="(item,index) in trendsMsgList" :key="index" @click="openDetail(item)">
 				<view>
-					<image :src="item.avatar"
+					<image mode="aspectFill" :src="item.avatar"
 						style="width: 92rpx;height: 92rpx;border-radius: 50%;margin-right: 20rpx;"></image>
 				</view>
 				<view class="noticeRight" style="border-bottom:1px solid #ededed;flex: 1;padding-bottom: 30rpx;">

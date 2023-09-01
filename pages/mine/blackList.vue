@@ -23,6 +23,7 @@
 		<!-- <u-loadmore v-if="blackList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" /> -->
 		<u-empty v-if="blackList.length==0" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
 			marginTop="100"></u-empty>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 

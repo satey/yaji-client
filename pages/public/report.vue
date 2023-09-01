@@ -37,6 +37,7 @@
 		<view class="reportBtnBox">
 			<view class="reportBtn" @click="submit">提交举报</view>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 
@@ -112,11 +113,19 @@
 			//封装提交
 			submitActive(imgArr) {
 				var that = this;
+				console.log(that.$Route.query.type)
+				var remark = ''
+				if (that.$Route.query.type == '曲水流觞') {
+					remark = that.reportType + `,类型:${that.$Route.query.type}`
+				} else {
+					remark = that.reportType +
+						`,类型:${that.$Route.query.type},${that.$Route.query.type}id:${that.$Route.query.selectId}`
+				}
+				console.log(remark)
 				that.$api('feedback.add', {
 					type: 'report',
 					content: that.reportValue,
-					remark: that.reportType +
-						`,类型:${that.$Route.query.type},${that.$Route.query.type}id:${that.$Route.query.selectId}`,
+					remark: remark,
 					title: "",
 					images: imgArr,
 					feedback_user_id: that.$Route.query.user_id

@@ -4,7 +4,7 @@
 		<view slot="left"></view>
 	</u-navbar>
 	<view class="bannerBox" v-if="bannerData.length != 0">
-		<image class="banner" :src="bannerData.image" v-if="bannerData.status == 'normal'"
+		<image class="banner" mode="aspectFill" :src="bannerData.image" v-if="bannerData.status == 'normal'"
 			@click="jumpBanner(bannerData.url)">
 		</image>
 	</view>
@@ -48,7 +48,7 @@
 				<view
 					style="display: flex;align-items: center;justify-content: space-between;border-bottom:1px solid #ededed;padding: 30rpx 0rpx;position: relative;"
 					v-if="item.user_id!=undefined  && item.is_topping == 1">
-					<image class="userImg" :fade-show="true" :src="item.avatar"></image>
+					<image mode="aspectFill" class="userImg" :fade-show="true" :src="item.avatar"></image>
 					<view
 						style="position: absolute;top: -22rpx;left: -22rpx;transform: rotate(46deg);font-size: 50rpx;color: #EB3446;"
 						class="ri-arrow-left-s-fill"></view>
@@ -71,7 +71,7 @@
 							<text style="font-size: 26rpx;color:#808080;" v-if="item.type=='image'">[ 图片 ]</text>
 							<text style="font-size: 26rpx;color:#808080;" v-if="item.type=='audio'">[ 语音 ]</text>
 							<text style="font-size: 26rpx;color:#808080;" v-if="item.type=='gift'">[ 礼物 ]</text>
-							<text class="tips" v-if="item.msgNum"></text>
+							<text class="tips" v-if="item.msgNum">{{item.msgNum}}</text>
 						</view>
 					</view>
 				</view>
@@ -83,7 +83,7 @@
 					<!-- <view class="notice">
 					<text class="ri-notification-3-fill icon"></text>
 				</view> -->
-					<image class="userImg" :src="item.avatar"></image>
+					<image mode="aspectFill" class="userImg" :src="item.avatar"></image>
 					<view class="noticeRight">
 						<view style="display: flex;align-items: center;justify-content: space-between;">
 							<block v-if="item.role_realname!=''&&item.role_realname!=null">
@@ -136,12 +136,12 @@
 
 		<!-- <uc-auth></uc-auth> -->
 		<!-- <uc-tabbar></uc-tabbar> -->
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>
 	export default {
 		name: 'message',
-		components: {},
 		data() {
 			return {
 				// tablist: [

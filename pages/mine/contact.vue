@@ -24,6 +24,7 @@
 			marginTop="100"></u-empty>
 
 		<uc-auth></uc-auth>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>

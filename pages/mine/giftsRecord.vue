@@ -18,6 +18,7 @@
 			<u-empty v-if="!giftsList.length" icon="/static/null3.png" text="数据为空" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 

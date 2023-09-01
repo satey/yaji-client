@@ -77,7 +77,7 @@
 			<u-empty v-if="!rechargeList.length" icon="/static/null3.png" text="暂无记录" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</view>
-
+		<topPrompt></topPrompt>
 	</view>
 
 

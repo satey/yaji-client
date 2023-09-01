@@ -31,6 +31,7 @@
 			<u-empty v-if="!topicspeedList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 

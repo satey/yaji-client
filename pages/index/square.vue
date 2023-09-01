@@ -40,7 +40,7 @@
 			<u-empty v-if="!postFollowList.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</block>
-
+		<topPrompt></topPrompt>
 		<!-- <uc-auth></uc-auth>/ -->
 		<!-- <uc-tabbar></uc-tabbar> -->
 	</view>
@@ -48,7 +48,6 @@
 <script>
 	export default {
 		name: 'square',
-		components: {},
 		data() {
 			return {
 				tablist: [{

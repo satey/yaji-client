@@ -2,10 +2,10 @@
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="flex px-4 py-2" style="border-bottom: 1rpx solid rgb(238, 238, 238,0.5);padding-top: 20rpx;"
 		v-if="item.status == 'normal'">
-		<image class="block rounded-full" @click="showToast" v-if="item.user == null" src="/static/avatar.png"
+		<image mode="aspectFill" class="block rounded-full" @click="showToast" v-if="item.user == null" src="/static/avatar.png"
 			style="width: 85rpx;height: 85rpx;"></image>
 		<view v-else>
-			<image class="block rounded-full" :src="item.user.avatar || '/static/avatar.png'"
+			<image mode="aspectFill" class="block rounded-full" :src="item.user.avatar || '/static/avatar.png'"
 				@click="openUserHome(item.user_id)" style="width: 85rpx;height: 85rpx;"></image>
 		</view>
 		<view class="flex-1" style="margin-left: 20rpx;padding-bottom: 20rpx;">
@@ -32,7 +32,7 @@
 			</view>
 			<!-- {{item}} -->
 			<view v-if="item.images" class="mt-4" style="position: relative;">
-				<image @click="onPreviewTap(0)" :src="item.images.split(',')[0]" mode="widthFix"
+				<image  @click="onPreviewTap(0)" :src="item.images.split(',')[0]" mode="widthFix"
 					v-if="item.images.split(',').length == 1" style="max-width: 500rpx;border-radius: 10rpx;">
 				</image>
 				<view v-if="item.images.split(',').length != 1" style="width: 100%;display: flex;flex-direction: row;">
@@ -142,7 +142,7 @@
 			<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
 				<view class="p-4">
 					<view class="delete"
-						@click="$u.route('/pages/public/report',{user_id:item.user_id}), showAction = false"
+						@click="$u.route('/pages/public/report',{user_id:item.user_id,type:'话题',selectId:item.id}), showAction = false"
 						style="margin-top: 50rpx;">
 						<view style="font-size: 30rpx;">举报广告/色情等</view>
 					</view>

@@ -25,7 +25,8 @@
 		<view class="homeHead">
 			<view style="margin-top: 80rpx;">
 				<image class="rounded-full bg-gray-100" :src="user.avatar || '/static/avatar.png'"
-					style="width: 140rpx;height: 140rpx;" @click="viewUserImg(user.avatar || '/static/avatar.png')">
+					style="width: 140rpx;height: 140rpx;"
+					@click="viewUserImg(user.original_avatar || '/static/avatar.png')" mode="aspectFill">
 				</image>
 			</view>
 			<view class="text-xl mt-2">
@@ -116,7 +117,7 @@
 			<text class="text-base text-white" @click="interest(2)">已关注</text>
 		</view>
 	</view>
-
+	<topPrompt></topPrompt>
 	<uc-auth></uc-auth>
 	</view>
 </template>

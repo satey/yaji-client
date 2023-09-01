@@ -3,10 +3,10 @@
 	<view class="flex px-4 py-2" style="border-bottom: 1rpx solid rgb(238, 238, 238,0.5);padding-top: 20rpx;"
 		v-if="item.status == 'normal'">
 		<image class="block rounded-full" @click="showToast" v-if="item.user == null" src="/static/avatar.png"
-			style="width: 85rpx;height: 85rpx;"></image>
+			style="width: 85rpx;height: 85rpx;" mode="aspectFill"></image>
 		<view v-else>
 			<image class="block rounded-full" :src="item.user.avatar || '/static/avatar.png'"
-				@click="openUserHome(item.user_id)" style="width: 85rpx;height: 85rpx;"></image>
+				@click="openUserHome(item.user_id)" mode="aspectFill" style="width: 85rpx;height: 85rpx;"></image>
 		</view>
 		<view class="flex-1" style="margin-left: 20rpx;padding-bottom: 20rpx;">
 			<view class="leading-none mt-2" v-if="item.user==null">
@@ -58,7 +58,7 @@
 				<view v-if="!audioStatus" style="display: flex;align-items: center;">
 					<i class="ri-voiceprint-line text-2xl text-white" v-for="(item,index) in 3"></i>
 				</view>
-				<image v-else src="/static/bofang.gif" style="width: 100rpx;height: 35rpx;" mode=""></image>
+				<image v-else src="/static/bofang.gif" style="width: 100rpx;height: 35rpx;" mode="aspectFill"></image>
 			</view>
 			<view v-if="item.video" @click="handlePlayVideo(item.video)"
 				class="mt-4 flex items-center justify-center rounded overflow-hidden w-60 bg-gray-200">
@@ -234,6 +234,7 @@
 				that.$api("game.joinRoom", {
 					game_room_user_id: item.user_id
 				}).then(res => {
+					console.log(res)
 					if (res.code == 1) {
 						that.isModule = false;
 						uni.navigateTo({

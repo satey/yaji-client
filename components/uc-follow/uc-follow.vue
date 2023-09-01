@@ -3,13 +3,17 @@
 	<view>
 		<view class="flex mt-6" style="display: flex;">
 			<view class="mr-4" @click="openUrl(item.receiver_user_id)" v-if="currentIndex==0">
-				<u-avatar size="90" :src="item.avatar || '/static/avatar.png'"></u-avatar>
+				<!-- <u-avatar size="90" :src=""></u-avatar> -->
+				<image :src="item.avatar || '/static/avatar.png'" mode="aspectFill"
+					style="width: 90rpx;height: 90rpx;border-radius: 50%;"></image>
 			</view>
 			<view class="mr-4" @click="openUrl2( item.user_id)" v-if="currentIndex==1">
-				<u-avatar size="90" :src="item.avatar || '/static/avatar.png'"></u-avatar>
+				<image :src="item.avatar || '/static/avatar.png'" mode="aspectFill"
+					style="width: 90rpx;height: 90rpx;border-radius: 50%;"></image>
 			</view>
 			<view class="mr-4" @click="openUrl(item.receiver_user_id)" v-if="currentIndex==2">
-				<u-avatar size="90" :src="item.avatar || '/static/avatar.png'"></u-avatar>
+				<image :src="item.avatar || '/static/avatar.png'" mode="aspectFill"
+					style="width: 90rpx;height: 90rpx;border-radius: 50%;"></image>
 			</view>
 			<view
 				style="border-bottom: 1rpx solid #ECECEC;flex: 1;display: flex;justify-content: space-between;align-items: center;">

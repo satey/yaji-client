@@ -202,6 +202,7 @@
             </view>
         </u-popup>
  -->
+		<topPrompt></topPrompt>
 		<uc-auth></uc-auth>
 	</view>
 </template>
