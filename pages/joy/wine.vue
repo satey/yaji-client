@@ -1,122 +1,290 @@
 <template>
-    <page-meta :root-font-size="'13px'"></page-meta>
-    <view class="p-4 h-screen bg-gradient-to-b from-rose-800 to-red-900">
-        <view class="flex justify-between">
-            <view class="rounded-full bg-black bg-opacity-20 px-5 py-3">
-                <view class="leading-none text-white">诗词结缘</view>
-                <view class="text-base leading-none text-white opacity-50 mt-1">交友</view>
-            </view>
-            <view class="flex flex-row items-center">
-                <view class="mr-4">
-                    <view class="rounded-full w-10 h-10 flex items-center justify-center bg-black bg-opacity-20">
-                        <i class="ri-question-fill text-2xl leading-none text-white opacity-70"></i>
-                    </view>
-                </view>
-                <view class="">
-                    <view class="rounded-full w-10 h-10 flex items-center justify-center bg-black bg-opacity-20">
-                        <i class="ri-close-fill text-2xl leading-none text-white opacity-70"></i>
-                    </view>
-                </view>
-            </view>
-        </view>
-        <view class="mt-10">
-            <view class="rounded-xl p-6 bg-white bg-opacity-10">
-                <view class="text-2xl leading-none text-white mr-5">窈窕淑女，<text class="text-lime-500">君</text>子好逑</view>
-                <view class="flex items-center truncate mt-4">
-                    <image class="rounded-full w-8 h-8 block mr-2" :src="userInfo.avatar" />
-                    <view class="text-white">{{ userInfo.role_realname }}</view>
-                </view>
-            </view>
-        </view>
-        <view class="flex mt-6">
-            <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
-            <view class="flex-1 mr-5">
-                <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
-                <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
-            </view>
-            <view class="flex items-center">
-                <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-base leading-none text-white ml-1">385</view>
-            </view>
-        </view>
-        <view class="flex mt-6">
-            <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
-            <view class="flex-1 mr-5">
-                <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
-                <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
-            </view>
-            <view class="flex items-center">
-                <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-base leading-none text-white ml-1">385</view>
-            </view>
-        </view>
-        <view class="flex mt-6">
-            <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
-            <view class="flex-1 mr-5">
-                <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
-                <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
-            </view>
-            <view class="flex items-center">
-                <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-base leading-none text-white ml-1">385</view>
-            </view>
-        </view>
-        <view class="flex mt-6">
-            <image class="rounded-full w-6 h-6 block mr-2" :src="userInfo.avatar" />
-            <view class="flex-1 mr-5">
-                <view class="text-base leading-none text-white">{{ userInfo.role_realname }}</view>
-                <view class="text-base leading-none text-gray-300 mt-2">{{ $u.timeFrom(userInfo.createtime, 'mm月dd日 hh:MM') }}</view>
-                <view class="text-white mt-2">路边野花，劝<text class="text-lime-500">君</text>莫采撷。</view>
-            </view>
-            <view class="flex items-center">
-                <i class="ri-heart-3-fill text-xl leading-none text-white"></i>
-                <view class="text-base leading-none text-white ml-1">385</view>
-            </view>
-        </view>
-
-        <view class="fixed bottom-0 left-0 right-0 flex p-4">
-            <view class="flex-1 mr-4">
-                <view class="rounded-full h-10 flex items-center px-4 bg-white bg-opacity-20">
-                    <u-input type="text" placeholder="说点什么吧" :clearable="true" customStyle="border: none; background: none; padding: 0;">
-                        <i slot="suffix" class="ri-message-3-fill text-base leading-none text-white opacity-70"></i>
-                    </u-input>
-                </view>
-            </view>
-            <view class="">
-                <view class="rounded-full h-10 flex items-center px-4 bg-white bg-opacity-20">
-                    <i class="ri-send-plane-fill text-white mr-1"></i>
-                    <view class="text-white text-center">发布诗令</view>
-                </view>
-            </view>
-        </view>
-
-        <uc-auth></uc-auth>
-    </view>
+	<view class="wine">
+		<web-view v-if="isShow" class="webView" @message="message" :src="webUrl" :fullscreen="true"
+			:webview-styles="webviewStyles"></web-view>
+		<!-- <view class="flooter">
+			<view style="margin-top: 50rpx;">
+				<view>请填写一句含关键字<text v-show="selectText!=''" style="color:#FE4373;">【{{selectText}}】</text>的古诗词：</view>
+				<input type="text" class="myInput" placeholder="请输入5字以上的诗句" v-model="conetnt">
+				<view class="okBtn" @click="submit">发布结缘</view>
+			</view>
+		</view> -->
+		<topPrompt></topPrompt>
+	</view>
 </template>
 <script>
-import { mapState } from 'vuex'
-export default {
-    data() {
-        return {
-            showAction: false,
-        }
-    },
-    computed: {
-        ...mapState({
-            userInfo: state => state.user.userInfo,
-        })
-    },
-    onLoad() {
-        let that = this
-    },
-    methods: {
-    }
-}
+	export default {
+		data() {
+			return {
+				webviewStyles: {
+					progress: {
+						color: '#ffffff',
+					},
+					width: uni.getSystemInfoSync().screenWidth,
+				},
+				src: "",
+				selectText: "",
+				conetnt: "",
+				selectId: "",
+				isShow: false,
+				webUrl: "",
+				numShow: true,
+			}
+		},
+		onLoad() {
+			this.webUrl = "/hybrid/html/ball.html?url=" + this.$API_URL
+		},
+		onShow() {
+			var that = this;
+			that.isShow = true;
+		},
+		onHide() {
+			var that = this;
+			that.isShow = false;
+		},
+		onNavigationBarButtonTap() {
+			var that = this;
+			that.$u.route(`/pages/joy/wineList`);
+		},
+		methods: {
+			//换一批
+			nextBall() {
+				var that = this;
+				that.isShow = false;
+				that.$api("poetry.textList", {
+					type: 1
+				}).then((res) => {
+					if (res.code == 1) {
+						that.isShow = true;
+						that.src = "/hybrid/html/ball.html?data=" + JSON.stringify(res.data);
+					}
+				})
+			},
+			//发布
+			submit() {
+				var that = this;
+				if (that.selectText == "") {
+					that.$u.toast("请选择关键字")
+					return;
+				}
+				if (that.conetnt.length == 0) {
+					that.$u.toast("请输入诗句")
+					return;
+				}
+				if (that.conetnt.length < 5) {
+					that.$u.toast("请输入5字以上的诗句")
+					return;
+				}
+				if (that.conetnt.indexOf(that.selectText) == -1) {
+					that.$u.toast(`请输入包含${that.selectText}的诗句`)
+					return;
+				} else {
+					// that.$u.route('/pages/joy/wineContent');
+					that.$api("poetry.poetryAdd", {
+						poetry: that.conetnt,
+						poetry_word_id: that.selectId
+					}).then((res) => {
+						if (res.code == 1) {
+							that.conetnt = "";
+							that.selectId = "";
+							that.selectText = "";
+							uni.redirectTo({
+								url: '/pages/joy/wineContent'
+							});
+							// that.$u.route(`/pages/joy/wineContent?data=${JSON.stringify(res.data)}`);
+						} else {
+							that.$u.toast(res.msg)
+						}
+					})
+				}
+			},
+			//html发回来的数据
+			message(event) {
+				var data = event.detail.data;
+				console.log(data)
+				var that = this;
+				if (data[0].actionId == "") {
+					that.$u.toast("请选择关键字")
+					return;
+				}
+				if (data[0].actionText.length == 0) {
+					that.$u.toast("请输入诗句")
+					return;
+				}
+				if (data[0].actionText.length < 5) {
+					that.$u.toast("请输入5字以上的诗句")
+					return;
+				}
+				if (data[0].actionText.indexOf(data[0].activeZi) == -1) {
+					that.$u.toast(`请输入包含${data[0].activeZi}的诗句`)
+					return;
+				} else {
+					that.$api('poetry.today_poetry_count').then(res => {
+						if (res.code == 1) {
+							uni.showModal({
+								title: "提示",
+								content: res.msg,
+								success: function(modelRes) {
+									if (modelRes.confirm) {
+										if (res.data.user_money >= res.data.spend_money) {
+											that.$api("poetry.poetryAdd", {
+												poetry: data[0].actionText,
+												poetry_word_id: data[0].actionId
+											}).then((res) => {
+												if (res.code == 1) {
+													uni.redirectTo({
+														url: '/pages/joy/wineContent'
+													});
+												} else {
+													that.$u.toast(res.msg)
+												}
+											})
+										} else {
+											uni.showModal({
+												title: "提示",
+												content: "当前没有足够的铜钱，需要前往购买吗？",
+												success: function(res2) {
+													if (res2.confirm) {
+														that.$u.route(
+															'/pages/mine/recharge'
+														)
+													}
+												}
+											})
+										}
+									} else if (res.cancel) {
+										console.log('用户点击取消');
+									}
+								}
+							})
+						} else {
+							that.$api("poetry.poetryAdd", {
+								poetry: data[0].actionText,
+								poetry_word_id: data[0].actionId
+							}).then((res) => {
+								if (res.code == 1) {
+									uni.redirectTo({
+										url: '/pages/joy/wineContent'
+									});
+								} else {
+									that.$u.toast(res.msg)
+								}
+							})
+						}
+					})
+				}
+			},
+
+		}
+	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+	.wine {
+		width: 100vw;
+		height: 100vh;
+		box-sizing: border-box;
+	}
 
+	.flooter {
+		padding: 0rpx 30rpx;
+		box-sizing: border-box;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		z-index: 999999999;
+		background: url(/static/bgBtm.png);
+		background-size: 100% 100%;
+		background-position: 100% 100%;
+		background-repeat: no-repeat;
+		height: calc(100% - 345px);
+	}
+
+	.ballItem {
+		position: absolute;
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50%;
+		text-align: center;
+		line-height: 100rpx;
+		color: #fff;
+		font-size: 30rpx;
+		background: red;
+	}
+
+	.contentBox {
+		padding: 30rpx;
+	}
+
+	.ballBox {
+		margin-top: 20rpx;
+		width: 100%;
+		height: 700rpx;
+		position: relative;
+		transition: all 0.3s;
+		border: 1px solid red;
+	}
+
+
+	.ball {
+		position: absolute;
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50%;
+		text-align: center;
+		line-height: 100rpx;
+		color: #fff;
+		font-size: 30rpx;
+		transition: all 0.1s;
+		animation-play-state: paused;
+	}
+
+	.ballActive {
+		box-shadow: 0rpx 0rpx 50rpx #333;
+	}
+
+	.myInput {
+		margin: 30rpx 0rpx;
+		height: 72rpx;
+		background: #F7F7F7;
+		border-radius: 36rpx;
+		padding-left: 20rpx;
+		font-size: 28rpx;
+		color: #323232;
+		border: 1rpx solid #ccc;
+	}
+
+	.okBtn {
+		background: #FE4373;
+		border-radius: 43px;
+		height: 85rpx;
+		text-align: center;
+		line-height: 85rpx;
+		color: #fff;
+	}
+
+	.next {
+		color: #FE4373;
+		text-align: center;
+		font-size: 26rpx;
+	}
+
+	.ballItem {
+		position: absolute;
+		z-index: 99;
+	}
+
+	.ping {
+		width: 80rpx;
+		height: 80rpx;
+		border-radius: 50%;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-left: -40rpx;
+		margin-top: -40rpx;
+		z-index: -1;
+		opacity: 0.3;
+	}
 </style>

@@ -20,28 +20,34 @@
 			</view>
 		</view>
 		<view style="height: 100rpx;"></view>
+		<view class="bannerBox" v-if="bannerData.length != 0">
+			<image class="banner" :src="bannerData.image" mode="scaleToFill" v-if="bannerData.status == 'normal'"
+				@click="jumpBanner(bannerData.url)">
+			</image>
+		</view>
 		<block v-if="type === 'recommend'">
-			<uc-post v-for="(item, index) in postRecommendList" :key="index" :item="item"></uc-post>
+			<uc-post v-for="(item, index) in postRecommendList" :key="index" :item="item"
+				@openDetail="openDetail"></uc-post>
 			<u-loadmore v-if="postRecommendList.length" :status="loadmore" nomoreText="" color="#a1a1a1"
 				marginTop="20" />
-			<u-empty v-if="!postRecommendList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+			<u-empty v-if="!postRecommendList.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</block>
 		<block v-if="type === 'follow'">
-			<uc-post v-for="(item, index) in postFollowList" :key="index" :item="item"></uc-post>
+			<uc-post v-for="(item, index) in postFollowList" :key="index" :item="item"
+				@openDetail="openDetail"></uc-post>
 			<u-loadmore v-if="postFollowList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
-			<u-empty v-if="!postFollowList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+			<u-empty v-if="!postFollowList.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</block>
-
+		<topPrompt></topPrompt>
 		<!-- <uc-auth></uc-auth>/ -->
-		<uc-tabbar></uc-tabbar>
+		<!-- <uc-tabbar></uc-tabbar> -->
 	</view>
 </template>
 <script>
 	export default {
 		name: 'square',
-		components: {},
 		data() {
 			return {
 				tablist: [{
@@ -69,12 +75,24 @@
 				loadmore: false,
 				follow_user_id: null,
 				// -----------
-				headBarBgColor: ""
+				headBarBgColor: "",
+				bannerData: [],
+				ispage: false,
+				oldPostRecommendList: []
 			}
 		},
 		onLoad(option) {
 			let that = this
-			that.getPostRecommend()
+			that.getAd()
+		},
+		onShow() {
+			let that = this;
+			if (that.ispage == true) {
+				that.ispage = false;
+			} else {
+				that.getPostRecommend1()
+			}
+
 		},
 		onReachBottom() {
 			let that = this
@@ -92,15 +110,12 @@
 					break
 			}
 		},
-		onShow() {
-			let that = this
-			// that.getPostRecommend()
-		},
-		onPullDownRefresh() {
-			this.getPostRecommend()
-			uni.stopPullDownRefresh()
-
-		},
+		// onShow() {
+		// 	let that = this;
+		// 	this.params.page = 1;
+		// 	that.postRecommendList = [];
+		// 	that.getPostRecommend();
+		// },
 		onPageScroll(e) {
 			if (parseInt(e.scrollTop) > 30) {
 				this.headBarBgColor = "#fff"
@@ -109,15 +124,34 @@
 			}
 		},
 		methods: {
+			openDetail() {
+				this.ispage = true;
+			},
+			jumpBanner(url) {
+				this.$u.route('/pages/joy/activity')
+			},
+			//广告
+			getAd() {
+				var that = this;
+				that.$api("ad.lists", {
+					type: 1
+				}).then(res => {
+					if (res.code == 1) {
+						if (res.data.length != 0) {
+							that.bannerData = res.data[0];
+						}
+					}
+				})
+			},
 			is_ok() {
-				let that = this
+				let that = this;
 				that.$api('post.is_add').then(res => {
 					console.log('ii', res);
-					if (res.code === 0) {
-						console.log(res.code);
+					if (res.data === 0) {
 						that.$u.toast('无角色暂不能发布动态')
 						return
 					} else {
+						that.ispage = true;
 						uni.navigateTo({
 							url: '/pages/post/add'
 						})
@@ -143,13 +177,33 @@
 						break
 				}
 			},
+			getPostRecommend1() {
+				let that = this
+				that.loadmore = 'loading'
+				that.$api('post.recommend', {
+					'page': 1
+				}).then(res => {
+					if (res.code === 1) {
+						that.oldPostRecommendList = res.data.data;
+						if (that.postRecommendList.length == 0) {
+							that.getPostRecommend()
+						} else {
+							if (that.postRecommendList[0].id != res.data.data[0].id) {
+								that.params.page = 1;
+								that.postRecommendList = [];
+								that.getPostRecommend()
+							}
+						}
+					}
+				})
+			},
 			async getPostRecommend() {
 				let that = this
 				that.loadmore = 'loading'
 				that.$api('post.recommend', that.params).then(res => {
 					if (res.code === 1) {
 						that.paginator.total = res.data.total
-						that.paginator.last_page = res.data.last_page
+						that.paginator.last_page = res.data.last_page;
 						that.postRecommendList = [...that.postRecommendList, ...res.data.data]
 						if (that.params.page < res.data.last_page) {
 							that.loadmore = 'loadmore'
@@ -162,15 +216,11 @@
 			async getPostFollow() {
 				let that = this
 				that.loadmore = 'loading'
-				let data = {
-					page: 1
-				}
-				that.$api('post.follow_user_post_list', data).then(res => {
+				that.$api('post.follow_user_post_list', that.params).then(res => {
 					if (res.code === 1) {
-						console.log(res.data);
-						that.paginator.total = res.data.total
-						that.paginator.last_page = res.data.last_page
-						that.postFollowList = [...that.postFollowList, ...res.data.data]
+						that.paginator.total = res.data.total;
+						that.paginator.last_page = res.data.last_page;
+						that.postFollowList = [...that.postFollowList, ...res.data.data];
 						if (that.params.page < res.data.last_page) {
 							that.loadmore = 'loadmore'
 						} else {
@@ -183,5 +233,16 @@
 	}
 </script>
 <style lang="scss" scoped>
+	.bannerBox {
+		width: 690rpx;
+		height: 140rpx;
+		margin: 0 auto;
+		border-radius: 10rpx;
+		overflow: hidden;
+	}
 
+	.banner {
+		width: 100%;
+		height: 100%;
+	}
 </style>

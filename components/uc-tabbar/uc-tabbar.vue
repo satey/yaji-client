@@ -11,7 +11,7 @@
 				slot="active-icon"></i>
 			<i class="ri-compass-3-line text-3xl leading-none" slot="inactive-icon"></i>
 		</u-tabbar-item>
-		<u-tabbar-item text="消息" name="/pages/index/message" :dot="$store.state.message.messageCount">
+		<u-tabbar-item text="消息" name="/pages/index/message" :badge="$store.state.message.messageCount">
 			<i class="ri-message-3-fill text-3xl leading-none bg-gradient-to-b from-rose-500 to-rose-400 bg-clip-text text-transparent"
 				slot="active-icon"></i>
 			<i class="ri-message-3-line text-3xl leading-none" slot="inactive-icon"></i>
@@ -31,11 +31,12 @@
 		data() {
 			return {
 				current: '/pages/index/index',
+				messageCount: 0
 			}
 		},
 		mounted() {
 			let that = this;
-			that.current = that.$Route.path
+			that.current = that.$Route.path;
 		},
 		computed: {},
 		methods: {

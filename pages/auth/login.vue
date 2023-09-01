@@ -8,6 +8,18 @@
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i> -->
 			</view>
 		</u-navbar>
+		<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
+			<view style="padding: 50rpx 30rpx;">
+				<view style="font-size: 32rpx;">请先同意以下协议条款：</view>
+				<view style="margin-top: 50rpx;margin-bottom: 30rpx;">
+					<text style="color:#fb7185 ;" @click="$u.route('/pages/public/page', { id: 1 })">《用户协议》</text>和<text
+						@click="$u.route('/pages/public/page', { id: 2 })" style="color:#fb7185 ;">《隐私政策》</text>
+				</view>
+				<view @click="yes"
+					style="margin: 0 auto;width: 400rpx;color: #fff;text-align: center;height: 80rpx;line-height: 80rpx;background:#fb7185 ;border-radius: 10rpx;">
+					同意并继续</view>
+			</view>
+		</u-popup>
 		<view class="logo">
 			<image src="@/static/logo-circle.png" class="logoPic"></image>
 		</view>
@@ -37,8 +49,8 @@
 			</view>
 			<view class="flex flex-row-right mt-8" style="margin-top: 40rpx;">
 				<u-checkbox-group>
-					<u-checkbox @change="handleAgree" size="28" shape="circle" inactiveColor="#808080"
-						activeColor="#ff6897"></u-checkbox>
+					<u-checkbox @change="handleAgree" :checked="protocol" size="28" shape="circle"
+						inactiveColor="#808080" activeColor="#ff6897"></u-checkbox>
 				</u-checkbox-group>
 				<view class="text-base leading-none" style="color: #808080;">
 					<text>阅读并同意</text>
@@ -69,7 +81,7 @@
 					code: '',
 				},
 				codeText: '获取验证码',
-				protocol: '',
+				protocol: false,
 				isMobileEnd: false,
 				disabledCode: false,
 				policy: '', //协议内容
@@ -79,6 +91,7 @@
 				sendBtnDisabled: false,
 				// --------
 				isClick: true,
+				showAction: false,
 			}
 		},
 		computed: {
@@ -98,11 +111,15 @@
 		},
 		methods: {
 			...mapActions(['getUserInfo']),
+			yes() {
+				this.showAction = false;
+				this.protocol = true;
+				this.getSmsCode()
+			},
 			// 登录
 			commitWork() {
 				let that = this
 				//开始你的表演
-				console.log('noClick', that.noClick);
 			},
 
 			handleInput(key) {
@@ -110,13 +127,13 @@
 				that.isMobileEnd = that.$u.test.mobile(that.form.mobile)
 			},
 			handleAgree(e) {
-				let that = this
-				that.protocol = e
+				let that = this;
+				that.protocol = e;
 			},
 			getSmsCode() {
 				let that = this
 				if (!that.protocol) {
-					that.$u.toast('请同意用户协议')
+					that.showAction = true;
 					return false
 				}
 				if (!that.isMobileEnd || that.disabledCode) {
@@ -157,16 +174,81 @@
 					that.$u.toast('请同意用户协议')
 					return false
 				}
-				// console.log(that.isMobileEnd, that.disabledCode ,that.form.code);
-				if (!that.isMobileEnd || that.disabledCode || !that.form.code) {
-					that.$u.toast('请正确填写信息')
-					return false
-				}
+				console.log(that.isClick)
+				// if (!that.isMobileEnd || that.disabledCode ) {
+				// 	that.$u.toast('请正确填写信息')
+				// 	return false
+				// }
+				// #ifdef APP-PLUS
+				uni.getPushClientId({
+					success(res) {
+						uni.getSystemInfo({
+							success(systemInfo) {
+								if (that.isClick == false) {
+									return;
+								}
+								uni.showLoading();
+								that.isClick = false;
+								that.$api('user.smslogin', {
+									mobile: Number(that.form.mobile),
+									code: Number(that.form.code),
+									event: 'register',
+									push_clientid: res.cid,
+									mobile_message_json: JSON.stringify(systemInfo)
+								}).then(res => {
+									console.log(res)
+									that.isClick = true;
+									if (res.code === 1) {
+										uni.setStorageSync('token', res.data.token)
+										that.getUserInfo(res.data.token).then(() => {
+											//#ifdef APP-PLUS
+											getApp().globalData.initFun()
+											// #endif
+											//#ifdef H5
+											getApp().globalData.islogout = false;
+											// #endif
+											that.$store.commit("setIslogout", false);
+											uni.hideLoading();
+											getApp().globalData.getHistoryCronyList();
 
+											//统计
+											uni.getPushClientId({
+												success(res) {
+													console.log(res.cid)
+													that.$api('stat.init', {
+														"push_clientid": res
+															.cid
+													}).then(res => {})
+												}
+											})
+											that.$nextTick(() => {
+												if (res.msg == "注册成功") {
+													uni.reLaunch({
+														url: '/pages/auth/s1'
+													});
+												} else if (res.msg == "登录成功") {
+													uni.reLaunch({
+														url: '/pages/index/index'
+													});
+												}
+											})
+										})
+									} else {
+										that.$u.toast(res.msg)
+									}
+								})
+							}
+						})
+					}
+				})
+				// #endif
+				// #ifdef H5
 				let data = {
 					mobile: Number(that.form.mobile),
 					code: Number(that.form.code),
-					event: 'register'
+					event: 'register',
+					push_clientid: '',
+					mobile_message_json: ""
 				}
 				if (that.isClick == false) {
 					return;
@@ -174,6 +256,7 @@
 				uni.showLoading();
 				that.isClick = false;
 				that.$api('user.smslogin', data).then(res => {
+					that.isClick = true;
 					if (res.code === 1) {
 						uni.setStorageSync('token', res.data.token)
 						that.getUserInfo(res.data.token).then(() => {
@@ -184,18 +267,29 @@
 							getApp().globalData.islogout = false;
 							// #endif
 							that.$store.commit("setIslogout", false);
-							that.isClick = true;
 							uni.hideLoading();
-							getApp().globalData.getHistoryCronyList()
+							getApp().globalData.getHistoryCronyList();
+
+							//统计
+							uni.getPushClientId({
+								success(res) {
+									console.log(res.cid)
+									that.$api('stat.init', {
+										"push_clientid": res.cid
+									}).then(res => {})
+								}
+							})
 							that.$nextTick(() => {
-								if (!that.userInfo.realname && !that.userInfo.dynasty && that
+								if (!that.userInfo.realname && !that.userInfo
+									.dynasty && that
 									.userInfo
 									.gender == 0) {
 									uni.reLaunch({
 										url: '/pages/auth/s1'
 									});
 								} else if (that.userInfo.gender != 0) {
-									if (that.userInfo.realname != '' && that.userInfo.dynasty !=
+									if (that.userInfo.realname != '' && that
+										.userInfo.dynasty !=
 										'') {
 										uni.reLaunch({
 											url: '/pages/index/index'
@@ -209,18 +303,17 @@
 									that.$u.route('/pages/auth/login')
 								}
 								if (!that.userInfo.role_id) {
-									console.log('no')
 									uni.reLaunch({
 										url: '/pages/auth/s1'
 									});
 								}
 								if (that.userInfo.gender == 0) {
-									console.log('111');
 									uni.reLaunch({
 										url: '/pages/auth/s1'
 									});
 								}
-								if (that.userInfo.realname != '' && that.userInfo.dynasty != '' &&
+								if (that.userInfo.realname != '' && that.userInfo
+									.dynasty != '' &&
 									that
 									.userInfo.gender !=
 									0) {
@@ -241,6 +334,8 @@
 						that.$u.toast(res.msg)
 					}
 				})
+				// #endif
+
 			},
 		}
 	}

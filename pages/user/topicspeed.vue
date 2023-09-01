@@ -1,45 +1,37 @@
 <template>
 	<view class="">
-		<u-navbar title="话题速配" :safeAreaInsetTop="true" :placeholder="true">
+		<image src="@/static/embed/sexBg.png"
+			style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: -1;">
+		</image>
+		<u-navbar title="话题详情" :safeAreaInsetTop="true" :placeholder="true" :bgColor="headColor">
 			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+				<i class="ri-arrow-left-s-line text-3xl" @click="pageBack"></i>
 			</view>
 		</u-navbar>
-		<view class="face">###{{title}}</view>
-		<image src="../../static/hot.png" class="hot" style="margin-top: 20rpx;" mode=""></image>
-		<view class="mw">{{hot}}</view>
-
-		<view class="topic">
-			<uc-topicspeed v-for="(item,index) in topicspeedList" key="index" :item='item'
-				:roleTotalList='roleTotalList'></uc-topicspeed>
-			<!-- <view class="topic-item"  v-for="(item,index) in topicspeedList.data" key="index">
-				<image class="pic" :src="item.user.avatar" mode=""></image>
-				<view class="name">{{item.user.role_realname}}  {{item.user.role_dynasty}}</view>
-				<view class="chenghao">{{item.user.role_titles}} </view>
-				<view class="content">{{item.content}}</view>
-				<view class="tag">#诗词歌赋</view>
-				<view class="total">
-					<view class="" style="display: inline-block;">
-					<i  @click="$u.route('/pages/post/detail', { post_id: item.id })" class="ri-message-3-fill text-l leading-none bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-					<view class="" style="		font-size: 24rpx; display: inline-block;position: relative; top: -5rpx;left: 10rpx;">评论</view>
-					</view>
-					<view class="" style="display: inline-block;" @click="handlePostDig()">
-						<i style="margin-left: 20rpx;"  v-show='is_zan==0'class="ri-heart-3-fill text-l bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent ;"></i>
-						<i  style="margin-left: 20rpx;"  v-show='is_zan==1' class="ri-heart-3-fill text-l bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i>
-						<view class="" style="font-size: 24rpx; display: inline-block;position: relative; top: -5rpx;left: 10rpx;">出彩</view>
-					</view>
-					<view class="" style="display: inline-block;">
-					<i  style="margin-left: 20rpx;" v-show='is_cai==0'  class="ri-hail-line text-l bg-gradient-to-b from-gray-300 to-gray-200 bg-clip-text text-transparent"></i>
-					<i  style="margin-left: 20rpx;"  v-show='is_cai==1' class="ri-hail-line text-l bg-gradient-to-b from-red-400 to-red-400 bg-clip-text text-transparent"></i>
-					<view class="" style="font-size: 24rpx; display: inline-block;position: relative; top: -5rpx;left: 10rpx;">无聊</view>
-					</view>
+		<view style="display: flex;justify-content: space-between;padding: 20rpx 30rpx;">
+			<view class="face" style="display: flex;align-items: center;">
+				<view>
+					<i class="ri-hashtag"></i>{{title}}
 				</view>
-				
+				<view style="display: flex;">
+					<text class="ri-fire-fill" style="color: #FE4373;font-size: 40rpx;"></text>
+					<view class="mw" style="color: #FE4373;">{{hot}}</view>
+				</view>
 			</view>
-	 -->
+			<view style="display: flex;">
+				<view @click="is_ok()"
+					style="color:#fff;width: 118rpx;height: 60rpx;background: #FE4373;border-radius: 10rpx;text-align: center;line-height: 60rpx;">
+					发动态</view>
+			</view>
 		</view>
-		<!-- </view> -->
-
+		<view class="topic">
+			<fei-post @clickDetails="clickDetails" v-for="(item, index) in topicspeedList" :key="index"
+				:item="item"></fei-post>
+			<u-loadmore v-if="topicspeedList.length" :loadmoreText="nomoreText" color="#a1a1a1" marginTop="20" />
+			<u-empty v-if="!topicspeedList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+				marginTop="100"></u-empty>
+		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 
@@ -49,166 +41,233 @@
 		data() {
 			return {
 				page: 1,
-				post_cate_id: null,
+				last_page: 0,
 				topicspeedList: [],
 				hot: '',
 				title: '',
-				roleTotalList: []
-
+				audioStatus: false,
+				nomoreText: "加载更多",
+				headColor: "rgba(0,0,0,0)",
+				path: "",
+				isClick: false,
 			}
 		},
 		onLoad(options) {
-			let that = this
-			that.post_cate_id = options.post_cate_id
-			uni.setStorageSync('post_cate_id', options.post_cate_id)
+			this.path = options.type == 'index' ? 'index' : 'square'
 		},
-		mounted() {
-			let that = this
-			this.init()
-			// console.log('hot',uni.getStorageSync('hot'));
-			that.hot = uni.getStorageSync('hot')
-			that.title = uni.getStorageSync('title')
-			uni.removeStorageSync('hot')
-			uni.removeStorageSync('title')
+		onShow(options) {
+			console.log(this.isClick)
+			if (this.isClick == false) {
+				this.page = 1;
+				this.topicspeedList = [];
+				this.getLists();
+			} else {
+				this.isClick = false;
+			}
 		},
-		computed: {
-
+		onReachBottom() {
+			if (this.page < this.last_page) {
+				this.page++;
+				this.getLists()
+			} else {
+				this.nomoreText = "没有更多了"
+			}
+		},
+		onPageScroll(e) {
+			if (parseInt(e.scrollTop) >= 30) {
+				this.headColor = "#fff"
+			} else {
+				this.headColor = "rgba(0,0,0,0)"
+			}
 		},
 		methods: {
-
-			init() {
-				let that = this
-				let data = {
-					page: 1,
-					post_cate_id: uni.getStorageSync('post_cate_id')
+			//是否点跳转内容页
+			clickDetails() {
+				this.isClick = true;
+			},
+			pageBack() {
+				if (this.path == 'index') {
+					this.$u.route({
+						type: 'navigateBack',
+						delta: 1
+					})
+				} else {
+					uni.reLaunch({
+						url: '/pages/index/square',
+					});
 				}
-				that.$api('post.recommend', data).then(res => {
-					if (res.code === 1) {
-						that.topicspeedList = res.data.data
-						// console.log('sc',that.topicspeedList);
-						for (let i = 0; i < that.topicspeedList.length; i++) {
-							console.log('11', that.topicspeedList[i].user.role_titles.split(','));
-							that.roleTotalList = that.topicspeedList[i].user.role_titles.split(',')
+			},
+			is_ok() {
+				let that = this;
+				that.$api('post.is_add').then(res => {
+					console.log('ii', res);
+					if (res.data === 0) {
+						that.$u.toast('无角色暂不能发布动态')
+						return
+					} else {
+						var obj = {
+							title: that.title,
+							post_cate_id: this.$Route.query.post_cate_id
 						}
-
+						uni.navigateTo({
+							url: '/pages/post/add?postData=' + JSON.stringify(obj)
+						})
 					}
 				})
 			},
-
+			openUrl(id) {
+				var userInfo = uni.getStorageSync("userInfo");
+				if (id == userInfo.id) {
+					this.$u.route('/pages/index/mine')
+				} else {
+					this.$u.route('/pages/user/home', {
+						user_id: id
+					})
+				}
+			},
+			// 点踩
+			handleConcleDig(id, index, userId) {
+				let that = this;
+				that.topicspeedList = []
+				that.$api('user.info').then(res => {
+					if (res.code === 1) {
+						if (userId != res.data.id) {
+							that.$api('post.cai', {
+								post_id: id,
+							}).then(res => {
+								if (res.code === 1) {
+									if (that.topicspeedList[index].cai == 0) {
+										that.topicspeedList[index].cai = 1
+									} else {
+										that.topicspeedList[index].cai = 0
+									}
+									that.getLists()
+								}
+							})
+						} else {
+							that.$u.toast('不能给自己点踩哦')
+						}
+					} else {
+						that.$u.toast(res.msg)
+						return
+					}
+				})
+			},
+			// 点赞红心
+			handlePostDig(id, index) {
+				let that = this;
+				that.$api('post.dig', {
+					post_id: id,
+				}).then(res => {
+					if (res.code === 1) {
+						if (that.topicspeedList[index].zan == 0) {
+							that.topicspeedList[index].zan = 1
+						} else {
+							that.topicspeedList[index].zan = 0
+						}
+						that.topicspeedList = []
+						that.getLists()
+					} else {
+						that.$u.toast(res.msg)
+					}
+				})
+			},
+			//听语音
+			handlePlayAudio(audio) {
+				let that = this
+				if (!audio) {
+					that.$u.toast('语音不能为空')
+					return false
+				}
+				if (!that.audio) {
+					that.audio = uni.createInnerAudioContext()
+					that.audio.src = audio
+				}
+				that.audioStatus = !that.audioStatus
+				if (that.audioStatus) {
+					that.$nextTick(function() {
+						that.audio.play()
+						that.audio.onEnded((e) => {
+							that.audioStatus = false
+						})
+					})
+				} else {
+					that.$nextTick(function() {
+						that.audio.pause()
+					})
+				}
+			},
+			//查看图片
+			onPreviewTap(imgs, num) {
+				var that = this;
+				uni.previewImage({
+					current: num,
+					urls: imgs
+				})
+			},
+			//获取数据
+			getLists() {
+				var that = this;
+				that.loadmore = 'loading'
+				that.$api('post.recommend', {
+					"page": that.page,
+					"post_cate_id": this.$Route.query.post_cate_id
+				}).then(res => {
+					if (res.code === 1) {
+						that.topicspeedList = [...that.topicspeedList, ...res.data.data];
+						that.last_page = res.data.last_page;
+						if (that.page < res.data.last_page) {
+							that.loadmore = 'loadmore'
+						} else {
+							that.loadmore = 'nomore';
+							that.nomoreText = "没有更多了"
+						}
+					}
+				})
+				that.$api('post.search', {
+					"id": that.$Route.query.post_cate_id
+				}).then(res => {
+					if (res.code == 1) {
+						that.title = res.data.title;
+						that.hot = res.data.hot_num;
+					}
+				})
+			},
 		},
-		created() {
-
-		},
-
-
-
 	}
 </script>
 
 <style lang="scss" scoped>
 	.face {
 		display: inline-block;
-		height: 45rpx;
 		font-size: 32rpx;
 		color: #6F93BD;
 		line-height: 45rpx;
-		margin-left: 40rpx;
-		margin-top: 20rpx;
 	}
 
 	.hot {
-		display: inline-block;
 		width: 40rpx;
 		height: 40rpx;
-		margin-left: 600rpx;
-		margin-top: -200rpx;
 	}
 
-	.mw {
-		margin-left: 650rpx;
-		margin-top: -40rpx;
+	.topicItem {
+		padding: 30rpx;
+		display: flex;
+		border-bottom: 0.5px solid rgba(238, 238, 238, 0.5);
 	}
 
-	.topic {
-		margin-top: 30rpx;
+	.userBox {
+		height: 80rpx;
+		display: flex;
+		flex-direction: column;
 	}
 
-	.topic-item {
-		border-bottom: 1px solid rgba(0, 0, 0, 0.02);
-
+	.topicItemRight {
+		flex: 1;
+		margin-left: 20rpx;
 	}
 
-	.topic-item .pic {
-		width: 84rpx;
-		height: 84rpx;
-		margin-top: 30rpx;
-		margin-left: 30rpx;
-		border-radius: 50%;
-	}
-
-	.topic-item .name {
-		height: 40rpx;
-		font-size: 28rpx;
-		color: #323232;
-		line-height: 40rpx;
-		margin-left: 150rpx;
-		margin-top: -90rpx;
-	}
-
-	.topic-item .chenghao {
-		height: 33rpx;
-		font-size: 24rpx;
-		color: #999999;
-		line-height: 33rpx;
-		margin-left: 150rpx;
-		margin-top: 10rpx;
-	}
-
-	.topic-item .content {
-		width: 572rpx;
-		font-size: 26rpx;
-		color: #323232;
-		line-height: 37rpx;
+	.content {
 		margin-top: 20rpx;
-		margin-left: 150rpx;
-	}
-
-	.tag {
-		height: 35rpx;
-		font-size: 28rpx;
-		color: #6F93BD;
-		line-height: 35rpx;
-		margin-left: 150rpx;
-	}
-
-	.total {
-		width: 440rpx;
-		height: 60rpx;
-		margin-top: 30rpx;
-		margin-left: 400rpx;
-		margin-bottom: 30rpx;
-		// border: 1px solid #000;
-	}
-
-	.total_pic1 {
-		width: 30rpx;
-		height: 30rpx;
-		margin-top: 10rpx;
-		margin-left: 20rpx;
-		// border: 1px solid #000;
-	}
-
-	.total_pic2 {
-		width: 30rpx;
-		height: 30rpx;
-		margin-left: 20rpx;
-		// border: 1px solid #000;
-	}
-
-	.total_pic3 {
-		width: 30rpx;
-		height: 30rpx;
-		margin-left: 20rpx;
-		// border: 1px solid #000;
 	}
 </style>

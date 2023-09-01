@@ -6,15 +6,16 @@
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 			<view slot="right">
-				<view
-					class="p-2 rounded-full text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-					@click="doPublish()">发布</view>
+				<view class="fabu" @click="doPublish()">发布</view>
 			</view>
 		</u-navbar>
 
 		<view class="rounded-lg p-4 mt-6">
-			<u-textarea v-model="form.content" :focus="true" maxlength="500" :count="true" height="300"
-				placeholder="记录此刻想法，分享给有趣的人看…"></u-textarea>
+			<textarea v-model="form.content" name="" id="" cols="30" :focus="true" rows="10"
+				style="height: 300rpx;font-size: 28rpx;color: #606266;" placeholder="记录此刻想法，分享给有趣的人看…"
+				placeholder-style="font-size:28rpx;color:rgb(192, 196, 204);"></textarea>
+			<!-- <u-textarea v-model="form.content" :focus="true" maxlength="500" :count="true" height="300"
+				placeholder="记录此刻想法，分享给有趣的人看…"></u-textarea> -->
 			<!-- <view class="flex flex-wrap">
 				<view class="flex items-center bg-gray-100 rounded-full p-3 text-orange-500 mr-2 mt-2"
 					v-for="(item, index) in form.tags" :key="index" :item="item" @click="delTag(index)">
@@ -24,23 +25,34 @@
 				</view>
 			</view> -->
 			<view class="flex flex-wrap" v-if="fei_cate.length">
-				<view class="flex items-center bg-gray-100 rounded-full p-3 text-orange-500 mr-2 mt-2"
-					@click="delGroup()" v-for="(item,index) in fei_cate">
-					<i class="ri-focus-fill mr-2"></i>
+				<view class="flex items-center rounded-full p-3 text-orange-500 mr-2 mt-2"
+					style="background: rgba(254, 67, 115, 0.3);padding: 5rpx 20rpx;color: #FE4373;" @click="delGroup()"
+					v-for="(item,index) in fei_cate">
+					<i class="ri-hashtag mr-1"></i>
 					<view class="text-base">{{item.content}}</view>
 					<i class="ri-close-line ml-2" @click="delTag(index)"></i>
 				</view>
 			</view>
 			<view class="mt-4" v-if="form.images" style="display: flex;align-items: center;">
-				<image v-for="(item,index) in form.images" :src="item"
-					style="width: 150rpx;height: 150rpx;margin-right: 20rpx;"></image>
-				<!-- <u-album :urls="form.images" multipleSize="150" rowCount="3"></u-album> -->
+				<view v-for="(item,index) in form.images" style="position: relative;margin-right: 20rpx;">
+					<image :src="item" style="width: 150rpx;height: 150rpx;border-radius: 10rpx;" mode="aspectFill">
+					</image>
+					<text class="ri-close-line" @click="delImg(index)"
+						style="position: absolute;top:0;right:0rpx;z-index:5;padding: 0rpx;background: rgba(0,0,0,0.5);margin-left: 30rpx;color: #fff;font-size: 40rpx;border-radius: 50%;box-sizing: border-box;">
+					</text>
+				</view>
 			</view>
 			<!--  -->
-			<view v-if="form.audio" class="mt-4" style="display: flex;align-items: center;">
+			<view class="mt-4" v-if="form.audio" style="display: flex;align-items: center;">
 				<view @click="handlePlayAudio(form.audio)"
-					class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
-					<i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
+					style="width: 300rpx;background: #FE4373;justify-content: center;"
+					class="flex items-center  rounded-full w-32 h-10 bg-gradient-to-r  to-rose-400">
+					<image src="../../static/111.jpg" style="width: 180rpx;height: 45rpx;" v-if="audioStatus==false">
+					</image>
+					<image src="/static/bofang.gif" style="width: 180rpx;height: 45rpx;" v-else mode=""></image>
+					<!-- <i class="ri-voiceprint-line text-2xl text-white" style="flex: 1;" :class="audioStatus ? 'animate-pulse' : ''"></i> -->
+					<text style="color: #FFFFFF;font-size: 28rpx;margin-left: 20rpx;"
+						v-if="form.timer !=0">{{form.timer}}s</text>
 				</view>
 				<view class="ri-close-line" @click="clearAudio"
 					style="padding: 0rpx;background: rgba(0,0,0,0.5);margin-left: 30rpx;color: #fff;font-size: 40rpx;border-radius: 50%;box-sizing: border-box;">
@@ -54,13 +66,13 @@
 				</view>
 			</view>
 			<!-- 话题 -->
-			<!-- <view class="flex pt-4" v-if='fei_cate.length<3'>
-				<view class="flex items-center bg-gray-100 border text-gray-500 p-3 rounded-full mr-2"
-					@click="showTag = true">
+			<view class="flex pt-4" v-if='fei_cate.length<3'>
+				<view class="flex items-center bg-gray-100 border rounded-full mr-2"
+					style="background: rgba(254, 67, 115, 0.3);padding: 10rpx 20rpx;color: #FE4373;" @click="addCate">
 					<i class="ri-hashtag mr-1"></i>
 					<view class="text-base leading-none">添加话题</view>
 				</view>
-			</view> -->
+			</view>
 			<!-- <view class="flex pt-4">
                 <u-checkbox-group>
                     <u-checkbox label="是否私密话题" size="28" labelSize="24" shape="circle" inactiveColor="#AAAAAA" activeColor="#FF7043" @change="changeProtocol"></u-checkbox>
@@ -69,14 +81,14 @@
 		</view>
 
 		<!-- 工具栏 -->
-		<view class="border-0 !border-t border-solid border-gray-200 fixed bottom-200 left-0 right-0">
+		<view class="">
 			<view class="flex flex-row-center p-4 bg-white">
 				<view class="flex-1 flex">
-					<view class="flex items-center bg-gray-100 p-3 rounded-full mr-4" @click="handleImage">
-						<i class="ri-camera-fill text-2xl leading-none text-gray-500"></i>
+					<view class="flex items-center  p-3 rounded-full mr-4" @click="handleImage">
+						<i class="ri-image-line text-2xl leading-none text-gray-500"></i>
 					</view>
-					<view class="flex items-center bg-gray-100 p-3 rounded-full mr-4" @click="showRecord = !showRecord">
-						<i class="ri-mic-fill text-2xl leading-none text-gray-500"></i>
+					<view class="flex items-center p-3 rounded-full mr-4" @click="clickRecord">
+						<i class="ri-mic-2-line text-2xl leading-none text-gray-500"></i>
 					</view>
 					<!--  <view class="flex items-center bg-gray-100 p-3 rounded-full" @click="handleVideo">
                         <i class="ri-live-fill text-2xl leading-none text-gray-500"></i>
@@ -89,14 +101,17 @@
 			</view>
 			<!-- 语音 -->
 			<view class="flex flex-col items-center  p-4 h-60 overflow-y-scroll" v-if="showRecord">
-				<view class="text-xs leading-none text-gray-500">{{ recordTip }}</view>
+				<view class="text-xs leading-none text-gray-500" v-if="Isrecord==false">{{ recordTip }}</view>
+				<view class="" style="font-size:32rpx ;color: #323232;margin-top: 10rpx;">{{timer==0?'':timer+'s'}}
+				</view>
 				<view style="display: flex;align-items: center;" class="mt-16">
-					<!-- <view
+					<view v-if="Isrecord" @click="delectRecord"
 						style="width: 95rpx;height: 70rpx;background: #ECECEC;border-radius: 35rpx;text-align: center;line-height: 70rpx;margin-right: 60rpx;">
 						<text class="ri-delete-bin-5-line" style="font-size: 35rpx;"></text>
-					</view> -->
-					<view class="flex justify-center items-center " @touchstart="handleRecordStart"
-						@touchmove.stop.prevent="handleRecordDoing" @touchend="handleRecordStop">
+					</view>
+					<view v-if="Isrecord==false" class="flex justify-center items-center "
+						@touchstart="handleRecordStart" @touchmove.stop.prevent="handleRecordDoing"
+						@touchend="handleRecordStop">
 						<view class="relative flex justify-center items-center rounded-full">
 							<view class="flex justify-center items-center rounded-full w-20 h-20  z-10"
 								style="background: #FE4373;">
@@ -108,11 +123,29 @@
 							</view>
 						</view>
 					</view>
-					<!-- <view
+					<view v-if="Isrecord==true" class="flex justify-center items-center">
+						<view class="relative flex justify-center items-center rounded-full" @click="openRecord">
+							<view class="flex justify-center items-center rounded-full w-20 h-20  z-10"
+								style="background: #FE4373;">
+								<i class="ri-play-fill text-4xl leading-none text-white" v-if="isPlay==false"></i>
+								<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;" v-if="isPlay">
+								</image>
+							</view>
+						</view>
+					</view>
+					<view v-if="Isrecord" @click="okRecord"
 						style="width: 95rpx;height: 70rpx;background: #FE4373;border-radius: 35rpx;text-align: center;line-height: 70rpx;margin-left: 60rpx;">
 						<text class="ri-check-fill" style="font-size: 35rpx;color: #fff;"></text>
-					</view> -->
+					</view>
 				</view>
+			</view>
+		</view>
+		<!-- 推荐话题 -->
+		<view style="display: flex;flex-wrap: wrap;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="showTopic">
+			<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in cateList"
+				:key="index" :item="item" @click="addTag(item)">
+				<i class="ri-hashtag mr-1"></i>
+				<view class="text-base">{{ item.title }}</view>
 			</view>
 		</view>
 
@@ -121,30 +154,26 @@
 			customStyle="min-height: 500rpx;">
 			<view class="p-4">
 				<view class="text-2xl text-center">添加话题</view>
-				<view class="flex rounded-full bg-gray-100 mt-6">
-					<u-input v-model="tag" placeholder="输入话题" @change="searchAdd" ref="ipt" type="text" maxlength="20">
-						<text slot="suffix" class="text-rose-500" @click.stop="addContentTag(tag)">添加</text>
-					</u-input>
+				<view style="display: flex;margin-top: 50rpx;">
+					<input type="text" v-model="tag"
+						style="height: 72rpx;background: #F7F7F7;border-radius: 36rpx;flex: 1;padding-left: 15rpx;font-size: 28rpx;"
+						placeholder="输入话题" @input="searchAdd" ref="ipt" maxlength="20" />
+					<view
+						style="height: 72rpx;background: #FE4373;color: #fff;border-radius: 36rpx;font-size: 28rpx;text-align: center;line-height: 72rpx;width: 116rpx;margin-left: 30rpx;"
+						@click.stop="addContentTag(tag)">添加</view>
 				</view>
 				<!-- <view class="text-gray-500 mt-6">热门话题</view> -->
 				<view class="flex flex-wrap rounded-full">
 					<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4"
-						v-for="(item, index) in cateList" :key="index" :item="item" @click="addTag(item,)">
+						v-for="(item, index) in searchTag" :key="index" :item="item" @click="addTag(item)">
 						<i class="ri-hashtag mr-1"></i>
 						<view class="text-base">{{ item.title }}</view>
 					</view>
-					<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4"
-						v-for="(item, index) in searchTag" :key="index" :item="item">
-						<i class="ri-hashtag mr-1"></i>
-						<view class="text-base">{{ item }}</view>
-					</view>
 				</view>
-				<u-empty v-if="!listHotTag.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1"
-					marginTop="100"></u-empty>
-
-				<u-empty v-if="!listNewTag.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1"
-					marginTop="100"></u-empty>
+				<!-- <u-empty v-if="!searchTag.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+					marginTop="100"></u-empty> -->
 			</view>
+			<view class="sdasdas" :style="{height:pageHeight+'px'}"></view>
 		</u-popup>
 		<!-- 圈子 -->
 		<!-- <u-popup :show="showGroup" @close="showGroup = false" :closeable="true" :round="30" customStyle="min-height: 500rpx;">
@@ -173,10 +202,12 @@
             </view>
         </u-popup>
  -->
+		<topPrompt></topPrompt>
 		<uc-auth></uc-auth>
 	</view>
 </template>
 <script>
+	import permision from "@/js_sdk/wa-permission/permission.js"
 	import tag from 'uview-ui/libs/config/props/tag'
 	import {
 		mapState
@@ -194,6 +225,7 @@
 					video: '',
 					ischat: false,
 					privacy: 'all',
+					timer: 0
 				},
 				tag: '',
 				group: {},
@@ -249,11 +281,29 @@
 				itemList: [],
 				// ---------
 				fei_cate: [],
-				cateList: []
+				cateList: [],
+				Isrecord: false,
+				recordUrl: "",
+				isPlay: false,
+				timer: 0,
+				inter: null,
+				tpsTitle: "已录制",
+				isClick: true,
+				isBack: false,
+				pageHeight: 0,
+				showTopic: true,
 			}
 		},
-		onLoad() {
-			let that = this
+		onLoad(e) {
+			let that = this;
+			if (e.postData != undefined) {
+				var postData = JSON.parse(e.postData);
+				that.fei_cate.push({
+					id: postData.post_cate_id,
+					content: postData.title
+				})
+				that.isBack = true;
+			}
 			that.recorder.onStart((e) => {
 				that.recordStart(e)
 			})
@@ -261,7 +311,8 @@
 				that.recordStop(e)
 			})
 			// ---------
-			that.cateInit(1, 5)
+			that.cateInit(1, 5);
+			that.watchKeyboard();
 		},
 
 		computed: {
@@ -273,15 +324,86 @@
 			uni.removeStorageSync('post_cate_id')
 		},
 		methods: {
+			async clickRecord() {
+				var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+				if (result == 1) {
+					this.showTopic = !this.showTopic;
+					this.showRecord = !this.showRecord;
+					return
+				} else {
+					uni.showModal({
+						title: "请开启录音权限",
+						content: "请去设置里面开启录音权限！",
+						success(res1) {
+							if (res1.confirm) {
+								permision.gotoAppPermissionSetting()
+							}
+						}
+					})
+				}
+			},
+			//监听键盘
+			watchKeyboard() {
+				var that = this;
+				uni.onKeyboardHeightChange(res => {
+					console.log(res)
+					if (res.height != 0) {
+						that.pageHeight = res.height - 100
+					} else {
+						that.pageHeight = res.height
+					}
+					console.log(that.pageHeight)
+				})
+			},
+			//打开话题弹窗
+			addCate() {
+				this.showTag = true;
+				this.searchTag = []
+				this.tag = ""
+			},
+			//删除图片
+			delImg(index) {
+				this.form.images.splice(index, 1)
+			},
+			//确认录音
+			okRecord() {
+				if (this.recordUrl == "") {
+					this.$u.toast("语音未准备好");
+					return;
+				}
+				this.form.audio = this.recordUrl;
+				this.Isrecord = false;
+				this.showRecord = false;
+				this.form.timer = this.timer;
+				this.timer = 0;
+				this.showTopic = true;
+			},
+			//试听
+			openRecord() {
+				this.handlePlayAudio(this.recordUrl);
+			},
+			//取消录音
+			delectRecord() {
+				this.form.audio = '';
+				this.recordUrl = "";
+				this.timer = 0;
+				this.Isrecord = false;
+				this.audio.destroy();
+				this.audio = null;
+				this.isPlay = false;
+			},
 			//清楚语音
 			clearAudio() {
 				this.form.audio = '';
-				console.log(this.form.audio)
+				this.recordUrl = "";
+				this.audio.destroy();
+				this.audio = null;
+				this.isPlay = false;
 			},
 			//初始化话题
 			cateInit(num, limit) {
 				var that = this;
-				that.$api('post_cate.lst', {
+				that.$api('post_cate.hot_list', {
 					"page": num,
 					"limit": limit
 				}).then(res => {
@@ -299,14 +421,13 @@
 				let that = this
 				// console.log("没获取到输入框的值",that.$refs.ipt.value);
 				let data = {
-					keyword: that.$refs.ipt.value
+					keyword: that.tag
 				}
-				that.$api('post_cate.search_list', data).then(res => {
+				that.$api('post_cate.search_list', {
+					"keyword": that.tag
+				}).then(res => {
 					if (res.code == 1) {
-						// that.searchTag=res.data[0].title
-						// console.log(that.searchTag,'1');
-						// console.log(res.data[0].title,'111');
-
+						that.searchTag = res.data
 					} else {
 						that.$u.toast(res.msg)
 					}
@@ -319,28 +440,40 @@
 					that.$u.toast('话题不能为空')
 					return false
 				}
+				var isAdd = false;
+				that.fei_cate.forEach((val, index) => {
+					if (val.content == item) {
+						isAdd = true;
+					} else {
+						isAdd = false;
+					}
+				})
+				if (isAdd) {
+					that.$u.toast("已添加该话题");
+					return;
+				}
 				if (that.form.tags.indexOf(item) >= 0 || that.form.tags.length >= 3) {
-					that.isAddTake = false
+					that.$u.toast("已添加该话题")
 					return false
 				}
-				that.form.tags.push('#' + item)
-				that.showTag = false
 				// 判断标签是否大于等于三个 大于三个则让添加话题隐藏出来
 				if (that.form.tags.length >= 3) {
 					that.isAddTake = false
 					return false
 				}
-				console.log('that.form.tags', that.form.tags);
+				that.form.tags.push(item)
+				that.showTag = false
 				that.itemList += that.form.tags
 				let data = {
 					title: that.itemList
-				}
+				};
 				that.$api('post_cate.add', data).then(res => {
 					if (res.code === 1) {
 						that.fei_cate.push({
 							id: res.data,
-							content: '#' + item
+							content: item
 						})
+						that.tag = ''
 						// that.$u.toast('添加成功')
 						// that.post_cate_id = res.data
 						// uni.setStorageSync('post_cate_id', res.data)
@@ -350,12 +483,29 @@
 				})
 			},
 			addTag(item) {
-				console.log(item)
 				let that = this;
-				that.fei_cate.push({
-					id: item.id,
-					content: item.title
+				var isAdd = false;
+				that.fei_cate.forEach((val, index) => {
+					if (val.content == item.title) {
+						isAdd = true;
+					} else {
+						isAdd = false;
+					}
 				})
+				if (isAdd) {
+					that.$u.toast("已添加该话题");
+					return;
+				}
+				if (that.fei_cate.length >= 3) {
+					that.isAddTake = false;
+					that.showTag = false;
+					that.$u.toast("只能添加三个话题");
+				} else {
+					that.fei_cate.push({
+						id: item.id,
+						content: item.title
+					})
+				}
 				// if (that.form.tags.indexOf(item) >= 0 || that.form.tags.length >= 3) {
 				// 	that.isAddTake = false
 				// 	return false
@@ -385,7 +535,8 @@
 			},
 			delTag(index) {
 				let that = this
-				that.fei_cate.splice(index, 1)
+				that.fei_cate.splice(index, 1);
+				that.form.tags.splice(index, 1)
 				// that.form.tags.splice(index, 1)
 				// // 判断标签是否小于三个 小于三个则让添加话题显示出来
 				// if (that.form.tags.length < 3) {
@@ -407,7 +558,6 @@
 			changeProtocol(e) {
 				let that = this
 				that.form.ischat = e
-				console.log(that.form.ischat)
 			},
 			onChangePrivacy(e) {
 				let that = this
@@ -420,8 +570,11 @@
 				})
 			},
 			doPublish() {
-				let that = this
-
+				let that = this;
+				if (that.isClick == false) {
+					return;
+				}
+				that.isClick = false;
 				// let data = {
 				//     content: that.form.content,
 				//     images: that.form.images.toString(),
@@ -446,46 +599,52 @@
 					audio: that.form.audio,
 					video: that.form.video,
 					post_cate_id: post_cate_id,
+					duration_time: that.form.timer
 				}
 				that.$api('post.add', data).then(res => {
 					if (res.code === 1) {
+						that.isClick = true;
 						that.form.content = ''
 						that.$u.toast('发布成功')
-						uni.navigateTo({
-							url: '/pages/index/square',
-							success: (res) => {
-								console.log('成功');
-							},
-							fail: (err) => {
-								console.log(err);
-							}
-						})
+						if (that.isBack == true) {
+							that.$u.route({
+								type: 'navigateBack',
+								delta: 1
+							})
+						} else {
+							uni.reLaunch({
+								url: '/pages/index/square',
+							});
+						}
+
 					} else {
+						that.isClick = true;
 						that.$u.toast(res.msg)
 					}
 
 				})
 			},
 			handlePlayAudio(audio) {
-				console.log(audio)
 				let that = this
 				if (!audio) {
 					that.$u.toast('语音不能为空')
 					return false
 				}
-				console.log(that.audio)
 				if (!that.audio) {
 					that.audio = uni.createInnerAudioContext()
-					that.audio.src = audio
+					that.audio.src = audio;
+					that.isPlay = true;
 				}
-				that.audioStatus = !that.audioStatus
+				that.audioStatus = !that.audioStatus;
 				if (that.audioStatus) {
 					that.$nextTick(function() {
-						that.audio.play()
+						that.audio.play();
 						that.audio.onEnded((e) => {
 							that.audioStatus = false;
 							that.audio.destroy();
+							that.isPlay = false;
 							that.audio = null;
+							clearInterval(that.inter)
 						})
 					})
 				} else {
@@ -524,21 +683,35 @@
 				that.recording = true
 				that.recordStoping = false
 				that.recordTip = '正在录制…'
+				this.tpsTitle = "已录制"
 				that.recordPoint.Y = e.touches[0].clientY
 				that.recordPoint.identifier = e.touches[0].identifier
 				that.recorder.start({
 					format: "mp3"
 				})
+				this.timer = 0;
+				that.inter = setInterval(() => {
+					this.timer++;
+				}, 1000)
 			},
 			handleRecordStop(e) {
 				let that = this
 				console.log('touch stop')
+				clearInterval(that.inter);
 				if (!that.recording) {
 					return
 				}
 				that.recording = false
 				that.recordTip = '按住说话'
-				that.recorder.stop()
+				that.recorder.stop();
+				if (that.form.audio != '') {
+					uni.showToast({
+						icon: "none",
+						title: "已经添加过语音"
+					})
+					that.timer = 0;
+					return;
+				}
 			},
 			handleRecordDoing(e) {
 				let that = this
@@ -549,7 +722,7 @@
 				}
 			},
 			recordStart(e) {
-				let that = this
+				let that = this;
 				console.log('recorder start' + JSON.stringify(e));
 				that.recordLength = 0
 				that.recordTimer = setInterval(() => {
@@ -565,7 +738,6 @@
 					})
 					return;
 				}
-				console.log('recorder stop' + JSON.stringify(e))
 				that.recording = false
 				clearInterval(that.recordTimer)
 				var token = uni.getStorageSync("token");
@@ -577,9 +749,11 @@
 						"token": token
 					},
 					success: res => {
-						res = JSON.parse(res.data)
+						var res = JSON.parse(res.data)
 						if (res.code === 1) {
-							that.form.audio = res.data.fullurl;
+							// that.form.audio = res.data.fullurl;
+							that.recordUrl = res.data.fullurl;
+							that.Isrecord = true;
 						} else {
 							that.$u.toast(res.msg)
 						}
@@ -654,5 +828,14 @@
 	}
 </script>
 <style lang="scss" scoped>
-
+	.fabu {
+		width: 92rpx;
+		height: 50rpx;
+		line-height: 50rpx;
+		text-align: center;
+		border-radius: 30rpx;
+		font-size: 25rpx;
+		color: #fff;
+		background: #FE4373;
+	}
 </style>

@@ -8,39 +8,14 @@
 			</view>
 			<view slot="right" @click="showAction = true" v-if="userInfo.id != user_id">
 				<i class="ri-more-fill " style="font-size: 38rpx;color: #333;"></i>
-				<!-- <i class="ri-question-fill text-3xl bg-gradient-to-b from-red-400 to-red-200 bg-clip-text text-transparent"></i> -->
 			</view>
 		</u-navbar>
-		<!-- 举报 -->
-		<u-popup :show="showFeedback" @close="showFeedback = false" :closeable="true" :round="30"
-			customStyle="min-height: 500rpx;">
-			<view class="p-4">
-				<view class="text-2xl text-center">举报反馈</view>
-				<view class="text-gray-500 mt-6">选择分类：</view>
-				<view class="flex flex-wrap rounded-full">
-					<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4"
-						v-for="(item, index) in ListFeedbackType" :key="index" :item="item" @click="feedbackType = item"
-						:class="feedbackType === item ? 'bg-rose-200' : ''">
-						<text class="text-base">{{ item }}</text>
-					</view>
-				</view>
-				<view class="text-gray-500 mt-6">补充说明：</view>
-				<view class="flex p-4 rounded bg-gray-100 mt-4">
-					<u-textarea v-model="feedback" type="text" maxlength="200" :clearable="true" :count="true"
-						customStyle="border: none; background: none; padding: 0;"></u-textarea>
-				</view>
-				<view class="grid gap-4 mt-10 text-center">
-					<view
-						class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-						@click="handleFeedback()">提交</view>
-				</view>
-			</view>
-		</u-popup>
-		<!-- 操作弹窗 -->
 		<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
 			<view class="p-4">
 				<!-- <view class="text-2xl text-center">操作</view> -->
-				<view class="delete" @click="showFeedback = true, showAction = false" style="margin-top: 50rpx;">
+				<view class="delete"
+					@click="$u.route('/pages/public/report',{user_id:detailContent.user_id}), showAction = false"
+					style="margin-top: 50rpx;">
 					<!-- <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i> -->
 					<view style="font-size: 30rpx;">举报广告/色情等</view>
 				</view>
@@ -56,92 +31,98 @@
 				</view> -->
 			</view>
 		</u-popup>
+		<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+			confirmText="确定" cancelText="取消" @cancel="followModule=false" @confirm="unfollow">
+			<view style="display: flex;flex-direction: column;">
+				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
+				<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
+					<text>是否取消关注？</text>
+				</view>
+			</view>
+		</u-modal>
 		<!-- 底部 -->
 		<view class="fixed bottom-0 left-0 right-0 !border-t border-0 border-solid border-gray-100 bg-white"
-			style="z-index: 90;">
+			style="z-index: 90;" v-if="detailContent!=null">
 			<view class="flex p-4">
 				<view class="flex items-center" @click="showEmoji = !showEmoji">
 					<i class="ri-emotion-fill text-4xl text-gray-500"></i>
 				</view>
 				<view class="flex-1 flex">
-					<u-textarea v-model="message" :focus="inputFocus" :autoHeight="true" :placeholder="placeholder"
-						type="text" maxlength="200"></u-textarea>
+					<u-textarea v-model="message" :auto-blur="true" :focus="inputFocus" @focus="focus" @blur="blur"
+						:autoHeight="true" :placeholder="placeholder" :adjustPosition="false" type="text"
+						maxlength="200"></u-textarea>
 				</view>
 				<view class="flex items-center">
 					<view
 						class="p-3 rounded-full text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-						@click="doComment()">发送</view>
+						@click="doComment1()">发送</view>
 				</view>
 			</view>
 			<!-- 表情 -->
-			<view class="grid grid-cols-12 gap-2 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
+			<view class="grid grid-cols-8 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
 				<view class="flex" v-for="(item, index) in emojiList" :key="index" :item="item"
 					@click="handleEmojiSend(item)">
-					<text class="text-xl leading-none">{{ item }}</text>
+					<text class="leading-none" style="font-size: 1.8rem;">{{ item }}</text>
 				</view>
 			</view>
+			<view class="sdasdas" :style="{height:pageHeight+'px'}"></view>
 		</view>
+
 		<!-- 内容 -->
-		<view class="userContent">
-			<view class="userImg" @click="$u.route('/pages/user/home', { user_id: post.user_id })">
-				<image :src="post.user.avatar || '/static/avatar.png'" class="userImg"></image>
+		<view class="userContent" v-if="detailContent!=null">
+			<view class="" v-if="detailContent!=null">
+				<view class="userImg" v-if="userInfo.id == user_id"
+					@click="$u.route('/pages/index/mine', { user_id: detailContent.user_id })">
+					<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
+				</view>
+				<view v-else class="userImg" @click="$u.route('/pages/user/home', { user_id: detailContent.user_id })">
+					<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
+				</view>
+			</view>
+			<view v-else class="userImg" @click="showToast">
+				<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
 			</view>
 			<view style="flex: 1;">
 				<view class="userInfo">
 					<view class="userNameBox">
-						<view class="userName">{{ post.user.role_realname + ' · ' + post.user.role_dynasty || '无名氏' }}
+						<view class="userName">{{ realname  }}</view>
+						<view class="tags" v-if="achievements != ''">
+							{{achievements.replace(/,/g,"&nbsp;&nbsp;")}}
 						</view>
-						<view class="tags">{{achievements.replace(/,/g,"&nbsp;&nbsp;")}}</view>
 					</view>
-					<view class="follow" v-show='is_follow==0' @click="interest(1)">关注</view>
-					<view class="followActive" v-show="is_follow==1" @click="interest(2)">已关注</view>
+					<view v-if="userInfo.id != user_id">
+						<view class="follow" v-show='is_follow==0' @click="interest(1)">关注</view>
+						<view class="followActive" v-show="is_follow==1" @click="interest(2)">已关注</view>
+					</view>
 				</view>
-				<view class="detailsText">{{ post.content || '' }}</view>
+				<view class="detailsText">
+					<text>{{ content || '' }}</text>
+				</view>
+				<view class="topic">
+					<view class="topicItem" @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id})"
+						v-for="(item,index) in post.post_cate"><i class="ri-hashtag mr-1"></i>{{item.title}}</view>
+				</view>
 				<view v-if="post.images">
 					<image v-for="(item,index) in images" :src="item" style="width: 100%;border-radius: 10rpx;"
 						mode="widthFix" class="mt-4" @click="openImgs(index)"></image>
-					<!-- <u-album :urls="post.images.split(',')" multipleSize="150" rowCount="3"></u-album> -->
 				</view>
 				<view v-if="post.audio" @click="handlePlayAudio(post.audio)"
 					class="mt-4 flex items-center justify-center rounded-full overflow-hidden w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
 					<i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
 				</view>
-				<view class="topic">
-					<view class="topicItem" @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id})"
-						v-for="(item,index) in post.post_cate">{{item.title}}</view>
-				</view>
-				<view style="display: flex;align-items: center;justify-content: space-between;margin-top: 30rpx;">
-					<view style="color: #999999;font-size: 22rpx;">{{ $u.timeFrom(post.createtime, 'mm月dd日') }}</view>
-					<view style="display: flex;align-items: center;" @click="handlePostDig()">
-						<text v-show='post.is_zan==0' class="ri-heart-line"
-							style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
-						<text v-show='post.is_zan==1' class="ri-heart-fill"
-							style="font-size: 40rpx;margin-right: 10rpx;color: #fe4373;"></text>
-						<text style="font-size: 24rpx;color: #999;">{{ post.diggnums == 0?'出彩':post.diggnums }}</text>
-					</view>
-				</view>
-				<!-- <view class="zanNum">
-					<image src="../../static/userBg.png" class="imgsItem" mode=""></image>
-					<image src="../../static/userBg.png" class="imgsItem" mode=""></image>
-					<image src="../../static/userBg.png" class="imgsItem" mode=""></image>
-					<image src="../../static/userBg.png" class="imgsItem" mode=""></image>
-					<image src="../../static/userBg.png" class="imgsItem" mode=""></image>
-					<text style="margin-left: 20rpx;font-size: 22rpx;color: #999999;">等人点赞</text>
-				</view> -->
 			</view>
 		</view>
-
-		<view class="comment" style="padding: 30rpx;">
+		<view class="comment" style="padding: 30rpx;" v-if="detailContent!=null">
 			<view class="title" style="color: #323232;font-size: 28rpx;font-weight: bold;">全部评论({{post.commentnums }})
 			</view>
 			<view class="commentList">
-				<uc-comment v-for="(item, index) in listPostComment" :key="index" :item="item"
-					:id='post.id'></uc-comment>
-				<u-empty v-if="!listPostComment.length" icon="/static/empty.png" text="暂无评论" textColor="#a1a1a1"
-					marginTop="100"></u-empty>
+				<uc-comment ref="comment" @reply="reply" @reply2="reply2"></uc-comment>
 				<view style="height: 120rpx;"></view>
 			</view>
 		</view>
+		<u-empty v-if="detailContent == null" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+			marginTop="100"></u-empty>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>
@@ -185,8 +166,19 @@
 				images: [],
 				is_follow: '',
 				user_id: "",
-				achievements: "",
 				userInfo: "",
+				detailContent: null,
+				realname: "",
+				dynasty: "",
+				achievements: '',
+				avatar: "",
+				content: "",
+				followModule: false,
+				pageHeight: 0,
+				replyData: [],
+				replyFalg: false,
+				flagNum: 0,
+				commentFlag: true,
 			}
 		},
 		created() {
@@ -194,16 +186,89 @@
 			that.getEmojiList()
 			// that.isRedLove=false
 		},
+		onReachBottom() {
+			this.$refs.comment.scrollBottom()
+		},
 		onLoad(option) {
 			let that = this;
 			that.userInfo = uni.getStorageSync("userInfo");
 			that.getPostDetail()
 			that.getPostComment()
+			that.watchKeyboard();
 			// that.getDigCommentDetail()
 		},
 		methods: {
+			reply(e) {
+				this.replyData = e;
+				this.placeholder = `回复${e.role_realname}${e.role_dynasty}`;
+				this.inputFocus = false;
+				this.$nextTick(() => {
+					this.inputFocus = true;
+					this.flagNum = 1
+				})
+			},
+			reply2(e) {
+				console.log(e)
+				this.replyData = e;
+				this.placeholder = `回复${e.role_realname}${e.role_dynasty}`;
+				this.inputFocus = false;
+				this.$nextTick(() => {
+					this.inputFocus = true;
+					this.flagNum = 2
+				})
+			},
+			// 获得焦点后
+			focus(e) {},
+			// 失去焦点后
+			blur() {
+				if (this.message.length != 0) {
+					if (this.replyData.length != 0) {
+						this.replyFalg = true;
+					} else {
+						this.replyFalg = false;
+						this.replyData = []
+						this.placeholder = '发表评论'
+						this.flagNum = 0
+					}
+				} else {
+					this.replyFalg = false;
+					this.replyData = []
+					this.placeholder = '发表评论'
+					this.flagNum = 0
+				}
+				// this.placeholder = '发表评论'
+			},
+			//监听键盘
+			watchKeyboard() {
+				var that = this;
+				uni.onKeyboardHeightChange(res => {
+					that.pageHeight = res.height
+				})
+			},
+			//取消关注
+			unfollow() {
+				var that = this;
+				that.$api('user_follow.follow', {
+					user_id: that.user_id
+				}).then(res => {
+					if (res.code === 1) {
+						console.log('取消成功');
+						that.is_follow == 0;
+						that.followModule = false;
+						that.getUserProfile()
+					} else {
+						console.log('25');
+					}
+				})
+			},
+			showToast() {
+				uni.showToast({
+					icon: "none",
+					title: "用户已注销"
+				})
+			},
 			interest(type) {
-				let that = this
+				let that = this;
 				if (type == 1) {
 					that.$api('user_follow.follow', {
 						user_id: that.user_id
@@ -213,35 +278,8 @@
 					})
 				}
 				if (type == 2) {
-					uni.showModal({
-						title: '提示',
-						content: '确定要取消关注用户？',
-						confirmText: "确定", //这块是确定按钮的文字
-						cancelText: "取消", //这块是取消的文字
-						success: function(res) {
-							if (res.confirm) {
-								that.$api('user_follow.follow', {
-									user_id: that.user_id
-								}).then(res => {
-									console.log(res.code);
-									if (res.code === 1) {
-										// that.user = res.data
-										console.log('取消成功');
-										that.is_follow == 0
-										console.log(res.data);
-										// that.isInterest=!that.isInterest
-										that.getUserProfile()
-									} else {
-										console.log('25');
-									}
-								})
-
-
-							} else if (res.cancel) {
-								console.log('用户点击取消');
-							}
-						}
-					});
+					console.log(that.followModule)
+					that.followModule = true;
 				}
 			},
 			//关注
@@ -252,6 +290,10 @@
 					user_id: id
 				}).then(res => {
 					if (res.code === 1) {
+						if (res.data == null) {
+							that.is_follow = 0;
+							return;
+						}
 						that.is_follow = res.data.is_follow
 					}
 				})
@@ -292,28 +334,43 @@
 					post_id: that.$Route.query.post_id
 				}).then(res => {
 					if (res.code === 1) {
+						if (res.data.user == null) {
+							that.realname = "无名氏"
+							that.avatar = ""
+							that.achievements = "";
+						} else {
+							that.detailContent = res.data;
+							that.realname = res.data.role.realname + ' · ' + res.data.role.dynasty;
+							that.avatar = res.data.user.avatar
+							that.dynasty = res.data.role.dynasty
+							that.achievements = res.data.role.achievements;
+						}
+						that.content = res.data.content;
 						that.user_id = res.data.user_id;
-						// ---------
-						that.$api('user.info', {
-							user_id: res.data.user_id
-						}).then(data => {
-							if (data.code === 1) {
-								that.achievements = data.data.achievements;
-							} else {}
-						})
-						that.getUserProfile(res.data.user_id)
 						that.post = res.data;
 						that.images = res.data.images.split(",");
+						that.getUserProfile(res.data.user_id)
+						// // ---------
+						// that.$api('user.info', {
+						// 	user_id: res.data.user_id
+						// }).then(data => {
+						// 	if (data.code === 1) {
+						// 		that.achievements = data.data.achievements;
+						// 	} else {}
+						// })
+						// that.getUserProfile(res.data.user_id)
+						// that.post = res.data;
+						// that.images = res.data.images.split(",");
 						that.paginator.total = res.data.total
 						that.paginator.last_page = res.data.last_page
-						that.postRecommendList = [...that.post, ...res.data]
-
+						// that.postRecommendList = [...that.post, ...res.data]
 						if (that.params.page < res.data.last_page) {
 							that.loadmore = 'loadmore'
 						} else {
 							that.loadmore = 'nomore'
 						}
-
+					} else {
+						that.$u.toast(res.msg)
 					}
 				})
 			},
@@ -327,7 +384,8 @@
 						// that.paginator.total = res.data.total
 						// that.paginator.last_page = res.data.last_page
 						// that.listPostComment = [...that.listPostComment, ...res.data.data]
-						that.listPostComment = res.data
+						var list = res.data
+						that.listPostComment = list;
 						// if (that.params.page < res.data.last_page) {
 						// that.loadmore = 'loadmore'
 						// } else
@@ -409,12 +467,6 @@
 					})
 				}
 			},
-			addComment(item) {
-				let that = this
-				that.placeholder = `回复${item.user.role_realname}`
-				that.post_comment_id = item.id
-				that.inputFocus = true
-			},
 			handlePostDig() {
 				let that = this
 				that.$api('post.dig', {
@@ -455,27 +507,77 @@
 					}
 				})
 			},
-			doComment() {
+			doComment1() {
+				var that = this;
+				if (that.commentFlag == false) {
+					return false;
+				} else {
+					that.commentFlag = false;
+					switch (that.flagNum) {
+						case 0:
+							var obj = {
+								post_id: that.$Route.query.post_id,
+								post_comment_id: 0,
+								top_post_comment_id: 0,
+								content: that.message
+							}
+							that.doComment(obj, 0)
+							break;
+						case 1:
+							var obj = {
+								post_id: that.$Route.query.post_id,
+								post_comment_id: that.replyData.id,
+								top_post_comment_id: that.replyData.id,
+								content: that.message
+							}
+							that.doComment(obj, 1)
+							break;
+						case 2:
+							var obj = {
+								post_id: that.$Route.query.post_id,
+								post_comment_id: that.replyData.id,
+								top_post_comment_id: that.replyData.top_post_comment_id,
+								content: that.message
+							}
+							that.doComment(obj, 2)
+							break;
+					}
+				}
+			},
+			doComment(obj, type) {
 				let that = this
 				if (!that.message) {
-					that.$u.toast('内容不能为空')
-					return false
+					that.$u.toast('内容不能为空');
+					that.commentFlag = true;
+					return false;
 				}
-				that.$api('comment.add', {
-					content: that.message,
-					post_comment_id: that.post_comment_id,
-					post_id: that.post.id
-				}).then(res => {
+				that.$api('comment.add', obj).then(res => {
 					if (res.code === 1) {
-						that.message = ''
 						that.$u.toast('评论成功')
 						that.showEmoji = false
 						that.getPostDetail()
-						that.params.page = 1
-						that.listPostComment = []
-						that.getPostComment()
+						that.params.page = 1;
+						switch (type) {
+							case 0:
+								that.$refs.comment.pinglun0(res.data, that.message, that.replyData);
+								break;
+							case 1:
+								that.$refs.comment.pinglun1(res.data, that.message, that.replyData);
+								break;
+							case 2:
+								that.$refs.comment.pinglun2(res.data, that.message, that.replyData);
+								break;
+						}
+						that.replyData = []
+						that.message = ''
+						this.replyFalg = false;
+						this.replyData = []
+						this.placeholder = '发表评论'
+						this.flagNum = 0;
+						that.commentFlag = true;
 					} else {
-						that.$u.toast(res.msg)
+						that.$u.toast(res.msg);
+						that.commentFlag = true;
 					}
 				})
 			},
@@ -570,7 +672,7 @@
 		}
 
 		.topic {
-			color: #6F93BD;
+			color: #FE4373;
 			font-size: 26rpx;
 
 			.topicItem {

@@ -19,12 +19,12 @@ export default function api(url, data = {}) {
 
 	request.interceptor.response((response) => {
 		if (response.data.code === 0) {
-			uni.showToast({
-				title: response.data.msg || '请求出错,稍后重试',
-				icon: 'none',
-				duration: 1000,
-				mask: true
-			});
+			// uni.showToast({
+			// 	title: response.data.msg || '请求出错,稍后重试',
+			// 	icon: 'none',
+			// 	duration: 1000,
+			// 	mask: true
+			// });
 		}
 		if (response.data.code === 401) {
 			uni.removeStorageSync('token');

@@ -1,10 +1,13 @@
 export default {
 	state: {
 		messageList: [], //消息列表
-		messageCount: false, //总消息数量
+		messageCount: 0, //总消息数量
 		receiverId: "",
 		messageListTotal: [], //全部消息列表
 		islogout: false,
+		topMessageList: [], //置顶消息
+		historyMsgList: [], //历史消息
+		giftId: ''
 	},
 	mutations: {
 		//设置登录状态
@@ -30,40 +33,72 @@ export default {
 		setMsgCount(state, arr) {
 			var num = 0;
 			for (var i = 0; i < arr.length; i++) {
-				if (arr[i].msgNum != undefined) {
-					if (arr[i].msgNum == true) {
-						state.messageCount = true;
-						break;
-					}
-				}
+				num += state.messageList[i].msgNum;
+				// if (arr[i].msgNum != undefined) {
+				// 	if (arr[i].msgNum == true) {
+				// 		state.messageCount = true;
+				// 		break;
+				// 	}
+				// }
+			}
+			state.messageCount = num;
+			if (num == 0) {
+				uni.removeTabBarBadge({
+					index: 2
+				})
+			} else {
+				uni.setTabBarBadge({
+					index: 2,
+					text: `${num}`
+				})
 			}
 		},
 		//设置各个列表的角标
 		setMsgCount2(state) {
 			if (state.messageList.length == 0) {
-				state.messageCount = false;
+				state.messageCount = 0;
 				return;
 			}
+			var num = 0;
 			for (var i = 0; i < state.messageList.length; i++) {
 				if (state.messageList[i].msgNum != undefined) {
-					if (state.messageList[i].msgNum == true) {
-						state.messageCount = true;
-						break;
-					} else {
-						state.messageCount = false;
-					}
+					num += state.messageList[i].msgNum;
+					// if (state.messageList[i].msgNum == true) {
+					// 	state.messageCount = true;
+					// 	break;
+					// } else {
+					// 	state.messageCount = false;
+					// }
 				}
 			}
+			state.messageCount = num;
 			var userInfo = uni.getStorageSync("userInfo");
 			if (!userInfo) {
 				return;
 			}
 			if (state.messageList.length != 0) {
+				var arr = [];
+				state.messageList.forEach((val, index) => {
+					if (val.user_id != undefined) {
+						arr.push(val)
+					}
+				})
 				var obj = {
 					id: userInfo.id,
-					messageList: state.messageList
+					messageList: arr
 				}
 				uni.setStorageSync("historyCronyList" + userInfo.id, obj)
+			}
+
+			if (num == 0) {
+				uni.removeTabBarBadge({
+					index: 2
+				})
+			} else {
+				uni.setTabBarBadge({
+					index: 2,
+					text: `${num}`
+				})
 			}
 		},
 		//清楚消息红点
@@ -71,7 +106,7 @@ export default {
 			var arr = state.messageList;
 			arr.forEach((item, index) => {
 				if (arr[index].user_id == id) {
-					arr[index].msgNum = false;
+					arr[index].msgNum = 0;
 				}
 			})
 			state.messageList = arr;
@@ -96,6 +131,14 @@ export default {
 		appendUnRead(state, arr) {
 			state.messageList = arr
 		},
+		//用户聊天记录
+		setHistoryMsgList(state, arr) {
+			state.historyMsgList = arr;
+		},
+		// 设置礼包id
+		setGiftId(state, id) {
+			state.giftId = id;
+		}
 	},
 	getters: {
 

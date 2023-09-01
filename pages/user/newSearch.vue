@@ -24,6 +24,7 @@
 				</view>
 			</view>
 		</block>
+		<view class="mt-8"></view>
 		<view class="pt-4">
 
 			<block v-if="type === 'hot'">
@@ -50,7 +51,7 @@
 					<text @click="LishandleSearch(item)" style="color: #808080;font-size: 24rpx;"> {{ item}}</text>
 				</view>
 
-				<view class="text-xl text-gray-500 mt-8"
+				<!-- <view class="text-xl text-gray-500 mt-8"
 					style="font-weight: bold;color: #323232;font-size: 30rpx;margin-top: 80rpx;">
 					热门搜索</view>
 				<view class="flex flex-wrap flex-direction-row ">
@@ -60,7 +61,7 @@
 						style="color: #808080;font-size: 24rpx;">
 						{{ item.title }}
 					</view>
-				</view>
+				</view> -->
 				<!-- <view class="text-xl text-gray-500 mt-8">角色成就</view>
 	            <view class="flex flex-wrap flex-direction-row">
 	                <view v-for="(item, index) in listRoleAchievement" :key="index" :item="item" @click="handleSearchAchievement(item)" class="rounded text-base leading-none p-2 bg-gray-100 mt-4 mr-4">
@@ -77,12 +78,8 @@
 			<block v-if="type === 'search'">
 				<!-- <uc-user v-for="(item, index) in listUserSearch" :key="index" :item="item"></uc-user> -->
 				<uc-search v-for="(item, index) in listUserSearch" :key="index" :item="item"></uc-search>
-				<view v-if="!listUserSearch.length">
-					<view>
-						<image src="../../static/noSearch.png" mode=""></image>
-					</view>
-					<view style="color: #808080;font-size: 28rpx;text-align: center;">暂无搜索结果</view>
-				</view>
+				<u-empty v-if="!listUserSearch.length" icon="/static/noSearch.png" text="数据为空" textColor="#a1a1a1"
+					marginTop="100"></u-empty>
 				<u-loadmore v-if="listUserSearch.length" :status="loadmore" nomoreText="" color="#a1a1a1"
 					marginTop="20" />
 			</block>
@@ -97,7 +94,7 @@
 	            </view>
 	        </view>
 	    </u-modal> -->
-
+		<topPrompt></topPrompt>
 		<uc-auth></uc-auth>
 	</view>
 </template>

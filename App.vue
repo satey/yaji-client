@@ -8,7 +8,7 @@
 	import Wechat from './common/wechat/wechat.js';
 	// import permision from "@/js_sdk/wa-permission/permission.js"
 	// import chat from "./common/chat.js"
-
+	import push from "@/js_sdk/dc-push/push.js"
 	import Socket from '@/common/utils/f_socket.js'
 	import message from './common/store/modules/message.js';
 	export default {
@@ -20,7 +20,7 @@
 			initFun: null, //缓存socket初始化的方法
 			getHistoryCronyList: null, //进来获取storege的聊天列表
 			isSelectImage: false, //如果是选择图片的话不关闭socket
-			renew: {}
+			renew: {},
 		},
 		updated() {
 			if (getApp().globalData.islogout == false) {
@@ -31,25 +31,100 @@
 
 		methods: {
 			...mapActions(['getAppInit', 'getRoutes', 'getUserInfo']),
+			//监听通知
+			pushMsg() {
+				var that = this;
+				uni.onPushMessage((res) => {
+					console.log(res)
+					var isPush = false;
+					//曲水流觞
+					if (res.data.title == "曲水流觞匹配成功") {
+						isPush = true;
+						if (that.$store.state.game.mateId != '') {
+							that.$store.commit("setMateId", "")
+							that.$store.commit("setGameBarFlag", false)
+							that.$nextTick(() => {
+								uni.navigateTo({
+									url: '/pages/joy/poetry'
+								})
+							})
+						}
+					}
+					// -----礼包
+					if (res.data.title == "礼包") {
+						that.$store.commit("setGiftId", res.data.content);
+						isPush = true;
+					}
+					if (res.type == 'receive') {
+						if (!isPush) {
+							uni.createPushMessage({
+								title: res.data.title,
+								content: res.data.content,
+								icon: "./static/logo-28.png",
+								sound: "system",
+								fail() {
+									uni.showToast({
+										icon: "error",
+										title: "通知栏失败"
+									})
+								}
+							})
+						}
+					}
+					if (res.data.title == "小雅") {
+						if (res.data.content.indexOf("的世界") != -1) {
+							var list = that.$store.state.message.messageList;
+							var obj = {
+								"avatar": "https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/uploads/20230727/245306ec74804174043aa9e55a2c4b3cc4de7c.png",
+								"user_id": 1,
+								"role_realname": res.data.title,
+								"role_dynasty": "秦",
+								"createtime": Date.parse(new Date()).toString(),
+								"type": "text",
+								"content": res.data.content,
+								"is_topping": "",
+								"topping_time": "",
+								"msgNum": 1
+							}
+							list.push(obj)
+							that.$store.commit("setMessageList", list)
+							that.$store.commit("setMsgCount", list)
+						}
+					}
+					// var list = that.$store.state.message.messageList;
+					// list.forEach((val, index) => {
+					// 	if (res.data.title == val.role_realname) {
+					// 		console.log(val.msgNum)
+					// 		var tmp = Date.parse(new Date()).toString();
+					// 		tmp = tmp.substr(0, 10);
+					// 		val.content = res.data.content;
+					// 		val.msgNum = ++val.msgNum;
+					// 		val.createtime = tmp
+					// 	}
+					// })
+					// that.$store.commit("setMessageList", list)
+					// that.$store.commit("setMsgCount", list)
+				})
+			},
 			//更新
 			renew() {
 				var that = this;
-				uni.request({
-					url: 'https://yaji.suoeryoude.cn/api/version/index',
-					success: function(res) {
-						that.$store.commit("setRenewContent", res.data.data.content);
-						that.$store.commit("setDownloadUrl", res.data.data.downloadurl);
-						that.$store.commit("setisEnforce", res.data.data.enforce);
-						var version = res.data.data.newversion.slice(1);
-						// #ifdef APP-PLUS
-						plus.runtime.getProperty(plus.runtime.appid, (info) => {
-							if (info.version != version) {
-								that.$store.commit("setisRenew", true)
-							}
-						})
-						// #endif
+				that.$api("versions.index").then(res => {
+					if (res.data == null) {
+						return;
 					}
-				});
+					that.$store.commit("setRenewContent", res.data.content);
+					that.$store.commit("setDownloadUrl", res.data.downloadurl);
+					that.$store.commit("setisEnforce", res.data.enforce);
+					var version = res.data.newversion.slice(1);
+					// #ifdef APP-PLUS
+					plus.runtime.getProperty(plus.runtime.appid, (info) => {
+						if (info.version != version) {
+							that.$store.commit("setisRenew", true)
+						}
+					})
+					// #endif
+				})
 			},
 			//统计
 			isLogin() {
@@ -61,7 +136,14 @@
 					});
 				} else {
 					//统计
-					that.$api('stat.init').then(res => {})
+					uni.getPushClientId({
+						success(res) {
+							console.log(res)
+							that.$api('stat.init', {
+								"push_clientid": res.cid
+							}).then(data => {})
+						}
+					})
 				}
 			},
 			//获取未读消息
@@ -80,7 +162,9 @@
 							obj.role_dynasty = val.dynasty;
 							obj.content = val.chat_message_content;
 							obj.receiver_id = val.user_id;
-							obj.msgNum = val.no_read_count == 0 ? false : true;
+							obj.msgNum = val.no_read_count;
+							obj.is_topping = val.is_topping;
+							obj.topping_time = val.topping_time;
 							for (var i = 0; i < arr.length; i++) {
 								if (arr[i].user_id == val.user_id) {
 									arr.splice(i, 1)
@@ -103,7 +187,7 @@
 				if (historyCronyList != "") {
 					if (historyCronyList.messageList.length != 0) {
 						this.$store.commit("setMessageList", historyCronyList.messageList);
-						this.$store.commit("setMsgCount2");
+						this.$store.commit("setMsgCount2", historyCronyList.messageList);
 						uni.removeStorageSync("historyCronyList")
 					}
 				}
@@ -182,7 +266,7 @@
 				if (token == '') {
 					return;
 				}
-				that.socKetUrl = `wss://yaji.suoeryoude.cn/websocket?token=${token}&session_id=${session_id}`;
+				that.socKetUrl = `wss://yaji.ixiaojin.cn/websocket?token=${token}&session_id=${session_id}`;
 				getApp().globalData.socketTask = uni.connectSocket({
 					url: that.socKetUrl, //仅为示例，并非真实接口地址。
 					complete: () => {
@@ -199,50 +283,67 @@
 				})
 				//监听 WebSocket 接受到服务器的消息事件
 				getApp().globalData.socketTask.onMessage((res) => {
+					if (JSON.parse(res.data).cate != 1) {
+						return;
+					}
 					if (JSON.parse(res.data).type == 'text' || JSON.parse(res.data).type == 'image' || JSON.parse(
-							res.data).type == 'audio') {
+							res.data).type == 'audio' || JSON.parse(res.data).type == 'gift') {
+						console.log(JSON.parse(res.data))
 						var userInfo = uni.getStorageSync("userInfo")
 						//别人给我发消息
-						if (JSON.parse(res.data).data.user.id != userInfo.id) {
+						if (JSON.parse(res.data).data.user_id != userInfo.id) {
 							var messageList = that.$store.state.message.messageList;
-							messageList.forEach((val, index) => {
-								if (val.user_id == JSON.parse(res.data).data.user.id) {
-									messageList.splice(index, 1);
-								}
-							})
+							var is_topping = "";
+							var topping_time = "";
 							var sData = JSON.parse(res.data).data;
 							var obj = {};
-							obj.avatar = sData.user.avatar;
+							var num = 1;
+							messageList.forEach((val, index) => {
+								if (val.user_id == JSON.parse(res.data).data.user_id) {
+									is_topping = val.is_topping;
+									topping_time = val.topping_time;
+									messageList.splice(index, 1);
+									num = ++val.msgNum
+								}
+							})
+							obj.avatar = sData.avatar;
 							obj.user_id = sData.user_id;
-							obj.role_realname = sData.user.role_realname;
-							obj.role_dynasty = sData.user.role_dynasty;
+							obj.role_realname = sData.role_realname;
+							obj.role_dynasty = sData.role_dynasty;
 							obj.createtime = sData.createtime;
 							obj.type = sData.type;
 							obj.content = sData.content;
 							obj.receiver_id = sData.receiver_id;
+							obj.is_topping = is_topping;
+							obj.topping_time = topping_time;
+							obj.msgNum = num
 							messageList.unshift(obj);
-							//添加未读数量
-							if (that.$store.state.message.receiverId == "") {
-								messageList.forEach((val, index) => {
-									if (val.user_id == JSON.parse(res.data).data.user.id) {
-										val.msgNum = true;
-									}
-								})
-							};
+							// console.log(messageList)
+							// //添加未读数量
+							// if (that.$store.state.message.receiverId == "") {
+							// 	messageList.forEach((val, index) => {
+							// 		if (val.user_id == JSON.parse(res.data).data.user_id) {
+							// 			val.msgNum = true;
+							// 		}
+							// 	})
+							// };
 							that.$store.commit("setMessageList", messageList);
 							that.$store.commit("setMsgCount", messageList);
 						} else if (JSON.parse(res.data).data.receiver_id == Number(that.$store.state.message
 								.receiverId)) {
 							//我给别人发消息		
-
 							//消息列表	
 							that.$api('user.profile', {
 								user_id: Number(that.$store.state.message.receiverId)
 							}).then(data => {
 								var newMsgList = that.$store.state.message.messageList;
+								var is_topping = "";
+								var topping_time = ""
 								newMsgList.forEach((val, index) => {
 									if (val.user_id == JSON.parse(res.data).data
 										.receiver_id) {
+										is_topping = val.is_topping;
+										topping_time = val.topping_time;
 										newMsgList.splice(index, 1);
 									} else if (val.receiver_id == JSON.parse(res.data).data
 										.receiver_id) {
@@ -261,6 +362,8 @@
 								obj.content = sData.content;
 								obj.receiver_id = that.$store.state.message.receiverId;
 								obj.msgNum = false;
+								obj.is_topping = is_topping;
+								obj.topping_time = topping_time;
 								newMsgList.unshift(obj);
 								that.$store.commit("setMessageList", newMsgList);
 							})
@@ -272,9 +375,7 @@
 					console.log('全局Socket 已关闭！');
 					getApp().globalData.wsOnlion = false;
 					clearInterval(getApp().globalData.timmer);
-					if (!getApp().globalData.islogout) {
-						that.initSocket();
-					}
+					that.initSocket();
 				});
 				getApp().globalData.socketTask.onError(function() {
 					console.log("全局Socket连接打开失败，请检查！");
@@ -354,26 +455,26 @@
 		//       })
 		//     }
 		//   },
-		onLaunch: async function(options) {
-			await this.setAppInfo();
-
-			try {
-				let init = await this.getAppInit(options);
-				await this.autoLogin(init.data);
-				if (process.env.NODE_ENV === 'development') {
-					await this.getRoutes();
-				}
-			} catch (e) {
-				console.log(e);
-			}
-		},
+		// onLaunch: async function(options) {
+		// 	await this.setAppInfo();
+		// 	try {
+		// 		let init = await this.getAppInit(options);
+		// 		await this.autoLogin(init.data);
+		// 		if (process.env.NODE_ENV === 'development') {
+		// 			await this.getRoutes();
+		// 		}
+		// 	} catch (e) {
+		// 		console.log(e);
+		// 	}
+		// },
 		onShow() {
-			this.initSocket(); //启动socket
 			this.getHistoryCronyList();
 		},
 		onLaunch: async function() {
+			this.initSocket();
 			this.isLogin()
 			this.renew()
+			this.pushMsg();
 			let token = Boolean(uni.getStorageSync('token'))
 			let that = this;
 			that.$api('user.info').then(res => {
@@ -459,6 +560,7 @@
 					})
 				}
 			})
+
 		},
 		onHide: function() {
 			var that = this;
@@ -468,9 +570,15 @@
 			}
 			//聊天记录添加到storage
 			if (that.$store.state.message.messageList.length != 0) {
+				var list = that.$store.state.message.messageList;
+				list.forEach((val, index) => {
+					if (val.user_id == undefined) {
+						list.splice(index, 1)
+					}
+				})
 				var obj = {
 					id: userInfo.id,
-					messageList: that.$store.state.message.messageList
+					messageList: list
 				}
 				uni.setStorageSync("historyCronyList" + userInfo.id, obj)
 			}
@@ -478,8 +586,6 @@
 			if (getApp().globalData.isSelectImage) {
 				return;
 			}
-			getApp().globalData.islogout = true;
-			getApp().globalData.socketTask.close();
 		},
 	};
 </script>
@@ -489,4 +595,5 @@
 	// @import 'static/style/main.scss';
 	@import "static/tailwindcss/tailwind.css";
 	@import 'static/remixicon/remixicon.css';
+	@import 'static/iconfont/icons.css';
 </style>

@@ -1,17 +1,119 @@
 export default {
+	ad: {
+		lists: {
+			url: 'adv/lists',
+			auth: false,
+			method: 'GET',
+			desc: '广告列表',
+		},
+	},
 	renew: {
 		init: {
 			url: 'version/index',
 			auth: false,
-			method: 'GET',
+			method: 'POST',
 			desc: '更新版本',
 		},
+	},
+	game: {
+		match_success: {
+			url: 'game_room/match_success',
+			auth: false,
+			method: 'GET',
+			desc: '曲水流觞匹配房间成功',
+		},
+		cancel_match_room: {
+			url: 'game_room/cancel_match_room',
+			auth: false,
+			method: 'GET',
+			desc: '曲水流觞取消匹配房间',
+		},
+		match_room: {
+			url: 'game_room/match_room',
+			auth: false,
+			method: 'GET',
+			desc: '曲水流觞匹配房间',
+		},
+		joinRoom: {
+			url: 'game_room/join_room',
+			auth: false,
+			method: 'GET',
+			desc: '加入曲水流觞房间',
+		},
+		is_in_game_room: {
+			url: 'game_room/is_in_game_room',
+			auth: false,
+			method: 'POST',
+			desc: '是否在游戏房间',
+		},
+		countNum: {
+			url: "game_room/game_room_user_count",
+			auth: false,
+			method: 'GET',
+			desc: '房间总人数',
+		}
+	},
+	poetry: {
+		isRelease: {
+			url: 'poetry/today_is_exist_data',
+			auth: false,
+			method: 'GET',
+			desc: '诗词结缘字是否发过',
+		},
+		textList: {
+			url: 'poetry_word/lists',
+			auth: false,
+			method: 'GET',
+			desc: '诗词结缘字列表',
+		},
+		poetryAdd: {
+			url: 'poetry/add',
+			auth: false,
+			method: 'POST',
+			desc: '诗词结缘字添加诗词',
+		},
+		details: {
+			url: 'poetry/details',
+			auth: false,
+			method: 'GET',
+			desc: '诗词结缘详情',
+		},
+		lists: {
+			url: 'poetry/lists',
+			auth: false,
+			method: 'GET',
+			desc: '诗词结缘列表',
+		},
+		single: {
+			url: '/poetry_chat_log/details',
+			auth: false,
+			method: 'POST',
+			desc: '诗词结缘聊天',
+		},
+		zan: {
+			url: 'poetry/zan',
+			auth: false,
+			method: 'GET',
+			desc: '诗词结缘赞',
+		},
+		myList: {
+			url: 'poetry/my_poetry_list',
+			auth: false,
+			method: 'GET',
+			desc: '我的诗词结缘列表',
+		},
+		today_poetry_count: {
+			url: 'poetry/today_poetry_count',
+			auth: false,
+			method: 'GET',
+			desc: '今日发布诗词总数',
+		}
 	},
 	stat: {
 		init: {
 			url: 'user/today_last_online_time',
 			auth: false,
-			method: 'GET',
+			method: 'POST',
 			desc: '统计数据',
 		},
 	},
@@ -41,6 +143,12 @@ export default {
 		}
 	},
 	post: {
+		search: {
+			url: 'post_cate/find_post_cate',
+			auth: false,
+			method: 'GET',
+			desc: '搜索话题',
+		},
 		recommend: {
 			url: 'post/recommend',
 			auth: false,
@@ -180,6 +288,12 @@ export default {
 			method: 'GET',
 			desc: '评论列表',
 		},
+		listsMore: {
+			url: 'post_comment/reply_comment_list',
+			auth: false,
+			method: 'GET',
+			desc: '评论列表更多',
+		},
 	},
 	post_comment: {
 		dig: {
@@ -201,6 +315,12 @@ export default {
 			auth: true,
 			method: 'GET',
 			desc: '礼物列表',
+		},
+		giveGift: {
+			url: 'user_gift/give_gift',
+			auth: true,
+			method: 'POST',
+			desc: '送礼物',
 		},
 	},
 	chat: {
@@ -242,11 +362,41 @@ export default {
 			method: 'GET',
 			desc: '消息列表',
 		},
+		trendsMsg: {
+			url: 'message/post_message_count',
+			auth: true,
+			method: 'GET',
+			desc: '动态消息',
+		},
+		trendsMsgLists: {
+			url: 'message/post_message_list',
+			auth: true,
+			method: 'GET',
+			desc: '动态消息列表',
+		},
 		readall: {
 			url: 'message/readall',
 			auth: true,
 			method: 'GET',
 			desc: '标记已读',
+		},
+		topping: {
+			url: 'message/topping_user',
+			auth: true,
+			method: 'POST',
+			desc: '消息置顶',
+		},
+		disturbList: {
+			url: 'chat_message_no_disturb/is_no_disturb',
+			auth: true,
+			method: 'GET',
+			desc: '消息免打扰列表',
+		},
+		addDisturbList: {
+			url: 'chat_message_no_disturb/add',
+			auth: true,
+			method: 'GET',
+			desc: '添加消息免打扰',
 		},
 	},
 	help: {
@@ -335,6 +485,18 @@ export default {
 		},
 	},
 	user: {
+		openBox: {
+			url: 'user/open_blind_box',
+			auth: false,
+			method: 'GET',
+			desc: '开盲盒',
+		},
+		look_user_home: {
+			url: 'user/look_user_home',
+			auth: false,
+			method: 'POST',
+			desc: '名望加减',
+		},
 		recommend: {
 			url: 'user/recommend',
 			auth: false,
@@ -421,7 +583,18 @@ export default {
 			method: 'POST',
 			desc: '退出登录',
 		},
-
+		off: {
+			url: 'user/cancle_user',
+			auth: true,
+			method: 'GET',
+			desc: '注销账号',
+		},
+		update_avatar: {
+			url: 'user/update_avatar',
+			auth: true,
+			method: 'POST',
+			desc: '更换头像',
+		}
 	},
 	user_gift: {
 		lists: {
@@ -432,6 +605,12 @@ export default {
 		},
 	},
 	user_recharge: {
+		moneyList: {
+			url: 'user_recharge/money_exchange_copper',
+			auth: true,
+			method: 'GET',
+			desc: '充值铜钱列表',
+		},
 		apply: {
 			url: 'user_recharge/apply',
 			auth: true,
@@ -439,11 +618,17 @@ export default {
 			desc: '充值',
 		},
 		lists: {
-			url: 'user_recharge/lists',
+			url: 'user_wallet_log/lists',
 			auth: true,
-			method: 'PUT',
+			method: 'GET',
 			desc: '充值记录',
 		},
+		balance: {
+			url: 'api/hey',
+			auth: true,
+			method: 'GET',
+			desc: '余额',
+		}
 	},
 	user_wallet_log: {
 		lists: {
@@ -508,8 +693,14 @@ export default {
 		},
 	},
 	pay: {
+		order: {
+			url: 'user_recharge/order',
+			auth: true,
+			method: 'POST',
+			desc: '创建订单',
+		},
 		prepay: {
-			url: 'pay/prepay',
+			url: 'pay/pay_order',
 			auth: true,
 			method: 'POST',
 			desc: '发起支付',
@@ -537,7 +728,13 @@ export default {
 			auth: false,
 			method: 'GET',
 			desc: '黑名单列表',
-		}
+		},
+		add: {
+			url: 'user_black/add',
+			auth: false,
+			method: 'GET',
+			desc: '添加/取黑名单',
+		},
 	},
 	versions: {
 		index: {

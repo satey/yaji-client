@@ -58,12 +58,12 @@
 				colors: ["red", "pink", "blue", "yellow", "#FE4373"],
 				data: [],
 				choose_num: '',
+				isClick: true,
 			};
 		},
 		onLoad(e) {
 			this.data = JSON.parse(e.data)
 			this.role = JSON.parse(e.role);
-			console.log(this.role)
 			this.init()
 		},
 		methods: {
@@ -83,35 +83,43 @@
 			},
 			// 开始体验
 			handleSubmit() {
-				let that = this
-				if (!that.role) {
-					that.$u.toast('角色必须选择')
-					return false
-				}
-
-				uni.setStorageSync('times', that.times);
-				let gender = uni.getStorageSync('gender')
-				that.formGender = gender
-
-				let data = {
-					role_id: that.role.id,
-					dynasty: that.data.dynasty,
-					gender: that.formGender
-				}
-				that.$api('user.bindrole', data).then(res => {
-					console.log(res)
-					if (res.code === 1) {
-						uni.reLaunch({
-							url: '/pages/index/index'
-						});
-						// that.$u.route('/pages/index/index')
-					} else {
-						that.$u.toast(res.msg)
-						uni.reLaunch({
-							url: '/pages/index/index'
-						});
+				let that = this;
+				if (that.isClick) {
+					that.isClick = false;
+					if (!that.role) {
+						that.$u.toast('角色必须选择')
+						return false
 					}
-				})
+					if (that.choose_num == 0) {
+						that.isClick = true;
+						uni.reLaunch({
+							url: '/pages/index/index'
+						});
+						return;
+					}
+					uni.setStorageSync('times', that.times);
+					let gender = uni.getStorageSync('gender')
+					that.formGender = gender
+
+					let data = {
+						role_id: that.role.id,
+						dynasty: that.data.dynasty,
+						gender: that.formGender
+					}
+					that.$api('user.bindrole', data).then(res => {
+						if (res.code === 1) {
+							uni.reLaunch({
+								url: '/pages/index/index'
+							});
+							// that.$u.route('/pages/index/index')
+						} else {
+							uni.reLaunch({
+								url: '/pages/index/index'
+							});
+						}
+						that.isClick = true;
+					})
+				}
 			},
 		}
 	}

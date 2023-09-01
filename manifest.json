@@ -2,8 +2,8 @@
     "name" : "雅集",
     "appid" : "__UNI__5018490",
     "description" : "雅集",
-    "versionName" : "1.0.0",
-    "versionCode" : 100,
+    "versionName" : "1.0.4",
+    "versionCode" : 104,
     "transformPx" : false,
     "app" : {
         "launch_path" : "/pages/auth/login"
@@ -19,7 +19,7 @@
         "splashscreen" : {
             "alwaysShowBeforeRender" : false,
             "waiting" : false,
-            "autoclose" : true,
+            "autoclose" : false,
             "delay" : 0
         },
         "privacy" : {
@@ -37,31 +37,72 @@
         },
         "modules" : {
             "VideoPlayer" : {},
-            "Record" : {}
+            "Record" : {},
+            "Payment" : {},
+            "Push" : {}
         },
         "distribute" : {
             "android" : {
+                "permissionExternalStorage" : {
+                    "request" : "none",
+                    "prompt" : "应用保存运行状态等信息，需要获取读写手机存储（系统提示为访问设备上的照片、媒体内容和文件）权限，请允许。"
+                },
                 "permissions" : [
-                    // "<uses-feature android:name=\"android.hardware.camera\"/>",
-                    // "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-                    // "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
-                    // "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
-                    // "<uses-permission android:name=\"android.permission.CAMERA\"/>",
-                    "<uses-permission android:name=\"android.permission.GET_TASKS\"/>",
-                    "<uses-permission android:name=\"android.permission.INJECT_EVENTS\"/>",
-                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>"
+                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
+                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>"
                 ],
-                // "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
-                // "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>"
-                // "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-                "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
+                "autoSdkPermissions" : false,
+                "resizeableActivity" : true,
+                "permissionPhoneState" : {
+                    "request" : "none",
+                    "prompt" : "为保证您正常、安全地使用，需要获取设备识别码（部分手机提示为获取手机号码）使用权限，请允许。"
+                },
+                "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ],
+                "schemes" : "com.suoeryoude.yaji"
             },
             "ios" : {
                 "idfa" : false,
                 "dSYMs" : false
             },
             "sdkConfigs" : {
-                "ad" : {}
+                "ad" : {},
+                "payment" : {
+                    "weixin" : {
+                        "__platform__" : [ "android" ],
+                        "appid" : "wx946846daf718d666",
+                        "UniversalLinks" : ""
+                    },
+                    "alipay" : {
+                        "__platform__" : [ "android" ]
+                    }
+                },
+                "push" : {
+                    "unipush" : {
+                        "version" : "2",
+                        "offline" : true,
+                        "icons" : {
+                            "small" : {
+                                "ldpi" : "static/logo-28.png",
+                                "mdpi" : "static/logo-28.png",
+                                "hdpi" : "static/logo-28.png",
+                                "xhdpi" : "static/logo-28.png",
+                                "xxhdpi" : "static/logo-28.png"
+                            }
+                        },
+                        "mi" : {},
+                        "hms" : {},
+                        "oppo" : {},
+                        "vivo" : {},
+                        "meizu" : {}
+                    }
+                }
             },
             // "push" : {
             //     "unipush" : {
@@ -122,7 +163,12 @@
             "splashscreen" : {
                 "androidStyle" : "common",
                 "iosStyle" : "common",
-                "useOriginalMsgbox" : true
+                "useOriginalMsgbox" : true,
+                "android" : {
+                    "hdpi" : "C:/Users/Administrator/Desktop/qq.png",
+                    "xhdpi" : "C:/Users/Administrator/Desktop/qq.png",
+                    "xxhdpi" : "C:/Users/Administrator/Desktop/qq.png"
+                }
             }
         }
     },

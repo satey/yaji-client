@@ -27,7 +27,7 @@
 						</view>
 					</view>
 					<view class="contentBody">
-						<view class="types flex">
+						<view class="types flex" style="display: flex;flex-wrap: wrap;align-items: center;">
 							<!-- {{userRole.achievements.indexOf(",")}} -->
 							<view v-if="typeof(tags) == 'string'">
 								<text class="ri-price-tag-3-line lable" :style="'color:'+colors[0]"></text>
@@ -40,14 +40,18 @@
 						</view>
 						<view class="contentText text-xl">{{ userRole.content || '暂无介绍' }} </view>
 						<view style="padding:0rpx 38rpx;margin-top: 120rpx;">
-
-							<view v-if="fei_num == 0"
-								class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-								style="text-align: center;" @click="handleHuoQu()">重新获取({{ price }} 铜币)</view>
-							<view v-if="fei_num != 0"
-								class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-								style="text-align: center;" @click="handleRematch()">重新穿越 免费({{fei_num}}次)
+							<!-- 后续开放 -->
+							<view v-if="fei_num <= 0"
+								class="rounded-full p-6  leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
+								style="text-align: center;font-size: 32rpx;" @click="handleHuoQu()">重新获取({{ price }}铜钱)
 							</view>
+							<view v-if="fei_num > 0"
+								class="rounded-full p-6  leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
+								style="text-align: center;font-size: 32rpx;" @click="handleRematch()">重新穿越
+								免费({{fei_num}}次)
+							</view>
+							<view style="font-size: 28rpx;color: #808080;text-align: center;margin-top: 20rpx;">
+								（钱包剩余{{money}}铜钱）</view>
 							<!-- <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r"
 								style="text-align: center;color: #323232;border: 1px solid #CCCCCC;margin-top: 30rpx;"
 								@click="handleRematch()" v-if="choose_num!==0">重新穿越（免费{{choose_num}}次）</view> -->
@@ -104,6 +108,16 @@
 				</scroll-view>
 			</view>
 		</u-modal>
+		<!-- 充值 -->
+		<u-modal :show="recharge" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+			confirmText="充值" cancelText="放弃" @cancel="recharge=false" @confirm="$u.route('/pages/mine/recharge')">
+			<view style="display: flex;flex-direction: column;">
+				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">铜钱不足</view>
+				<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
+					<text>铜钱不足,是否前往充值页面</text>
+				</view>
+			</view>
+		</u-modal>
 		<!-- 确认角色 -->
 		<u-modal :show="showRole" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
 			confirmText="使用" cancelText="放弃" @cancel="showRole=false" @confirm="roleConfirm">
@@ -140,6 +154,7 @@
 			</view>
 		</u-modal>
 		<uc-auth></uc-auth>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>
@@ -157,7 +172,7 @@
 				role: {},
 				dynasty: {},
 				times: 0,
-				price: 50,
+				price: 5,
 				listRoleDynasty: [],
 				showRole: false,
 				showUserRole: true,
@@ -173,12 +188,15 @@
 				dynastyPopup: false,
 				role_fei: [],
 				fei_num: 0,
+				recharge: false,
+				money: 0
 			}
 		},
 		onLoad(option) {
 			let that = this
 			that.getUserRole()
 			that.getRoleDynasty()
+			that.getMoney()
 		},
 		computed: {
 			...mapState({
@@ -197,9 +215,18 @@
 			that.init()
 		},
 		methods: {
+			getMoney() {
+				let that = this
+				that.$api('user.info', {
+					"role_id": this.role_fei.id
+				}).then(res => {
+					if (res.code == 1) {
+						that.money = res.data.money
+					}
+				})
+			},
 			//确认角色
 			roleConfirm() {
-				console.log("fei")
 				var that = this;
 				that.$api('user.bindrole', {
 					"role_id": this.role_fei.id
@@ -210,6 +237,7 @@
 						uni.setStorageSync("noRole", false);
 						that.getUserRole()
 						that.$forceUpdate()
+						that.getMoney()
 						// uni.reLaunch({
 						// 	url: '/pages/index/mine'
 						// });
@@ -219,44 +247,46 @@
 			//确认朝代
 			dynastyConfirm() {
 				var that = this;
-				var gender = uni.getStorageSync("gender");
-				if (that.selectIndex == null) {
-					uni.showToast({
-						icon: "none",
-						title: "请选择朝代"
+				that.$api("user.info").then(userData => {
+					var gender = userData.data.gender;
+					if (that.selectIndex == null) {
+						uni.showToast({
+							icon: "none",
+							title: "请选择朝代"
+						})
+						return;
+					}
+					if (gender == 1) {
+						if (that.listRoleDynasty[that.selectIndex].role_man_count == 0) {
+							uni.showToast({
+								icon: "none",
+								title: "男性角色不足"
+							})
+							return;
+						}
+					} else if (gender == 2) {
+						if (that.listRoleDynasty[that.selectIndex].role_woman_count == 0) {
+							uni.showToast({
+								icon: "none",
+								title: "女性角色不足"
+							})
+							return;
+						}
+					}
+					// uni.showLoading()
+					this.dynastyPopup = false;
+					uni.showLoading()
+					that.$api('role.match', {
+						"dynasty": this.selectDynastyName
+					}).then(res => {
+						console.log(res);
+						that.role_fei = res.data;
+						uni.hideLoading();
+						that.fei_num = that.fei_num - 1;
+						that.showRole = true;
 					})
-					return;
-				}
-				if (gender == 1) {
-					if (that.listRoleDynasty[that.selectIndex].role_man_count == 0) {
-						uni.showToast({
-							icon: "none",
-							title: "男性角色不足"
-						})
-						return;
-					}
-				} else {
-					if (that.listRoleDynasty[that.selectIndex].role_woman_count == 0) {
-						uni.showToast({
-							icon: "none",
-							title: "女性角色不足"
-						})
-						return;
-					}
-				}
-				console.log(this.selectDynastyName)
-				// uni.showLoading()
-				this.dynastyPopup = false;
-				uni.showLoading()
-				that.$api('role.match', {
-					"dynasty": this.selectDynastyName
-				}).then(res => {
-					console.log(res);
-					that.role_fei = res.data;
-					uni.hideLoading();
-					that.fei_num = that.fei_num - 1;
-					that.showRole = true;
 				})
+
 			},
 			//选择朝代
 			selectDynasty(index, id, name) {
@@ -285,7 +315,6 @@
 				that.$api('user.info', {
 					user_id: that.userInfo.id
 				}).then(res => {
-					console.log(res)
 					if (res.code === 1) {
 						if (res.data.achievements != null) {
 							if (res.data.achievements.indexOf(",") == -1) {
@@ -294,7 +323,6 @@
 								that.tags = res.data.achievements.split(",")
 							}
 						}
-
 						that.userRole = res.data;
 						that.fei_num = res.data.choose_num
 						that.showUserRole = true
@@ -313,8 +341,18 @@
 			},
 			// 重新获取
 			handleHuoQu() {
-				let that = this
-				that.$u.toast('铜币不足')
+				let that = this;
+				that.$api('user.info', {
+					user_id: that.userInfo.id
+				}).then(res => {
+					if (res.code === 1) {
+						if (res.data.money <= 4) {
+							that.recharge = true;
+						} else {
+							that.handleRematch()
+						}
+					}
+				})
 			},
 			handleReborn() {
 				let that = this

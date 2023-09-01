@@ -18,9 +18,8 @@
 		<!-- 请填写您的问题 -->
 		<view class="question">
 			<view class="questionTitle">问题描述</view>
-			<textarea name="" id="" class="myTextArea" v-model="content" cols="30" rows="10"
-				placeholder="请填写您的问题,最少10个字哦" oninput="if(value<10)value=10"
-				placeholder-class="placeholderClassTextArea"></textarea>
+			<textarea name="" id="" class="myTextArea" v-model="content" cols="30" rows="10" placeholder="请填写您的问题"
+				oninput="if(value<10)value=10" placeholder-class="placeholderClassTextArea"></textarea>
 			<!-- <input type="text" v-model="content" oninput="if(value<10)value=10" placeholder="请填写您的问题,最少10个字哦"> -->
 		</view>
 
@@ -56,7 +55,11 @@
 
 
 		<!-- 确定按钮 -->
-		<view class="btn" @click="submit"> 确定 </view>
+		<view style="padding: 30rpx;box-sizing: border-box;">
+			<view
+				style="border-radius: 20px;background: #FE4373;color: #fff;text-align: center;line-height: 40px;margin: 0 auto;height: 40px;"
+				@click="submit"> 确定 </view>
+		</view>
 
 	</view>
 </template>
@@ -75,6 +78,7 @@
 				id: null,
 				images: '',
 				imgs: [],
+				flag: true,
 			}
 		},
 		computed: {
@@ -99,7 +103,24 @@
 					count: 1, //默认9
 					sourceType: ['album'], //从相册选择
 					success: function(res) {
-						that.imgs.push(res.tempFilePaths[0]);
+						// that.imgs.push(res.tempFilePaths[0]);
+						var token = uni.getStorageSync("token");
+						uni.uploadFile({
+							url: that.$API_URL + 'index/upload',
+							filePath: res.tempFilePaths[0],
+							name: 'file',
+							formData: {
+								"token": token
+							},
+							success: res => {
+								var data = JSON.parse(res.data);
+								if (data.code == 1) {
+									that.imgs.push(data.data.fullurl)
+								} else {
+									that.$u.toast("图片上传错误")
+								}
+							},
+						})
 					}
 				});
 			},
@@ -115,7 +136,12 @@
 				})
 			},
 			submit() {
-				let that = this
+				let that = this;
+				if (that.flag) {
+					that.flag = false;
+				} else {
+					return;
+				}
 				let id = uni.getStorageSync('id');
 				//描述
 				if (that.content.length == 0) {
@@ -123,12 +149,7 @@
 						icon: "none",
 						title: "请输入描述"
 					})
-					return;
-				} else if (that.content.length < 10) {
-					uni.showToast({
-						icon: "none",
-						title: "描述不能少于10个字符"
-					})
+					that.flag = true;
 					return;
 				}
 				//标题
@@ -137,72 +158,33 @@
 						icon: "none",
 						title: "请输入标题"
 					})
+					that.flag = true;
 					return;
 				}
 
 				var token = uni.getStorageSync("token");
-				var imgArr = [];
-				if (that.imgs.length == 0) {
-					var data = {
-						type: 'feedback',
-						images: imgArr,
-						content: that.content,
-						title: that.title,
-					};
-					that.$api('feedback.add', data).then(res => {
-						if (res.code === 1) {
-							that.$u.toast('提交成功')
+				var data = {
+					type: 'feedback',
+					images: that.imgs,
+					content: that.content,
+					title: that.title,
+				};
+				that.$api('feedback.add', data).then(res => {
+					that.flag = true;
+					if (res.code === 1) {
+						that.$u.toast('提交成功')
+						that.$nextTick(() => {
 							uni.navigateTo({
 								url: '/pages/public/feedbackPage',
 							})
 							that.content = ""
 							that.title = ""
-
-						} else {
-							that.$u.toast(res.msg)
-						}
-					})
-				} else {
-					that.imgs.forEach(async (val, index) => {
-						let that = this
-						var token = uni.getStorageSync("token");
-						uni.uploadFile({
-							url: that.$API_URL + 'index/upload',
-							filePath: val,
-							name: 'file',
-							formData: {
-								"token": token
-							},
-							success: res => {
-								var data = JSON.parse(res.data)
-								console.log(data)
-								imgArr.push(data.data.fullurl)
-								if (index == that.imgs.length - 1) {
-									var data = {
-										type: 'feedback',
-										images: imgArr,
-										content: that.content,
-										title: that.title,
-									};
-									that.$api('feedback.add', data).then(res => {
-										if (res.code === 1) {
-											that.$u.toast('提交成功')
-											uni.navigateTo({
-												url: '/pages/public/feedbackPage',
-											})
-											that.content = ""
-											that.title = ""
-
-										} else {
-											that.$u.toast(res.msg)
-										}
-									})
-								}
-							},
-							complete: e => {}
+							that.imgs = []
 						})
-					})
-				}
+					} else {
+						that.$u.toast(res.msg)
+					}
+				})
 			},
 			upImg(img, callback) {
 

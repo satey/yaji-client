@@ -3,8 +3,18 @@
 		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue",
 		"^uc-(.*)": "@/components/uc-$1/uc-$1.vue"
 	},
-	"pages": [
+	"pages": [{
+			"path": "pages/start/start",
+			"name": "start",
+			"title": "启动",
+			"style": {
+				"navigationBarTitleText": "启动"
+			},
+			"meta": {
+				"auth": false
+			}
 
+		},
 		{
 			"path": "pages/index/index",
 			"name": "index",
@@ -21,8 +31,7 @@
 			"path": "pages/index/square",
 			"name": "square",
 			"style": {
-				"navigationBarTitleText": "动态",
-				"enablePullDownRefresh": true
+				"navigationBarTitleText": "动态"
 			},
 			"meta": {
 				"auth": false
@@ -33,6 +42,15 @@
 			"name": "message",
 			"style": {
 				"navigationBarTitleText": "消息"
+			},
+			"meta": {
+				"auth": true
+			}
+		}, {
+			"path": "pages/chat/trendsMsg",
+			"name": "trendsMsg",
+			"style": {
+				"navigationBarTitleText": "动态消息"
 			},
 			"meta": {
 				"auth": true
@@ -156,6 +174,15 @@
 			"meta": {
 				"auth": true
 			}
+		}, {
+			"path": "pages/mine/recharge",
+			"name": "recharge",
+			"style": {
+				"navigationBarTitleText": "充值"
+			},
+			"meta": {
+				"auth": true
+			}
 		},
 		{
 			"path": "pages/mine/bill",
@@ -191,7 +218,8 @@
 			"path": "pages/public/page",
 			"name": "page",
 			"style": {
-				"navigationBarTitleText": "页面"
+				"navigationBarTitleText": "",
+				"navigationStyle": "default"
 			},
 			"meta": {
 				"auth": false
@@ -202,6 +230,16 @@
 			"name": "center",
 			"style": {
 				"navigationBarTitleText": "帮助中心"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/public/privacySet",
+			"name": "privacySet",
+			"style": {
+				"navigationBarTitleText": "隐私设置"
 			},
 			"meta": {
 				"auth": false
@@ -246,7 +284,20 @@
 			"path": "pages/joy/poetry",
 			"name": "poetry",
 			"style": {
-				"navigationBarTitleText": "曲水流觞"
+				"navigationBarTitleText": "曲水流觞",
+				"app-plus": {
+					"popGesture": "none"
+				}
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/joy/poetryStart",
+			"name": "poetryStart",
+			"style": {
+				"navigationBarTitleText": "曲水流觞启动"
 			},
 			"meta": {
 				"auth": false
@@ -256,7 +307,50 @@
 			"path": "pages/joy/wine",
 			"name": "wine",
 			"style": {
-				"navigationBarTitleText": "诗词结缘"
+				"navigationBarTitleText": "诗词结缘",
+				"navigationStyle": "default",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"color": "#333333",
+							"colorPressed": "#333333",
+							"float": "right",
+							"fontSize": "30rpx",
+							"fontSrc": "/static/iconfont/iconfont.ttf",
+							"text": "\ue605"
+						}]
+					}
+				}
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/joy/wineList",
+			"name": "wineList",
+			"style": {
+				"navigationBarTitleText": "诗词结缘列表"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/joy/wineContent",
+			"name": "wineContent",
+			"style": {
+				"navigationBarTitleText": "诗词结缘内容"
+			},
+			"meta": {
+				"auth": false
+			}
+		},
+		{
+			"path": "pages/joy/wineDetails",
+			"name": "wineDetails",
+			"style": {
+				"navigationBarTitleText": "诗缘详情"
 			},
 			"meta": {
 				"auth": false
@@ -341,6 +435,15 @@
 			"meta": {
 				"auth": true
 			}
+		}, {
+			"path": "pages/public/report",
+			"name": "report",
+			"style": {
+				"navigationBarTitleText": "举报"
+			},
+			"meta": {
+				"auth": true
+			}
 		},
 		{
 			"path": "pages/chat/group",
@@ -371,6 +474,14 @@
 			"meta": {
 				"auth": true
 			}
+		}, {
+			"path": "pages/chat/charSeting",
+			"style": {
+				"navigationBarTitleText": "对话设置"
+			},
+			"meta": {
+				"auth": true
+			}
 		},
 		{
 			"path": "pages/chat/audiosetting",
@@ -381,11 +492,7 @@
 			"meta": {
 				"auth": true
 			}
-		}
-
-
-
-		, {
+		}, {
 			"path": "components/takequestion/takequestion",
 			"style": {
 				"navigationBarTitleText": "",
@@ -415,8 +522,44 @@
 
 		}
 
+		, {
+			"path": "pages/mine/logOff",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/joy/activity",
+			"name": "activity",
+			"style": {
+				"navigationBarTitleText": "活动详情",
+				"navigationStyle": "default",
+				"navigationBarBackgroundColor": "#ffffff"
+			},
+			"meta": {
+				"auth": true
+			}
+		}, {
+			"path": "pages/user/famousRole",
+			"style": {
+				"navigationBarTitleText": "知名角色",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/user/roleDetails",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
 	],
 	"globalStyle": {
+		"rpxCalcMaxDeviceWidth": 960, // rpx 计算所支持的最大设备宽度，单位 px，默认值为 960
+		"rpxCalcBaseDeviceWidth": 375, // rpx 计算使用的基准设备宽度，设备实际宽度超出 rpx 计算所支持的最大设备宽度时将按基准宽度计算，单位 px，默认值为 375
+		"rpxCalcIncludeWidth": 960, // rpx 计算特殊处理的值，始终按实际的设备宽度计算，单位 rpx，默认值为 750
 		"navigationStyle": "custom",
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",
@@ -424,7 +567,46 @@
 		"backgroundColor": "#F8F8F8",
 		"app-plus": {
 			"bounce": "none",
-			"softinputMode":"adjustPan"
+			"softinputMode": "adjustPan"
 		}
+	},
+	"tabBar": {
+		"borderStyle": "white",
+		"color": "#808080",
+		"selectedColor": "#FE4373",
+		"backgroundColor": "#fff",
+		"list": [{
+				"text": "首页",
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/index1.png",
+				"selectedIconPath": "static/tabbar/index1On.png"
+			},
+			{
+				"text": "动态",
+				"pagePath": "pages/index/square",
+				"iconPath": "static/tabbar/square1.png",
+				"selectedIconPath": "static/tabbar/ssquare1On.png"
+			},
+			{
+				"text": "消息",
+				"pagePath": "pages/index/message",
+				"iconPath": "static/tabbar/message1.png",
+				"selectedIconPath": "static/tabbar/message1On.png"
+			},
+			{
+				"text": "我的",
+				"pagePath": "pages/index/mine",
+				"iconPath": "static/tabbar/mine1.png",
+				"selectedIconPath": "static/tabbar/mine1On.png"
+			}
+		]
+	},
+	"condition": { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [{
+			"name": "", //模式名称
+			"path": "", //启动页面，必选
+			"query": "" //启动参数，在页面的onLoad函数里面得到
+		}]
 	}
 }

@@ -11,6 +11,8 @@ uni.$u.config.unit = 'rpx'
 import { RouterMount } from 'uni-simple-router'
 import api from '@/common/request/index'
 
+import topPrompt from "@/components/fei-topPrompt/fei-topPrompt.vue"
+Vue.component("topPrompt",topPrompt)
 // 防止多次点击
 import common from './common/common.js'
 // import cos from "@/dist/cos.js"
