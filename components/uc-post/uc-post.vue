@@ -234,12 +234,38 @@
 				that.$api("game.joinRoom", {
 					game_room_user_id: item.user_id
 				}).then(res => {
-					console.log(res)
 					if (res.code == 1) {
-						that.isModule = false;
-						uni.navigateTo({
-							url: '/pages/joy/poetry'
-						})
+						var roomData = that.$store.state.game.gameRoomData;
+						console.log(roomData.game_room_id)
+						console.log(res.data.game_room_id)
+						if (roomData.game_room_id == undefined) {
+							this.$u.route('pages/joy/poetry?roomId=' + res.data.game_room_id)
+						} else {
+							if (roomData.game_room_id == res.data.game_room_id) {
+								this.$u.route('pages/joy/poetry?roomId=' + res.data.game_room_id)
+							} else {
+								let params = {
+									type: "leave_game_room",
+									cate: 2,
+									user_punished_code: ""
+								}
+								getApp().globalData.socketTask.send({
+									data: JSON.stringify(params),
+									success() {
+										console.log("离开房间消息成功");
+										that.$store.commit("setGameRoomData", [])
+										that.$store.commit("setGameBarFlag", false)
+										that.$nextTick(() => {
+											this.$u.route('pages/joy/poetry?roomId=' + res.data.game_room_id)
+										})
+									},
+									fail() {
+										console.log("离开房间消息失败");
+									}
+								});
+							}
+						}
+
 					} else {
 						uni.showToast({
 							icon: "none",

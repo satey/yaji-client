@@ -16,6 +16,12 @@ export default {
 		},
 	},
 	game: {
+		update_type_for_matching: {
+			url: 'game_room/update_type_for_matching',
+			auth: false,
+			method: 'GET',
+			desc: '修改状态到匹配中',
+		},
 		match_success: {
 			url: 'game_room/match_success',
 			auth: false,

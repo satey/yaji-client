@@ -20,34 +20,36 @@
 				} else {
 					that.showFlag = true;
 				}
-
-				if (state.game.gameUserLength >= 6) {
-					that.$u.route('pages/joy/poetry?mode=back')
-				}
 			})
 		},
 		methods: {
 			cancellation() {
 				var that = this;
-				that.$api("game.cancel_match_room", {
-					"match_id": that.$store.state.game.mateId
-				}).then(res => {
-					if (res.code == 1) {
-						that.mateId = "";
-						that.$store.commit("setMateId", "")
+				let params = {
+					type: "leave_game_room",
+					cate: 2,
+					user_punished_code: ""
+				}
+				getApp().globalData.socketTask.send({
+					data: JSON.stringify(params),
+					success() {
+						console.log("离开房间消息成功");
+						that.$store.commit("setGameRoomData", [])
 						that.$store.commit("setGameBarFlag", false)
-						uni.showToast({
-							icon: "none",
-							title: res.msg
-						})
+					},
+					fail() {
+						console.log("离开房间消息失败");
 					}
-				})
+				});
 			},
 			openGameStart() {
-				var pages = getCurrentPages();
-				if (pages[pages.length - 1].route != 'pages/joy/poetryStart') {
-					this.$u.route('pages/joy/poetryStart')
-				}
+				var that = this;
+				var gameRoomData = this.$store.state.game.gameRoomData
+				uni.navigateTo({
+					url:`/pages/joy/poetry?roomId=${gameRoomData.game_room_id}`
+				})
+				that.$store.commit("setGameRoomData", [])
+				that.$store.commit("setGameBarFlag", false)
 			}
 		}
 	}

@@ -174,7 +174,6 @@
 					that.$u.toast('请同意用户协议')
 					return false
 				}
-				console.log(that.isClick)
 				// if (!that.isMobileEnd || that.disabledCode ) {
 				// 	that.$u.toast('请正确填写信息')
 				// 	return false

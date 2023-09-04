@@ -6,7 +6,8 @@
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({type: 'navigateBack',delta: 1})"></i>
 			</view>
 			<view slot="center" style="display: flex;align-items: center;">
-				<image mode="aspectFill" :src="toUserData.avatar" style="width:50rpx;height:50rpx;border-radius:50%;margin-right: 10rpx;">
+				<image mode="aspectFill" :src="toUserData.avatar"
+					style="width:50rpx;height:50rpx;border-radius:50%;margin-right: 10rpx;">
 				</image>{{toUserData.name}}
 			</view>
 			<view slot="right">
@@ -108,7 +109,8 @@
 							</view>
 						</view>
 						<view class="flex">
-							<image mode="aspectFill" class="block rounded-full w-10 h-10 ml-3" :src="item.avatar || '/static/avatar.png'">
+							<image mode="aspectFill" class="block rounded-full w-10 h-10 ml-3"
+								:src="item.avatar || '/static/avatar.png'">
 							</image>
 						</view>
 					</view>
@@ -191,6 +193,7 @@
 		</view>
 		<view class="sdasdas" :style="{height:pageHeight+'px'}"></view>
 		<reward :giftIsShow="giftIsShow" @changend="changend"></reward>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>
@@ -283,10 +286,10 @@
 				this.getChatList();
 				this.initSocKet();
 			})
+
 		},
 		created() {
 			var that = this;
-			// #ifdef APP-PLUS
 			var pages = getCurrentPages();
 			var page = pages[pages.length - 1];
 			that.$store.watch((state, getters) => {
@@ -296,10 +299,11 @@
 					}
 				}
 			})
-			// #endif
 		},
 		onUnload() {
-			getApp().globalData.socketTask.close();
+			var that = this;
+			// getApp().globalData.socketTask.close();
+			getApp().globalData.socketTask._callbacks.message.splice(1)
 			this.audio.destroy()
 		},
 		methods: {
@@ -404,7 +408,6 @@
 					var socketData = JSON.parse(res.data);
 					that.unread()
 					if (socketData.type == "history") {
-						console.log(socketData)
 						var list = socketData.data;
 						var list2 = [];
 						if (that.historyPage != 1) {

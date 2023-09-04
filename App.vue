@@ -37,19 +37,6 @@
 				uni.onPushMessage((res) => {
 					console.log(res)
 					var isPush = false;
-					//曲水流觞
-					if (res.data.title == "曲水流觞匹配成功") {
-						isPush = true;
-						if (that.$store.state.game.mateId != '') {
-							that.$store.commit("setMateId", "")
-							that.$store.commit("setGameBarFlag", false)
-							that.$nextTick(() => {
-								uni.navigateTo({
-									url: '/pages/joy/poetry'
-								})
-							})
-						}
-					}
 					// -----礼包
 					if (res.data.title == "礼包") {
 						that.$store.commit("setGiftId", res.data.content);
@@ -91,19 +78,6 @@
 							that.$store.commit("setMsgCount", list)
 						}
 					}
-					// var list = that.$store.state.message.messageList;
-					// list.forEach((val, index) => {
-					// 	if (res.data.title == val.role_realname) {
-					// 		console.log(val.msgNum)
-					// 		var tmp = Date.parse(new Date()).toString();
-					// 		tmp = tmp.substr(0, 10);
-					// 		val.content = res.data.content;
-					// 		val.msgNum = ++val.msgNum;
-					// 		val.createtime = tmp
-					// 	}
-					// })
-					// that.$store.commit("setMessageList", list)
-					// that.$store.commit("setMsgCount", list)
 				})
 			},
 			//更新
@@ -283,6 +257,23 @@
 				})
 				//监听 WebSocket 接受到服务器的消息事件
 				getApp().globalData.socketTask.onMessage((res) => {
+					if (JSON.parse(res.data).cate == 2) {
+						if (JSON.parse(res.data).type == "add_game_room") {
+							var pages = getCurrentPages();
+							var page = pages[pages.length - 1];
+							if (JSON.parse(res.data).data.list.length >= 6) {
+								if (page.route != "pages/joy/poetry") {
+									console.log(JSON.parse(res.data))
+									var gameRoomData = that.$store.state.game.gameRoomData;
+									if (gameRoomData.game_room_id != undefined) {
+										that.$u.route('pages/joy/poetry?roomId=' + gameRoomData.game_room_id+'&roomData='+res.data);
+										that.$store.commit("setGameRoomData", [])
+										that.$store.commit("setGameBarFlag", false)
+									}
+								}
+							}
+						}
+					}
 					if (JSON.parse(res.data).cate != 1) {
 						return;
 					}

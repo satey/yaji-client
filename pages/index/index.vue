@@ -313,9 +313,9 @@
 		methods: {
 			...mapActions(['getUserInfo']),
 			openPoetry() {
-				var game_room_id = uni.getStorageSync("game_room");
-				if (game_room_id != '') {
-					this.$u.route('pages/joy/poetry?mode=back')
+				var gameRoomData = this.$store.state.game.gameRoomData;
+				if (gameRoomData.game_room_id != undefined) {
+					this.$u.route('pages/joy/poetry?roomId=' + gameRoomData.game_room_id)
 				} else {
 					this.$u.route('pages/joy/poetryStart')
 				}
