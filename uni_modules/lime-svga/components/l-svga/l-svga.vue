@@ -1,13 +1,14 @@
 <template>
-	<view class="lime-svga" ref="limesvga">
+	<view class="lime-svga">
 		<!-- #ifndef APP-VUE || H5 || APP-NVUE-->
 		<canvas class="lime-svga__canvas" v-if="use2dCanvas" :id="canvasId" type="2d"></canvas>
 		<canvas class="lime-svga__canvas" v-else :canvas-id="canvasId" :id="canvasId"></canvas>
 		<!-- #endif -->
 		<!-- #ifdef APP-VUE || H5 -->
-		<view class="lime-svga__canvas" :id="canvasId" 
-		:rinit="canvasId" 
-		:change:rinit="svga.init" 
+		<view 
+		class="lime-svga__canvas" 
+		:id="canvasId" 
+		ref="webview" 
 		:rload="rLoadSrc"
 		:change:rload="svga.parserLoad" 
 		:rVideoItem="rVideoItem"
@@ -33,6 +34,7 @@
 	import {ENV_TYPE, toLoadPath} from './utils'
 	// #ifndef APP-VUE || H5 || APP-NVUE
 	import { Parser, Player} from './svgaplayer.weapp'
+	import {Canvas} from './canvas'
 	// #endif
 	// #ifdef APP-VUE || H5 
 	import {Player, Parser} from './svga'
@@ -186,26 +188,31 @@
 					this.player = new Player;
 				}
 				this.player.setCanvas(confing, `#${this.canvasId}` ,this)
-				this.parser.load2 = this.parser.load
-				this.parser.load = async (src) => {
-					return this.parser.load2(await toLoadPath(src)) 
+				if(!this.parser.load2) {
+					this.parser.load2 = this.parser.load
+					this.parser.load = async (src) => {
+						return this.parser.load2(await toLoadPath(src)) 
+					}
 				}
 				cb(this.parser, this.player)
 				// #endif
+				
 				// #ifdef APP-VUE || H5 || APP-NVUE
 				const _this = this
-				this.parser = {
-					load: async (src) => {
-						const url = await toLoadPath(src)
-						_this.rLoadSrc = `svga${+new Date()}@${url}`
-						return new Promise(resolve => {
-							_this.stopWatch = _this.$watch('rIsLoad', (v, o) => {
-								if(v != o) {
-									_this.stopWatch()
-									resolve(v)
-								}
+				if(!this.parser) {
+					this.parser = {
+						load: async (src) => {
+							const url = await toLoadPath(src)
+							_this.rLoadSrc = `svga${+new Date()}@${url}`
+							return new Promise(resolve => {
+								_this.stopWatch = _this.$watch('rIsLoad', (v, o) => {
+									if(v != o) {
+										_this.stopWatch()
+										resolve(v)
+									}
+								})
 							})
-						})
+						}
 					}
 				}
 				this.player = new Player(this)
@@ -214,13 +221,16 @@
 			}
 		},
 		mounted() {
-			if(this.src) {
-				this.render(async (parser, player) => {
-					const videoItem = await parser.load(this.src);
-					await player.setVideoItem(videoItem);
-					player.startAnimation()
-				})
-			}
+			this.$watch(() => this.src, (v) => {
+				if(v) {
+					this.render(async (parser, player) => {
+						const videoItem = await parser.load(this.src);
+						await player.setVideoItem(videoItem);
+						player.startAnimation()
+					})
+				}
+			}, {immediate: true})
+			
 		},
 		created() {
 			this.use2dCanvas = this.type === '2d' && ENV_TYPE()
@@ -236,16 +246,18 @@
 <!-- #ifdef APP-VUE  || H5-->
 <script module="svga" lang="renderjs">
 	// #ifdef APP-VUE || H5
+	import {getfileBase64} from './utils'
 	// #ifdef VUE2
 	import { Parser, Player } from '../../static/svgaplayer.web'
 	// #endif
 	// #ifdef VUE3
 	// import { Parser, Player } from 'svgaplayerweb'
+	let Parser, Player;
 	// #endif
 	export default{
 		data() {
 			return {
-				canvasid: null,
+				isInit: null,
 				rparser: null,
 				rplayer: null,
 				clearsAfterStop: true,
@@ -253,66 +265,71 @@
 				map: {}
 			}
 		},
+		// #ifdef VUE3
+		created() {
+			const script = document.createElement('script')
+			script.src = 'uni_modules/lime-svga/static/svgaplayer.web.js';
+			script.onload = () => {
+				Parser = SVGA.Parser
+				Player = SVGA.Player
+				this.init()
+			}
+			document.head.appendChild(script)
+		},
+		// #endif
+		mounted() {
+			// #ifdef VUE2
+			this.init()
+			// #endif
+		},
 		unmounted() {
-			console.log('unmounted')
+			// console.log('unmounted')
 		},
 		beforeUnmount() {
-			console.log('beforeUnmount')
+			// console.log('beforeUnmount')
+			if(this.rplayer) {
+				this.rplayer.stopAnimation(true)
+				this.rplayer.clear()
+			}
 		},
 		beforeDestroy() {
-			console.log('beforeDestroy')
+			if(this.rplayer) {
+				this.rplayer.stopAnimation(true)
+				this.rplayer.clear()
+			}
 		},
 		destroyed() {
-			console.log('destroy')
+			// console.log('destroy')
 		},
 		methods: {
-			// #ifdef APP-PLUS
-			getfile(e){
-				let url = e
-				// if() {
-				// 	url = plus.io.convertLocalFileSystemURL( e )
-				// }
-				return new Promise((resolve, reject)=>{
-					plus.io.resolveLocalFileSystemURL(url, entry => {
-						var reader = null;
-						entry.file( file => {
-							reader = new plus.io.FileReader();
-							reader.onloadend = ( read )=> {
-								resolve(read.target.result)
-							};
-							reader.readAsDataURL( file );
-						}, reject );
-					},reject)
+			init() {
+				this.$nextTick(() => {
+					const webview = this.$ownerInstance.$el.querySelector('.lime-svga__canvas')
+					const canvasid = webview.id 
+					const div = document.createElement('div')
+					const id = `${canvasid}div`
+					div.id = id
+					div.style = 'height: 100%'
+					if(webview.appendChild) {
+						webview.appendChild(div)
+					}
+					if(!this.rplayer) {
+						this.rplayer = new Player(`#${id}`);
+						this.rplayer.onFinished(() => {
+							this.emit({onFinished: true})
+						})
+						this.rplayer.onFrame(number => {
+							this.emit({onFrame: number})
+						})
+						this.rplayer.onPercentage(number => {
+							this.emit({onPercentage: number})
+						})
+					}
+					if(!this.rparser) {
+						this.rparser = new Parser(`#${id}`);
+					}
+					this.isInit = true
 				})
-			},
-			// #endif
-			init(newValue) {
-				if(newValue) {
-					this.canvasid = newValue
-					this.$nextTick(() => {
-						const div = document.createElement('div')
-						const id = `${this.canvasid}div`
-						div.id = id
-						div.style = 'height: 100%'
-						document.querySelector(`#${this.canvasid}`).appendChild(div)
-						if(!this.rplayer) {
-							this.rplayer = new Player(`#${id}`);
-							this.rplayer.onFinished(() => {
-								this.emit({onFinished: true})
-							})
-							this.rplayer.onFrame(number => {
-								this.emit({onFrame: number})
-							})
-							this.rplayer.onPercentage(number => {
-								this.emit({onPercentage: number})
-							})
-							
-						}
-						if(!this.rparser) {
-							this.rparser = new Parser(`#${id}`);
-						}
-					})
-				}
 			},
 			emit(event) {
 				this.$ownerInstance.callMethod('onMessage', {
@@ -326,36 +343,44 @@
 				})
 			},
 			parserLoad(newValue) {
+				if(newValue && !this.rparser) {
+					this.$watch('isInit', () => {
+						this.load(newValue)
+					})
+				}
 				if(this.rparser && newValue) {
-					const url = /@/.test(newValue) ? newValue.split('@')[1]: newValue
-					if(this.map[url]) {
-						this.emit({load: this.map[url]})
-					} else {
-						// #ifdef APP-PLUS
-						this.getfile(url).then(res => {
-							this.rparser.load(res, (videoItem) => {
-								const key = `video${+new Date()}`
-								this.map[url] = key
-								if(!this.videoItem[key]) {
-									this.videoItem[key] = videoItem
-								}
-								this.emit({load: key})
-							})
-						}).catch((err) => {
-							console.error(err)
+					this.load(newValue)
+				}
+			},
+			load(newValue) {
+				const url = /@/.test(newValue) ? newValue.split('@')[1]: newValue
+				if(this.map[url]) {
+					this.emit({load: this.map[url]})
+				} else {
+					// #ifdef APP-PLUS
+					getfileBase64(url).then(res => {
+						this.rparser.load(res, (videoItem) => {
+							const key = `video${+new Date()}`
+							this.map[url] = key
+							if(!this.videoItem[key]) {
+								this.videoItem[key] = videoItem
+							}
+							this.emit({load: key})
 						})
-						// #endif
-						// #ifdef H5
-						 this.rparser.load(url, (videoItem) => {
-						 	const key = `video${+new Date()}`
-						 	this.map[url] = key
-						 	if(!this.videoItem[key]) {
-						 		this.videoItem[key] = videoItem
-						 	}
-						 	this.emit({load: key})
-						 })
-						// #endif
-					}
+					}).catch((err) => {
+						console.error(err)
+					})
+					// #endif
+					// #ifdef H5
+					 this.rparser.load(url, (videoItem) => {
+					 	const key = `video${+new Date()}`
+					 	this.map[url] = key
+					 	if(!this.videoItem[key]) {
+					 		this.videoItem[key] = videoItem
+					 	}
+					 	this.emit({load: key})
+					 })
+					// #endif
 				}
 			},
 			setVideoItem(newValue) {
@@ -401,7 +426,7 @@
 				}
 			},
 			onPlayer(newValue) {
-				if(newValue.rLoops && this.rLoops2 != newValue.rLoops) {
+				if(typeof newValue.rLoops == 'number' && this.rLoops2 != newValue.rLoops) {
 					this.rLoops2 = newValue.rLoops
 					this.setLoops(newValue.rLoops)
 				}
@@ -429,13 +454,15 @@
 				}
 				if(newValue.rSetText && this.setText != newValue.rSetText) {
 					this.setText = newValue.rSetText
-					const [text, key] = newValue.rSetText
-					this.rplayer && this.rplayer.setText(text, key)
+					for (let key in this.setText) {
+						this.rplayer && this.rplayer.setText(this.setText[key], key)
+					}
 				}
 				if(newValue.rSetImage && this.setImage != newValue.rSetImage) {
 					this.setImage = newValue.rSetImage
-					const [src, key] = newValue.rSetImage
-					this.rplayer && this.rplayer.setImage(src, key)
+					for (let key in this.setImage) {
+						this.rplayer && this.rplayer.setImage(this.setImage[key], key)
+					}
 				}
 			}
 		}

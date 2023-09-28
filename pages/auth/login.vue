@@ -27,13 +27,13 @@
 			<!-- <view class="text-2xl text-white">注册登录</view> -->
 			<view class=" rounded-full mb-10" style="margin-top: 30rpx;padding-top: 20rpx;">
 				<u-input v-model="form.mobile" :focus="true" placeholder="请输入手机号" type="number" maxlength="11"
-					@input="handleInput('mobile')" style="border-bottom: 1px solid #ECECEC;" fontSize="32">
+					@input="handleInput('mobile')" style="border-bottom: 1px solid #ECECEC;border-radius: 0rpx ;" fontSize="32">
 					<!-- <text slot="prefix" class="text-2xl pr-2 mr-4 border-right">+86</text> -->
 				</u-input>
 			</view>
 			<view class=" rounded-full mb-10" style="margin-top: 30rpx;">
 				<u-input placeholder="请输入验证码" type="number" maxlength="6" v-model="form.code" fontSize="32"
-					style="border-bottom: 1px solid #ECECEC;padding-top: 20rpx;">
+					style="border-bottom: 1px solid #ECECEC;padding-top: 20rpx;border-radius: 0rpx;">
 					<button slot="suffix" class="sendCodeBtn" :disabled="sendBtnDisabled"
 						@click="getSmsCode()">{{ codeText }}</button>
 				</u-input>

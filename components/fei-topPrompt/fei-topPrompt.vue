@@ -1,7 +1,7 @@
 <template>
 	<view class="topBox" v-if="showFlag" @click="openGameStart">
 		<view>曲水流觞匹配中…</view>
-		<text class="ri-close-line close" style="font-size: 50rpx;" @click.stop="cancellation"></text>
+		<text class="ri-close-line close" style="font-size: 40rpx;" @click.stop="cancellation"></text>
 	</view>
 </template>
 
@@ -46,7 +46,7 @@
 				var that = this;
 				var gameRoomData = this.$store.state.game.gameRoomData
 				uni.navigateTo({
-					url:`/pages/joy/poetry?roomId=${gameRoomData.game_room_id}`
+					url: `/pages/joy/poetry?roomId=${gameRoomData.game_room_id}`
 				})
 				that.$store.commit("setGameRoomData", [])
 				that.$store.commit("setGameBarFlag", false)
@@ -57,7 +57,7 @@
 
 <style scoped lang="scss">
 	.topBox {
-		width: 407rpx;
+		width: 350rpx;
 		height: 60rpx;
 		background: #FFFFFF;
 		box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(0, 0, 0, 0.302);
@@ -66,7 +66,7 @@
 		position: fixed;
 		top: 0;
 		left: 50%;
-		margin-left: -203.5rpx;
+		margin-left: -175rpx;
 		z-index: 999999;
 		margin-top: var(--status-bar-height);
 		color: #8A7F82;
@@ -77,7 +77,7 @@
 
 	.close {
 		position: absolute;
-		right: 30rpx;
+		right: 20rpx;
 		top: 0;
 	}
 </style>

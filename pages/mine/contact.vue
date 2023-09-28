@@ -69,6 +69,13 @@
 			this.listUserFollow = []
 			that.getUserFollow()
 		},
+		onLoad() {
+			var that = this;
+			uni.$on("followClic", function() {
+				that.listUserFollow = []
+				that.getUserFollow()
+			})
+		},
 		onReachBottom() {
 			let that = this;
 			// if (that.loadmore === 'nomore') return false

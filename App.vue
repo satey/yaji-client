@@ -266,7 +266,8 @@
 									console.log(JSON.parse(res.data))
 									var gameRoomData = that.$store.state.game.gameRoomData;
 									if (gameRoomData.game_room_id != undefined) {
-										that.$u.route('pages/joy/poetry?roomId=' + gameRoomData.game_room_id+'&roomData='+res.data);
+										that.$u.route('pages/joy/poetry?roomId=' + gameRoomData.game_room_id +
+											'&roomData=' + res.data);
 										that.$store.commit("setGameRoomData", [])
 										that.$store.commit("setGameBarFlag", false)
 									}
@@ -281,6 +282,9 @@
 							res.data).type == 'audio' || JSON.parse(res.data).type == 'gift') {
 						console.log(JSON.parse(res.data))
 						var userInfo = uni.getStorageSync("userInfo")
+						if (that.$store.state.message.receiverId == JSON.parse(res.data).data.user_id) {
+							return;
+						}
 						//别人给我发消息
 						if (JSON.parse(res.data).data.user_id != userInfo.id) {
 							var messageList = that.$store.state.message.messageList;
@@ -587,4 +591,8 @@
 	@import "static/tailwindcss/tailwind.css";
 	@import 'static/remixicon/remixicon.css';
 	@import 'static/iconfont/icons.css';
+
+	page {
+		font-family: Monospaced Number, Chinese Quote, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif !important;
+	}
 </style>

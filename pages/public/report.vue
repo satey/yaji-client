@@ -137,7 +137,7 @@
 						that.selectIndex = -1;
 						that.imgs = []
 					} else {
-						that.$u.toast(res.data)
+						that.$u.toast(res.msg)
 					}
 				})
 			}

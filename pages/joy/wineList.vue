@@ -6,7 +6,19 @@
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
-		<view style="padding:0rpx 30rpx 30rpx 30rpx;">
+		<view style="padding: 0rpx 30rpx;box-sizing: border-box;">
+			<view class="item" v-for="(item,index) in myLists" :key="index" @click="openCentet(item)">
+				<view
+					style="font-family: font-test;width: 82rpx;height: 82rpx;background: #FFFFFF;opacity: 1;border-radius: 50%;box-shadow: inset 0rpx 4rpx 10rpx 0rpx rgba(0,0,0,0.302);text-align: center;line-height: 82rpx;font-size: 36rpx;color: #3D3D3D;">
+					{{item.word}}
+				</view>
+				<view style="color: #3D3D3D;font-size: 36rpx;margin-left: 26rpx;flex: 1;">{{item.poetry}}</view>
+			</view>
+			<u-loadmore v-if="myLists.length" :loadmoreText="loadmoreText" color="#a1a1a1" marginTop="20" />
+			<u-empty v-if="!myLists.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
+				marginTop="100"></u-empty>
+		</view>
+		<!-- <view style="padding:0rpx 30rpx 30rpx 30rpx;">
 			<view class="listItem" v-for="(item,index) in myLists" :key="index" @click="openCentet(item)">
 				<view>{{ $u.timeFormat(item.createtime, 'yyyy-mm-dd hh:MM')}}</view>
 				<view style="margin-top: 30rpx;display: flex;align-items: center;">
@@ -19,7 +31,7 @@
 			<u-loadmore v-if="myLists.length" :loadmoreText="loadmoreText" color="#a1a1a1" marginTop="20" />
 			<u-empty v-if="!myLists.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
-		</view>
+		</view> -->
 		<topPrompt></topPrompt>
 	</view>
 </template>
@@ -35,7 +47,8 @@
 			}
 		},
 		onLoad() {
-			this.getList()
+			this.getList();
+			this.setFontFamily()
 		},
 		onReachBottom() {
 			var that = this;
@@ -45,6 +58,22 @@
 			}
 		},
 		methods: {
+			//设置字体
+			setFontFamily() {
+				// #ifdef APP-PLUS
+				uni.loadFontFace({
+					family: 'font-test',
+					// 本地字体路径需转换为平台绝对路径
+					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/regular.ttf')})`,
+					success() {
+						console.log('success')
+					},
+					fail(e) {
+						console.log('fail')
+					}
+				})
+				// #endif
+			},
 			isDate(timer) {
 				// 创建一个表示当前时间的 Date 对象
 				const currentDate = new Date();
@@ -93,8 +122,10 @@
 				var that = this;
 				that.$api("poetry.myList", {
 					page: that.page,
-					limit: 10
+					limit: 10,
+					cate:1
 				}).then(res => {
+					console.log(res)
 					if (res.code == 1) {
 						if (res.data.length != 0) {
 							that.myLists.push(...res.data);
@@ -112,6 +143,16 @@
 </script>
 
 <style lang="scss" scoped>
+	.item {
+		background: #FFF9EC;
+		padding: 30rpx 26rpx;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		margin-bottom: 30rpx;
+		border: 1rpx solid #FCEBC5;
+	}
+
 	.listItem {
 		padding: 20rpx;
 		border: 1px solid #ccc;

@@ -25,17 +25,18 @@ export const ENV_TYPE = () => {
 	let {SDKVersion} = uni.getSystemInfoSync()
 	if(!uni.getEnv) {
 		uni.getEnv = () => {
-			const UNDEFINED = 'undefined'
-			if(typeof wx !== UNDEFINED) {
-				return 'WEAPP'
-			}
-			if(typeof my !== UNDEFINED) {
-				SDKVersion = my.SDKVersion
-				return 'ALIPAY'
-			}
-			if(typeof tt !== UNDEFINED) {
-				return 'TT'
-			}
+			// #ifdef MP-ALIPAY
+			SDKVersion = my.SDKVersion
+			return 'ALIPAY'
+			// #endif
+			// #ifdef MP-WEIXIN
+			return 'WEAPP'
+			// #endif
+			// #ifdef MP-TOUTIAO
+			SDKVersion = my.SDKVersion
+			return 'TT'
+			// #endif
+			return 'uni'
 		}
 	}
 	const type = {
@@ -144,6 +145,20 @@ export function base64ToPath(base64) {
 }
 
 const svgaBus = new Map()
+export function getfileBase64(url){
+	return new Promise((resolve, reject)=>{
+		plus.io.resolveLocalFileSystemURL(url, entry => {
+			var reader = null;
+			entry.file( file => {
+				reader = new plus.io.FileReader();
+				reader.onloadend = ( read )=> {
+					resolve(read.target.result)
+				};
+				reader.readAsDataURL( file );
+			}, reject );
+		},reject)
+	})
+}
 export function toLoadPath(path) {
 	return new Promise(resolve => {
 		// #ifndef APP-VUE || APP-NVUE
@@ -152,26 +167,61 @@ export function toLoadPath(path) {
 		}
 		// #endif
 		// #ifdef H5
-		resolve(location.origin + path)
+		resolve(path)
 		// #endif
 		// #ifdef APP-VUE || APP-NVUE
+		let {osName} = uni.getSystemInfoSync()
+		const success = (res) => {
+			if(osName === 'ios') {
+				res.getParent((parentDicEntry) => {
+					res.moveTo(
+						{ fullPath: parentDicEntry.fullPath + "/" },
+						`${new Date().getTime()}.svga`,
+						(newPath) => {
+							getfileBase64(newPath.fullPath).then((base64) => {
+								svgaBus.set(path, base64);
+								resolve(base64);
+							});
+						}
+					)
+				})
+			} else {
+				svgaBus.set(path, res.fullPath);
+				resolve(res.fullPath)
+			}
+		}
+		const error = (err) => {
+			uni.showToast({
+				title: err,
+				duration: 2000
+			});
+			console.error(err)
+		}
 		if(svgaBus.has(path)) {
 			resolve(svgaBus.get(path))
 		} else if(!/^\/static/.test(path) && !/^_www/.test(path)){
 			uni.downloadFile({
 				url: path,
 				success(res) {
+					// #ifdef APP-VUE
 					svgaBus.set(path, res.tempFilePath)
 					resolve(res.tempFilePath)
+					// #endif
+					// #ifdef APP-NVUE
+					plus.io.resolveLocalFileSystemURL(res.tempFilePath, success, error)
+					// #endif
 				}
 			})
 		} else {
 			plus.io.resolveLocalFileSystemURL( '_www' + path, (res) => {
+				// #ifdef APP-VUE
 				svgaBus.set(path, res.fullPath)
 				resolve(res.fullPath)
-			}, (err) => {
-				console.error(err)
-			} )
+				// #endif
+				// #ifdef APP-NVUE
+				success(res)
+				// #endif
+			}, error)
 		}
 		// #endif
 		// #ifndef APP-VUE || APP-NVUE || H5

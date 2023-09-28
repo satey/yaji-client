@@ -235,7 +235,7 @@
 						// }
 						that.paginator.total = res.data.total
 						that.paginator.last_page = res.data.last_page
-						that.listUserSearch = [...that.listUserSearch, ...res.data.data]
+						that.listUserSearch = [...that.listUserSearch, ...res.data]
 						if (that.params.page < res.data.last_page) {
 							that.loadmore = 'loadmore'
 						} else {

@@ -11,98 +11,83 @@
 			<view slot="right">
 			</view>
 		</u-navbar>
-
 		<view v-if="showUserRole">
-			<view
-				style="padding: 50rpx 30rpx 0rpx 30rpx;display: flex;flex-direction: column;height: 80vh;box-sizing: border-box;">
+			<view style="padding: 20rpx 30rpx 0rpx 30rpx;display: flex;flex-direction: column;box-sizing: border-box;">
 				<view class="container">
 					<view class="contentHead">
 						<view class="text-2xl name">{{ userRole.realname||"无名氏" }}</view>
-						<view class="headDetails text-xl">
-							<view style="margin-right: 30rpx;">{{userRole.dynasty||"未知朝代"}}</view>
-							<view style="margin-right: 30rpx;">
-								{{userRole.gender == 1?'男':"女"}}
-							</view>
-							<view>名望：<text style="color: #FE4373;">{{userRole.total_mw|| '无'}}</text></view>
-						</view>
+						<view
+							style="position: absolute;right: 66rpx;color: #808080;font-size: 28rpx;padding-top:10rpx ;">
+							名望<text style="color: #FE4373;padding-left: 5rpx;">{{userRole.total_mw|| '无'}}</text></view>
 					</view>
+					<image src="../../static/fenge.png" style="width: 100%;margin-top: -1px;" mode="widthFix"></image>
 					<view class="contentBody">
 						<view class="types flex" style="display: flex;flex-wrap: wrap;align-items: center;">
-							<!-- {{userRole.achievements.indexOf(",")}} -->
-							<view v-if="typeof(tags) == 'string'">
-								<text class="ri-price-tag-3-line lable" :style="'color:'+colors[0]"></text>
-								<text>{{tags}}</text>
+							<view>{{userRole.gender == 1?'男':"女"}}</view>
+							<view style="margin-left: 26rpx;">{{userRole.dynasty||"未知朝代"}}</view>
+						</view>
+						<view
+							style="padding: 40rpx 38rpx 0rpx 38rpx;box-sizing: border-box;font-size: 28rpx;color: #808080;">
+							<view>
+								<text>别称：</text>
+								<text>{{userRole.aliasnames || "无"}}</text>
 							</view>
-							<view style="margin-right: 40rpx;" v-else v-for="(item,index) in tags" :key="index">
-								<text class="ri-price-tag-3-line lable" :style="'color:'+colors[index % 5]"></text>
-								<text>{{item}}</text>
+							<view style="margin-top: 20rpx;">
+								<text>身份：</text>
+								<text>{{userRole.achievements || "无"}}</text>
+							</view>
+							<view style="margin-top: 20rpx;">
+								<text>称号：</text>
+								<text>{{userRole.titles || "无"}}</text>
 							</view>
 						</view>
-						<view class="contentText text-xl">{{ userRole.content || '暂无介绍' }} </view>
-						<view style="padding:0rpx 38rpx;margin-top: 120rpx;">
+						<view class="contentText text-xl" style="min-height: 80rpx;">{{ userRole.content || '暂无介绍' }}
+						</view>
+						<view style="padding:0rpx 38rpx;margin-top: 42rpx;">
 							<!-- 后续开放 -->
 							<view v-if="fei_num <= 0"
-								class="rounded-full p-6  leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-								style="text-align: center;font-size: 32rpx;" @click="handleHuoQu()">重新获取({{ price }}铜钱)
+								style="text-align: center;font-size: 28rpx;width: 100%; height: 85rpx;background: #FE4373;line-height: 85rpx;color: #FFFFFF;border-radius: 50rpx;"
+								@click="handleHuoQu()">重新获取({{ price }}铜钱)
 							</view>
 							<view v-if="fei_num > 0"
-								class="rounded-full p-6  leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-								style="text-align: center;font-size: 32rpx;" @click="handleRematch()">重新穿越
+								style="text-align: center;font-size: 28rpx;width: 100%; height: 85rpx;background: #FE4373;line-height: 85rpx;color: #FFFFFF;border-radius: 50rpx;"
+								@click="handleRematch()">重新穿越
 								免费({{fei_num}}次)
 							</view>
-							<view style="font-size: 28rpx;color: #808080;text-align: center;margin-top: 20rpx;">
+							<view style="font-size: 28rpx;color: #808080;text-align: center;margin-top: 36rpx;"
+								v-if="money>0">
 								（钱包剩余{{money}}铜钱）</view>
-							<!-- <view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r"
-								style="text-align: center;color: #323232;border: 1px solid #CCCCCC;margin-top: 30rpx;"
-								@click="handleRematch()" v-if="choose_num!==0">重新穿越（免费{{choose_num}}次）</view> -->
 						</view>
 						<view class="tips text-base" style="margin-top: 60rpx;">
-							<text class="ri-error-warning-fill" style="font-size: 35rpx;color: #999999;"></text>
+							<text class="ri-error-warning-fill"
+								style="font-size: 35rpx;color: #999999;margin-right: 5rpx;"></text>
 							<text style="font-size: 28rpx;color: #808080;">每个角色都是全服唯一。</text>
 						</view>
 						<view class="tips text-base" style="margin-top: 20rpx;">
-							<text class="ri-error-warning-fill" style="font-size: 35rpx;color: #999999;"></text>
+							<text class="ri-error-warning-fill"
+								style="font-size: 35rpx;color: #999999;margin-right: 5rpx;"></text>
 							<text style="font-size: 28rpx;color: #808080;">若长时间未登录使用，角色可能被回收。</text>
 						</view>
 					</view>
 				</view>
 			</view>
-
-			<!-- <u-modal v-if="!showUserRole" style="padding: 200rpx 50rpx 20rpx 50rpx;" :showConfirmButton="false" :showCancelButton="false">
-
-				<view class="flex text-left text-2xl text-white">选择角色</view>
-				<view class="flex text-left mt-4">
-					<text class="text-white opacity-50">选择穿越到的朝代，以便给你创建角色。</text>
-				</view>
-				<view class="flex flex-col mt-4" style="height: 600rpx; overflow-y: scroll;">
-					<view class="flex items-center p-2 rounded-lg mt-4" v-for="(item, index) in listRoleDynasty"
-						:key="index" :item="item"
-						:class="dynasty.id === item.id ? 'bg-white text-rose-500' : 'text-white'"
-						@click="handleChangeDynasty(item)">
-						<view class="flex-1">{{ item.dynasty }}</view>
-						<view class="text-base opacity-50">
-							{{ $tools.erayear(item.startyear) + ' - ' + $tools.erayear(item.endyear) }}
-						</view>
-					</view>
-				</view>
-				<view class="grid gap-4 mt-10 text-center">
-				</view>
-				<view
-					class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-					@click="handleMatch()">匹配</view>
-			</u-modal> -->
 		</view>
 		<!-- 选择朝代 -->
 		<u-modal :show="dynastyPopup" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
 			@cancel="dynastyPopup=false" @confirm="dynastyConfirm">
-			<view>
-				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">选择朝代</view>
+			<view style="width: 100%;">
+				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">选择身份</view>
 				<scroll-view scroll-y="true" class="myScroll">
 					<view class="dynastyBox">
 						<view class="dynastyItem" :class="index==selectIndex?'dynastyItemActive':'dynastyItem'"
-							@click="selectDynasty(index,item.id,item.dynasty)" v-for="(item, index) in listRoleDynasty"
-							:key="index">
-							{{ item.dynasty }}
+							@click="selectDynasty(index,item.identity_id,item.title)"
+							v-for="(item, index) in listRoleDynasty" :key="index">
+							<view style="display: flex;align-items: center;">
+								<image :src="item.image" mode="heightFix"
+									style="width: 50rpx;height: 65rpx;margin-right: 22rpx;"></image>
+								<view style="font-size: 36rpx;font-weight: 400;color: #323232;">{{item.title}}</view>
+							</view>
+							<view style="font-size: 28rpx;font-weight: 400;color: #808080;">{{item.content}}</view>
 						</view>
 					</view>
 				</scroll-view>
@@ -118,41 +103,62 @@
 				</view>
 			</view>
 		</u-modal>
-		<!-- 确认角色 -->
+		<!-- 确认角色 showRole-->
 		<u-modal :show="showRole" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
-			confirmText="使用" cancelText="放弃" @cancel="showRole=false" @confirm="roleConfirm">
+			confirmText="使用" cancelText="放弃" @cancel="showRole=false;dynastyPopup = true;" @confirm="roleConfirm">
 			<view class="w-full text-center">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">获得角色</view>
 				<scroll-view scroll-y="true" class="myScroll2"
 					style="background: #FFF7F9;border-radius: 20rpx;margin-top: 10rpx;padding: 30rpx;box-sizing: border-box;">
 					<view>
-						<view style="display: flex;align-items: flex-end;flex-wrap: wrap;">
-							<text
-								style="font-size: 36rpx;color: #323232;font-weight: bold;">{{role_fei.realname}}</text>
-							<text
-								style="font-size: 28rpx;color: #808080;margin-left: 20rpx">{{role_fei.birthplace}}</text>
-							<text style="font-size: 28rpx;color: #808080;margin: 0 20rpx;">{{role_fei.dynasty}}</text>
+						<view
+							style="display: flex;align-items: flex-end;flex-wrap: wrap;justify-content: space-between;">
+							<view>
+								<text
+									style="font-size: 36rpx;color: #323232;font-weight: bold;">{{role_fei.realname}}</text>
+								<text
+									style="font-size: 28rpx;color: #808080;margin-left: 20rpx">{{role_fei.gender==1?'男':'女'}}</text>
+								<text
+									style="font-size: 28rpx;color: #808080;margin-left: 20rpx">{{role_fei.dynasty}}</text>
+							</view>
+
+							<!-- <text
+								style="font-size: 28rpx;color: #808080;margin-left: 20rpx">{{role_fei.birthplace}}</text> -->
 							<view style="display: flex;align-items: center;">
 								<text style="font-size: 28rpx;color: #808080;">名望：</text>
 								<text style="font-size: 28rpx;color: #FE4373;">{{role_fei.role_mw}}</text>
 							</view>
 						</view>
-						<view style="display: flex;align-items: center;margin-top: 20rpx;">
-							<view
-								style="display: flex;align-items: center;color:#999;font-size: 26rpx;margin-right: 20rpx;"
-								v-for="(item,index) in role_fei.achievements">
-								<text class="ri-price-tag-3-line lable"
-									style="font-size: 35rpx;margin-right: 10rpx;"></text>
-								<text>{{item}}</text>
+						<view v-if="role_fei.length != 0"
+							style="padding: 23rpx 0rpx 0rpx 0rpx;box-sizing: border-box;font-size: 28rpx;color: #808080;text-align: left;">
+							<view>
+								<text>别称：</text>
+								<text>{{role_fei.aliasnames || "无"}}</text>
+							</view>
+							<view style="margin-top: 20rpx;">
+								<text>身份：</text>
+								<text v-if="role_fei.achievements.length == 0">无</text>
+								<block v-else v-for="(item2,index2) in role_fei.achievements" :key="index2">
+									<text style="margin-right: 20rpx;">{{item2}}</text>
+								</block>
+							</view>
+							<view style="margin-top: 20rpx;">
+								<text>称号：</text>
+								<text v-if="role_fei.titles.length == 0">无</text>
+								<block v-else v-for="(item2,index2) in role_fei.titles" :key="index2">
+									<text style="margin-right: 20rpx;">{{item2}}</text>
+								</block>
 							</view>
 						</view>
-						<view style="color: #808080;font-size: 28rpx;margin-top: 20rpx;text-align: left;">
-							{{role_fei.content}}
+						<view class="rolecontent"
+							style="color: #808080;font-size: 28rpx;margin-top: 26rpx;text-align: left;min-height: 80rpx;">
+							{{role_fei.content ||'暂无介绍'}}
 						</view>
 					</view>
 				</scroll-view>
 			</view>
 		</u-modal>
+		<u-toast ref="uToast" />
 		<uc-auth></uc-auth>
 		<topPrompt></topPrompt>
 	</view>
@@ -231,62 +237,55 @@
 				that.$api('user.bindrole', {
 					"role_id": this.role_fei.id
 				}).then(res => {
-					console.log(res)
 					if (res.code === 1) {
 						that.showRole = false;
+						that.dynastyPopup = true;
 						uni.setStorageSync("noRole", false);
 						that.getUserRole()
 						that.$forceUpdate()
 						that.getMoney()
-						// uni.reLaunch({
-						// 	url: '/pages/index/mine'
-						// });
 					}
 				})
 			},
 			//确认朝代
 			dynastyConfirm() {
 				var that = this;
+				if (that.selectId == '') {
+					uni.showToast({
+						icon: "none",
+						title: "请选择身份"
+					})
+					return;
+				}
+				uni.showLoading({
+					title: '获取中'
+				})
 				that.$api("user.info").then(userData => {
 					var gender = userData.data.gender;
-					if (that.selectIndex == null) {
-						uni.showToast({
-							icon: "none",
-							title: "请选择朝代"
+					that.$forceUpdate()
+					if (userData.code == 1) {
+						that.$api('role.match', {
+							"gender": userData.data.gender,
+							"identity_id": that.selectId
+						}).then(res => {
+							if (res.code == 1) {
+								that.role_fei = res.data;
+								uni.hideLoading();
+								that.fei_num = that.fei_num - 1;
+								that.showRole = true;
+								that.dynastyPopup = false;
+								that.$api("user.info").then(userData1 => {
+									that.money = userData1.data.money;
+								})
+							} else if (res.code == 0) {
+								that.recharge = true;
+								that.showRole = false;
+								that.dynastyPopup = false;
+							}
+							uni.hideLoading()
 						})
-						return;
 					}
-					if (gender == 1) {
-						if (that.listRoleDynasty[that.selectIndex].role_man_count == 0) {
-							uni.showToast({
-								icon: "none",
-								title: "男性角色不足"
-							})
-							return;
-						}
-					} else if (gender == 2) {
-						if (that.listRoleDynasty[that.selectIndex].role_woman_count == 0) {
-							uni.showToast({
-								icon: "none",
-								title: "女性角色不足"
-							})
-							return;
-						}
-					}
-					// uni.showLoading()
-					this.dynastyPopup = false;
-					uni.showLoading()
-					that.$api('role.match', {
-						"dynasty": this.selectDynastyName
-					}).then(res => {
-						console.log(res);
-						that.role_fei = res.data;
-						uni.hideLoading();
-						that.fei_num = that.fei_num - 1;
-						that.showRole = true;
-					})
 				})
-
 			},
 			//选择朝代
 			selectDynasty(index, id, name) {
@@ -332,12 +331,20 @@
 				})
 			},
 			async getRoleDynasty() {
-				let that = this
-				that.$api('role_dynasty.lists').then(res => {
-					if (res.code === 1) {
-						that.listRoleDynasty = res.data
+				let that = this;
+				that.$api("role.identity_list").then(res => {
+					console.log(res)
+					if (res.code == 1) {
+						that.listRoleDynasty = res.data.identity_data
+					} else if (res.code == -1) {
+						that.deletion = true;
 					}
 				})
+				// that.$api('role_dynasty.lists').then(res => {
+				// 	if (res.code === 1) {
+				// 		that.listRoleDynasty = res.data
+				// 	}
+				// })
 			},
 			// 重新获取
 			handleHuoQu() {
@@ -464,23 +471,32 @@
 	.container {
 		flex: 1;
 		height: 0;
-		background: red;
-		margin-top: 30rpx;
-		background: url(/static/embed/s3Bg.png);
+		// background: #fff;
+		border-radius: 25rpx;
 		background-size: 100% 100%;
 		background-repeat: no-repeat;
+		// padding: 50rpx 0rpx 160rpx 0rpx;
 
 		.contentHead {
 			text-align: center;
-			height: 14%;
 			display: flex;
-			flex-direction: column;
+			text-align: center;
+			flex-direction: row;
 			align-items: center;
 			justify-content: center;
+			position: relative;
+			padding-bottom: 50rpx;
+			background: #fff;
+			padding-top: 55rpx;
+			border-top-left-radius: 25rpx;
+			border-top-right-radius: 25rpx;
+			border-bottom-left-radius: 5rpx;
+			border-bottom-right-radius: 5rpx;
 
 			.name {
-				color: #323232;
+				color: #5F5D5D;
 				font-weight: bold;
+				font-size: 56rpx;
 			}
 
 			.headDetails {
@@ -494,12 +510,22 @@
 
 		.contentBody {
 			height: calc(100% - 14%);
-			padding-top: 30rpx;
+			padding-top: 10rpx;
+			box-sizing: border-box;
+			background: #fff;
+			margin-top: -4px;
+			padding-bottom: 50rpx;
+			border-bottom-left-radius: 25rpx;
+			border-bottom-right-radius: 25rpx;
+			border-top-left-radius: 5rpx;
+			border-top-right-radius: 5rpx;
 
 			.types {
 				display: flex;
 				align-items: center;
 				justify-content: center;
+				color: #808080;
+				font-size: 28rpx;
 
 				.lable {
 					width: 35rpx;
@@ -512,13 +538,6 @@
 				padding: 40rpx 38rpx 0rpx 38rpx;
 				color: #808080;
 				font-size: 28rpx;
-				overflow: hidden;
-				display: -webkit-box;
-				-webkit-box-orient: vertical;
-				-webkit-line-clamp: 5;
-				overflow: hidden;
-				white-space: no-wrap;
-				text-overflow: ellipsis;
 				position: relative;
 				box-sizing: border-box;
 
@@ -539,12 +558,17 @@
 		}
 	}
 
-	.myScroll {}
+	.myScroll {
+		width: 100%;
+	}
 
 	.dynastyBox {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.u-modal__content {
+		padding: 0 !important;
 	}
 
 	.u-modal__content {
@@ -553,28 +577,33 @@
 
 	.dynastyItem {
 		margin-top: 20rpx;
-		margin-right: 20rpx;
-		width: calc(100% / 3 - 20rpx);
+		width: 100%;
 		border: 1px solid #CCCCCC;
-		border-radius: 30rpx;
+		border-radius: 20rpx;
 		box-sizing: border-box;
-		height: 60rpx;
-		line-height: 60rpx;
-		text-align: center;
-		font-size: 28rpx;
-		color: #323232;
-		white-space: nowrap;
-		text-overflow: ellipsis;
 		transition: all 0.3s;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 20rpx;
+		box-sizing: border-box;
 	}
 
 	.dynastyItemActive {
-		background: #FE4373 !important;
-		color: #fff !important;
-		border: none !important;
+		border: 1px solid #FE4373;
 	}
 
-	.myScroll2 {
-		max-height: 600rpx;
+	.rolecontent {
+		color: #808080;
+		font-size: 28rpx;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 5;
+		overflow: hidden;
+		white-space: no-wrap;
+		text-overflow: ellipsis;
+		position: relative;
+		box-sizing: border-box;
 	}
 </style>

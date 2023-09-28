@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<u-navbar title="动态消息" :safeAreaInsetTop="true" :placeholder="true">
+		<u-navbar title="通知消息" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
 				<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
@@ -25,7 +25,26 @@
 						<text v-if="item.cate == 4">回复您的评论了！</text>
 						<text v-if="item.cate == 5">查看您的主页了！</text>
 						<text v-if="item.cate == 6">给您的诗词点赞！</text>
-						<text>{{ $u.timeFormat(item.createtime, 'mm-dd hh:MM') }}</text>
+						<text v-if="item.cate == 7">在今日邂逅喜欢了你！</text>
+						<view v-if="item.cate == 8" style="display: flex;align-items: center;">
+							<text>通过{{item.channel_text}}</text>
+							<text>给你送了</text>
+							<image :src="item.gift_image" style="width: 55rpx;height: 55rpx;" mode=""></image>
+							<text>x{{item.nums}}</text>
+						</view>
+						<text v-if="item.cate == 9">射猜了您的覆题</text>
+						<text v-if="item.cate == 10">评论了您的射覆</text>
+						<text v-if="item.cate == 11">回复了您的评论</text>
+						<text v-if="item.cate == 12">给您的射覆点赞了</text>
+						<text v-if="item.cate == 13">给您的射覆答案点赞了</text>
+						<text v-if="item.cate == 14">给您的评论点赞了</text>
+						<text v-if="item.cate == 15">给您的诗词评论了</text>
+						<text v-if="item.cate == 16">回复了您的评论</text>
+						<text v-if="item.cate == 17">给您的对歌点赞了</text>
+						<text v-if="item.cate == 18">给您的对歌点赞了</text>
+						<text v-if="item.cate == 19">接了您的对歌</text>
+						<text v-if="item.cate == 20">接了您的对歌</text>
+						<text style="padding-left: 20rpx;">{{ $u.timeFormat(item.createtime, 'mm-dd hh:MM') }}</text>
 					</view>
 				</view>
 			</view>
@@ -35,6 +54,7 @@
 			<u-empty v-if="!trendsMsgList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 
@@ -93,6 +113,105 @@
 						}
 						this.$u.route('/pages/joy/wineDetails', {
 							data: JSON.stringify(data)
+						});
+						break;
+					case 7:
+						this.$u.route('/pages/user/home', {
+							user_id: item.user_id
+						});
+						break;
+					case 8:
+						switch (item.channel) {
+							case 1:
+								this.$u.route('/pages/joy/archeryDetail', {
+									archeryId: item.third_id
+								});
+								break;
+							case 2:
+								var data = {
+									id: item.third_id
+								}
+								this.$u.route('/pages/joy/wineDetails', {
+									data: JSON.stringify(data)
+								});
+								break;
+							case 3:
+								this.$u.route('/pages/post/detail', {
+									post_id: item.third_id
+								});
+								break;
+							case 4:
+								this.$u.route('/pages/song/songDetails', {
+									songId: item.third_id
+								});
+								break;
+						}
+						break;
+					case 9:
+						this.$u.route('/pages/joy/archeryDetail', {
+							archeryId: item.shot_cover_id
+						});
+						break;
+					case 10:
+						this.$u.route('/pages/joy/archeryDetail', {
+							archeryId: item.shot_cover_id
+						});
+						break;
+					case 11:
+						this.$u.route('/pages/joy/archeryDetail', {
+							archeryId: item.shot_cover_id
+						});
+						break;
+					case 12:
+						this.$u.route('/pages/joy/archeryDetail', {
+							archeryId: item.shot_cover_or_comment_id
+						});
+						break;
+					case 13:
+						this.$u.route('/pages/joy/archeryDetail', {
+							archeryId: item.shot_cover_id
+						});
+						break;
+					case 14:
+						this.$u.route('/pages/joy/archeryDetail', {
+							archeryId: item.shot_cover_id
+						});
+						break;
+					case 15:
+						var data = {
+							id: item.top_poetry_id
+						}
+						this.$u.route('/pages/joy/wineDetails', {
+							data: JSON.stringify(data)
+						});
+						break;
+					case 16:
+						var data = {
+							id: item.top_poetry_id
+						}
+						this.$u.route('/pages/joy/wineDetails', {
+							data: JSON.stringify(data)
+						});
+						break;
+					case 17:
+						this.$u.route('/pages/song/songDetails', {
+							songId: item.duet_song_or_reply_id
+						});
+						break;
+					case 18:
+						console.log(item)
+						this.$u.route('/pages/song/songDetails', {
+							songId: item.duet_song_id
+						});
+						break;
+					case 19:
+						this.$u.route('/pages/song/songDetails', {
+							songId: item.duet_song_id
+						});
+						break;
+					case 20:
+						this.$u.route('/pages/song/songDetails', {
+							songId: item.duet_song_id
 						});
 						break;
 				}

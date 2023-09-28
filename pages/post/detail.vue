@@ -10,25 +10,19 @@
 				<i class="ri-more-fill " style="font-size: 38rpx;color: #333;"></i>
 			</view>
 		</u-navbar>
-		<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
-			<view class="p-4">
-				<!-- <view class="text-2xl text-center">操作</view> -->
+		<u-popup :show="showAction" @close="showAction = false" :closeable="false" :round="30">
+			<view style="padding: 50rpx 55rpx;">
+				<view class="delete" style="margin-bottom: 36rpx;" @click="cai">
+					<view style="font-size: 30rpx;">不喜欢/点踩</view>
+				</view>
 				<view class="delete"
 					@click="$u.route('/pages/public/report',{user_id:detailContent.user_id}), showAction = false"
-					style="margin-top: 50rpx;">
-					<!-- <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i> -->
+					style="margin-bottom: 36rpx;">
 					<view style="font-size: 30rpx;">举报广告/色情等</view>
 				</view>
-				<view class="delete2" @click="showAction = false" style="margin-top: 20rpx;">
-					<!-- <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i> -->
+				<view class="delete2" @click="showAction = false">
 					<view style="font-size: 30rpx;">取消</view>
 				</view>
-				<!-- <view class="grid grid-cols-5 gap-4 mt-6">
-					<view class="text-center" @click="showFeedback = true, showAction = false">
-						<i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i>
-						<view class="text-base mt-2">举报</view>
-					</view>
-				</view> -->
 			</view>
 		</u-popup>
 		<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
@@ -41,10 +35,36 @@
 			</view>
 		</u-modal>
 		<!-- 底部 -->
-		<view class="fixed bottom-0 left-0 right-0 !border-t border-0 border-solid border-gray-100 bg-white"
+		<view class="commentBar">
+			<view
+				style="display: flex;align-items: center;width: 100%;min-height: 100rpx;padding: 13rpx 30rpx;box-sizing: border-box;">
+				<view class="flex items-center" @touchstart.prevent="showEmojiClick">
+					<i class="ri-emotion-fill text-4xl text-gray-500"></i>
+				</view>
+				<view class="flex-1 flex" style="margin: 0rpx 20rpx;">
+					<u-textarea v-model="message" :focus="inputFocus" @blur='blur' :placeholder="placeholder"
+						class="message" :auto-blur="true" :autoHeight="true" :adjustPosition="false" type="text"
+						maxlength="200"></u-textarea>
+				</view>
+				<view class="flex items-center">
+					<view @touchstart.prevent="doComment1"
+						style="width: 116rpx;height: 72rpx;text-align: center;line-height: 72rpx;border-radius: 50rpx;background:#FE4373 ;font-size: 28rpx;color: #fff;">
+						发送</view>
+				</view>
+			</view>
+			<!-- 表情 -->
+			<view class="grid grid-cols-8 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
+				<view class="flex" v-for="(item, index) in emojiList" :key="index" :item="item"
+					@touchstart.prevent="handleEmojiSend(item)">
+					<text class="leading-none" style="font-size: 1.8rem;">{{ item }}</text>
+				</view>
+			</view>
+			<view :style="{height:pageHeight+'px'}"></view>
+		</view>
+		<!-- 	<view class="fixed bottom-0 left-0 right-0 !border-t border-0 border-solid border-gray-100 bg-white"
 			style="z-index: 90;" v-if="detailContent!=null">
 			<view class="flex p-4">
-				<view class="flex items-center" @click="showEmoji = !showEmoji">
+				<view class="flex items-center" @touchend.prevent="showEmojiClick">
 					<i class="ri-emotion-fill text-4xl text-gray-500"></i>
 				</view>
 				<view class="flex-1 flex">
@@ -55,18 +75,18 @@
 				<view class="flex items-center">
 					<view
 						class="p-3 rounded-full text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-						@click="doComment1()">发送</view>
+						@touchend.prevent="doComment1()">发送</view>
 				</view>
 			</view>
-			<!-- 表情 -->
-			<view class="grid grid-cols-8 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
+			<view class="grid grid-cols-8 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji"
+				style="border: 1px solid red;" @touchend.prevent="">
 				<view class="flex" v-for="(item, index) in emojiList" :key="index" :item="item"
-					@click="handleEmojiSend(item)">
+					@touchend.prevent="handleEmojiSend(item)">
 					<text class="leading-none" style="font-size: 1.8rem;">{{ item }}</text>
 				</view>
 			</view>
 			<view class="sdasdas" :style="{height:pageHeight+'px'}"></view>
-		</view>
+		</view> -->
 
 		<!-- 内容 -->
 		<view class="userContent" v-if="detailContent!=null">
@@ -85,7 +105,11 @@
 			<view style="flex: 1;">
 				<view class="userInfo">
 					<view class="userNameBox">
-						<view class="userName">{{ realname  }}</view>
+						<view class="userName" style="display: flex;align-items: center;">
+							<text>{{ realname  }}</text>
+							<image :src="post.user.mw_image" style="width: 32rpx;height: 32rpx;margin-left: 12rpx;"
+								mode=""></image>
+						</view>
 						<view class="tags" v-if="achievements != ''">
 							{{achievements.replace(/,/g,"&nbsp;&nbsp;")}}
 						</view>
@@ -110,6 +134,24 @@
 					class="mt-4 flex items-center justify-center rounded-full overflow-hidden w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
 					<i class="ri-voiceprint-line text-2xl text-white" :class="audioStatus ? 'animate-pulse' : ''"></i>
 				</view>
+				<view style="margin-top: 27rpx;display: flex;align-items: center;justify-content: space-between;">
+					<view style="display: flex;align-items: center;">
+						<text
+							style="color: #999999;font-size: 26rpx;">{{$u.timeFormat(post.createtime, 'yyyy-mm-dd hh:MM')}}</text>
+						<block v-if="userInfo2.id==user_id?false:true">
+							<image @click="showGift()" src="@/static/cailiwu.png"
+								style="width: 36rpx;height: 36rpx;margin-left: 50rpx;" mode="">
+							</image>
+						</block>
+					</view>
+					<view style="color: #808080;font-size: 28rpx;" @click="zan">
+						<text v-show='post.is_zan==0' class="ri-heart-line"
+							style="font-size: 32rpx;margin-right: 10rpx;color: #999999;"></text>
+						<text v-show='post.is_zan==1' class="ri-heart-fill"
+							style="font-size: 32rpx;margin-right: 10rpx;color: #fe4373;"></text>
+						<text>{{post.diggnums==0?'出彩':post.diggnums}}</text>
+					</view>
+				</view>
 			</view>
 		</view>
 		<view class="comment" style="padding: 30rpx;" v-if="detailContent!=null">
@@ -123,12 +165,16 @@
 		<u-empty v-if="detailContent == null" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
 			marginTop="100"></u-empty>
 		<topPrompt></topPrompt>
+		<feiGift ref="feiGift" channel="3"></feiGift>
 	</view>
 </template>
 <script>
+	import feiGift from "@/components/fei-gift/fei-gift.vue"
 	export default {
 		name: 'detail',
-		components: {},
+		components: {
+			feiGift
+		},
 		data() {
 			return {
 				post: {
@@ -179,6 +225,7 @@
 				replyFalg: false,
 				flagNum: 0,
 				commentFlag: true,
+				userInfo2: uni.getStorageSync("userInfo")
 			}
 		},
 		created() {
@@ -198,6 +245,30 @@
 			// that.getDigCommentDetail()
 		},
 		methods: {
+			cai() {
+				var that = this;
+				that.$api("post.cai", {
+					post_id: that.$Route.query.post_id
+				}).then(res => {
+					that.showAction = false;
+					uni.showToast({
+						icon: "none",
+						title: res.msg
+					})
+				})
+			},
+			showGift(item) {
+				this.$refs.feiGift.show();
+				this.$refs.feiGift.setThird_id(this.$Route.query.post_id);
+				this.$refs.feiGift.setId(this.post.user_id);
+			},
+			showEmojiClick() {
+				this.showEmoji = !this.showEmoji;
+				uni.hideKeyboard()
+			},
+			emojiListMover() {
+
+			},
 			reply(e) {
 				this.replyData = e;
 				this.placeholder = `回复${e.role_realname}${e.role_dynasty}`;
@@ -236,13 +307,16 @@
 					this.placeholder = '发表评论'
 					this.flagNum = 0
 				}
-				// this.placeholder = '发表评论'
+				this.placeholder = '发表评论'
 			},
 			//监听键盘
 			watchKeyboard() {
 				var that = this;
 				uni.onKeyboardHeightChange(res => {
-					that.pageHeight = res.height
+					that.pageHeight = res.height;
+					if (res.height != 0) {
+						that.showEmoji = false;
+					}
 				})
 			},
 			//取消关注
@@ -467,6 +541,22 @@
 					})
 				}
 			},
+			zan() {
+				var that = this;
+				that.$api('post.dig', {
+					post_id: that.post.id
+				}).then(res => {
+					if (that.post.is_zan == 0) {
+						that.$u.toast('点赞成功')
+						that.post.is_zan = 1;
+						that.post.diggnums = ++that.post.diggnums;
+					} else {
+						that.post.is_zan = 0;
+						that.post.diggnums = --that.post.diggnums
+						that.$u.toast('取消点赞')
+					}
+				})
+			},
 			handlePostDig() {
 				let that = this
 				that.$api('post.dig', {
@@ -667,7 +757,7 @@
 
 		.detailsText {
 			margin-top: 20rpx;
-			font-size: 26rpx;
+			font-size: 32rpx;
 			color: #323232;
 		}
 
@@ -698,24 +788,33 @@
 	}
 
 	.delete {
-		background: #F7F7F7;
+		background: #FFFFFF;
+		box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(0, 0, 0, 0.302);
+		opacity: 1;
 		text-align: center;
 		height: 85rpx;
 		line-height: 85rpx;
 		width: 100%;
-		border-radius: 42rpx;
-		color: #323232;
-		font-size: 28rpx;
+		border-radius: 44rpx;
+		color: #767676;
+		font-size: 32rpx;
 	}
 
 	.delete2 {
-		background: #fff;
+		color: #767676;
+		font-size: 32rpx;
 		text-align: center;
-		height: 85rpx;
-		line-height: 85rpx;
+	}
+
+	.commentBar {
 		width: 100%;
-		border-radius: 42rpx;
-		color: #323232;
-		font-size: 28rpx;
+		background: #FFFFFF;
+		box-shadow: 0rpx -4rpx 4rpx 0rpx rgba(0, 0, 0, 0.1);
+		border-radius: 0rpx 0rpx 0rpx 0rpx;
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		box-sizing: border-box;
+		z-index: 9999;
 	}
 </style>

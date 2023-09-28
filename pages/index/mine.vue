@@ -31,56 +31,68 @@
 	<!-- ${CustomBar} -->
 	<view>
 		<!-- <image class="fixed w-full h-screen top-0 left-0 right-0 -z-10" src='@/static/user_background.png' /> -->
-		<view class="mineHead">
-			<view class="flex px-4 justify-end text-white" style="position: absolute;right: 0;top: 150rpx;z-index: 99;">
+		<view class="mineHead" style="position: relative;" @click.stop.prevent="upLoadUserBg">
+			<view style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;text-align: center;">
+				<image :src="background_image" mode="aspectFill" style="width: 100%;height: 100%;z-index: -1;"></image>
+			</view>
+			<view class="flex px-4 justify-end text-white" style="position: absolute;right: 0;top: 100rpx;z-index: 99;">
 				<view
 					style="background: rgba(255,255,255,0.8);border-radius: 50%;width: 82rpx;height: 82rpx;text-align: center;line-height: 82rpx;margin-right: 10rpx;">
-					<i @click="$u.route('/pages/mine/contact')" class="ri-user-heart-fill"
+					<i @click.stop="$u.route('/pages/mine/contact')" class="ri-user-heart-fill"
 						style="font-size:50rpx;color: #FE4373;"></i>
 				</view>
 				<view
 					style="background: rgba(255,255,255,0.8);border-radius: 50%;width: 82rpx;height: 82rpx;text-align: center;line-height: 82rpx;">
-					<i @click="$u.route('/pages/mine/setting')" class="ri-settings-3-fill"
+					<i @click.stop="$u.route('/pages/mine/setting')" class="ri-settings-3-fill"
 						style="font-size:50rpx;color: #FE4373;"></i>
 				</view>
 			</view>
-			<view style="margin-top: 80rpx;position: relative;">
-				<block v-if="userImg!=''">
-					<image class="rounded-full bg-gray-100" mode="aspectFill" :src="userImg || '/static/avatar.png'"
-						style="width: 140rpx;height: 140rpx;" @click="changeImage">
-					</image>
-				</block>
-				<block v-else>
-					<image class="rounded-full bg-gray-100" mode="aspectFill"
-						:src="userInfo.avatar || '/static/avatar.png'" style="width: 140rpx;height: 140rpx;"
-						@click="changeImage">
-					</image>
-				</block>
-				<view class="tips text-base text-white " v-if="userInfo.is_change_avatar!=1||is_change_avatar == 1">
-					换头像加名望</view>
+			<view style="margin-top: 50rpx;display: flex;align-items: center;justify-content: space-between;">
+				<view style="position: relative;">
+					<block v-if="userImg!=''">
+						<image class="rounded-full bg-gray-100" mode="aspectFill" :src="userImg || '/static/avatar.png'"
+							style="width: 140rpx;height: 140rpx;" @click.stop="changeImage">
+						</image>
+					</block>
+					<block v-else>
+						<image class="rounded-full bg-gray-100" mode="aspectFill"
+							:src="userInfo.avatar || '/static/avatar.png'" style="width: 140rpx;height: 140rpx;"
+							@click.stop="changeImage">
+						</image>
+					</block>
+					<view class="tips text-base text-white " v-if="userInfo.is_change_avatar!=1||is_change_avatar == 1">
+						换头像加名望</view>
+				</view>
 			</view>
-			<view class="text-xl mt-2">
+
+			<view class="text-xl mt-2" style="display: flex;align-items: center;">
 				<text style="font-size: 36rpx;color: #fff;" class="font-bold">
 					{{ userInfo.realname || '无名氏' }}·{{ userInfo.dynasty || '未知朝代' }}</text>
-				<!-- <text
-					style="margin-left: 20rpx;color: #fff;font-size: 26rpx;">（{{String(userInfo.birthyear).replace("-","")}}—{{String(userInfo.deathyear).replace("-","")}}）</text> -->
+				<text
+					style="margin-left: 35rpx;color: #fff;opacity: 0.8;font-size: 26rpx;">名望：{{ userInfo.total_mw || 0 }}</text>
 			</view>
-			<view style="color: #fff;font-size: 26rpx;margin-top: 20rpx;">雅集号：{{ userInfo.uid || '********' }}</view>
-			<view style="color: #fff;font-size: 26rpx;margin-top: 20rpx;">IP属地：{{ userInfo.province || '未知' }}</view>
-			<view style="color: #fff;font-size: 26rpx;margin-top: 20rpx;">名望：{{ userInfo.total_mw || 0 }}</view>
-			<view style="display: flex;margin-top: 30rpx;">
-				<view style="display: flex;align-items: center;margin-right: 50rpx;"><text
-						style="color: #fff;font-size: 36rpx;margin-right: 10rpx;"
-						class="font-bold">{{ userData.follow_count || 0 }}</text><text <text
-						style="color: #fff;font-size: 24rpx;">关注</text></view>
-				<view style="display: flex;align-items: center;margin-right: 50rpx;"><text
-						style="color: #fff;font-size: 36rpx;margin-right: 10rpx;"
-						class="font-bold">{{ userData.fans_count || 0 }}</text><text <text
-						style="color: #fff;font-size: 24rpx;">粉丝</text></view>
-				<view style="display: flex;align-items: center;"><text
-						style="color: #fff;font-size: 36rpx;margin-right: 10rpx;"
-						class="font-bold">{{ userData.digg_count || 0 }}</text><text <text
-						style="color: #fff;font-size: 24rpx;">获赞</text></view>
+			<view
+				style="color: #fff;font-size: 26rpx;margin-top: 20rpx;display: flex;align-items: center;opacity: 0.8;">
+				<text>雅集号：{{ userInfo.uid || '********' }}</text>
+				<text style="margin-left: 26rpx;">IP属地：{{ userInfo.province || '未知' }}</text>
+			</view>
+			<view style="color: #fff;font-size: 26rpx;margin-top: 20rpx;"></view>
+			<view style="display: flex;align-items: center;justify-content: space-between;margin-top: 30rpx;">
+				<view style="display: flex;">
+					<view style="display: flex;align-items: center;margin-right: 50rpx;"><text
+							style="color: #fff;font-size: 36rpx;margin-right: 10rpx;"
+							class="">{{ userData.follow_count || 0 }}</text><text <text
+							style="color: #fff;font-size: 24rpx;">关注</text></view>
+					<view style="display: flex;align-items: center;margin-right: 50rpx;"><text
+							style="color: #fff;font-size: 36rpx;margin-right: 10rpx;"
+							class="">{{ userData.fans_count || 0 }}</text><text <text
+							style="color: #fff;font-size: 24rpx;">粉丝</text></view>
+					<view style="display: flex;align-items: center;"><text
+							style="color: #fff;font-size: 36rpx;margin-right: 10rpx;"
+							class="">{{ userData.digg_count || 0 }}</text><text <text
+							style="color: #fff;font-size: 24rpx;">获赞</text></view>
+				</view>
+				<view style="font-size: 26rpx;color: #fff;opacity: 0.8;">点击更换背景</view>
 			</view>
 		</view>
 		<view class="containerBox">
@@ -114,7 +126,7 @@
 					</block>
 				</swiper>
 			</view>
-			<view class="userTrends">
+			<view class="userTrends" style="border-top: 1rpx solid #ECECEC;margin-top: 40rpx;">
 				<uc-mine v-for="(item,index) in listPostMine" :item="item" :key="index"></uc-mine>
 				<u-loadmore v-if="listPostMine.length" :status="loadmore" nomoreText="" color="#a1a1a1"
 					marginTop="20" />
@@ -179,6 +191,7 @@
 				headFlag: false,
 				bannerData: [],
 				is_change_avatar: 0,
+				background_image: ""
 			}
 		},
 		computed: {
@@ -214,7 +227,97 @@
 		},
 		methods: {
 			...mapActions(['getUserInfo']),
+			//上传背景
+			async upLoadUserBg() {
+				var that = this;
+				var result = null;
+				// #ifdef APP-PLUS
+				var result = await permision.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');
+				// #endif
+				if (result == null) {
+					uni.chooseImage({
+						count: 1,
+						sourceType: ['album'],
+						sizeType: "",
+						success(imageRes) {
+							var token = uni.getStorageSync("token");
+							uni.showLoading()
+							uni.uploadFile({
+								url: that.$API_URL + 'index/upload',
+								filePath: imageRes.tempFilePaths[0],
+								name: 'file',
+								formData: {
+									"token": token
+								},
+								success: res => {
+									var data = JSON.parse(res.data);
+									if (data.code == 1) {
+										that.$api("user.update_background_image", {
+											background_image: data.data.fullurl
+										}).then((resData) => {
+											uni.hideLoading()
+											if (resData.code == 1) {
+												that.background_image = data.data.fullurl
+											}
+										})
+									} else {
+										uni.hideLoading()
+									}
+								}
+							})
+						}
+					})
+				} else {
+					if (result == 1) {
+						uni.chooseImage({
+							count: 1,
+							sourceType: ['album'],
+							sizeType: "",
+							success(imageRes) {
+								var token = uni.getStorageSync("token");
+								uni.showLoading()
+								uni.uploadFile({
+									url: that.$API_URL + 'index/upload',
+									filePath: imageRes.tempFilePaths[0],
+									name: 'file',
+									formData: {
+										"token": token
+									},
+									success: res => {
+										var data = JSON.parse(res.data);
+										if (data.code == 1) {
+											that.$api("user.update_background_image", {
+												background_image: data.data.fullurl
+											}).then((resData) => {
+												uni.hideLoading()
+												if (resData.code == 1) {
+													that.background_image = data.data
+														.fullurl
+												}
+											})
+										} else {
+											uni.hideLoading()
+										}
+									}
+								})
+							}
+						})
+					} else {
+						uni.showModal({
+							title: "权限不足",
+							content: "请开启相册读取权限，以便上传图片。！",
+							confirmText: "前往开启",
+							success(res1) {
+								if (res1.confirm) {
+									permision.gotoAppPermissionSetting()
+								}
+							}
+						})
+					}
+				}
+			},
 			jumpBanner(url) {
+				console.log(url)
 				this.$u.route('/pages/joy/activity', {
 					url: url
 				})
@@ -285,7 +388,7 @@
 					uni.chooseImage({
 						count: 1,
 						sourceType: ['album'],
-						sizeType: "original",
+						sizeType: "",
 						success(res) {
 							var token = uni.getStorageSync("token");
 							uni.showLoading()
@@ -338,7 +441,7 @@
 				uni.chooseImage({
 					count: 1,
 					sourceType: ['album'],
-					sizeType: "original",
+					sizeType: "",
 					success(res) {
 						var token = uni.getStorageSync("token");
 						uni.showLoading()
@@ -392,6 +495,11 @@
 					user_id: that.userInfo.id
 				}).then(res => {
 					if (res.code === 1) {
+						if (res.data.background_image == null) {
+							that.background_image = `../../static/userBg.png`;
+						} else {
+							that.background_image = res.data.background_image;
+						}
 						that.userData = res.data
 					}
 				})
@@ -430,6 +538,7 @@
 		border-radius: 50rpx;
 		box-sizing: border-box;
 		border-bottom-left-radius: 0rpx;
+		white-space: nowrap;
 	}
 
 	.fixedHead {
@@ -454,24 +563,22 @@
 
 
 	.mineHead {
-		height: 710rpx;
-		background: url(@/static/userBg.png);
-		background-size: 100% 100%;
-		background-repeat: no-repeat;
+		height: 622rpx;
 		box-sizing: border-box;
 		padding: 140rpx 30rpx 0rpx 30rpx;
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.45) 100%);
 	}
 
 	.containerBox {
 		border-radius: 30rpx 30rpx 0px 0px;
-		margin-top: -30rpx;
+		margin-top: -70rpx;
 		background: #fff;
+		position: relative;
 
 		.select {
 			padding: 50rpx;
 			color: #323232;
 			font-size: 28rpx;
-			border-bottom: 1rpx solid rgba(238, 238, 238, 0.5);
 
 			.selectImg {
 				width: 106rpx;

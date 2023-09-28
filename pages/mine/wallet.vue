@@ -43,8 +43,9 @@
 						</view>
 					</view>
 					<view style="color: #323232;font-size: 36rpx;font-weight: bold;">
-						<text v-if="item.type != '4'">￥{{item.pay_money}}</text>
-						<text v-else>活动赠送</text>
+						<!-- 	<text v-if="item.type != '4'">￥{{item.pay_money}}</text>
+						<text v-else>活动赠送</text> -->
+						{{item.remark}}
 					</view>
 				</view>
 			</view>
@@ -147,6 +148,7 @@
 				last_page: 0,
 				rechargeList: [],
 				nomoreText: "加载更多",
+				type: 1,
 				tablist: [{
 					name: '获取记录',
 					type: 1
@@ -167,7 +169,7 @@
 				return;
 			} else {
 				this.current_page++;
-				this.getRechargeList(this.current_page)
+				this.getRechargeList(this.type, this.current_page)
 			}
 		},
 		methods: {
@@ -176,6 +178,7 @@
 				this.tabIndex = e.index;
 				this.current_page = 1;
 				this.rechargeList = [];
+				this.type = e.type;
 				this.getRechargeList(e.type, this.current_page);
 			},
 			//获取用户信息

@@ -33,6 +33,17 @@
 			<u-empty v-if="!postRecommendList.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</block>
+		<block v-if="type === 'port'">
+			<view style="padding: 0rpx 30rpx;box-sizing: border-box;">
+				<takequestion v-for="(item, index) in listPostRecommend" :key="index" :index="index" :item="item">
+				</takequestion>
+			</view>
+
+			<u-loadmore v-if="listPostRecommend.length" :status="loadmore" nomoreText="" color="#a1a1a1"
+				marginTop="20" />
+			<u-empty v-if="!listPostRecommend.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
+				marginTop="100"></u-empty>
+		</block>
 		<block v-if="type === 'follow'">
 			<uc-post v-for="(item, index) in postFollowList" :key="index" :item="item"
 				@openDetail="openDetail"></uc-post>
@@ -53,6 +64,11 @@
 				tablist: [{
 						name: '广场',
 						type: 'recommend',
+						count: 0
+					},
+					{
+						name: '话题',
+						type: 'port',
 						count: 0
 					},
 					{
@@ -78,7 +94,8 @@
 				headBarBgColor: "",
 				bannerData: [],
 				ispage: false,
-				oldPostRecommendList: []
+				oldPostRecommendList: [],
+				listPostRecommend: []
 			}
 		},
 		onLoad(option) {
@@ -95,16 +112,20 @@
 
 		},
 		onReachBottom() {
-			let that = this
+			let that = this;
 			if (that.loadmore === 'nomore') return false
 			that.loadmore = 'loading'
-			that.params.page = ++that.params.page
+			that.params.page = ++that.params.page;
 			switch (that.type) {
 				case 'recommend':
 					that.getPostRecommend()
 					break
 				case 'follow':
 					that.getPostFollow()
+					break
+				case 'port':
+					console.log("port")
+					that.getPort()
 					break
 				default:
 					break
@@ -128,7 +149,9 @@
 				this.ispage = true;
 			},
 			jumpBanner(url) {
-				this.$u.route('/pages/joy/activity')
+				this.$u.route('/pages/joy/activity', {
+					url: url
+				})
 			},
 			//广告
 			getAd() {
@@ -161,7 +184,6 @@
 			changeTab(e) {
 				let that = this
 				that.type = e.type;
-				console.log(that.type)
 				switch (that.type) {
 					case 'recommend':
 						that.params.page = 1
@@ -173,9 +195,29 @@
 						that.postFollowList = []
 						that.getPostFollow()
 						break
+					case 'port':
+						that.params.page = 1
+						that.listPostRecommend = []
+						that.getPort()
+						break
 					default:
 						break
 				}
+			},
+			async getPort() {
+				let that = this
+				that.loadmore = 'loading'
+				that.params.limit = 10
+				that.$api('post_cate.lst', that.params).then(res => {
+					if (res.code === 1) {
+						that.listPostRecommend = [...that.listPostRecommend, ...res.data];
+						if (res.data.length != 0) {
+							that.loadmore = 'loadmore'
+						} else {
+							that.loadmore = 'nomore'
+						}
+					}
+				})
 			},
 			getPostRecommend1() {
 				let that = this

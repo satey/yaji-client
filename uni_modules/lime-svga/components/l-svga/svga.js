@@ -1,4 +1,7 @@
 export class Player {
+	imageBus = {}
+	textBus = {}
+	resetBus = []
 	constructor(component) {
 		this.component = component
 	}
@@ -11,10 +14,6 @@ export class Player {
 	set fillMode(v) {
 		this.component.rFillMode = v
 	}
-	setText(text, key) {
-		this.component.rSetText = [text, key]
-		this.reset('rSetText')
-	}
 	clear(){
 		this.component.rClear = true
 		this.reset('rClear')
@@ -24,8 +23,16 @@ export class Player {
 		this.reset('rPauseAnimation')
 	}
 	reset(name){
-		setTimeout(() => {
-			this.component[name] = false
+		if(!name) return
+		if(name && !this.resetBus.includes(name)) {
+			this.resetBus.push(name)
+		}
+		clearTimeout(this.resetTimer)
+		this.resetTimer = setTimeout(() => {
+			while(this.resetBus.length) {
+				const name = this.resetBus.shift()
+				this.component[name] = false
+			}
 		},30)
 	}
 	setVideoItem(videoItem) {
@@ -86,9 +93,27 @@ export class Player {
 		this.component.rSetContentMode = contentMode
 		this.reset('rSetContentMode')
 	}
+	setText(text, key) {
+		clearTimeout(this.textTimer)
+		if(!this.textBus[key]) {
+			this.textBus[key] = text
+		}
+		this.textTimer = setTimeout(() => {
+			this.component.rSetText = this.textBus
+			this.textBus = {}
+			this.reset('rSetText')
+		},5)
+	}
 	setImage(src, key) {
-		this.component.rSetImage = [src, key]
-		// this.reset('rSetImage')
+		clearTimeout(this.imageTimer)
+		if(!this.imageBus[key]) {
+			this.imageBus[key] = src
+		}
+		this.imageTimer = setTimeout(() => {
+			this.component.rSetImage = this.imageBus
+			this.imageBus = {}
+			this.reset('rSetImage')
+		},5)
 	}
 }
 

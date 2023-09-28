@@ -12,8 +12,8 @@
 
 		<view class="rounded-lg p-4 mt-6">
 			<textarea v-model="form.content" name="" id="" cols="30" :focus="true" rows="10"
-				style="height: 300rpx;font-size: 28rpx;color: #606266;" placeholder="记录此刻想法，分享给有趣的人看…"
-				placeholder-style="font-size:28rpx;color:rgb(192, 196, 204);"></textarea>
+				style="height: 300rpx;font-size: 32rpx;color: #606266;" placeholder="发布内容，打造历史人物这一世风采"
+				placeholder-style="font-size:32rpx;color:#999999;"></textarea>
 			<!-- <u-textarea v-model="form.content" :focus="true" maxlength="500" :count="true" height="300"
 				placeholder="记录此刻想法，分享给有趣的人看…"></u-textarea> -->
 			<!-- <view class="flex flex-wrap">
@@ -26,30 +26,31 @@
 			</view> -->
 			<view class="flex flex-wrap" v-if="fei_cate.length">
 				<view class="flex items-center rounded-full p-3 text-orange-500 mr-2 mt-2"
-					style="background: rgba(254, 67, 115, 0.3);padding: 5rpx 20rpx;color: #FE4373;" @click="delGroup()"
-					v-for="(item,index) in fei_cate">
+					style="padding: 10rpx 30rpx;color: #FE4373;border: 1px solid #FF6D93;font-size: 28rpx;"
+					@click="delGroup()" v-for="(item,index) in fei_cate">
 					<i class="ri-hashtag mr-1"></i>
 					<view class="text-base">{{item.content}}</view>
-					<i class="ri-close-line ml-2" @click="delTag(index)"></i>
+					<i class="ri-close-line ml-2" style="font-size: 30rpx;" @click="delTag(index)"></i>
 				</view>
 			</view>
 			<view class="mt-4" v-if="form.images" style="display: flex;align-items: center;">
 				<view v-for="(item,index) in form.images" style="position: relative;margin-right: 20rpx;">
-					<image :src="item" style="width: 150rpx;height: 150rpx;border-radius: 10rpx;" mode="aspectFill">
+					<image :src="item" style="width: 158rpx;height: 158rpx;border-radius: 10rpx;" mode="aspectFill">
 					</image>
 					<text class="ri-close-line" @click="delImg(index)"
-						style="position: absolute;top:0;right:0rpx;z-index:5;padding: 0rpx;background: rgba(0,0,0,0.5);margin-left: 30rpx;color: #fff;font-size: 40rpx;border-radius: 50%;box-sizing: border-box;">
+						style="position: absolute;top:10rpx;right:10rpx;z-index:5;padding: 0rpx;background: rgba(0,0,0,0.8);margin-left: 30rpx;color: #fff;font-size: 30rpx;border-radius: 50%;box-sizing: border-box;width: 35rpx;height: 35rpx;text-align: center;line-height: 35rpx;">
 					</text>
 				</view>
 			</view>
 			<!--  -->
 			<view class="mt-4" v-if="form.audio" style="display: flex;align-items: center;">
 				<view @click="handlePlayAudio(form.audio)"
-					style="width: 300rpx;background: #FE4373;justify-content: center;"
+					style="width: 300rpx;background: #FE4373;justify-content: space-around;"
 					class="flex items-center  rounded-full w-32 h-10 bg-gradient-to-r  to-rose-400">
-					<image src="../../static/111.jpg" style="width: 180rpx;height: 45rpx;" v-if="audioStatus==false">
+					<image src="../../static/222.jpg" style="width: 80rpx;height: 45rpx;" mode="heightFix"
+						v-if="audioStatus==false">
 					</image>
-					<image src="/static/bofang.gif" style="width: 180rpx;height: 45rpx;" v-else mode=""></image>
+					<image src="/static/bofang.gif" style="width: 80rpx;height: 45rpx;" v-else mode="heightFix"></image>
 					<!-- <i class="ri-voiceprint-line text-2xl text-white" style="flex: 1;" :class="audioStatus ? 'animate-pulse' : ''"></i> -->
 					<text style="color: #FFFFFF;font-size: 28rpx;margin-left: 20rpx;"
 						v-if="form.timer !=0">{{form.timer}}s</text>
@@ -66,13 +67,13 @@
 				</view>
 			</view>
 			<!-- 话题 -->
-			<view class="flex pt-4" v-if='fei_cate.length<3'>
+			<!-- <view class="flex pt-4" v-if='fei_cate.length<3'>
 				<view class="flex items-center bg-gray-100 border rounded-full mr-2"
 					style="background: rgba(254, 67, 115, 0.3);padding: 10rpx 20rpx;color: #FE4373;" @click="addCate">
 					<i class="ri-hashtag mr-1"></i>
 					<view class="text-base leading-none">添加话题</view>
 				</view>
-			</view>
+			</view> -->
 			<!-- <view class="flex pt-4">
                 <u-checkbox-group>
                     <u-checkbox label="是否私密话题" size="28" labelSize="24" shape="circle" inactiveColor="#AAAAAA" activeColor="#FF7043" @change="changeProtocol"></u-checkbox>
@@ -82,17 +83,17 @@
 
 		<!-- 工具栏 -->
 		<view class="">
-			<view class="flex flex-row-center p-4 bg-white">
+			<view class="flex flex-row-center p-4 bg-white" style="border-top: 1px solid #ECECEC;">
 				<view class="flex-1 flex">
 					<view class="flex items-center  p-3 rounded-full mr-4" @click="handleImage">
-						<i class="ri-image-line text-2xl leading-none text-gray-500"></i>
+						<i class="ri-image-line text-2xl leading-none text-gray-500" style="font-size: 50rpx;"></i>
 					</view>
 					<view class="flex items-center p-3 rounded-full mr-4" @click="clickRecord">
-						<i class="ri-mic-2-line text-2xl leading-none text-gray-500"></i>
+						<i class="ri-mic-2-line text-2xl leading-none text-gray-500" style="font-size: 50rpx;"></i>
 					</view>
-					<!--  <view class="flex items-center bg-gray-100 p-3 rounded-full" @click="handleVideo">
-                        <i class="ri-live-fill text-2xl leading-none text-gray-500"></i>
-                    </view> -->
+					<view class="flex items-center  p-3 rounded-full" @click="addCate">
+						<i class="ri-hashtag text-2xl leading-none text-gray-500" style="font-size: 50rpx;"></i>
+					</view>
 				</view>
 				<!-- <view class="flex items-center bg-gray-100 p-3 rounded-full" @click="showPrivacy = true">
                     <i class="ri-eye-fill text-2xl leading-none text-gray-500 mr-2"></i>
@@ -101,7 +102,7 @@
 			</view>
 			<!-- 语音 -->
 			<view class="flex flex-col items-center  p-4 h-60 overflow-y-scroll" v-if="showRecord">
-				<view class="text-xs leading-none text-gray-500" v-if="Isrecord==false">{{ recordTip }}</view>
+				<!-- <view class="text-xs leading-none text-gray-500" v-if="Isrecord==false">{{ recordTip }}</view> -->
 				<view class="" style="font-size:32rpx ;color: #323232;margin-top: 10rpx;">{{timer==0?'':timer+'s'}}
 				</view>
 				<view style="display: flex;align-items: center;" class="mt-16">
@@ -117,9 +118,10 @@
 								style="background: #FE4373;">
 								<i class="ri-mic-fill text-4xl leading-none text-white"></i>
 							</view>
-							<view v-if="recording"
-								class="animate-ping absolute rounded-full p-2 bg-fuchsia-200 opacity-50">
-								<view class="rounded-full w-20 h-20 p-2 bg-fuchsia-500 opacity-50"></view>
+							<view v-if="recording" class="animate-ping absolute rounded-full p-2  opacity-50"
+								style="background: #fe4373;">
+								<view class="rounded-full w-20 h-20 p-2  opacity-50" style="background: #fe4373;">
+								</view>
 							</view>
 						</view>
 					</view>
@@ -138,11 +140,13 @@
 						<text class="ri-check-fill" style="font-size: 35rpx;color: #fff;"></text>
 					</view>
 				</view>
+				<view style="text-align: center;margin-top: 36rpx;font-size: 26rpx;color: #323232;">按住录音</view>
 			</view>
 		</view>
 		<!-- 推荐话题 -->
 		<view style="display: flex;flex-wrap: wrap;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="showTopic">
-			<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in cateList"
+			<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4"
+				style="color: #767676;font-size: 28rpx;background: #F7F7F7 ;" v-for="(item, index) in cateList"
 				:key="index" :item="item" @click="addTag(item)">
 				<i class="ri-hashtag mr-1"></i>
 				<view class="text-base">{{ item.title }}</view>
@@ -153,7 +157,7 @@
 		<u-popup :show="showTag" @close="showTag = false" :closeable="true" :round="30"
 			customStyle="min-height: 500rpx;">
 			<view class="p-4">
-				<view class="text-2xl text-center">添加话题</view>
+				<view class="text-2xl">添加话题</view>
 				<view style="display: flex;margin-top: 50rpx;">
 					<input type="text" v-model="tag"
 						style="height: 72rpx;background: #F7F7F7;border-radius: 36rpx;flex: 1;padding-left: 15rpx;font-size: 28rpx;"
@@ -439,6 +443,10 @@
 				if (!item) {
 					that.$u.toast('话题不能为空')
 					return false
+				}
+				if (that.fei_cate.length >= 3) {
+					that.$u.toast('只能添加三个话题')
+					return;
 				}
 				var isAdd = false;
 				that.fei_cate.forEach((val, index) => {
@@ -766,7 +774,7 @@
 				var token = uni.getStorageSync("token");
 				uni.chooseImage({
 					count: 1,
-					sizeType: ['original', 'compressed'],
+					sizeType: [],
 					sourceType: ['album'],
 					success: (res) => {
 						res.tempFilePaths.forEach(item => {

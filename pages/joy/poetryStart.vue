@@ -127,13 +127,13 @@
 	}
 
 	.title {
-		font-size: 32rpx;
+		font-size: 36rpx;
 		color: #555555;
 		text-align: center;
 	}
 
 	.sunTitle {
-		font-size: 28rpx;
+		font-size: 32rpx;
 		color: #555555;
 		margin: 25rpx 100rpx;
 	}
@@ -148,6 +148,7 @@
 		text-align: center;
 		line-height: 85rpx;
 		margin: 50rpx auto;
+		font-size: 32rpx;
 	}
 
 	.tips {

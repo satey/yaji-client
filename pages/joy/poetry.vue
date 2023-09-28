@@ -9,20 +9,20 @@
 			</view>
 		</u-navbar>
 		<view v-if="showSvga" id="svgaPlayer" class="fixed w-full h-screen top-0 right-0 bottom-0"
-			style="z-index: 9999999;height:55%;width: 55%;left: 170rpx;">
+			style="z-index: 9999999;height:100%;width: 100%;left: 0rpx;">
 			<l-svga ref="svgaPlayer"></l-svga>
 		</view>
 		<view class="poetryBox">
 			<!-- 流水 -->
 			<view class="position" v-for="(item,index) in gameUserArr" :key="index">
 				<view style="display: flex;align-items: center;justify-content: center;">
-					<image v-if="item!=''" class="positionImg" style="border: 1rpx solid #FE4373;" mode="aspectFill"
+					<image v-if="item!=''" class="positionImg" style="border: 1rpx solid #F8BC31;" mode="aspectFill"
 						:src="item.avatar" @click="openUserHome(item.user_id)">
 					</image>
 					<image v-else class="positionImg" mode="aspectFill" src="@/static/noUser.png">
 					</image>
 				</view>
-				<view class="positionText" :style="{color:item.user_id == userInfo.id?'#FE4373':''}">
+				<view class="positionText" :style="{color:item.user_id == userInfo.id?'#F8BC31':''}">
 					{{item == ''?'空位':item.role.realname+'·'+item.role.dynasty}}
 				</view>
 			</view>
@@ -75,8 +75,10 @@
 											style="font-size: 40rpx;color: #333;margin-left: 30rpx;"></text>
 										<text v-if="item.isZan ==0" class="ri-thumb-down-line" @click="cai(item,index)"
 											style="font-size: 40rpx;color: #333;margin-left: 30rpx;"></text>
-										<text @click="openUserHome(item.user_id)" class="ri-gift-fill"
-											style="font-size: 40rpx;margin-left: 30rpx;color:#FE4373"></text>
+										<image @click="openUserHome(item.user_id)" src="@/static/cailiwu.png"
+											style="width: 36rpx;height: 36rpx;margin-left: 53rpx;" mode=""></image>
+										<!-- <text @click="openUserHome(item.user_id)" class="ri-gift-fill"
+											style="font-size: 40rpx;margin-left: 30rpx;color:#FE4373"></text> -->
 									</view>
 								</view>
 							</view>
@@ -326,11 +328,11 @@
 			</view>
 		</u-modal>
 		<u-modal :show="exitModul" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
-			confirmText="离开" cancelText="取消" @cancel="exitModul=false" @confirm="exit" style="z-index: 9999999;">
+			confirmText="确定" cancelText="取消" @cancel="exit" @confirm="exit2" style="z-index: 9999999;">
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
 				<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
-					<text>确定要离开房间吗？</text>
+					<text>确定要离开房间吗？点击确定将开启浮窗并暂时离开，点击取消将退出房间。</text>
 				</view>
 			</view>
 		</u-modal>
@@ -519,7 +521,7 @@
 
 			} else {
 				console.log(e)
-				if(e.roomData == undefined){
+				if (e.roomData == undefined) {
 					that.$nextTick(() => {
 						let params = {
 							type: "add_game_room",
@@ -536,7 +538,7 @@
 							}
 						});
 					})
-				}else{
+				} else {
 					console.log(e)
 					var socketDate = JSON.parse(e.roomData)
 					var userArr = ["", "", "", "", "", ""];
@@ -556,9 +558,9 @@
 							`命中 ${socketDate.punished_user_data.role.realname}·${socketDate.punished_user_data.role.dynasty}`;
 						that.historyTaskData = socketDate.punished_user_data.game_task;
 					}
-					
+
 				}
-			
+
 			}
 			that.getEmojiList();
 			that.watchKeyboard();
@@ -647,6 +649,9 @@
 			})
 		},
 		methods: {
+			exit2() {
+				this.backHome()
+			},
 			backHome() {
 				var that = this;
 				var userInfo = uni.getStorageSync("userInfo");
@@ -889,7 +894,8 @@
 				that.$api("gift.giveGift", {
 					"receiver_user_id": that.userItem.id,
 					"nums": 1,
-					"gift_id": item.id
+					"gift_id": item.id,
+					"channel": 5
 				}).then(data => {
 					if (data.code == 1) {
 						if (data.msg == "赠送成功") {
@@ -916,14 +922,17 @@
 				})
 			},
 			//礼物动画
-			handleGiftPlay(giftUrl) {
+			handleGiftPlay(giftData) {
 				let that = this;
+				console.log(giftData)
 				that.showSvga = true;
 				that.$nextTick(() => {
 					that.$refs.svgaPlayer.render(async (parser, player) => {
-						let videoItem = await parser.load(giftUrl)
+						let videoItem = await parser.load(giftData.content)
 						await player.setVideoItem(videoItem)
-						player.loops = 1
+						player.loops = 1;
+						player.setContentMode(giftData.is_full_screen == 1 ? "AspectFill" :
+							"AspectFit")
 						player.startAnimation()
 						player.onFinished(() => {
 							that.showSvga = false
@@ -1379,7 +1388,7 @@
 					} else if (socketDate.type == 'gift') {
 						that.showGift = false;
 						that.showSvga = true;
-						that.handleGiftPlay(socketDate.data.content);
+						that.handleGiftPlay(socketDate.data);
 						that.msgList.push({
 							type: "gift",
 							data: socketDate.data
@@ -1863,8 +1872,7 @@
 	.selectedBtn {
 		width: 280rpx;
 		height: 80rpx;
-		background: #FE4373;
-		border: 1rpx solid rgba(255, 255, 0, 1);
+		background: #fdce60;
 		color: #fff;
 		border-radius: 10rpx;
 		text-align: center;

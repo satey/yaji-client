@@ -22,21 +22,31 @@
 				</view>
 			</view>
 		</u-modal>
-		<view class="homeHead">
+		<view class="homeHead" style="position: relative;">
+			<view style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;text-align: center;">
+				<image :src="user.background_image||'../../static/userBg.png'" mode="aspectFill" style="width: 100%;height: 100%;z-index: -1;">
+				</image>
+			</view>
 			<view style="margin-top: 80rpx;">
 				<image class="rounded-full bg-gray-100" :src="user.avatar || '/static/avatar.png'"
 					style="width: 140rpx;height: 140rpx;"
 					@click="viewUserImg(user.original_avatar || '/static/avatar.png')" mode="aspectFill">
 				</image>
 			</view>
-			<view class="text-xl mt-2">
-				<text style="font-size: 36rpx;color: #fff;" class="font-bold">
-					{{ role.realname || '无名氏' }}·{{role.dynasty || '未知朝代' }}</text>
+			<view class="text-xl mt-2" style="display: flex;align-items: center;">
+				<view style="font-size: 36rpx;color: #fff;" class="font-bold">
+					{{ role.realname || '无名氏' }}·{{ role.dynasty || '未知朝代' }}
+				</view>
+				<view style="margin-left: 35rpx;color: #fff;opacity: 0.8;font-size: 26rpx;">名望：{{ user.total_mw || 0 }}
+				</view>
 			</view>
-			<view style="color: #fff;font-size: 26rpx;margin-top: 20rpx;">雅集号：{{ user.uid || '********' }}</view>
-			<view style="color: #fff;font-size: 26rpx;margin-top: 20rpx;">IP属地：{{ user.province || '未知' }}</view>
-			<view style="color: #fff;font-size: 26rpx;margin-top: 20rpx;">名望：{{ user.total_mw || 0 }}</view>
-			<view style="display: flex;margin-top: 30rpx;">
+			<view style="color: #fff;font-size: 26rpx;margin-top: 20rpx;">
+				<text>雅集号：{{ user.uid || '********' }}</text>
+				<text style="margin-left: 26rpx;">IP属地：{{ user.province || '未知' }}</text>
+			</view>
+			<view style="color: #fff;font-size: 26rpx;margin-top: 10rpx;"></view>
+
+			<view style="display: flex;margin-top: 15rpx;">
 				<view style="display: flex;align-items: center;margin-right: 50rpx;"><text
 						style="color: #fff;font-size: 36rpx;margin-right: 10rpx;"
 						class="font-bold">{{ user.follow_count || 0  }}</text><text <text
@@ -51,7 +61,8 @@
 						style="color: #fff;font-size: 24rpx;">获赞</text></view>
 			</view>
 		</view>
-		<view style="padding: 30rpx;border-radius: 30rpx 30rpx 0px 0px;margin-top: -30rpx;background: #fff;">
+		<view
+			style="padding: 30rpx;border-radius: 30rpx 30rpx 0px 0px;margin-top: -70rpx;background: #fff;position: relative;z-index: 99;">
 			<u-tabs :list="tablist" lineColor="#FE4373" lineWidth="70rpx" lineHeight="16rpx" itemStyle="height: 72rpx;"
 				inactiveStyle="color: #787878; transform: scale(1);"
 				activeStyle="color: #333333; font-weight: blod; transform: scale(1.2);" @change="changeTab">
@@ -262,6 +273,7 @@
 				that.$api('user.profile', {
 					user_id: that.$Route.query.user_id
 				}).then(res => {
+					console.log(res)
 					if (res.code === 1) {
 						that.user = res.data
 						that.is_follow = res.data.is_follow
@@ -317,11 +329,9 @@
 </script>
 <style lang="scss" scoped>
 	.homeHead {
-		height: 710rpx;
-		background: url(@/static/userBg.png);
-		background-size: 100% 100%;
-		background-repeat: no-repeat;
+		height: 622rpx;
 		box-sizing: border-box;
 		padding: 140rpx 30rpx 0rpx 30rpx;
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.45) 100%);
 	}
 </style>
