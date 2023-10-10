@@ -121,7 +121,7 @@
 					:duration="1000">
 					<block v-for="(item,index) in bannerData">
 						<swiper-item v-if="item.status == 'normal'">
-							<image class="banner" :src="item.image" @click="jumpBanner(item.url)"></image>
+							<image class="banner" :src="item.image" @click="jumpBanner(item)"></image>
 						</swiper-item>
 					</block>
 				</swiper>
@@ -316,11 +316,15 @@
 					}
 				}
 			},
-			jumpBanner(url) {
-				console.log(url)
-				this.$u.route('/pages/joy/activity', {
-					url: url
-				})
+			jumpBanner(item) {
+				if (item.is_external_links == 0) {
+					this.$u.route(item.url)
+				} else {
+					this.$u.route('/pages/joy/activity', {
+						url: item.url,
+						title: item.title
+					})
+				}
 			},
 			//广告
 			getAd() {

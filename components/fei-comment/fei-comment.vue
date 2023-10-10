@@ -222,29 +222,15 @@
 		methods: {
 			openUserDetail2(item) {
 				var that = this;
-				var userInfo = uni.getStorageSync("userInfo");
-				if (item.p_user_id == userInfo.id) {
-					uni.switchTab({
-						url: '/pages/index/mine'
-					});
-				} else {
-					that.$u.route('/pages/user/home', {
-						user_id: item.p_user_id
-					})
-				}
+				that.$u.route('/pages/user/home', {
+					user_id: item.p_user_id
+				})
 			},
 			openUserDetail(item) {
 				var that = this;
-				var userInfo = uni.getStorageSync("userInfo");
-				if (item.user_id == userInfo.id) {
-					uni.switchTab({
-						url: '/pages/index/mine'
-					});
-				} else {
-					that.$u.route('/pages/user/home', {
-						user_id: item.user_id
-					})
-				}
+				that.$u.route('/pages/user/home', {
+					user_id: item.user_id
+				})
 			},
 			//失去焦点
 			blur() {

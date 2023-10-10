@@ -240,7 +240,7 @@
 				if (token == '') {
 					return;
 				}
-				that.socKetUrl = `wss://yaji.ixiaojin.cn/websocket?token=${token}&session_id=${session_id}`;
+				that.socKetUrl = `wss://yaji.suoeryoude.cn/websocket?token=${token}&session_id=${session_id}`;
 				getApp().globalData.socketTask = uni.connectSocket({
 					url: that.socKetUrl, //仅为示例，并非真实接口地址。
 					complete: () => {
@@ -263,8 +263,8 @@
 							var page = pages[pages.length - 1];
 							if (JSON.parse(res.data).data.list.length >= 6) {
 								if (page.route != "pages/joy/poetry") {
-									console.log(JSON.parse(res.data))
 									var gameRoomData = that.$store.state.game.gameRoomData;
+									console.log(gameRoomData)
 									if (gameRoomData.game_room_id != undefined) {
 										that.$u.route('pages/joy/poetry?roomId=' + gameRoomData.game_room_id +
 											'&roomData=' + res.data);

@@ -54,13 +54,13 @@
 										mode="aspectFill">
 									</image>
 									<view style="width: calc(100% - 50rpx - 10rpx);color: #767676;">
-										<view>
+										<view style="display: flex;align-items: center;">
 											<text
 												@click="openHome(sonItem)">{{sonItem.role_realname}}·{{sonItem.role_dynasty}}
 												<text v-if="sonItem.p_role_realname!=undefined"><text
 														style="color: #777;margin: 0rpx 10rpx;">回复</text>{{sonItem.p_role_realname}}·{{sonItem.p_role_dynasty}}</text>
 											</text>
-											<image v-if="sonItem.p_role_realname==undefined" :src="item.mw_image"
+											<image v-if="sonItem.p_role_realname==undefined" :src="sonItem.mw_image"
 												style="width: 32rpx;height: 32rpx;margin-left: 20rpx;" mode="">
 											</image>
 										</view>
@@ -100,14 +100,14 @@
 										mode="aspectFill">
 									</image>
 									<view style="width: calc(100% - 50rpx - 10rpx);">
-										<view>
+										<view style="display: flex;align-items: center;">
 											<text
 												@click="openHome(sonItem)">{{sonItem.role_realname}}·{{sonItem.role_dynasty}}
 												<text v-if="sonItem.p_role_realname!=undefined"> <text
 														style="color: #777;margin: 0rpx 10rpx;">回复</text>
 													{{sonItem.p_role_realname}}·{{sonItem.p_role_dynasty}}</text>
 											</text>
-											<image v-if="sonItem.p_role_realname==undefined" :src="item.mw_image"
+											<image v-if="sonItem.p_role_realname==undefined" :src="sonItem.mw_image"
 												style="width: 32rpx;height: 32rpx;margin-left: 20rpx;" mode="">
 											</image>
 										</view>
@@ -177,18 +177,10 @@
 		},
 		methods: {
 			openHome(item) {
-				console.log(item);
 				var that = this;
-				var userInfo = uni.getStorageSync("userInfo");
-				if (item.user_id == userInfo.id) {
-					uni.switchTab({
-						url: '/pages/index/mine'
-					});
-				} else {
-					that.$u.route('/pages/user/home', {
-						user_id: item.user_id
-					})
-				}
+				that.$u.route('/pages/user/home', {
+					user_id: item.user_id
+				})
 			},
 			closePopup() {
 				this.showAction = false
@@ -337,7 +329,8 @@
 							post_comment_id: data.post_comment_id,
 							top_post_comment_id: data.post_comment_id,
 							post_id: data.post_id,
-							user_id: userInfo.id
+							user_id: userInfo.id,
+							mw_image: userInfo.mw_image
 						}
 					}
 				})

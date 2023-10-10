@@ -36,16 +36,21 @@
 								<text style="font-size:20rpx;">x</text>
 								<view>{{item.money}}</view>
 							</view>
-
 						</view>
 						<view style="color: #999;font-size: 26rpx;margin-top: 10rpx;">
 							{{item.createtime}}
 						</view>
 					</view>
-					<view style="color: #323232;font-size: 36rpx;font-weight: bold;">
-						<!-- 	<text v-if="item.type != '4'">￥{{item.pay_money}}</text>
-						<text v-else>活动赠送</text> -->
-						{{item.remark}}
+					<view style="color: #323232;font-size: 25rpx;text-align: right;">
+						<block v-if="item.type == 1">
+							<view>{{item.remark}}</view>
+							<view style="color: #999;font-size: 26rpx;margin-top: 10rpx;font-weight: bold;">
+								￥{{item.pay_money}}
+							</view>
+						</block>
+						<block v-else>
+							{{item.remark}}
+						</block>
 					</view>
 				</view>
 			</view>
@@ -161,7 +166,7 @@
 		onShow() {
 			this.rechargeList = [];
 			this.getUserInfo();
-			this.getRechargeList(this.tablist[0].type, this.current_page);
+			this.getRechargeList(this.tablist[this.tabIndex].type, this.current_page);
 		},
 		onReachBottom() {
 			if (this.current_page == this.last_page) {

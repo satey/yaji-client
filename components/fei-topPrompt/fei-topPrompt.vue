@@ -34,6 +34,7 @@
 					data: JSON.stringify(params),
 					success() {
 						console.log("离开房间消息成功");
+						uni.removeStorageSync("waterData")
 						that.$store.commit("setGameRoomData", [])
 						that.$store.commit("setGameBarFlag", false)
 					},

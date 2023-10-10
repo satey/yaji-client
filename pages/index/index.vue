@@ -117,7 +117,7 @@
 			</view>
 		</view>
 		<!-- 名人堂 -->
-		<view class="celebrity" @click="$u.route('pages/user/famousRole')">
+		<view class="celebrity" @click="$u.route('pages/user/famousRole')" style="padding-bottom: 30rpx;">
 			<view class="celebrityContainer">
 				<image style="width: 130rpx;height: 130rpx;"
 					src="https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/index/tang.png" mode=""></image>
@@ -139,7 +139,9 @@
 						</image>
 						<view class="userBox">
 							<view style="margin-left: 30rpx;">
-								<image class="userImg" :src="item.avatar" mode="aspectFill"></image>
+								<image class="userImg" @click="viewUserImg(item.original_avatar|| '/static/avatar.png')"
+									:src="item.avatar" mode="aspectFill">
+								</image>
 							</view>
 							<view class="userNameContainer"
 								style="margin-top: 21rpx;padding: 0rpx 30rpx;background-size: 100% 100%;">
@@ -164,12 +166,12 @@
 							<view style="color: #3D3D3D;font-size: 30rpx;">最新动态</view>
 							<block v-if="item.post_data !=null?true:false">
 								<view v-if="item.post_data.content != ''"
-									@click="$u.route(`pages/user/home?user_id=${item.id}`)"
+									@click="$u.route(`pages/post/detail?post_id=${item.post_data.id}`)"
 									style="margin-top: 23rpx;color: #6A6A6A;font-size: 26rpx;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">
 									{{item.post_data.content}}
 								</view>
 								<view v-if="item.post_data.images !=''?true:false"
-									@click="$u.route(`pages/user/home?user_id=${item.id}`)"
+									@click="$u.route(`pages/post/detail?post_id=${item.post_data.id}`)"
 									style="display: flex;align-items: center;margin-top: 17rpx;"
 									:style='item.post_data.images.split(",").length>=3?"justify-content:space-between":""'>
 									<block v-for="(imgItem,imgIndex) in item.post_data.images.split(',')"
@@ -497,6 +499,12 @@
 		},
 		methods: {
 			...mapActions(['getUserInfo']),
+			viewUserImg(item) {
+				uni.previewImage({
+					current: 1,
+					urls: [item]
+				})
+			},
 			getTopImg() {
 				let that = this;
 				that.$api("index.index_top_image").then(res => {
@@ -616,8 +624,14 @@
 				})
 			},
 			jumpBanner(item) {
-				console.log(item)
-				this.$u.route(item.url)
+				if (item.is_external_links == 0) {
+					this.$u.route(item.url)
+				} else {
+					this.$u.route('/pages/joy/activity', {
+						url: item.url,
+						title: item.title
+					})
+				}
 			},
 			//打开诗词结缘
 			openWine() {

@@ -22,7 +22,7 @@
 		<view style="height: 100rpx;"></view>
 		<view class="bannerBox" v-if="bannerData.length != 0">
 			<image class="banner" :src="bannerData.image" mode="scaleToFill" v-if="bannerData.status == 'normal'"
-				@click="jumpBanner(bannerData.url)">
+				@click="jumpBanner(bannerData)">
 			</image>
 		</view>
 		<block v-if="type === 'recommend'">
@@ -148,10 +148,15 @@
 			openDetail() {
 				this.ispage = true;
 			},
-			jumpBanner(url) {
-				this.$u.route('/pages/joy/activity', {
-					url: url
-				})
+			jumpBanner(item) {
+				if (item.is_external_links == 0) {
+					this.$u.route(item.url)
+				} else {
+					this.$u.route('/pages/joy/activity', {
+						url: item.url,
+						title: item.title
+					})
+				}
 			},
 			//广告
 			getAd() {

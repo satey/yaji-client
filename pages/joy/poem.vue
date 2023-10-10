@@ -51,7 +51,8 @@
 				marginTop="100"></u-empty>
 			<view class="listItem" v-for="(item,index) in lists" :key="index">
 				<view style="width: 96rpx;height: 96rpx;border-radius: 50%;overflow: hidden;margin-right: 26rpx;">
-					<image @click="openHome(item)" style="width: 100%;height: 100%;" :src="item.avatar" mode=""></image>
+					<image @click="openHome(item)" style="width: 100%;height: 100%;" :src="item.avatar"
+						mode="aspectFill"></image>
 				</view>
 				<view style="flex: 1;">
 					<view style="display: flex;align-items: center;">
@@ -62,7 +63,7 @@
 					</view>
 					<view
 						style="width: 100%;display: flex;align-items: center;justify-content: space-between;margin-top: 13rpx;">
-						<view style="font-size: 32rpx;color: #3D3D3D;flex: 1;margin-right: 20rpx;"
+						<view style="font-size: 32rpx;color: #3D3D3D;flex: 1;margin-right: 50rpx;"
 							hover-class="hoverClass" :style="{background:replyData.id==item.id?'#eee':''}"
 							@longpress="operate(item,'0',index)">
 							{{item.poetry}}
@@ -97,7 +98,7 @@
 							<view
 								style="width: 36rpx;height: 36rpx;border-radius: 50%;overflow: hidden;margin-right: 15rpx;">
 								<image @click="openHome(replyItem)" style="width: 100%;height: 100%;"
-									:src="replyItem.avatar" mode=""></image>
+									:src="replyItem.avatar" mode="aspectFill"></image>
 							</view>
 							<view style="flex: 1;">
 								<view style="display: flex;align-items: center;">
@@ -115,7 +116,7 @@
 								</view>
 								<view
 									style="width: 100%;display: flex;align-items: center;justify-content: space-between;margin-top: 13rpx;">
-									<view style="font-size: 32rpx;color: #3D3D3D;flex: 1;margin-right: 20rpx;"
+									<view style="font-size: 32rpx;color: #3D3D3D;flex: 1;margin-right: 50rpx;"
 										hover-class="hoverClass"
 										:style="{background:replyData.id==replyItem.id?'#eee':''}"
 										@longpress="operate(replyItem,'1',index)">
@@ -149,7 +150,7 @@
 							<view
 								style="width: 36rpx;height: 36rpx;border-radius: 50%;overflow: hidden;margin-right: 15rpx;">
 								<image @click="openHome(newItem)" style="width: 100%;height: 100%;"
-									:src="newItem.avatar" mode=""></image>
+									:src="newItem.avatar" mode="aspectFill"></image>
 							</view>
 							<view style="flex: 1;">
 								<view style="display: flex;align-items: center;">
@@ -166,7 +167,7 @@
 								</view>
 								<view
 									style="width: 100%;display: flex;align-items: center;justify-content: space-between;margin-top: 13rpx;">
-									<view style="font-size: 32rpx;color: #3D3D3D;flex: 1;margin-right: 20rpx;"
+									<view style="font-size: 32rpx;color: #3D3D3D;flex: 1;margin-right: 50rpx;"
 										hover-class="hoverClass"
 										:style="{background:replyData.id==newItem.id?'#eee':''}"
 										@longpress="operate(newItem,'2',index)">
@@ -278,18 +279,10 @@
 				uni.hideKeyboard()
 			},
 			openHome(item) {
-				console.log(item)
 				var that = this;
-				var userInfo = uni.getStorageSync("userInfo");
-				if (userInfo.id == item.user_id) {
-					uni.switchTab({
-						url: '/pages/index/mine'
-					});
-				} else {
-					that.$u.route('/pages/user/home', {
-						user_id: item.user_id
-					})
-				}
+				that.$u.route('/pages/user/home', {
+					user_id: item.user_id
+				})
 			},
 			report() {
 				var that = this;
@@ -408,7 +401,6 @@
 							break;
 					}
 				})
-
 			},
 			replyComment(item) {
 				var that = this;
@@ -470,6 +462,7 @@
 					that.replyData.poetry = that.message;
 					that.replyData.poetry_word_id = that.centerText.id;
 					that.$api("poetry.add_poetry_ling", that.replyData).then(res => {
+						that.flag = false;
 						if (res.code == 1) {
 							that.lists = [];
 							that.page = 1;
@@ -486,8 +479,9 @@
 				} else {
 					that.replyData.poetry = that.message;
 					that.replyData.poetry_word_id = that.centerText.id;
+					console.log(that.replyData)
 					that.$api("poetry.reply_poetry_ling", that.replyData).then(res => {
-						console.log(res)
+						that.flag = false;
 						if (res.code == 1) {
 							that.lists.forEach((val, index) => {
 								if (val.id == res.data.top_poetry_id) {
@@ -524,9 +518,10 @@
 						that.showEmoji = false;
 					})
 				}
-				that.flag = false;
 			},
 			addPoem() {
+				this.watchKeyboard();
+				this.replyUserData = [];
 				this.showCommentBar = true;
 				this.inputFocus = true;
 				this.showEmoji = false;
@@ -539,8 +534,9 @@
 				this.placeholder = `含有【${this.centerText.word}】字的诗句`
 			},
 			addComment(item) {
-				console.log(item)
 				var that = this;
+				this.replyUserData = [];
+				this.watchKeyboard();
 				this.showCommentBar = true;
 				this.inputFocus = true;
 				this.message = '';
@@ -573,7 +569,6 @@
 			getCenterText() {
 				var that = this;
 				that.$api("poetry.everyday_poetry_title").then(res => {
-					console.log(res)
 					if (res.code == 1) {
 						that.centerText = res.data;
 						that.page = 1;

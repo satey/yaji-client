@@ -119,6 +119,9 @@
 		},
 		onLoad(event) {
 			this.webUrl = event.url;
+			uni.setNavigationBarTitle({
+				title: event.title
+			});
 			// this.currentIndex = parseInt(event.num);
 		}
 	}

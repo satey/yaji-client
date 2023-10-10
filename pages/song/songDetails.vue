@@ -28,7 +28,8 @@
 					</image>
 				</view>
 				<view class="centerUser">
-					<view style="font-size: 32rpx;color: #3D3D3D;margin-top: 10rpx;display: flex;align-items: center;">
+					<view style="font-size: 32rpx;color: #3D3D3D;margin-top: 10rpx;display: flex;align-items: center;"
+						@click="$u.route('/pages/user/home', {user_id: detail.user_id})">
 						<text>{{detail.role_realname}}·{{detail.role_dynasty}}</text>
 						<image :src="detail.mw_image" style="width: 32rpx;height: 32rpx;margin-left: 12rpx;" mode="">
 						</image>
@@ -213,16 +214,9 @@
 		methods: {
 			openMine(item) {
 				var that = this;
-				var userInfo = uni.getStorageSync("userInfo");
-				if (item.user_id == userInfo.id) {
-					uni.switchTab({
-						url: '/pages/index/mine'
-					});
-				} else {
-					that.$u.route('/pages/user/home', {
-						user_id: item.user_id
-					})
-				}
+				that.$u.route('/pages/user/home', {
+					user_id: item.user_id
+				})
 			},
 			userImgClick() {
 				if (this.topAudioFlag == false) {
@@ -380,7 +374,6 @@
 			},
 			replyItem(item, index) {
 				let that = this;
-				console.log(this.audio)
 				if (index == -1) {
 					if (this.userClickFlag) {
 						that.animationFlag = false;
@@ -444,15 +437,13 @@
 					voice: e.url,
 					duration_time: e.timer
 				}).then(res => {
-					console.log(res)
 					that.connectFlag = false;
 					if (res.code == 1) {
 						that.replyList = [];
 						that.page = 1;
 						that.getReplyList()
 					}
-					that.topPid = null;
-					that.type = null;
+
 					uni.showToast({
 						icon: "none",
 						title: res.msg
@@ -502,9 +493,10 @@
 					limit: 10,
 					duet_song_id: that.$Route.query.songId
 				}).then(res => {
-					console.log(res)
 					if (res.code == 1) {
 						that.replyList = [...that.replyList, ...res.data];
+						that.topPid = null;
+						that.type = null;
 						that.replyList.forEach((val, index) => {
 							val.replyIndex = null;
 							val.pauseIndex = null;

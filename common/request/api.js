@@ -34,7 +34,7 @@ export default {
 		},
 	},
 	song: {
-		del:{
+		del: {
 			url: "duet_song/del",
 			auth: false,
 			method: 'GET',
@@ -200,6 +200,12 @@ export default {
 		}
 	},
 	poetry: {
+		reply_my_poetry_comment_list: {
+			url: 'poetry/reply_my_poetry_comment_list',
+			auth: false,
+			method: 'GET',
+			desc: '评论我的诗缘的评论的子集列表',
+		},
 		delComment: {
 			url: 'poetry/del',
 			auth: false,

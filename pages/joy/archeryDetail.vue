@@ -42,12 +42,12 @@
 						</block>
 						<block v-else>
 							<block v-if="detail.gender == 1">
-								<image style="width: 100%;border-radius: 5rpx;" src="@/static/avatar.png"
+								<image style="width: 44rpx;height: 44rpx;border-radius: 5rpx;" src="@/static/avatar.png"
 									mode="aspectFill">
 								</image>
 							</block>
 							<block v-else>
-								<image style="width: 100%;border-radius: 5rpx;" src="@/static/avatar-female.png"
+								<image style="width: 44rpx;height: 44rpx;border-radius: 5rpx;" src="@/static/avatar-female.png"
 									mode="aspectFill"></image>
 							</block>
 						</block>
@@ -85,6 +85,10 @@
 			<view style="margin-top: 26rpx;font-size: 28rpx;color: #1B1A1A;">
 				<text style="opacity: 0.6;">奖励：</text>
 				<text>{{detail.reward||"无"}}</text>
+			</view>
+			<view style="margin-top: 26rpx;font-size: 28rpx;color: #1B1A1A;" v-if="detail.user_id == userInfo.id">
+				<text style="opacity: 0.6;">答案：</text>
+				<text>{{detail.answer||"无"}}</text>
 			</view>
 			<view style="display: flex;align-items: flex-end;justify-content: space-between;">
 				<view style="display: flex;align-items: center;">
@@ -171,16 +175,9 @@
 			},
 			openUserDetail() {
 				var that = this;
-				var userInfo = uni.getStorageSync("userInfo");
-				if (that.detail.user_id == userInfo.id) {
-					uni.switchTab({
-						url: '/pages/index/mine'
-					});
-				} else {
-					that.$u.route('/pages/user/home', {
-						user_id: that.detail.user_id
-					})
-				}
+				that.$u.route('/pages/user/home', {
+					user_id: that.detail.user_id
+				})
 			},
 			//关注
 			observe() {
@@ -235,13 +232,13 @@
 					})
 					return;
 				}
-				if (that.pirntAnswer.match(reg)) {
-					uni.showToast({
-						icon: "none",
-						title: "答案不能有特殊字符"
-					})
-					return;
-				}
+				// if (that.pirntAnswer.match(reg)) {
+				// 	uni.showToast({
+				// 		icon: "none",
+				// 		title: "答案不能有特殊字符"
+				// 	})
+				// 	return;
+				// }
 				that.$api("archery.addComment", {
 					"shot_cover_id": that.$Route.query.archeryId,
 					"pid": 0,

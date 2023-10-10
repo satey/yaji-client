@@ -518,9 +518,7 @@
 				that.$nextTick(() => {
 					that.sendMsg("add_game_room");
 				})
-
 			} else {
-				console.log(e)
 				if (e.roomData == undefined) {
 					that.$nextTick(() => {
 						let params = {
@@ -558,9 +556,7 @@
 							`命中 ${socketDate.punished_user_data.role.realname}·${socketDate.punished_user_data.role.dynasty}`;
 						that.historyTaskData = socketDate.punished_user_data.game_task;
 					}
-
 				}
-
 			}
 			that.getEmojiList();
 			that.watchKeyboard();
@@ -589,11 +585,11 @@
 					cate: 2,
 					user_punished_code: that.gameData.punished_code
 				}
-				console.log(params)
 				getApp().globalData.socketTask.send({
 					data: JSON.stringify(params),
 					success() {
 						console.log("离开房间消息成功");
+						uni.removeStorageSync("waterData")
 					},
 					fail() {
 						console.log("离开房间消息失败");

@@ -296,17 +296,10 @@
 			//跳转用户详情
 			openUserHome(id) {
 				var that = this;
-				var userInfo = uni.getStorageSync("userInfo");
 				that.$emit("openDetail");
-				if (id == userInfo.id) {
-					uni.switchTab({
-						url: '/pages/index/mine'
-					});
-				} else {
-					that.$u.route('/pages/user/home', {
-						user_id: id
-					})
-				}
+				that.$u.route('/pages/user/home', {
+					user_id: id
+				})
 			},
 			//查看图片
 			onPreviewTap(e) {

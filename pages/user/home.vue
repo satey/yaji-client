@@ -24,7 +24,8 @@
 		</u-modal>
 		<view class="homeHead" style="position: relative;">
 			<view style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;text-align: center;">
-				<image :src="user.background_image||'../../static/userBg.png'" mode="aspectFill" style="width: 100%;height: 100%;z-index: -1;">
+				<image :src="user.background_image||'../../static/userBg.png'" mode="aspectFill"
+					style="width: 100%;height: 100%;z-index: -1;">
 				</image>
 			</view>
 			<view style="margin-top: 80rpx;">
@@ -113,7 +114,8 @@
 	</view>
 
 	<view
-		class="grid grid-cols-2 gap-4 p-4 fixed left-0 right-0 bottom-0 bg-gradient-to-b from-transparent to-white z-10">
+		class="grid grid-cols-2 gap-4 p-4 fixed left-0 right-0 bottom-0 bg-gradient-to-b from-transparent to-white z-10"
+		style="z-index: 999;" v-show="userInfo.id !=$Route.query.user_id">
 		<view class="flex items-center justify-center p-4 rounded-full bg-rose-500"
 			@click="$u.route('pages/chat/single', {user_id:user_id})">
 
@@ -165,7 +167,8 @@
 				user_id: '',
 				is_follow: '',
 				followModule: false,
-				headColor: "rgba(0,0,0,0)"
+				headColor: "rgba(0,0,0,0)",
+				userInfo: uni.getStorageSync("userInfo")
 			}
 		},
 		onLoad() {
@@ -273,7 +276,6 @@
 				that.$api('user.profile', {
 					user_id: that.$Route.query.user_id
 				}).then(res => {
-					console.log(res)
 					if (res.code === 1) {
 						that.user = res.data
 						that.is_follow = res.data.is_follow
@@ -311,7 +313,6 @@
 					page: that.params.page,
 					user_id: that.$Route.query.user_id
 				}).then(res => {
-					console.log(res)
 					if (res.code === 1) {
 						that.paginator.total = res.data.total
 						that.paginator.last_page = res.data.last_page

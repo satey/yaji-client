@@ -21,7 +21,8 @@
 				</view>
 			</block>
 			<block v-else>
-				<image :src="archeryImg" style="width: 100%;height: 100%;border-radius:10rpx ;" mode="widthFix"></image>
+				<image :src="archeryImg" style="width: 100%;height: 100%;border-radius:10rpx ;" mode="aspectFill">
+				</image>
 			</block>
 		</view>
 		<view style="padding: 65rpx 53rpx 40rpx 53rpx;color: #3D3D3D;opacity: 0.8;font-size: 28rpx;">
@@ -31,9 +32,9 @@
 			<view style="display: flex;font-size: 36rpx;color: #3D3D3D;">答案 <text
 					style="color: #FE4373;font-size: 39rpx;margin-left: 10rpx;">*</text></view>
 			<view style="margin: 36rpx; 20rpx;border: 1px solid #D8D8D8;height: 80rpx;border-radius: 5rpx;">
-				<input type="text" v-model="answer" maxlength="22"
-					style="width: 100%;height: 100%;padding-left: 10rpx;text-align: center;" placeholder="请勿使用任何符号"
-					placeholder-style="font-size: 28rpx;color: #3D3D3D;opacity: 0.4;">
+				<input type="text" v-model="answer" maxlength="5"
+					style="width: 100%;height: 100%;padding-left: 10rpx;text-align: center;"
+					placeholder="仅限5个字符，请勿使用任何符号" placeholder-style="font-size: 28rpx;color: #3D3D3D;opacity: 0.4;">
 			</view>
 		</view>
 		<view style="padding: 0 53rpx 0 53rpx;">

@@ -125,7 +125,6 @@
 					limit: 10,
 					cate:1
 				}).then(res => {
-					console.log(res)
 					if (res.code == 1) {
 						if (res.data.length != 0) {
 							that.myLists.push(...res.data);

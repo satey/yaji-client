@@ -24,7 +24,14 @@
 						<text v-if="item.cate == 3">给您评论点赞了！</text>
 						<text v-if="item.cate == 4">回复您的评论了！</text>
 						<text v-if="item.cate == 5">查看您的主页了！</text>
-						<text v-if="item.cate == 6">给您的诗词点赞！</text>
+						<text v-if="item.cate == 6">
+							<block v-if="item.top_poetry_id == 0">
+								给您的诗词点赞！
+							</block>
+							<block v-if="item.top_poetry_id > 0">
+								给您的评论点赞！
+							</block>
+						</text>
 						<text v-if="item.cate == 7">在今日邂逅喜欢了你！</text>
 						<view v-if="item.cate == 8" style="display: flex;align-items: center;">
 							<text>通过{{item.channel_text}}</text>
@@ -111,9 +118,11 @@
 						var data = {
 							id: item.poetry_id
 						}
-						this.$u.route('/pages/joy/wineDetails', {
-							data: JSON.stringify(data)
-						});
+						if (item.top_poetry_id == 0) {
+							this.$u.route('/pages/joy/wineDetails', {
+								data: JSON.stringify(data)
+							});
+						}
 						break;
 					case 7:
 						this.$u.route('/pages/user/home', {
@@ -189,9 +198,12 @@
 						var data = {
 							id: item.top_poetry_id
 						}
-						this.$u.route('/pages/joy/wineDetails', {
-							data: JSON.stringify(data)
-						});
+						var userInfo = uni.getStorageSync("userInfo");
+						if (item.user_id == userInfo.id) {
+							this.$u.route('/pages/joy/wineDetails', {
+								data: JSON.stringify(data)
+							});
+						}
 						break;
 					case 17:
 						this.$u.route('/pages/song/songDetails', {
@@ -199,7 +211,6 @@
 						});
 						break;
 					case 18:
-						console.log(item)
 						this.$u.route('/pages/song/songDetails', {
 							songId: item.duet_song_id
 						});

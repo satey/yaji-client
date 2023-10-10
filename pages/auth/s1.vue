@@ -1,11 +1,30 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="">
+		<!-- 暂无角色 -->
+		<view v-if="noRole">
+			<u-modal :show="noRole" :showConfirmButton="false" :showCancelButton="false" confirmColor="#FE4373"
+				confirmText="确定" cancelText="取消" @cancel="noRole=false">
+				<view>
+					<view style="display: flex;flex-direction: column;">
+						<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
+						<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;text-align: center;">
+							<text>{{noRoleMsg}}</text>
+						</view>
+					</view>
+					<view style="display: flex;align-items: center;justify-content: space-between;margin-top: 125rpx;">
+						<view @click="noRole=false"
+							style="margin-right: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;border: 1rpx solid #C7C7C7;text-align: center;line-height: 65rpx;color: #808080;border-radius: 10rpx;font-size: 28rpx;">
+							取消</view>
+						<view @click="noRoleClick"
+							style="margin-left: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;background:#F97698;text-align: center;line-height: 65rpx;color: #FFFFFF;border-radius: 10rpx;font-size: 28rpx;">
+							确定</view>
+					</view>
+				</view>
+			</u-modal>
+		</view>
 		<image src='@/static/embed/sexBg.png'
 			style="position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1"></image>
-		<!-- <u-navbar bgColor="transparent">
-			<view slot="left"></view>
-		</u-navbar> -->
 		<view style="padding: 130rpx 30rpx;">
 			<view class="sexTitle">选择您的古代身份</view>
 			<view class="subSexTitle">
@@ -88,6 +107,8 @@
 				deletion: false,
 				identity_id: "",
 				isClick: false,
+				noRole: false,
+				noRoleMsg: ""
 			}
 		},
 		onLoad() {
@@ -102,6 +123,28 @@
 						that.identity_data = res.data.identity_data
 					} else if (res.code == -1) {
 						that.deletion = true;
+					}
+				})
+			},
+			//跳过
+			noRoleClick() {
+				var that = this;
+				that.$api('user.only_choose_gender', {
+					gender: that.form.gender
+				}).then(res => {
+					if (res.code === 1) {
+						var userInfo = uni.getStorageSync("userInfo");
+						uni.setStorageSync("skip", userInfo.id);
+						that.noRole = false;
+						uni.reLaunch({
+							url: '/pages/index/index',
+							success: (res) => {},
+							fail: (err) => {
+								console.log(err);
+							}
+						})
+					} else {
+						that.$u.toast(res.msg)
 					}
 				})
 			},
@@ -193,6 +236,11 @@
 							}
 							uni.hideLoading()
 						})
+						uni.hideLoading()
+					} else if (matchRes.code == -1) {
+						that.isClick = false;
+						that.noRoleMsg = matchRes.msg;
+						that.noRole = true;
 						uni.hideLoading()
 					}
 				})

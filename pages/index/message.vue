@@ -5,7 +5,7 @@
 	</u-navbar>
 	<view class="bannerBox" v-if="bannerData.length != 0">
 		<image class="banner" mode="aspectFill" :src="bannerData.image" v-if="bannerData.status == 'normal'"
-			@click="jumpBanner(bannerData.url)">
+			@click="jumpBanner(bannerData)">
 		</image>
 	</view>
 	<!-- <view class="" style="margin-left: 340rpx; font-size: 35rpx;padding-top:var(--status-bar-height)"> 消息</view> -->
@@ -33,7 +33,14 @@
 							<text v-if="cate == 3">给您评论点赞了！</text>
 							<text v-if="cate == 4">回复您的评论了！</text>
 							<text v-if="cate == 5">查看您的主页了！</text>
-							<text v-if="cate == 6">给您的诗词点赞！</text>
+							<text v-if="cate == 6">
+								<block v-if="trendsMsgData.data.top_poetry_id == 0">
+									给您的诗词点赞！
+								</block>
+								<block v-if="trendsMsgData.data.top_poetry_id> 0">
+									给您的评论点赞！
+								</block>
+							</text>
 							<text v-if="cate == 7">在今日邂逅喜欢了你！</text>
 							<view v-if="cate == 8" style="display: flex;align-items: center;">
 								<block v-if="trendsMsgData.data.channel ==0">通过未知</block>
@@ -226,10 +233,15 @@
 			that.params.page = ++that.params.page
 		},
 		methods: {
-			jumpBanner(url) {
-				this.$u.route('/pages/joy/activity', {
-					url: url
-				})
+			jumpBanner(item) {
+				if (item.is_external_links == 0) {
+					this.$u.route(item.url)
+				} else {
+					this.$u.route('/pages/joy/activity', {
+						url: item.url,
+						title: item.title
+					})
+				}
 			},
 			//广告
 			getAd() {

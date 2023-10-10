@@ -59,18 +59,28 @@
 							style="color: #fe4373;">{{zanCount}}</text>人点赞</text>
 				</view>
 			</view>
-			<view class="footerBottom">
-				<view style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
-					<view style="margin: 30rpx 0rpx 30rpx 30rpx;font-size: 32rpx;color: #323232;">今日诗缘：</view>
-					<view class="okBtn1" @click="openball">再发一次</view>
-				</view>
+			<view class="footerBottom"
+				style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
+				<u-tabs :list="tablist" lineColor="#FE4373" lineWidth="120rpx" lineHeight="16rpx"
+					itemStyle="height: 72rpx;"
+					inactiveStyle="color: #808080; transform: scale(1);font-weight:normal;transition:all 0.3s;"
+					activeStyle="color: #323232 ; font-weight: blod; transform: scale(1.2);transition:all 0.3s;"
+					@change="changeTab">
+				</u-tabs>
+				<view class="okBtn1" @click="openball">再发一次</view>
 			</view>
-			<view class="lists" style="padding: 0rpx 36rpx;box-sizing: border-box;margin-top: 43rpx;">
-				<u-empty v-if="!lists.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
-					marginTop="100"></u-empty>
-				<view class="listItem" v-for="(item,index) in lists" :key="index">
+			<!-- 列表 -->
+			<view v-show="tabIndex==0" class="lists"
+				style="padding: 0rpx 36rpx;box-sizing: border-box;margin-top: 43rpx;">
+				<view v-if="!lists.length">
+					<u-empty icon="/static/null.png" text=" " textColor="#a1a1a1" marginTop="100"></u-empty>
+					<view v-html="loadmoreText" style="text-align: center;font-size: 20rpx;color: #999;"></view>
+				</view>
+
+				<view v-else class="listItem" v-for="(item,index) in lists" :key="index">
 					<view style="width: 96rpx;height: 96rpx;border-radius: 50%;overflow: hidden;margin-right: 26rpx;">
-						<image @click="openHome(item)" style="width: 100%;height: 100%;" :src="item.avatar" mode="">
+						<image @click="openHome(item)" style="width: 100%;height: 100%;" :src="item.avatar"
+							mode="aspectFill">
 						</image>
 					</view>
 					<view style="flex: 1;">
@@ -118,7 +128,7 @@
 								<view
 									style="width: 36rpx;height: 36rpx;border-radius: 50%;overflow: hidden;margin-right: 15rpx;">
 									<image @click="openHome(replyItem)" style="width: 100%;height: 100%;"
-										:src="replyItem.avatar" mode=""></image>
+										:src="replyItem.avatar" mode="aspectFill"></image>
 								</view>
 								<view style="flex: 1;">
 									<view style="display: flex;align-items: center;">
@@ -170,7 +180,7 @@
 								<view
 									style="width: 36rpx;height: 36rpx;border-radius: 50%;overflow: hidden;margin-right: 15rpx;">
 									<image @click="openHome(newItem)" style="width: 100%;height: 100%;"
-										:src="newItem.avatar" mode=""></image>
+										:src="newItem.avatar" mode="aspectFill"></image>
 								</view>
 								<view style="flex: 1;">
 									<view style="display: flex;align-items: center;">
@@ -223,6 +233,58 @@
 					</view>
 				</view>
 			</view>
+			<!-- 评论 -->
+			<view v-show="tabIndex == 1" class="lists" style="box-sizing: border-box;">
+				<u-empty v-if="!lists.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
+					marginTop="100"></u-empty>
+				<view v-else class="listItem" style="border: none !important;margin-bottom: 0rpx;"
+					v-for="(item,index) in lists" :key="index">
+					<view style="width: 65rpx;height: 65rpx;border-radius: 50%;overflow: hidden;margin-right: 26rpx;">
+						<image @click="openHome(item)" style="width: 100%;height: 100%;" :src="item.avatar"
+							mode="aspectFill">
+						</image>
+					</view>
+					<view style="flex: 1;">
+						<view style="display: flex;align-items: center;">
+							<view style="font-size: 28rpx;color: #767676;" @click="openHome(item)">
+								{{item.realname||item.role_realname}}·{{item.dynasty||item.role_dynasty}}
+								<block v-if="item.p_role_realname!=undefined">
+									<text style="margin: 0rpx 15rpx;">回复</text>
+									<text>{{item.p_role_realname}}·{{item.p_role_dynasty}}</text>
+								</block>
+							</view>
+							<image v-if="item.p_role_realname==undefined"
+								style="width: 32rpx;height: 32rpx;margin-left: 11rpx;" :src="item.mw_image"></image>
+						</view>
+						<view
+							style="width: 100%;display: flex;align-items: center;justify-content: space-between;margin-top: 13rpx;">
+							<view style="font-size: 32rpx;color: #3D3D3D;flex: 1;margin-right: 20rpx;"
+								hover-class="hoverClass" :style="{background:replyData.id==item.id?'#eee':''}"
+								@longpress="operate(item,'0',index)">
+								{{item.poetry}}
+							</view>
+							<view style="display: flex;align-items: center;">
+								<block v-if="item.is_zan == 0">
+									<view @click="zan(item,index,1)" class="ri-heart-line"
+										style="font-size: 35rpx;color: #C7C7C7;margin-right: 8rpx;">
+									</view>
+								</block>
+								<block v-else>
+									<text @click="zan(item,index,1)" class="ri-heart-fill"
+										style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+								</block>
+								<text v-if="item.diggnums!=0"
+									style="font-size: 28rpx;color: #808080;">{{item.diggnums}}</text>
+							</view>
+						</view>
+						<view
+							style="margin-top: 20rpx;color: #767676;font-size: 28rpx;display: flex;align-items: center;">
+							<text>{{item.createtime}}</text>
+							<text style="color: #808080;margin-left: 22rpx;" @click="commentreply(item)">回复</text>
+						</view>
+					</view>
+				</view>
+			</view>
 		</view>
 		<topPrompt></topPrompt>
 		<feiGift ref="feiGift" channel="2"></feiGift>
@@ -243,6 +305,14 @@
 		},
 		data() {
 			return {
+				tablist: [{
+					name: '今日诗缘',
+					type: 1
+				}, {
+					name: '我的评论',
+					type: 2
+				}],
+				tabIndex: 0,
 				showReport: false,
 				showDeleteComment: false,
 				detailsData: [],
@@ -266,6 +336,9 @@
 				showEmoji: false,
 				replyUserData: [],
 				poetry_word_id: null,
+				commentList: [],
+				loadmoreText: '',
+				selectType: 1, //1:诗源，2:评论
 			}
 		},
 		onLoad(e) {
@@ -284,9 +357,61 @@
 		onReachBottom() {
 			var that = this;
 			that.page++;
-			that.getList(this.poetry_word_id);
+			if (this.tabIndex == 0) {
+				that.getList(this.poetry_word_id);
+			} else {
+				that.getComment(this.data.poetry_data.id)
+			}
 		},
 		methods: {
+			commentreply(item) {
+				var that = this;
+				this.showCommentBar = true;
+				this.inputFocus = true;
+				this.message = "";
+				this.replyData = {
+					pid: item.id,
+					top_poetry_id: item.id,
+				}
+				that.placeholder = `回复${item.realname||item.role_realname}·${item.dynasty||item.role_dynasty}`
+			},
+			getComment(id) {
+				var that = this;
+				that.$api("poetry.reply_poetry_list", {
+					page: that.page,
+					limit: 10,
+					cate: 1,
+					top_poetry_id: id
+				}).then(res => {
+					if (res.code == 1) {
+						if (that.page == 1) {
+							that.lists = res.data == null ? [] : res.data;
+						} else {
+							var data = res.data == null ? [] : res.data;
+							that.lists = [...that.lists, ...data];
+						}
+						that.lists.forEach((val, index) => {
+							val.replyPage = 1;
+							val.replyList = [];
+							val.newList = [];
+						})
+					}
+				})
+			},
+			//tab切换
+			changeTab(e) {
+				this.tabIndex = e.index;
+				this.page = 1;
+				this.lists = []
+				if (this.tabIndex == 1) {
+					this.selectType = 2;
+					this.getComment(this.data.poetry_data.id)
+				} else if (this.tabIndex == 0) {
+					this.selectType = 1;
+					this.getList(this.data.poetry_data.poetry_word_id)
+				}
+				console.log(this.selectType)
+			},
 			blur() {
 				this.replyData = [];
 				this.replyIndex = null;
@@ -317,18 +442,10 @@
 				uni.hideKeyboard()
 			},
 			openHome(item) {
-				console.log(item)
 				var that = this;
-				var userInfo = uni.getStorageSync("userInfo");
-				if (userInfo.id == item.user_id) {
-					uni.switchTab({
-						url: '/pages/index/mine'
-					});
-				} else {
-					that.$u.route('/pages/user/home', {
-						user_id: item.user_id
-					})
-				}
+				that.$u.route('/pages/user/home', {
+					user_id: item.user_id
+				})
 			},
 			report() {
 				var that = this;
@@ -412,10 +529,9 @@
 				that.$api("poetry.poetryZan", {
 					id: item.id
 				}).then(res => {
-					console.log(res)
 					switch (cate) {
 						case 1:
-							that.lists[index].is_zan = !that.lists[index].is_zan;
+							that.lists[index].is_zan = that.lists[index].is_zan == 0 ? 1 : 0;
 							that.lists[index].diggnums = that.lists[index].is_zan ? ++that.lists[index].diggnums :
 								--that.lists[index].diggnums;
 							that.$forceUpdate()
@@ -523,11 +639,26 @@
 						})
 					})
 				} else {
-					that.replyData.poetry = that.message;
-					that.replyData.poetry_word_id = that.poetry_word_id;
+					if (that.selectType == 1) {
+						that.replyData.poetry = that.message;
+						that.replyData.poetry_word_id = that.poetry_word_id;
+					} else {
+						that.replyData.top_poetry_id = that.data.poetry_data.id
+						that.replyData.poetry = that.message;
+						that.replyData.poetry_word_id = that.poetry_word_id;
+					}
 					that.$api("poetry.reply_poetry_ling", that.replyData).then(res => {
-						console.log(res)
 						if (res.code == 1) {
+							if (that.selectType == 2) {
+								that.lists = [];
+								that.page = 1;
+								that.getComment(that.data.poetry_data.id);
+								that.inputFocus = false,
+									that.showCommentBar = false,
+									that.message = '';
+								that.showEmoji = false;
+								return;
+							}
 							that.lists.forEach((val, index) => {
 								if (val.id == res.data.top_poetry_id) {
 									var userInfo = uni.getStorageSync("userInfo");
@@ -566,6 +697,7 @@
 				that.flag = false;
 			},
 			addPoem() {
+				this.replyUserData = [];
 				this.showCommentBar = true;
 				this.inputFocus = true;
 				this.showEmoji = false;
@@ -577,16 +709,16 @@
 				this.placeholder = `含有【${this.centerText.word}】字的诗句`
 			},
 			addComment(item) {
-				console.log(item)
 				var that = this;
+				this.replyUserData = [];
 				this.showCommentBar = true;
 				this.inputFocus = true;
-				this.message = ""
+				this.message = "";
 				this.replyData = {
 					pid: item.id,
 					top_poetry_id: item.id,
 				}
-				that.placeholder = `回复${item.realname}·${item.dynasty}`
+				that.placeholder = `回复${item.realname||item.role_realname}·${item.dynasty||item.role_dynasty}`
 			},
 			getList(id) {
 				var that = this;
@@ -596,7 +728,6 @@
 					limit: 10,
 					cate: 1
 				}).then((res) => {
-					console.log(res)
 					if (res.code == 1) {
 						that.lists.push(...res.data);
 						that.lists.forEach((val, index) => {
@@ -665,9 +796,7 @@
 				that.$api("poetry.details", {
 					id: id
 				}).then((res) => {
-					console.log(res)
 					if (res.code == 1) {
-						console.log(res.data.poetry_data.poetry_word_id)
 						that.data = res.data;
 						that.poetry_word_id = res.data.poetry_data.poetry_word_id;
 						that.detailsData = res.data.poetry_data;
@@ -781,7 +910,9 @@
 
 	.footerBottom {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
+		padding-left: 10rpx;
+		box-sizing: border-box;
 	}
 
 	.centerText {

@@ -533,7 +533,7 @@
 			"path": "pages/joy/activity",
 			"name": "activity",
 			"style": {
-				"navigationBarTitleText": "活动详情",
+				"navigationBarTitleText": "",
 				"navigationStyle": "default",
 				"navigationBarBackgroundColor": "#ffffff"
 			},
