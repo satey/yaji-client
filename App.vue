@@ -231,7 +231,7 @@
 					}
 				}, 10000)
 			},
-			//监听消息列表
+			//监听消息列表  
 			initSocket() {
 				var that = this;
 				var token = uni.getStorageSync('token');
