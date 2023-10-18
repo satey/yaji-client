@@ -5,7 +5,8 @@
 		@click="$u.route('/pages/user/home', { user_id: item.user_id })">
 		<view class="mr-4">
 			<view v-if="item.gender == 1">
-				<image mode="aspectFill" style="" class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'">
+				<image mode="aspectFill" style="" class="block w-14 h-14 rounded-full"
+					:src="item.user_avatar || '/static/avatar.png'">
 				</image>
 			</view>
 			<view v-if="item.gender == 2">
@@ -27,10 +28,12 @@
 				<view class="mt-4">{{ item.bio }}</view>
 			</view>
 			<view class="ml-4" style="display: flex;align-items: center;">
-				<text
+				<image :src="item.mw_image" style="width: 32rpx;height: 32rpx;" mode=""></image>
+				<text style="margin-left: 10rpx;font-size: 28rpx;color: #3D3D3D;">{{item.user_total_mw}}</text>
+				<!-- <text
 					style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%; background-color: rgba(255, 180, 31, 0.3); color: #FFB41F;"
 					@click="$u.route('/pages/user/home', { user_id: item.id })">望</text>
-				<text style="color: #FFB41F;">{{item.user_total_mw}}</text>
+				<text style="color: #FFB41F;">{{item.user_total_mw}}</text> -->
 			</view>
 		</view>
 	</view>
@@ -38,7 +41,8 @@
 		style="display: flex;align-items: center;border-bottom: 1px solid #ECECEC;padding: 25rpx 0rpx;box-sizing: border-box;">
 		<view class="mr-4">
 			<view v-if="item.gender == 1">
-				<image mode="aspectFill" style="" class="block w-14 h-14 rounded-full" :src="item.user_avatar || '/static/avatar.png'">
+				<image mode="aspectFill" style="" class="block w-14 h-14 rounded-full"
+					:src="item.user_avatar || '/static/avatar.png'">
 				</image>
 			</view>
 			<view v-if="item.gender == 2">
@@ -60,8 +64,9 @@
 				<view class="mt-4">{{ item.bio }}</view>
 			</view>
 			<view class="ml-4">
-				<text
-					style=" display: inline-block; width: 120rpx; text-align: center;  height: 40rpx; color: gray;">未激活</text>
+				<view @click="$u.route('/pages/mine/role')"
+					style="width: 97rpx;height: 40rpx;line-height: 40rpx;text-align: center;border-radius: 100rpx;background: #FE4373;color: #fff;font-size: 23rpx;">
+					获取</view>
 			</view>
 		</view>
 	</view>

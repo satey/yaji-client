@@ -1,15 +1,12 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
-	<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
-		<view class="p-3">
-			<!-- <view class="text-2xl text-center">操作</view> -->
+	<u-popup :show="showAction" @close="showAction = false" :closeable="false" :round="30">
+		<view style="padding: 50rpx 55rpx;">
 			<view class="">
-				<view class="delete" @click="showFeedback = true, showAction = false" style="margin-top: 50rpx;">
-					<!-- <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i> -->
+				<view class="delete" @click="showFeedback = true, showAction = false" style="margin-bottom: 36rpx;">
 					<view style="font-size: 30rpx;" @click="detail">删除</view>
 				</view>
-				<view class="delete2" @click="showFeedback = true, showAction = false" style="margin-top: 20rpx;">
-					<!-- <i class="ri-alarm-warning-fill block text-3xl leading-none text-gray-500"></i> -->
+				<view class="delete2" @click="showFeedback = true, showAction = false">
 					<view style="font-size: 30rpx;">取消</view>
 				</view>
 			</view>
@@ -359,24 +356,21 @@
 	}
 
 	.delete {
-		background: #F7F7F7;
+		background: #FFFFFF;
+		box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(0, 0, 0, 0.302);
+		opacity: 1;
 		text-align: center;
 		height: 85rpx;
 		line-height: 85rpx;
 		width: 100%;
-		border-radius: 42rpx;
-		color: #323232;
-		font-size: 28rpx;
+		border-radius: 44rpx;
+		color: #767676;
+		font-size: 32rpx;
 	}
 
 	.delete2 {
-		background: #fff;
+		color: #767676;
+		font-size: 32rpx;
 		text-align: center;
-		height: 85rpx;
-		line-height: 85rpx;
-		width: 100%;
-		border-radius: 42rpx;
-		color: #323232;
-		font-size: 28rpx;
 	}
 </style>

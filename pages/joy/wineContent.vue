@@ -164,7 +164,7 @@
 				uni.loadFontFace({
 					family: 'font-test',
 					// 本地字体路径需转换为平台绝对路径
-					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/fzz.ttf')})`,
+					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/regular.ttf')})`,
 					success() {
 						console.log('success')
 					},

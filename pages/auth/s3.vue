@@ -3,50 +3,55 @@
 	<view class="px-4">
 		<image src='@/static/embed/s3.png'
 			style="position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1"></image>
-		<u-navbar bgColor="transparent" leftIcon="">
-			<<!-- view slot="left" v-if="choose_num!=0">
-				<i class="ri-arrow-left-s-line text-4xl text-white"
-					@click="$u.route({ type: 'navigateBack', delta: 1 })" v-if="false"></i>
-	</view> -->
-	<!--  <view slot="right">
-			        <text class="text-white opacity-50" @click="skip()">跳过</text>
-			    </view> -->
-	</u-navbar>
-	<view
-		style="padding: 200rpx 30rpx 100rpx 30rpx;display: flex;flex-direction: column;height: 100vh;box-sizing: border-box;">
-		<view style="color: #FFFFFF;font-size: 36rpx;font-weight: bold;">您穿越成为了：</view>
-		<view class="container">
-			<view class="contentHead">
-				<view class="text-2xl name">{{role.realname}}</view>
-				<view class="headDetails text-xl">
-					<view style="margin-right: 30rpx;">{{role.dynasty}} {{role.gender==1?'男':'女'}}</view>
-					<view>名望：<text style="color: #FE4373;">{{role.role_mw}}</text></view>
-				</view>
-			</view>
-			<view class="contentBody">
-				<view class="types flex">
-					<view style="margin-right: 40rpx;" v-for="(item,index) in role.achievements" :key="index">
-						<text class="ri-price-tag-3-line lable" :style="'color:'+colors[index % 5]"></text>
-						<text>{{item}}</text>
+		<view style="padding-top: 100rpx;">
+			<view style="font-size: 36rpx;color: #FFFFFF;">获得角色</view>
+			<view style="padding: 50rpx 30rpx 0rpx 30rpx;display: flex;flex-direction: column;box-sizing: border-box;">
+				<view class="container">
+					<view class="contentHead">
+						<view class="text-2xl name">{{ userRole.realname||"无名氏" }}</view>
+						<view
+							style="position: absolute;right: 66rpx;color: #808080;font-size: 28rpx;padding-top:10rpx ;">
+							名望<text style="color: #FE4373;padding-left: 5rpx;">{{userRole.role_mw|| '无'}}</text></view>
 					</view>
-				</view>
-				<view class="contentText text-xl">{{ role.content || '暂无介绍' }}</view>
-				<view style="padding:0rpx 38rpx;margin-top: 120rpx;">
-					<!--  <view class="rounded-full p-6 text-base leading-none bg-gray-100" @click="showRead = false" v-if="isCancle">取消
-					    </view> -->
-					<view
-						class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-						style="text-align: center;" @click="handleSubmit()">开始交朋友</view>
-					<view class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r"
-						style="text-align: center;color: #323232;border: 1px solid #CCCCCC;margin-top: 30rpx;"
-						@click="handleRematch()" v-if="choose_num!==0">重新穿越（免费{{choose_num}}次）</view>
-				</view>
-				<view class="tips text-base">
-					<text>您有一个古代身份了，去交朋友吧^.^ 每个角色都是全服维一的哦！</text>
+					<image src="../../static/fenge.png" style="width: 100%;margin-top: -1px;" mode="widthFix"></image>
+					<view class="contentBody">
+						<view class="types flex" style="display: flex;flex-wrap: wrap;align-items: center;">
+							<view>{{userRole.gender == 1?'男':"女"}}</view>
+							<view style="margin-left: 26rpx;">{{userRole.dynasty||"未知朝代"}}</view>
+						</view>
+						<view
+							style="padding: 40rpx 38rpx 0rpx 38rpx;box-sizing: border-box;font-size: 28rpx;color: #808080;">
+							<view>
+								<text>别称：</text>
+								<text>{{userRole.aliasnames||"无"}}</text>
+							</view>
+							<view style="margin-top: 20rpx;">
+								<text>身份：</text>
+								<text v-if="userRole.achievements.length == 0">无</text>
+								<block v-else v-for="(item2,index2) in userRole.achievements" :key="index2">
+									<text style="margin-right: 20rpx;">{{item2}}</text>
+								</block>
+							</view>
+							<view style="margin-top: 20rpx;">
+								<text>称号：</text>
+								<text v-if="userRole.titles.length == 0">无</text>
+								<block v-else v-for="(item2,index2) in userRole.titles" :key="index2">
+									<text>{{item2}}</text>
+								</block>
+							</view>
+						</view>
+						<view class="contentText text-xl">{{ userRole.content || '暂无介绍' }} </view>
+						<view style="padding:0rpx 38rpx;margin-top: 60rpx;">
+							<view
+								style="text-align: center;font-size: 28rpx;width: 100%; height: 85rpx;background: #FE4373;line-height: 85rpx;color: #FFFFFF;border-radius: 50rpx;"
+								@click="openIndex()">进入首页
+							</view>
+						</view>
+
+					</view>
 				</view>
 			</view>
 		</view>
-	</view>
 	</view>
 </template>
 
@@ -59,27 +64,24 @@
 				data: [],
 				choose_num: '',
 				isClick: true,
+				userRole: []
 			};
 		},
 		onLoad(e) {
-			this.data = JSON.parse(e.data)
-			this.role = JSON.parse(e.role);
-			this.init()
+			this.userRole = JSON.parse(e.role)
 		},
 		methods: {
-			init() {
-				var that = this;
-				var token = uni.getStorageSync("token");
-				this.$api('user.info', token).then(res => {
-					that.choose_num = res.data.choose_num;
-					uni.setStorageSync("userInfo", res.data)
-				})
-			},
+
 			//重新选择
 			handleRematch() {
 				uni.reLaunch({
 					url: '/pages/auth/s2'
 				})
+			},
+			openIndex() {
+				uni.reLaunch({
+					url: '/pages/index/index'
+				});
 			},
 			// 开始体验
 			handleSubmit() {
@@ -126,26 +128,40 @@
 </script>
 
 <style lang="scss">
+	page {
+		height: 100%;
+		width: 100%;
+	}
+
 	.container {
 		flex: 1;
 		height: 0;
-		background: red;
-		margin-top: 30rpx;
-		background: url(/static/embed/s3Bg.png);
+		// background: #fff;
+		border-radius: 25rpx;
 		background-size: 100% 100%;
 		background-repeat: no-repeat;
+		// padding: 50rpx 0rpx 160rpx 0rpx;
 
 		.contentHead {
 			text-align: center;
-			height: 14%;
 			display: flex;
-			flex-direction: column;
+			text-align: center;
+			flex-direction: row;
 			align-items: center;
 			justify-content: center;
+			position: relative;
+			padding-bottom: 50rpx;
+			background: #fff;
+			padding-top: 55rpx;
+			border-top-left-radius: 25rpx;
+			border-top-right-radius: 25rpx;
+			border-bottom-left-radius: 5rpx;
+			border-bottom-right-radius: 5rpx;
 
 			.name {
-				color: #323232;
+				color: #5F5D5D;
 				font-weight: bold;
+				font-size: 56rpx;
 			}
 
 			.headDetails {
@@ -159,12 +175,22 @@
 
 		.contentBody {
 			height: calc(100% - 14%);
-			padding-top: 30rpx;
+			padding-top: 10rpx;
+			box-sizing: border-box;
+			background: #fff;
+			margin-top: -4px;
+			padding-bottom: 160rpx;
+			border-bottom-left-radius: 25rpx;
+			border-bottom-right-radius: 25rpx;
+			border-top-left-radius: 5rpx;
+			border-top-right-radius: 5rpx;
 
 			.types {
 				display: flex;
 				align-items: center;
 				justify-content: center;
+				color: #808080;
+				font-size: 28rpx;
 
 				.lable {
 					width: 35rpx;
@@ -177,13 +203,6 @@
 				padding: 40rpx 38rpx 0rpx 38rpx;
 				color: #808080;
 				font-size: 28rpx;
-				overflow: hidden;
-				display: -webkit-box;
-				-webkit-box-orient: vertical;
-				-webkit-line-clamp: 5;
-				overflow: hidden;
-				white-space: no-wrap;
-				text-overflow: ellipsis;
 				position: relative;
 				box-sizing: border-box;
 
@@ -198,10 +217,48 @@
 			}
 
 			.tips {
-				padding: 30rpx 92rpx 0rpx 92rpx;
-				text-align: center;
+				padding: 0rpx 30rpx;
 				color: #999999;
 			}
 		}
+	}
+
+	.myScroll {}
+
+	.dynastyBox {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.u-modal__content {
+		padding: 0 !important;
+	}
+
+	.dynastyItem {
+		margin-top: 20rpx;
+		margin-right: 20rpx;
+		width: calc(100% / 3 - 20rpx);
+		border: 1px solid #CCCCCC;
+		border-radius: 30rpx;
+		box-sizing: border-box;
+		height: 60rpx;
+		line-height: 60rpx;
+		text-align: center;
+		font-size: 28rpx;
+		color: #323232;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		transition: all 0.3s;
+	}
+
+	.dynastyItemActive {
+		background: #FE4373 !important;
+		color: #fff !important;
+		border: none !important;
+	}
+
+	.myScroll2 {
+		max-height: 600rpx;
 	}
 </style>

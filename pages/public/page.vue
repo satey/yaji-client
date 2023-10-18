@@ -76,7 +76,6 @@
 					this.currentId = 2;
 					uni.getSystemInfo({
 						success(res) {
-							console.log(res.deviceBrand)
 							if (res.deviceBrand == "huawei") {
 								that.currentSrc =
 									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/index.html?type=1";

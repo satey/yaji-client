@@ -8,16 +8,23 @@
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i> -->
 			</view>
 		</u-navbar>
-		<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
+		<u-popup :show="showAction" @close="showAction = false" :closeable="false" :round="30">
 			<view style="padding: 50rpx 30rpx;">
 				<view style="font-size: 32rpx;">请先同意以下协议条款：</view>
 				<view style="margin-top: 50rpx;margin-bottom: 30rpx;">
 					<text style="color:#fb7185 ;" @click="$u.route('/pages/public/page', { id: 1 })">《用户协议》</text>和<text
 						@click="$u.route('/pages/public/page', { id: 2 })" style="color:#fb7185 ;">《隐私政策》</text>
 				</view>
-				<view @click="yes"
-					style="margin: 0 auto;width: 400rpx;color: #fff;text-align: center;height: 80rpx;line-height: 80rpx;background:#fb7185 ;border-radius: 10rpx;">
-					同意并继续</view>
+				<view style="display: flex;align-items: center;">
+					<view @click="showAction = false"
+						style="margin: 0 auto;width: 300rpx;color: #808080;text-align: center;height: 80rpx;line-height: 80rpx;border:1px solid #C7C7C7 ;border-radius: 10rpx;">
+						拒绝
+					</view>
+					<view @click="yes"
+						style="margin: 0 auto;width: 300rpx;color: #fff;text-align: center;height: 80rpx;line-height: 80rpx;background:#fb7185 ;border-radius: 10rpx;">
+						同意并继续</view>
+				</view>
+
 			</view>
 		</u-popup>
 		<view class="logo">
@@ -27,13 +34,14 @@
 			<!-- <view class="text-2xl text-white">注册登录</view> -->
 			<view class=" rounded-full mb-10" style="margin-top: 30rpx;padding-top: 20rpx;">
 				<u-input v-model="form.mobile" :focus="true" placeholder="请输入手机号" type="number" maxlength="11"
-					@input="handleInput('mobile')" style="border-bottom: 1px solid #ECECEC;" fontSize="32">
+					@input="handleInput('mobile')" style="border-bottom: 1px solid #ECECEC;border-radius: 0rpx ;"
+					fontSize="32">
 					<!-- <text slot="prefix" class="text-2xl pr-2 mr-4 border-right">+86</text> -->
 				</u-input>
 			</view>
 			<view class=" rounded-full mb-10" style="margin-top: 30rpx;">
 				<u-input placeholder="请输入验证码" type="number" maxlength="6" v-model="form.code" fontSize="32"
-					style="border-bottom: 1px solid #ECECEC;padding-top: 20rpx;">
+					style="border-bottom: 1px solid #ECECEC;padding-top: 20rpx;border-radius: 0rpx;">
 					<button slot="suffix" class="sendCodeBtn" :disabled="sendBtnDisabled"
 						@click="getSmsCode()">{{ codeText }}</button>
 				</u-input>
@@ -66,7 +74,7 @@
 	</view>
 
 </template>
-<!-- feifeifei -->
+<!-- fei-dev -->
 <script>
 	import {
 		mapState,

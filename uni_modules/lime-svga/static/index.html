@@ -68,10 +68,10 @@
 				player.onFinished(() => {
 					emit({onFinished: true})
 				})
-			}
+			};
 			if(!parser) {
 				parser = new SVGA.Parser(`#lime-svga`);
-			}
+			};
 			emit({'inited': true});
 		}
 		function parserLoad(newValue) {
@@ -80,7 +80,7 @@
 					emit({'load': map[newValue]})
 				} else {
 					parser.load(newValue, (video) => {
-						const key = `video${+new Date()}`
+						const key = `video${+new Date()}`;
 						if(!videoItem[key]) {
 							videoItem[key] = video
 						}
@@ -161,8 +161,19 @@
 			}
 			if(newValue.rSetText && setText != newValue.rSetText) {
 				setText = newValue.rSetText
-				const [text, key] = newValue.rSetText
-				player && player.setText(text, key)
+				for (let key in setText) {
+					player && player.setText(setText[key], key)
+				}
+				// const [text, key] = newValue.rSetText
+				// player && player.setText(text, key)
+			}
+			if(newValue.rSetImage && setImage != newValue.rSetImage) {
+				setImage = newValue.rSetImage
+				for (let key in setImage) {
+					player && player.setImage(setImage[key], key)
+				}
+				// const [text, key] = newValue.rSetImage
+				// player && player.setText(text, key)
 			}
 		}
 	</script>

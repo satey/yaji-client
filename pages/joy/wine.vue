@@ -120,6 +120,7 @@
 					return;
 				} else {
 					that.$api('poetry.today_poetry_count').then(res => {
+						console.log(res)
 						if (res.code == 1) {
 							uni.showModal({
 								title: "提示",
@@ -133,7 +134,7 @@
 											}).then((res) => {
 												if (res.code == 1) {
 													uni.redirectTo({
-														url: '/pages/joy/wineContent'
+														url: '/pages/joy/wineDetails'
 													});
 												} else {
 													that.$u.toast(res.msg)
@@ -164,7 +165,7 @@
 							}).then((res) => {
 								if (res.code == 1) {
 									uni.redirectTo({
-										url: '/pages/joy/wineContent'
+										url: '/pages/joy/wineDetails'
 									});
 								} else {
 									that.$u.toast(res.msg)

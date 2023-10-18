@@ -25,8 +25,8 @@
 			</view>
 		</view>
 		<view class="topic">
-			<fei-post @clickDetails="clickDetails" v-for="(item, index) in topicspeedList" :key="index"
-				:item="item"></fei-post>
+			<uc-post @clickDetails="clickDetails" v-for="(item, index) in topicspeedList" :key="index"
+				:item="item"></uc-post>
 			<u-loadmore v-if="topicspeedList.length" :loadmoreText="nomoreText" color="#a1a1a1" marginTop="20" />
 			<u-empty v-if="!topicspeedList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
 				marginTop="100"></u-empty>

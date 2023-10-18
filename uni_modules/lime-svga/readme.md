@@ -1,11 +1,14 @@
 # lime-svga
 > uniapp svga动画组件  
->  Q 群：806744170
+>  Q 群：1169785031
+>  如果你只在微信小程序、H5、vue-app更推荐你使用[pag](https://ext.dcloud.net.cn/plugin?id=11745)
 ## 平台兼容
 
 | H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 头条小程序 | QQ 小程序 | App  |
 | --- | ---------- | ------------ | ---------- | ---------- | --------- | ---- |
 | √   | √          |    √      |       |        |       | √ |
+
+
 
 **注意** 
 * 🔔 纯Nvue 需要 HBX 3.4.11.20220520-alpha 及以上
@@ -91,7 +94,7 @@ this.$refs.svga.render(async (parser, player) => {
 - ◻ `stepToPercentage(percentage: number, andPlay: boolean = false)`
 跳转动画的指定进度百分比，andPlay 为 true 时，从该帧开始播放动画。
 
-- ◻ `async setImage(src: Uint8Array | string, forKey: string): Promise<any>`
+- ◼ `async setImage(src: string, forKey: string): Promise<any>`
 使用图片替换指定元素
 
 - ◼ `setText(dynamicText: DynamicText, forKey: string)`
@@ -111,6 +114,5 @@ this.$refs.svga.render(async (parser, player) => {
 
 ## 打赏
 如果你觉得本插件，解决了你的问题，赠人玫瑰，手留余香。  
-
-![输入图片说明](https://static-6d65bd90-8508-4d6c-abbc-a4ef5c8e49e7.bspapp.com/image/222521_bb543f96_518581.jpeg "微信图片编辑_20201122220352.jpg")
-![输入图片说明](https://static-6d65bd90-8508-4d6c-abbc-a4ef5c8e49e7.bspapp.com/image/wxplay.jpg "wxplay.jpg")
+![](https://testingcf.jsdelivr.net/gh/liangei/image@1.9/alipay.png)
+![](https://testingcf.jsdelivr.net/gh/liangei/image@1.9/wpay.png)

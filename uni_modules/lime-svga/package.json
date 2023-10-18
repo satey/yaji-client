@@ -1,20 +1,16 @@
 {
   "id": "lime-svga",
   "displayName": "svga",
-  "version": "0.0.8",
+  "version": "0.1.3",
   "description": "本 svga 插件不完美",
   "keywords": [
     "svga"
 ],
   "repository": "",
 "engines": {
-    "HBuilderX": "^3.6.7"
+    "HBuilderX": "^3.4.9"
   },
-  "dcloudext": {
-    "category": [
-        "前端组件",
-        "通用组件"
-    ],
+"dcloudext": {
     "sale": {
       "regular": {
         "price": "0.00"
@@ -31,7 +27,8 @@
       "data": "无",
       "permissions": "无"
     },
-    "npmurl": ""
+    "npmurl": "",
+    "type": "component-vue"
   },
   "uni_modules": {
     "dependencies": [],
@@ -48,7 +45,7 @@
         },
         "App": {
           "app-vue": "y",
-          "app-nvue": "n"
+          "app-nvue": "u"
         },
         "H5-mobile": {
           "Safari": "y",
@@ -65,7 +62,7 @@
         },
         "小程序": {
           "微信": "y",
-          "阿里": "u",
+          "阿里": "y",
           "百度": "u",
           "字节跳动": "u",
           "QQ": "u",

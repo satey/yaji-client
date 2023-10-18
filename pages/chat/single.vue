@@ -6,7 +6,8 @@
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({type: 'navigateBack',delta: 1})"></i>
 			</view>
 			<view slot="center" style="display: flex;align-items: center;">
-				<image mode="aspectFill" :src="toUserData.avatar" style="width:50rpx;height:50rpx;border-radius:50%;margin-right: 10rpx;">
+				<image mode="aspectFill" :src="toUserData.avatar"
+					style="width:50rpx;height:50rpx;border-radius:50%;margin-right: 10rpx;">
 				</image>{{toUserData.name}}
 			</view>
 			<view slot="right">
@@ -27,16 +28,22 @@
 				</view>
 			</u-modal>
 		</view>
-
+		<!-- <view
+			style="width: 88rpx;height: 88rpx;border-radius: 15rpx;position: fixed;right: 30rpx;z-index: 999999999999;box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(0,0,0,0.302);"
+			:style="{bottom:floatHeight+'%'}" @click="floatClick">
+			<image style="width: 100%;height: 100%;"
+				src="https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/gift/giftIcon.png" mode="">
+			</image>
+		</view> -->
 		<scroll-view class="chatContainer" id="chatContainer" :scroll-into-view="scrollTop" @click="boxClick"
 			scroll-y="true" show-scrollbar="false" :scroll-with-animation="false" v-show="slideShow"
 			:refresher-enabled="isScrollDown" :refresher-triggered="scrollFlag" @refresherrefresh="refresher"
-			refresher-background="#F7F7F7">
-			<view v-if="showSvga" id="svgaPlayer" class="fixed w-full h-screen top-0 right-0 bottom-0 left-0"
-				style="z-index: 999;">
-				<l-svga ref="svgaPlayer"></l-svga>
+			refresher-background="#F7F7F7" :style="{visibility:showMsg?'':'hidden'}">
+			<view v-show="showSvga" id="svgaPlayer"
+				style="z-index: 99999;box-sizing: border-box;position: fixed;top:0;left: 0;width: 100%;height: 100%;">
+				<l-svga ref="svgaPlayer" style="width: 100%;height: 100%;box-sizing: border-box;"></l-svga>
 			</view>
-			<view style="padding: 0rpx 30rpx;box-sizing: border-box;">
+			<view style="padding: 0rpx 30rpx;box-sizing: border-box;padding-bottom: 100rpx;">
 				<block v-for="(item,index) in chatMsgList" :key="index">
 					<!-- 时间 -->
 					<view class="text-center" style="padding-top: 10rpx;">
@@ -54,15 +61,17 @@
 						</view>
 						<view>
 							<view v-if="item.type === 'text'"
-								class="rounded-3xl rounded-tl-none p-3 text-base bg-gradient-to-r to-fuchsia-500 whitespace-pre-wrap"
-								style="background: #fff;color: #333;margin-right: 90rpx;">
+								class="rounded-3xl rounded-tl-none p-3  bg-gradient-to-r to-fuchsia-500 whitespace-pre-wrap"
+								style="background: #fff;color: #323232;margin-right: 90rpx;font-size: 32rpx;">
 								{{ item.content }}
 							</view>
-							<view v-if="item.type === 'image'">
-								<u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
+							<view v-if="item.type === 'image'" @click="openImg">
+								<u-album :urls="item.content.split(',')" multipleSize="150" @imgLoad="imgLoad"
+									rowCount="1"></u-album>
 							</view>
-							<view v-if="item.type === 'gift'">
-								<u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
+							<view v-if="item.type === 'gift'" @click="openImg">
+								<u-album :urls="item.content.split(',')" multipleSize="150" @imgLoad="imgLoad"
+									rowCount="1"></u-album>
 							</view>
 							<view v-if="item.type === 'audio'" @click="handlePlayAudio(item,index)"
 								class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
@@ -83,15 +92,17 @@
 					<view class="chatRight mt-6" :id="index==0?'scrollRightTop':''" v-else>
 						<view>
 							<view v-if="item.type === 'text'"
-								class="rounded-3xl rounded-tr-none p-3 text-base text-white bg-gradient-to-r  to-fuchsia-500 whitespace-pre-wrap"
-								style="background: #FE4373;max-width:80%;margin-left: 90rpx;">
+								class="rounded-3xl rounded-tr-none p-3  text-white bg-gradient-to-r  to-fuchsia-500 whitespace-pre-wrap"
+								style="background: #FF6D93;max-width:80%;margin-left: 90rpx;font-size: 32rpx;">
 								{{ item.content }}
 							</view>
-							<view v-if="item.type === 'image'">
-								<u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
+							<view v-if="item.type === 'image'" @click="openImg">
+								<u-album :urls="item.content.split(',')" multipleSize="150" @imgLoad="imgLoad"
+									rowCount="1"></u-album>
 							</view>
-							<view v-if="item.type === 'gift'">
-								<u-album :urls="item.content.split(',')" multipleSize="150" rowCount="1"></u-album>
+							<view v-if="item.type === 'gift'" @click="openImg">
+								<u-album :urls="item.content.split(',')" multipleSize="150" @imgLoad="imgLoad"
+									rowCount="1"></u-album>
 							</view>
 							<view v-if="item.type === 'audio'" @click="handlePlayAudio(item,index)"
 								class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
@@ -108,7 +119,8 @@
 							</view>
 						</view>
 						<view class="flex">
-							<image mode="aspectFill" class="block rounded-full w-10 h-10 ml-3" :src="item.avatar || '/static/avatar.png'">
+							<image mode="aspectFill" class="block rounded-full w-10 h-10 ml-3"
+								:src="item.avatar || '/static/avatar.png'">
 							</image>
 						</view>
 					</view>
@@ -117,21 +129,41 @@
 			<view id="scrollBottom" style="height: 20rpx;"></view>
 		</scroll-view>
 		<!-- 底部 -->
-		<view class="singleFooter">
-			<view class="flex p-4">
+		<view class="singleFooter" style="position: relative;">
+			<view v-if="flower.length!=0"
+				style="width: 47.95rpx;height: 73.08rpx;border-radius: 15rpx;position: absolute;right: 60rpx;top: -100rpx;"
+				:style="{bottom:floatHeight+'%'}" @click="floatClick">
+				<view style="position: relative;">
+					<image style="width: 47.95rpx;height: 73.08rpx;" :src="flower.image" mode="heightFix">
+					</image>
+					<text
+						style="color: #F37B1A;font-size: 23.97rpx;position: absolute;right: -28rpx;bottom: 5rpx;">x{{flower.nums}}</text>
+				</view>
+			</view>
+			<view class="flex p-4" style="width: 100%;box-sizing: border-box;">
 				<view class="mr-4 flex items-center" @click="handleVoice">
-					<i class="ri-mic-2-fill block text-4xl leading-none text-gray-400"></i>
+					<image src="@/static/laba.png" style="width: 49rpx;height: 49rpx;" mode=""></image>
+					<!-- <i class="ri-mic-2-fill block text-4xl leading-none text-gray-400"></i> -->
 				</view>
-				<textarea class="flex-1 mr-4 flex items-center bg-gray-100" :auto-height="true" @blur="blur"
-					:auto-blur="false" @focus="focus" @confirm="handleTextSend" :adjustPosition="false"
-					style="padding:20rpx;border-radius: 10rpx;font-size:28rpx;color: rgb(48, 49, 51);"
-					placeholder="说点什么吧" v-model="text"
-					placeholder-style="color: rgb(192, 196, 204);font-size:30rpx"></textarea>
-				<view class="mr-4 flex items-center" @click="handleEmoji">
-					<i class="ri-emotion-fill block text-4xl leading-none text-gray-400"></i>
+				<view style="flex: 1;position: relative;display: flex;background: #F8F8F7;border-radius: 5rpx;"
+					class="mr-4">
+					<textarea class="" :auto-height="true" @blur="blur" :auto-blur="false" @focus="focus"
+						@confirm="handleTextSend" :adjustPosition="false"
+						style="padding:20rpx;border-radius: 10rpx;font-size:28rpx;color: rgb(48, 49, 51);width: 100%;box-sizing: border-box;"
+						placeholder="说点什么吧" v-model="text"
+						placeholder-style="color: rgb(192, 196, 204);font-size:30rpx"></textarea>
+					<view class="mr-4 flex items-center" @click="handleEmoji">
+						<image src="@/static/biaoqing.png" style="width: 46rpx;height: 46rpx;" mode=""></image>
+						<!-- <i class="ri-emotion-fill block text-4xl leading-none text-gray-400"></i> -->
+					</view>
 				</view>
-				<view class="flex items-center" v-if="!text" @click="handlePlus">
-					<i class="ri-add-circle-fill text-4xl leading-none text-gray-400"></i>
+				<view class="flex items-center mr-4 " @click="handleImage">
+					<image src="@/static/tupian.png" style="width: 44rpx;height: 44rpx;" mode=""></image>
+					<!-- <i class="ri-image-fill text-4xl leading-none text-gray-400"></i> -->
+				</view>
+				<view class="flex items-center" v-if="!text" @click="showGiftClick">
+					<image src="@/static/liwu3.png" style="width: 56rpx;height: 56rpx;" mode=""></image>
+					<!-- <i class="ri-gift-fill text-4xl leading-none text-gray-400"></i> -->
 				</view>
 				<view class="flex items-center" v-if="text" @touchend.prevent="handleTextSend">
 					<text class="rounded-full p-2 px-3 text-base text-white bg-gradient-to-r to-fuchsia-500"
@@ -160,19 +192,41 @@
 			<view class="grid grid-cols-8 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showEmoji">
 				<view class="flex" v-for="(item, index) in emojiList" :key="index" :item="item"
 					@click="handleEmojiSend(item)">
-					<text class="leading-none" style="font-size: 1.8rem;">{{ item }}</text>
+					<text class="leading-none" style="font-size: 55rpx;">{{ item }}</text>
 				</view>
 			</view>
 			<!-- 礼物 -->
-			<view class="grid grid-cols-4 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showGift">
-				<view v-for="(item, index) in giftList" :key="index" :item="item" v-if="item.status!='hidden'">
-					<view class="flex flex-col items-center" @click="handleGiftSend(item)">
-						<image class="block w-20 h-20" :src="item.image" lazy-load="false"></image>
-						<text class="mt-1">{{ item.title }}</text>
-						<text class="text-xs leading-none text-fuchsia-500 mt-2">{{ item.price }}铜钱</text>
+			<view v-if="showGift" class="bg-gray-100 h-60 overflow-y-scroll">
+				<view class="grid grid-cols-4 gap-4 bg-gray-100 p-4 ">
+					<view v-for="(item, index) in giftList" :key="index" :item="item" v-if="item.status!='hidden'">
+						<view class="flex flex-col items-center" @click="handleGiftSend(item)">
+							<view style="overflow: hidden;" class="w-20 h-20">
+								<image class="block" style="width: 100%;height: 100%;" :src="item.image"
+									lazy-load="false"></image>
+							</view>
+
+							<text class="mt-1">{{ item.title }}</text>
+							<view style="margin-top: 20rpx;display: flex;align-items: center;">
+								<image style="width: 20rpx;height: 20rpx;" src="@/static/qian.png" mode=""></image>
+								<text style="font-size: 20rpx;color: #808080;margin-left: 5rpx;">{{ item.price }}</text>
+							</view>
+						</view>
+					</view>
+				</view>
+				<view
+					style="display: flex;flex-direction: row;justify-content: end;padding-top: 30rpx;margin-right: 27rpx;">
+					<view style="display: flex;align-items: center;margin-right: 20rpx;">
+						<image style="width: 20rpx;height: 20rpx;" src="@/static/qian.png" mode=""></image>
+						<text style="font-size: 20rpx;color: #808080;margin-left: 5rpx;">{{userInfoData.money}}</text>
+					</view>
+					<view style="display: flex;align-items: center;font-size: 23rpx;color: #FE4373;"
+						@click="$u.route('/pages/mine/recharge')">
+						<text>马上充值</text>
+						<text class="ri-arrow-right-s-line" style="font-size: 35rpx;"></text>
 					</view>
 				</view>
 			</view>
+
 			<!-- 操作 -->
 			<view class="grid grid-cols-4 gap-4 bg-gray-100 p-4 h-60 overflow-y-scroll" v-if="showPlus">
 				<view class="flex flex-col justify-center text-center" @tap="handleImage">
@@ -191,6 +245,7 @@
 		</view>
 		<view class="sdasdas" :style="{height:pageHeight+'px'}"></view>
 		<reward :giftIsShow="giftIsShow" @changend="changend"></reward>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>
@@ -258,7 +313,11 @@
 					'🐛', '🦟', '🪰', '🪱', '🦗', '🐜', '🪳', '🐝', '🪲', '🐞', '🦂', '🕷️', '🕸️', '🦠',
 					'🧞‍♀️', '🧞‍♂️', '🧞', '🧟‍♀️', '🧟‍♂️', '🧟', '🧌', '🗣️', '👤', '👥', '🫂', '👁️', '👀',
 					'🦴', '🦷', '👅', '👄', '🫦', '🧠', '🫀', '🫁', '🦾', '🦿', '👣', '🤺', '⛷️'
-				]
+				],
+				floatHeight: "15",
+				userInfoData: [],
+				flower: [],
+				showMsg: false,
 			}
 		},
 		computed: {
@@ -268,25 +327,44 @@
 		},
 		onLoad() {
 			var that = this;
+			this.getGiftList()
 			this.getUserProfile();
 			// this.initSocKet();
 			// this.getChatList();
 			this.watchKeyboard();
-			this.getGiftList()
 			this.watchRecorder()
 			this.single()
+			this.getUserInfo()
+			this.getflower()
 		},
 
 		onShow() {
-			this.$nextTick(function() {
-				this.chatMsgList = [];
-				this.getChatList();
-				this.initSocKet();
-			})
+			var openImg = uni.getStorageSync("openImg")
+			if (openImg == "") {
+				let showTimeOut = setTimeout(() => {
+					this.historyPage = 1;
+					this.isScrollDown = true;
+					this.scrollFlag = false;
+					getApp().globalData.socketTask._callbacks.message.splice(1);
+					this.$store.commit("setReceiverId", this.$Route.query.user_id)
+					this.$nextTick(function() {
+						this.chatMsgList = [];
+						this.getChatList();
+						this.initSocKet();
+					})
+					this.scrollBottom()
+					clearTimeout(showTimeOut)
+				}, 250)
+			} else {
+				uni.removeStorageSync("openImg")
+			}
+		},
+		onHide() {
+			this.showSvga = false;
+			this.$store.commit("setReceiverId", "");
 		},
 		created() {
 			var that = this;
-			// #ifdef APP-PLUS
 			var pages = getCurrentPages();
 			var page = pages[pages.length - 1];
 			that.$store.watch((state, getters) => {
@@ -296,13 +374,67 @@
 					}
 				}
 			})
-			// #endif
 		},
 		onUnload() {
-			getApp().globalData.socketTask.close();
+			var that = this;
+			this.$store.commit("setReceiverId", "");
+			getApp().globalData.socketTask._callbacks.message.splice(1)
 			this.audio.destroy()
+			this.showSvga = false;
 		},
 		methods: {
+			imgLoad() {
+				this.scrollBottom()
+			},
+			getflower() {
+				let that = this;
+				that.$api("gift.is_flower").then(res => {
+					if (res.code == 1) {
+						that.flower = res.data;
+					} else {
+						that.flower = [];
+					}
+				})
+			},
+			getUserInfo() {
+				var that = this;
+				that.$api("user.info").then(res => {
+					if (res.code == 1) {
+						that.userInfoData = res.data;
+					}
+				})
+			},
+			floatClick() {
+				var that = this;
+				that.showPlus = false;
+				that.showRecord = false;
+				that.showEmoji = false;
+				that.floatHeight = "40"
+				that.$api("gift.giveGift", {
+					"receiver_user_id": that.$Route.query.user_id,
+					"nums": 1,
+					"gift_id": that.flower.gift_id
+				}).then(res => {
+					console.log(res)
+					if (res.code == 1) {
+						that.sendMessage(that.flower.only_flower_image, 'gift', that.flower.id);
+						var obj = {
+							avatar: that.userInfo.avatar,
+							content: that.flower.only_flower_image,
+							createtime: that.getDate(),
+							type: "gift",
+							user_id: that.userInfo.id,
+						};
+						that.chatMsgList.push(obj);
+						that.scrollBottom()
+						that.getflower()
+					}
+				})
+				that.scrollBottom();
+			},
+			openImg() {
+				uni.setStorageSync("openImg", true);
+			},
 			single() {
 				let that = this
 				that.$api('chat.single', {
@@ -321,6 +453,7 @@
 								};
 								that.chatMsgList.push(obj);
 								that.sendMessage(res.data.send_message, 'text');
+								that.scrollBottom()
 							} else {
 								that.poetry()
 							}
@@ -336,6 +469,7 @@
 				this.showEmoji = false;
 				this.showPlus = false;
 				this.showGift = false;
+				this.floatHeight = "15"
 			},
 			//下拉刷新
 			refresher() {
@@ -404,7 +538,6 @@
 					var socketData = JSON.parse(res.data);
 					that.unread()
 					if (socketData.type == "history") {
-						console.log(socketData)
 						var list = socketData.data;
 						var list2 = [];
 						if (that.historyPage != 1) {
@@ -432,6 +565,7 @@
 							})
 						})
 						that.chatMsgList = list2;
+						that.showMsg = true;
 						if (that.historyPage == 1) {
 							that.scrollBottom();
 						}
@@ -443,16 +577,22 @@
 						}
 						if (socketData.last_gift_data.readtime == null) {
 							if (data.type == "gift") {
-								that.showSvga = true;
 								that.$nextTick(() => {
-									that.giftList.forEach((val, index) => {
-										if (val.id == data.gift_id) {
-											var setTime1 = setTimeout(() => {
-												that.gift = val;
-												that.handleGiftPlay()
-												clearTimeout(setTime1)
-												that.scrollBottom()
-											}, 200)
+									that.$api('gift.lists').then(giftRes => {
+										if (giftRes.code === 1) {
+											giftRes.data.forEach((val, index) => {
+												if (val.id == data.gift_id) {
+													that.showSvga = true;
+													var setTime1 = setTimeout(() => {
+														if (val.url != null) {
+															that.gift = val;
+															that.handleGiftPlay()
+															clearTimeout(setTime1)
+															that.scrollBottom()
+														}
+													}, 200)
+												}
+											})
 										}
 									})
 								})
@@ -585,13 +725,21 @@
 					that.recordStop(e)
 				})
 			},
+			showGiftClick() {
+				var that = this;
+				that.showGift = !that.showGift;
+				that.showEmoji = false;
+				that.showPlus = false;
+				that.showRecord = false;
+			},
 			//表情
 			handleEmoji() {
 				var that = this;
 				that.showRecord = false;
-				that.showEmoji = true;
+				that.showEmoji = !that.showEmoji;
 				that.showPlus = false
-				that.showGift = false
+				that.showGift = false;
+				that.floatHeight = that.showEmoji == true ? '40' : "15"
 				that.scrollBottom()
 			},
 			handleEmojiSend(item) {
@@ -623,9 +771,8 @@
 				}).then(data => {
 					if (data.code == 1) {
 						if (data.msg == "赠送成功") {
-							that.sendMessage(that.gift.image, 'gift', item.id)
-							that.showSvga = true
-							that.handleGiftPlay();
+							that.getUserInfo()
+							that.sendMessage(that.gift.image, 'gift', item.id);
 							that.scrollAnimation = true;
 							var obj = {
 								avatar: that.userInfo.avatar,
@@ -636,6 +783,9 @@
 							};
 							that.chatMsgList.push(obj);
 							that.scrollBottom()
+							if (item.url != null) {
+								that.handleGiftPlay();
+							}
 						}
 					} else {
 						that.recharge = true;
@@ -646,15 +796,15 @@
 			handleGiftPlay() {
 				let that = this;
 				that.showSvga = true;
-				that.$nextTick(() => {
-					that.$refs.svgaPlayer.render(async (parser, player) => {
-						let videoItem = await parser.load(that.gift.url)
-						await player.setVideoItem(videoItem)
-						player.loops = 1
-						player.startAnimation()
-						player.onFinished(() => {
-							that.showSvga = false
-						})
+				that.$refs.svgaPlayer.render(async (parser, player) => {
+					let videoItem = await parser.load(that.gift.url);
+					await player.setVideoItem(videoItem)
+					player.loops = 1;
+					player.setContentMode(that.gift.is_full_screen == 1 ? "AspectFill" : "AspectFit")
+					player.startAnimation();
+
+					player.onFinished(() => {
+						that.showSvga = false
 					})
 				})
 			},
@@ -665,9 +815,10 @@
 				if (result == 1) {
 					this.scrollBottom();
 					that.showRecord = !that.showRecord
-					that.showEmoji = false
-					that.showPlus = false
-					that.showGift = false
+					that.showEmoji = false;
+					that.showPlus = false;
+					that.showGift = false;
+					that.floatHeight = that.showRecord == true ? '40' : "15"
 					return
 				} else {
 					uni.showModal({
@@ -807,7 +958,9 @@
 				that.scrollBottom()
 				that.showPlus = !that.showPlus
 				that.showRecord = false
-				that.showEmoji = false
+				that.showEmoji = false;
+				that.showGift = false;
+				that.floatHeight = that.showPlus == true ? '40' : "15"
 				// that.showGift = false
 			},
 			// 获得焦点后
@@ -821,13 +974,18 @@
 			},
 			// 失去焦点后
 			blur() {
-				this.pageHeight = 0
+				this.pageHeight = 0;
 			},
 			//监听键盘
 			watchKeyboard() {
 				var that = this;
 				uni.onKeyboardHeightChange(res => {
-					that.pageHeight = res.height
+					that.pageHeight = res.height;
+					if (res.height == 0) {
+						that.floatHeight = "15";
+					} else {
+						that.floatHeight = "50";
+					}
 				})
 			},
 			//获取聊天对象信息
@@ -901,6 +1059,7 @@
 		flex: 1;
 		background: #F7F7F7;
 		box-sizing: border-box;
+		position: relative;
 	}
 
 	.chatContainer::-webkit-scrollbar {

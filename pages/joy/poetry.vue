@@ -4,23 +4,25 @@
 		<u-navbar title="曲水流觞" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left" style="display: flex;">
 				<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;" @click="backClick"></i>
+				<i class="ri-home-3-line text-3xl" :style="{display:userLength<6?'block':'none'}"
+					style="color: #333 !important;margin-left: 25rpx;" @click="backHome"></i>
 			</view>
 		</u-navbar>
 		<view v-if="showSvga" id="svgaPlayer" class="fixed w-full h-screen top-0 right-0 bottom-0"
-			style="z-index: 9999999;height:55%;width: 55%;left: 170rpx;">
+			style="z-index: 9999999;height:100%;width: 100%;left: 0rpx;">
 			<l-svga ref="svgaPlayer"></l-svga>
 		</view>
 		<view class="poetryBox">
 			<!-- 流水 -->
 			<view class="position" v-for="(item,index) in gameUserArr" :key="index">
 				<view style="display: flex;align-items: center;justify-content: center;">
-					<image v-if="item!=''" class="positionImg" style="border: 1rpx solid #FE4373;" mode="aspectFill"
+					<image v-if="item!=''" class="positionImg" style="border: 1rpx solid #F8BC31;" mode="aspectFill"
 						:src="item.avatar" @click="openUserHome(item.user_id)">
 					</image>
 					<image v-else class="positionImg" mode="aspectFill" src="@/static/noUser.png">
 					</image>
 				</view>
-				<view class="positionText" :style="{color:item.user_id == userInfo.id?'#FE4373':''}">
+				<view class="positionText" :style="{color:item.user_id == userInfo.id?'#F8BC31':''}">
 					{{item == ''?'空位':item.role.realname+'·'+item.role.dynasty}}
 				</view>
 			</view>
@@ -73,8 +75,10 @@
 											style="font-size: 40rpx;color: #333;margin-left: 30rpx;"></text>
 										<text v-if="item.isZan ==0" class="ri-thumb-down-line" @click="cai(item,index)"
 											style="font-size: 40rpx;color: #333;margin-left: 30rpx;"></text>
-										<text @click="openUserHome(item.user_id)" class="ri-gift-fill"
-											style="font-size: 40rpx;margin-left: 30rpx;color:#FE4373"></text>
+										<image @click="openUserHome(item.user_id)" src="@/static/cailiwu.png"
+											style="width: 36rpx;height: 36rpx;margin-left: 53rpx;" mode=""></image>
+										<!-- <text @click="openUserHome(item.user_id)" class="ri-gift-fill"
+											style="font-size: 40rpx;margin-left: 30rpx;color:#FE4373"></text> -->
 									</view>
 								</view>
 							</view>
@@ -324,11 +328,11 @@
 			</view>
 		</u-modal>
 		<u-modal :show="exitModul" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
-			confirmText="离开" cancelText="取消" @cancel="exitModul=false" @confirm="exit" style="z-index: 9999999;">
+			confirmText="确定" cancelText="取消" @cancel="exit" @confirm="exit2" style="z-index: 9999999;">
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
 				<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
-					<text>确定要离开房间吗？</text>
+					<text>确定要离开房间吗？点击确定将开启浮窗并暂时离开，点击取消将退出房间。</text>
 				</view>
 			</view>
 		</u-modal>
@@ -491,7 +495,9 @@
 				disconnect: false,
 				ainimationFlag: false,
 				animationsModule: false,
-				disconnectText: ""
+				disconnectText: "",
+				userLength: 0,
+				hair_cup_user_id: ''
 			}
 		},
 		onBeforeBack(args) {
@@ -503,11 +509,55 @@
 			//or
 			return true //阻止页面关闭
 		},
-		onLoad() {
+		onLoad(e) {
 			var that = this;
 			this.userInfo = uni.getStorageSync("userInfo");
+			getApp().globalData.socketTask._callbacks.message.splice(1)
 			that.initSocket();
-			that.sendMsg("add_game_room");
+			if (e.roomId == undefined) {
+				that.$nextTick(() => {
+					that.sendMsg("add_game_room");
+				})
+			} else {
+				if (e.roomData == undefined) {
+					that.$nextTick(() => {
+						let params = {
+							type: "add_game_room",
+							cate: 2,
+							game_room_id: e.roomId
+						}
+						getApp().globalData.socketTask.send({
+							data: JSON.stringify(params),
+							success() {
+								console.log("游戏发送消息成功");
+							},
+							fail() {
+								console.log("游戏发送消息失败");
+							}
+						});
+					})
+				} else {
+					console.log(e)
+					var socketDate = JSON.parse(e.roomData)
+					var userArr = ["", "", "", "", "", ""];
+					socketDate.data.list.forEach((val, index) => {
+						userArr[val.game_room_place_num] = val
+					})
+					that.gameUserArr = userArr;
+					that.userLength = socketDate.room_count;
+					// 人满
+					that.scrollBottom();
+					if (socketDate.game_task_is_over == '1') {
+						that.interValNum = 30;
+						that.openGame(socketDate, 1);
+					} else if (socketDate.game_task_is_over == '0') {
+						that.msgList[0].msg = '';
+						that.gameTip =
+							`命中 ${socketDate.punished_user_data.role.realname}·${socketDate.punished_user_data.role.dynasty}`;
+						that.historyTaskData = socketDate.punished_user_data.game_task;
+					}
+				}
+			}
 			that.getEmojiList();
 			that.watchKeyboard();
 			that.getGiftList();
@@ -529,22 +579,24 @@
 		onUnload() {
 			var that = this;
 			clearInterval(that.interVal);
-			that.sendMsg("");
-			let params = {
-				type: "leave_game_room",
-				cate: 2,
-				user_punished_code: that.gameData.punished_code
-			}
-			getApp().globalData.socketTask.send({
-				data: JSON.stringify(params),
-				success() {
-					console.log("离开房间消息成功");
-				},
-				fail() {
-					console.log("离开房间消息失败");
+			if (that.$store.state.game.gameRoomData.game_room_id == undefined) {
+				let params = {
+					type: "leave_game_room",
+					cate: 2,
+					user_punished_code: that.gameData.punished_code
 				}
-			});
-			getApp().globalData.socketTask.close();
+				getApp().globalData.socketTask.send({
+					data: JSON.stringify(params),
+					success() {
+						console.log("离开房间消息成功");
+						uni.removeStorageSync("waterData")
+					},
+					fail() {
+						console.log("离开房间消息失败");
+					}
+				});
+			}
+			getApp().globalData.socketTask._callbacks.message.splice(1)
 			if (that.audio != null) {
 				that.audio.destroy();
 				that.audio = null;
@@ -557,6 +609,7 @@
 			plus.device.setWakelock(false);
 			// #endif
 		},
+
 		onShow() {
 			var that = this;
 			that.gameUserArr.forEach((val, index) => {
@@ -565,10 +618,11 @@
 						"game_room_id": val.game_room_id,
 						"game_room_place_num": val.game_room_place_num
 					}).then(res => {
-						console.log(res)
 						if (res.code == 0) {
 							that.disconnectText = res.msg;
 							that.disconnect = true;
+							that.$store.commit("setGameRoomData", [])
+							that.$store.commit("setGameBarFlag", false)
 						} else if (res.code == 1) {
 							getApp().globalData.socketTask.close();
 							uni.showLoading({
@@ -585,22 +639,27 @@
 								that.msgList = [];
 								clearTimeout(aaa)
 							}, 3000)
-
-							// console.log(res.data.game_room_id)
-							// var userInfo = uni.getStorageSync("userInfo");
-							// that.$api("game.joinRoom").then(res2 => {
-							// 	console.log(res2)
-							// 	that.initSocket();
-							// 	that.sendMsg("add_game_room");
-							// })
 						}
 					})
 				}
 			})
 		},
 		methods: {
+			exit2() {
+				this.backHome()
+			},
 			backHome() {
-				this.$u.route('/pages/joy/poetryStart');
+				var that = this;
+				var userInfo = uni.getStorageSync("userInfo");
+				that.gameUserArr.forEach((val, index) => {
+					if (val.user_id == userInfo.id) {
+						that.$store.commit("setGameRoomData", val)
+						that.$store.commit("setGameBarFlag", true)
+					}
+				})
+				uni.switchTab({
+					url: '/pages/index/index'
+				});
 			},
 			backClick() {
 				if (this.ainimationFlag == true) {
@@ -618,10 +677,13 @@
 			},
 			//退出房间
 			exit() {
-				this.$u.route({
-					type: 'navigateBack',
-					delta: 1
-				})
+				var that = this;
+				uni.removeStorageSync("gameRoomData")
+				that.$store.commit("setGameRoomData", [])
+				that.$store.commit("setGameBarFlag", false)
+				uni.redirectTo({
+					url: '/pages/joy/poetryStart'
+				});
 			},
 			//语音点踩
 			cai(item, index) {
@@ -828,7 +890,8 @@
 				that.$api("gift.giveGift", {
 					"receiver_user_id": that.userItem.id,
 					"nums": 1,
-					"gift_id": item.id
+					"gift_id": item.id,
+					"channel": 5
 				}).then(data => {
 					if (data.code == 1) {
 						if (data.msg == "赠送成功") {
@@ -855,14 +918,17 @@
 				})
 			},
 			//礼物动画
-			handleGiftPlay(giftUrl) {
+			handleGiftPlay(giftData) {
 				let that = this;
+				console.log(giftData)
 				that.showSvga = true;
 				that.$nextTick(() => {
 					that.$refs.svgaPlayer.render(async (parser, player) => {
-						let videoItem = await parser.load(giftUrl)
+						let videoItem = await parser.load(giftData.content)
 						await player.setVideoItem(videoItem)
-						player.loops = 1
+						player.loops = 1;
+						player.setContentMode(giftData.is_full_screen == 1 ? "AspectFill" :
+							"AspectFit")
 						player.startAnimation()
 						player.onFinished(() => {
 							that.showSvga = false
@@ -1186,6 +1252,7 @@
 				let params = {
 					type: type,
 					cate: cate,
+					time: new Date().getTime()
 				}
 				console.log("游戏发送消息成功")
 				getApp().globalData.socketTask.send({
@@ -1202,9 +1269,8 @@
 			initSocket() {
 				var that = this;
 				getApp().globalData.socketTask.onMessage((res) => {
+					console.log(JSON.parse(res.data))
 					var socketDate = JSON.parse(res.data);
-					console.log(socketDate)
-					console.log(new Date());
 					if (socketDate.cate != 2) {
 						return;
 					}
@@ -1214,13 +1280,17 @@
 							userArr[val.game_room_place_num] = val
 						})
 						that.gameUserArr = userArr;
+						that.userLength = socketDate.room_count;
 						// 人满
-						that.scrollBottom()
-						that.msgList.push({
-							type: "game_room",
-							selectType: "add_game_room",
-							user: socketDate.data.new_user_data.role
-						})
+						that.scrollBottom();
+						if (socketDate.before_is_in_room != 1) {
+							that.msgList.push({
+								type: "game_room",
+								selectType: "add_game_room",
+								user: socketDate.data.new_user_data.role
+							})
+						}
+
 						if (socketDate.game_task_is_over == '1') {
 							that.interValNum = 30;
 							that.openGame(socketDate, 1);
@@ -1240,6 +1310,7 @@
 							userArr[val.game_room_place_num] = val
 						})
 						that.gameUserArr = userArr;
+						that.userLength = socketDate.data.list.length;
 						that.scrollBottom()
 						that.msgList.push({
 							type: "game_room",
@@ -1255,7 +1326,9 @@
 							clearInterval(that.interVal);
 						}
 					} else if (socketDate.type == 'hair_cup') {
+						that.hair_cup_user_id = socketDate.hair_cup_user_id;
 						that.animations();
+						that.$forceUpdate()
 						that.gameTip = "发杯中";
 						that.activeUser = [];
 					} else if (socketDate.type == "game_task") {
@@ -1311,7 +1384,7 @@
 					} else if (socketDate.type == 'gift') {
 						that.showGift = false;
 						that.showSvga = true;
-						that.handleGiftPlay(socketDate.data.content);
+						that.handleGiftPlay(socketDate.data);
 						that.msgList.push({
 							type: "gift",
 							data: socketDate.data
@@ -1418,6 +1491,7 @@
 			},
 			//开始
 			start() {
+				console.log("fei")
 				var that = this;
 				clearInterval(that.interVal)
 				that.sendMsg("hair_cup");
@@ -1439,7 +1513,11 @@
 				switch (parseInt(indexKey)) {
 					case 0:
 						that.fei_AnimationName = "cup5";
-						that.sendMsg("game_task")
+						var userInfo = uni.getStorageSync("userInfo");
+						if (userInfo.id == that.hair_cup_user_id) {
+							that.sendMsg("game_task")
+							that.hair_cup_user_id = ''
+						}
 						that.gameTime = setTimeout(() => {
 							console.log("cup5");
 							that.taskUser = that.hitUser;
@@ -1457,7 +1535,11 @@
 						break;
 					case 1:
 						that.fei_AnimationName = "cup6";
-						that.sendMsg("game_task")
+						var userInfo = uni.getStorageSync("userInfo");
+						if (userInfo.id == that.hair_cup_user_id) {
+							that.sendMsg("game_task")
+							that.hair_cup_user_id = ''
+						}
 						that.gameTime = setTimeout(() => {
 							console.log("cup6");
 							that.taskUser = that.hitUser;
@@ -1475,7 +1557,11 @@
 						break;
 					case 2:
 						that.fei_AnimationName = "cup3";
-						that.sendMsg("game_task")
+						var userInfo = uni.getStorageSync("userInfo");
+						if (userInfo.id == that.hair_cup_user_id) {
+							that.sendMsg("game_task")
+							that.hair_cup_user_id = ''
+						}
 						that.gameTime = setTimeout(() => {
 							console.log("cup3");
 							that.taskUser = that.hitUser;
@@ -1493,7 +1579,11 @@
 						break;
 					case 3:
 						that.fei_AnimationName = "cup4";
-						that.sendMsg("game_task")
+						var userInfo = uni.getStorageSync("userInfo");
+						if (userInfo.id == that.hair_cup_user_id) {
+							that.sendMsg("game_task")
+							that.hair_cup_user_id = ''
+						}
 						that.gameTime = setTimeout(() => {
 							console.log("cup4");
 							that.taskUser = that.hitUser;
@@ -1511,7 +1601,11 @@
 						break;
 					case 4:
 						that.fei_AnimationName = "cup1";
-						that.sendMsg("game_task")
+						var userInfo = uni.getStorageSync("userInfo");
+						if (userInfo.id == that.hair_cup_user_id) {
+							that.sendMsg("game_task")
+							that.hair_cup_user_id = ''
+						}
 						that.gameTime = setTimeout(() => {
 							console.log("cup1");
 							that.taskUser = that.hitUser;
@@ -1529,7 +1623,11 @@
 						break;
 					case 5:
 						that.fei_AnimationName = "cup2";
-						that.sendMsg("game_task")
+						var userInfo = uni.getStorageSync("userInfo");
+						if (userInfo.id == that.hair_cup_user_id) {
+							that.sendMsg("game_task")
+							that.hair_cup_user_id = ''
+						}
 						that.gameTime = setTimeout(() => {
 							console.log("cup2");
 							that.taskUser = that.hitUser;
@@ -1770,8 +1868,7 @@
 	.selectedBtn {
 		width: 280rpx;
 		height: 80rpx;
-		background: #FE4373;
-		border: 1rpx solid rgba(255, 255, 0, 1);
+		background: #fdce60;
 		color: #fff;
 		border-radius: 10rpx;
 		text-align: center;

@@ -1,4 +1,144 @@
 export default {
+	fengyadu: {
+		fengyadu_redeem_money: {
+			url: 'user_fengyadu_log/fengyadu_redeem_money',
+			auth: false,
+			method: 'GET',
+			desc: '兑换风雅度',
+		},
+		my_usable_fengyadu: {
+			url: 'user_fengyadu_log/my_usable_fengyadu',
+			auth: false,
+			method: 'GET',
+			desc: '可兑换风雅度',
+		},
+	},
+	encounter: {
+		recommend_user: {
+			url: 'user/recommend_user',
+			auth: false,
+			method: 'GET',
+			desc: '每日邂逅',
+		},
+		add_recommend_user: {
+			url: 'user/add_recommend_user',
+			auth: false,
+			method: 'GET',
+			desc: '每日邂逅使用道具',
+		},
+		everyday_meet_love: {
+			url: 'user/everyday_meet_love',
+			auth: false,
+			method: 'GET',
+			desc: '每日邂逅钟情',
+		},
+	},
+	song: {
+		del: {
+			url: "duet_song/del",
+			auth: false,
+			method: 'GET',
+			desc: '删除桑田对歌/回复',
+		},
+		reply_zan_or_cai: {
+			url: "duet_song/reply_zan_or_cai",
+			auth: false,
+			method: 'GET',
+			desc: '对歌（回复）点赞/踩',
+		},
+		zan_or_cai: {
+			url: "duet_song/zan_or_cai",
+			auth: false,
+			method: 'GET',
+			desc: '桑林主题点赞/踩',
+		},
+		reply_list: {
+			url: "duet_song/reply_list",
+			auth: false,
+			method: 'GET',
+			desc: '对歌（回复）列表',
+		},
+		reply: {
+			url: "duet_song/reply",
+			auth: false,
+			method: 'POST',
+			desc: '对歌（回复）',
+		},
+		details: {
+			url: "duet_song/details",
+			auth: false,
+			method: 'GET',
+			desc: '对歌详情',
+		},
+		lists: {
+			url: 'duet_song/lists',
+			auth: false,
+			method: 'GET',
+			desc: '对歌列表',
+		},
+		songPublish: {
+			url: 'duet_song/add',
+			auth: false,
+			method: 'POST',
+			desc: '对歌发布',
+		}
+	},
+	archery: {
+		lists: {
+			url: 'shot_cover/lists',
+			auth: false,
+			method: 'GET',
+			desc: '射覆列表',
+		},
+		add: {
+			url: 'shot_cover/add',
+			auth: false,
+			method: 'POST',
+			desc: '射覆列表添加',
+		},
+		detail: {
+			url: 'shot_cover/details',
+			auth: false,
+			method: 'GET',
+			desc: '射覆详情',
+		},
+		zan_or_cai: {
+			url: 'shot_cover/zan_or_cai',
+			auth: false,
+			method: 'GET',
+			desc: '射覆详情点赞',
+		},
+		del: {
+			url: 'shot_cover/del',
+			auth: false,
+			method: 'GET',
+			desc: '删除射覆',
+		},
+		addComment: {
+			url: 'shot_cover/comment',
+			auth: false,
+			method: 'POST',
+			desc: '射覆添加评论',
+		},
+		comment_list: {
+			url: 'shot_cover/comment_list',
+			auth: false,
+			method: 'GET',
+			desc: '射覆顶层评论列表',
+		},
+		reply_comment_list: {
+			url: 'shot_cover/reply_comment_list',
+			auth: false,
+			method: 'GET',
+			desc: '射覆顶层评论的评论列表',
+		},
+		comment_zan_or_cai: {
+			url: 'shot_cover/comment_zan_or_cai',
+			auth: false,
+			method: 'GET',
+			desc: '射覆顶层评论点赞或者踩',
+		},
+	},
 	ad: {
 		lists: {
 			url: 'adv/lists',
@@ -16,6 +156,12 @@ export default {
 		},
 	},
 	game: {
+		update_type_for_matching: {
+			url: 'game_room/update_type_for_matching',
+			auth: false,
+			method: 'GET',
+			desc: '修改状态到匹配中',
+		},
 		match_success: {
 			url: 'game_room/match_success',
 			auth: false,
@@ -54,6 +200,54 @@ export default {
 		}
 	},
 	poetry: {
+		reply_my_poetry_comment_list: {
+			url: 'poetry/reply_my_poetry_comment_list',
+			auth: false,
+			method: 'GET',
+			desc: '评论我的诗缘的评论的子集列表',
+		},
+		delComment: {
+			url: 'poetry/del',
+			auth: false,
+			method: 'GET',
+			desc: '删除评论',
+		},
+		reply_poetry_ling: {
+			url: 'poetry/reply_poetry_ling',
+			auth: false,
+			method: 'POST',
+			desc: '添加评论',
+		},
+		cai: {
+			url: 'poetry/cai',
+			auth: false,
+			method: 'GET',
+			desc: '踩',
+		},
+		reply_poetry_list: {
+			url: 'poetry/reply_poetry_list',
+			auth: false,
+			method: 'GET',
+			desc: '诗缘评论的评论列表',
+		},
+		poetryZan: {
+			url: 'poetry/zan',
+			auth: false,
+			method: 'GET',
+			desc: '诗令点赞',
+		},
+		add_poetry_ling: {
+			url: 'poetry/add_poetry_ling',
+			auth: false,
+			method: 'POST',
+			desc: '添加诗令/评论',
+		},
+		everyday_poetry_title: {
+			url: 'poetry_word/everyday_poetry_title',
+			auth: false,
+			method: 'GET',
+			desc: '每日诗令（字）',
+		},
 		isRelease: {
 			url: 'poetry/today_is_exist_data',
 			auth: false,
@@ -118,6 +312,12 @@ export default {
 		},
 	},
 	index: {
+		index_top_image: {
+			url: 'adv/index_top_image',
+			auth: false,
+			method: 'GET',
+			desc: '首页顶部图片',
+		},
 		init: {
 			url: 'index/init',
 			auth: false,
@@ -294,6 +494,18 @@ export default {
 			method: 'GET',
 			desc: '评论列表更多',
 		},
+		cai: {
+			url: 'post_comment/cai',
+			auth: false,
+			method: 'POST',
+			desc: '踩评论',
+		},
+		del: {
+			url: 'post_comment/del',
+			auth: false,
+			method: 'POST',
+			desc: '删除评论',
+		},
 	},
 	post_comment: {
 		dig: {
@@ -310,6 +522,12 @@ export default {
 		},
 	},
 	gift: {
+		is_flower: {
+			url: 'user_gift/is_flower',
+			auth: true,
+			method: 'GET',
+			desc: '是否有小花花',
+		},
 		lists: {
 			url: 'gift/lists',
 			auth: true,
@@ -422,6 +640,12 @@ export default {
 		},
 	},
 	role: {
+		identity_list: {
+			url: 'role/identity_list',
+			auth: false,
+			method: 'GET',
+			desc: '选择身份列表',
+		},
 		recommend: {
 			url: 'role/recommend',
 			auth: false,
@@ -594,6 +818,12 @@ export default {
 			auth: true,
 			method: 'POST',
 			desc: '更换头像',
+		},
+		update_background_image: {
+			url: 'user/update_background_image',
+			auth: true,
+			method: 'POST',
+			desc: '更换背景',
 		}
 	},
 	user_gift: {
@@ -677,6 +907,18 @@ export default {
 		},
 	},
 	role_title: {
+		hall_of_fame_new_role: {
+			url: 'adv/hall_of_fame_new_role',
+			auth: false,
+			method: 'GET',
+			desc: '首页名人堂提示',
+		},
+		hall_of_fame: {
+			url: 'user/hall_of_fame',
+			auth: false,
+			method: 'GET',
+			desc: '名人堂',
+		},
 		lists: {
 			url: 'role_title/lists',
 			auth: false,

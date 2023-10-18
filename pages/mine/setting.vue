@@ -68,6 +68,7 @@
 				退出登录
 			</view>
 		</view>
+		<topPrompt></topPrompt>
 	</view>
 </template>
 <script>
@@ -116,6 +117,9 @@
 						uni.removeStorageSync('msgCount')
 						uni.removeStorageSync('pageCount')
 						uni.removeStorageSync('gender')
+						getApp().globalData.dateTime = "";
+						that.$store.commit("setGameRoomData", [])
+						that.$store.commit("setGameBarFlag", false)
 						that.$store.commit("setMessageList", []);
 						that.$store.commit("setMsgCount", 0);
 						that.$store.commit("setMsgCount2");

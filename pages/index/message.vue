@@ -5,7 +5,7 @@
 	</u-navbar>
 	<view class="bannerBox" v-if="bannerData.length != 0">
 		<image class="banner" mode="aspectFill" :src="bannerData.image" v-if="bannerData.status == 'normal'"
-			@click="jumpBanner(bannerData.url)">
+			@click="jumpBanner(bannerData)">
 		</image>
 	</view>
 	<!-- <view class="" style="margin-left: 340rpx; font-size: 35rpx;padding-top:var(--status-bar-height)"> 消息</view> -->
@@ -19,21 +19,53 @@
 				</view>
 				<view class="noticeRight">
 					<view style="display: flex;align-items: center;justify-content: space-between;">
-						<text style="font-size: 30rpx;color:#323232;">动态消息</text>
+						<text style="font-size: 30rpx;color:#323232;">通知消息</text>
 						<text v-if="realname!= undefined"
 							style="font-size: 24rpx;color:#999999;">{{ $u.timeFormat(createtime, 'mm-dd hh:MM') }}</text>
 					</view>
-					<view style="color: #808080;font-size: 26rpx;" v-if="realname == undefined">暂无动态消息</view>
+					<view style="color: #808080;font-size: 26rpx;" v-if="realname == undefined">暂无通知消息</view>
 					<view style="display: flex;align-items: center;justify-content: space-between;"
 						v-if="realname!= undefined">
-						<view style="color: #808080;font-size: 26rpx;">
+						<view style="color: #808080;font-size: 26rpx;display: flex;align-items: center;">
 							<text>{{realname}}·{{dynasty}}</text>
 							<text v-if="cate == 1">给您评论了！</text>
 							<text v-if="cate == 2">给您动态点赞了！</text>
 							<text v-if="cate == 3">给您评论点赞了！</text>
 							<text v-if="cate == 4">回复您的评论了！</text>
 							<text v-if="cate == 5">查看您的主页了！</text>
-							<text v-if="cate == 6">给您的诗词点赞！</text>
+							<text v-if="cate == 6">
+								<block v-if="trendsMsgData.data.top_poetry_id == 0">
+									给您的诗词点赞！
+								</block>
+								<block v-if="trendsMsgData.data.top_poetry_id> 0">
+									给您的评论点赞！
+								</block>
+							</text>
+							<text v-if="cate == 7">在今日邂逅喜欢了你！</text>
+							<view v-if="cate == 8" style="display: flex;align-items: center;">
+								<block v-if="trendsMsgData.data.channel ==0">通过未知</block>
+								<block v-if="trendsMsgData.data.channel ==1">通过射覆</block>
+								<block v-if="trendsMsgData.data.channel ==2">通过诗词结缘</block>
+								<block v-if="trendsMsgData.data.channel ==3">通过动态</block>
+								<block v-if="trendsMsgData.data.channel ==4">通过桑田对歌</block>
+								<block v-if="trendsMsgData.data.channel ==5">通过曲水流觞</block>
+								<text>给你送了</text>
+								<image :src="trendsMsgData.data.gift_image" style="width: 55rpx;height: 55rpx;" mode="">
+								</image>
+								<text>x{{trendsMsgData.data.nums}}</text>
+							</view>
+							<text v-if="cate == 9">射猜了您的覆题</text>
+							<text v-if="cate == 10">评论了您的射覆</text>
+							<text v-if="cate == 11">回复了您的评论</text>
+							<text v-if="cate == 12">给您的射覆点赞了</text>
+							<text v-if="cate == 13">给您的射覆答案点赞了</text>
+							<text v-if="cate == 14">给您的评论点赞了</text>
+							<text v-if="cate == 15">给您的诗词评论了</text>
+							<text v-if="cate == 16">回复了您的评论</text>
+							<text v-if="cate == 17">给您的对歌点赞了</text>
+							<text v-if="cate == 18">给您的对歌点赞了</text>
+							<text v-if="cate == 19">接了您的对歌</text>
+							<text v-if="cate == 20">接了您的对歌</text>
 						</view>
 						<view v-if="no_read_count!=0" class="tips2">
 						</view>
@@ -174,7 +206,8 @@
 				no_read_count: "",
 				topMsgList: [],
 				topMsgList2: [],
-				bannerData: []
+				bannerData: [],
+				trendsMsgData: []
 			}
 		},
 		onLoad(option) {
@@ -200,10 +233,15 @@
 			that.params.page = ++that.params.page
 		},
 		methods: {
-			jumpBanner(url) {
-				this.$u.route('/pages/joy/activity', {
-					url: url
-				})
+			jumpBanner(item) {
+				if (item.is_external_links == 0) {
+					this.$u.route(item.url)
+				} else {
+					this.$u.route('/pages/joy/activity', {
+						url: item.url,
+						title: item.title
+					})
+				}
 			},
 			//广告
 			getAd() {
@@ -233,6 +271,7 @@
 				var that = this;
 				that.$api('message.trendsMsg').then(res => {
 					if (res.code === 1) {
+						that.trendsMsgData = res.data;
 						that.cate = res.data.data.cate;
 						that.createtime = res.data.data.createtime;
 						that.dynasty = res.data.data.dynasty;

@@ -9,34 +9,44 @@
 				@click="openUserHome(item.user_id)" mode="aspectFill" style="width: 85rpx;height: 85rpx;"></image>
 		</view>
 		<view class="flex-1" style="margin-left: 20rpx;padding-bottom: 20rpx;">
-			<view class="leading-none mt-2" v-if="item.user==null">
-				<text style="color: #323232;font-size: 28rpx;">无名氏</text>
-				<text
-					style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: cornsilk; color: rgb(255, 180, 31);">望</text>
-				<text style="color: rgb(255, 180, 31);">0</text>
-			</view>
-			<view class="leading-none mt-2" @click="openUserHome(item.user_id)" v-else>
-				<text
-					style="color: #323232;font-size: 28rpx;">{{ item.role.realname + ' · ' + item.role.dynasty }}</text>
-				<text
-					style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: cornsilk; color: rgb(255, 180, 31);">望</text>
-				<text style="color: rgb(255, 180, 31);">{{item.user.total_mw }}</text>
-			</view>
-			<!-- <view class="text-base leading-none text-gray-400 mt-3">{{ $u.timeFrom(item.createtime, 'mm月dd日 hh:MM') }}
-			</view> -->
+			<view style="display: flex;align-items: center;justify-content: space-between;">
+				<view class="leading-none mt-2" v-if="item.user==null">
+					<text style="color: #323232;font-size: 28rpx;">无名氏</text>
+					<text
+						style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: cornsilk; color: rgb(255, 180, 31);">望</text>
+					<text style="color: rgb(255, 180, 31);">0</text>
+				</view>
+				<view class="leading-none mt-2" @click="openUserHome(item.user_id)" v-else>
+					<view style="display: flex;align-items: center;">
+						<text
+							style="color: #323232;font-size: 28rpx;">{{ item.role.realname + ' · ' + item.role.dynasty }}</text>
+						<image :src="item.user.mw_image" style="width: 32rpx;height: 32rpx;margin-left: 12rpx;" mode="">
+						</image>
+						<!-- <text
+							style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: cornsilk; color: rgb(255, 180, 31);">望</text>
+						<text style="color: rgb(255, 180, 31);">{{item.user.total_mw }}</text> -->
+					</view>
+					<view v-if="item.role.achievements" style="font-size: 24rpx;color: #999999;margin-top: 5rpx;">
+						{{item.role.achievements.replace(/,/g,"&nbsp;&nbsp;")}}
+					</view>
+				</view>
 
-			<view v-if="item.role.achievements" style="font-size: 24rpx;color: #999999;margin-top: 5rpx;">
-				{{item.role.achievements.replace(/,/g,"&nbsp;&nbsp;")}}
+				<view @click=" jubao" :style="{visibility: userInfo.id != item.user_id?'visible':'hidden'}">
+					<i
+						class="ri-more-2-fill text-xl bg-gradient-to-b from-gray-500 to-gray-400 bg-clip-text text-transparent"></i>
+				</view>
 			</view>
-			<view class="mt-4" style="color: #323232;font-size: 26rpx;">
+
+			<view class="mt-4" style="color: #323232;font-size: 32rpx;">
 				<text v-if="item.is_system_build == 1" @click="">{{ item.content }} <text @click="openQuShui(item)"
 						style="color:#FE4373">跟随进房 <text class="ri-arrow-right-s-line"
 							style="font-size: 26rpx;margin-left: 5rpx;"></text> </text> </text>
 				<text v-else @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}</text>
 				<!-- 话题 -->
 				<view @tap="$u.route('/pages/user/topicspeed',{post_cate_id:items.id})"
-					class="text-base leading-none text-gray-500 ml-1" style="color: #FE4373;margin-top: 20rpx;"
-					v-for="items in item.post_cate"><i class="ri-hashtag mr-1"></i>{{ items.title }}</view>
+					class="text-base leading-none text-gray-500 ml-1"
+					style="color: #FE4373;margin-top: 12rpx;font-size: 28rpx;" v-for="items in item.post_cate"><i
+						class="ri-hashtag mr-1"></i>{{ items.title }}</view>
 			</view>
 			<!-- {{item}} -->
 			<view v-if="item.images" class="mt-4" style="position: relative;">
@@ -78,40 +88,36 @@
 					class="text-base leading-none text-gray-500 ml-1" style="color: #6F93BD;"
 					v-for="items in item.post_cate">{{ items.title }}</text>
 			</view> -->
-			<view
-				style="display: flex;flex-direction: row;align-items: center;justify-content: flex-end;width: 100%;margin-right: -50rpx;">
+			<view style="display: flex;flex-direction: row;align-items: center;justify-content: flex-end;width: 100%;">
 				<!-- 评论 -->
 				<view @click="openDetails(item)"
-					style="color: #999999;display: flex;flex-direction: row;align-items: center;">
+					style="color: #999999;display: flex;flex-direction: row;align-items: center;width: 100rpx;margin-right: 39rpx;">
 					<text class="ri-chat-smile-3-line" style="font-size: 40rpx;margin-right: 10rpx;"></text>
 					<text
-						style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 100rpx;">{{item.commentnums==0?'评论':item.commentnums}}</text>
+						style="font-size: 28rpx;color: #999999;white-space: nowrap;">{{item.commentnums==0?'评论':item.commentnums}}</text>
 				</view>
 				<!-- 点赞 -->
-				<view style="display: flex;flex-direction: row;align-items: center;" @click="handlePostDig()">
+				<view style="display: flex;flex-direction: row;align-items: center;width: 100rpx;"
+					@click="handlePostDig()">
 					<text v-show='is_zan==0' class="ri-heart-line"
 						style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
 					<text v-show='is_zan==1' class="ri-heart-fill"
 						style="font-size: 40rpx;margin-right: 10rpx;color: #fe4373;"></text>
 					<text
-						style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 100rpx;">{{ item.diggnums ==0?'出彩':item.diggnums }}</text>
+						style="font-size: 28rpx;color: #999999;white-space: nowrap;">{{ item.diggnums ==0?'出彩':item.diggnums }}</text>
 				</view>
 				<!-- 无聊 -->
-				<view style="color: #999999;display: flex;flex-direction: row;align-items: center;"
+				<!-- <view style="color: #999999;display: flex;flex-direction: row;align-items: center;"
 					@click="handleConcleDig()">
 					<text v-show='is_cai==0' class="ri-emotion-normal-line"
 						style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
 					<text v-show='is_cai==1' class="ri-emotion-normal-fill"
 						style="font-size: 40rpx;margin-right: 10rpx;color: #fe4373;"></text>
-					<!-- <image v-show='is_cai==0' src="../../static/nolove.png"
-						style="width: 40rpx;margin-top: 10rpx; height: 40rpx;margin-right: 10rpx;" mode=""></image>
-					<image v-show='is_cai==1' src="../../static/nolove-red.png"
-						style="width: 40rpx;margin-top: 10rpx;height: 40rpx;margin-right: 10rpx;" mode=""></image> -->
 					<text style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 80rpx;color: #999999;"
 						v-show='is_cai==0'>无聊</text>
 					<text style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 80rpx;color: #fe4373;"
 						v-show='is_cai==1'>无聊</text>
-				</view>
+				</view> -->
 			</view>
 
 
@@ -146,18 +152,18 @@
             </view> -->
 			<!-- 举报功能 -->
 			<!-- <view class="" @click="showAction = true"> -->
-			<view @click=" jubao" :style="{visibility: userInfo.id != item.user_id?'visible':'hidden'}">
-				<i
-					class="ri-more-2-fill text-xl bg-gradient-to-b from-gray-500 to-gray-400 bg-clip-text text-transparent"></i>
-			</view>
-			<u-popup :show="showAction" @close="showAction = false" :closeable="true" :round="30">
-				<view class="p-4">
+
+			<u-popup :show="showAction" @close="showAction = false" :closeable="false" :round="30">
+				<view class="" style="padding: 50rpx 55rpx;">
+					<view class="delete" @click="handleConcleDig()" style="margin-bottom: 36rpx;">
+						<view style="font-size: 30rpx;">不喜欢/点踩</view>
+					</view>
 					<view class="delete"
 						@click="$u.route('/pages/public/report',{user_id:item.user_id,type:'动态',selectId:item.id}), showAction = false"
-						style="margin-top: 50rpx;">
+						style="margin-bottom: 36rpx;">
 						<view style="font-size: 30rpx;">举报广告/色情等</view>
 					</view>
-					<view class="delete2" @click="showAction = false" style="margin-top: 20rpx;">
+					<view class="delete2" @click="showAction = false">
 						<view style="font-size: 30rpx;">取消</view>
 					</view>
 				</view>
@@ -234,12 +240,39 @@
 				that.$api("game.joinRoom", {
 					game_room_user_id: item.user_id
 				}).then(res => {
-					console.log(res)
 					if (res.code == 1) {
-						that.isModule = false;
-						uni.navigateTo({
-							url: '/pages/joy/poetry'
-						})
+						var roomData = that.$store.state.game.gameRoomData;
+						console.log(roomData.game_room_id)
+						console.log(res.data.game_room_id)
+						if (roomData.game_room_id == undefined) {
+							this.$u.route('pages/joy/poetry?roomId=' + res.data.game_room_id)
+						} else {
+							if (roomData.game_room_id == res.data.game_room_id) {
+								this.$u.route('pages/joy/poetry?roomId=' + res.data.game_room_id)
+							} else {
+								let params = {
+									type: "leave_game_room",
+									cate: 2,
+									user_punished_code: ""
+								}
+								getApp().globalData.socketTask.send({
+									data: JSON.stringify(params),
+									success() {
+										console.log("离开房间消息成功");
+										that.$store.commit("setGameRoomData", [])
+										that.$store.commit("setGameBarFlag", false)
+										that.$nextTick(() => {
+											this.$u.route('pages/joy/poetry?roomId=' + res.data
+												.game_room_id)
+										})
+									},
+									fail() {
+										console.log("离开房间消息失败");
+									}
+								});
+							}
+						}
+
 					} else {
 						uni.showToast({
 							icon: "none",
@@ -263,15 +296,10 @@
 			//跳转用户详情
 			openUserHome(id) {
 				var that = this;
-				var userInfo = uni.getStorageSync("userInfo");
 				that.$emit("openDetail");
-				if (id == userInfo.id) {
-					that.$u.route('/pages/index/mine');
-				} else {
-					that.$u.route('/pages/user/home', {
-						user_id: id
-					})
-				}
+				that.$u.route('/pages/user/home', {
+					user_id: id
+				})
 			},
 			//查看图片
 			onPreviewTap(e) {
@@ -359,13 +387,11 @@
 								post_id: that.item.id,
 							}).then(res => {
 								if (res.code === 1) {
-									that.is_cai = 1
-									that.getPostDetailCancle()
-									that.isCai()
-								} else {
-									that.is_cai = 0
+									that.showAction = false;
 									that.$u.toast(res.msg)
-
+								} else {
+									that.showAction = false;
+									that.$u.toast(res.msg)
 								}
 							})
 						} else {
@@ -465,24 +491,21 @@
 
 <style lang="scss">
 	.delete {
-		background: #F7F7F7;
+		background: #FFFFFF;
+		box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(0, 0, 0, 0.302);
+		opacity: 1;
 		text-align: center;
 		height: 85rpx;
 		line-height: 85rpx;
 		width: 100%;
-		border-radius: 42rpx;
-		color: #323232;
-		font-size: 28rpx;
+		border-radius: 44rpx;
+		color: #767676;
+		font-size: 32rpx;
 	}
 
 	.delete2 {
-		background: #fff;
+		color: #767676;
+		font-size: 32rpx;
 		text-align: center;
-		height: 85rpx;
-		line-height: 85rpx;
-		width: 100%;
-		border-radius: 42rpx;
-		color: #323232;
-		font-size: 28rpx;
 	}
 </style>
