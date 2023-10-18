@@ -56,6 +56,7 @@
 		<!-- <uc-tabbar></uc-tabbar> -->
 	</view>
 </template>
+<!-- git -->
 <script>
 	export default {
 		name: 'square',

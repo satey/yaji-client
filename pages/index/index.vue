@@ -294,6 +294,7 @@
 		<topPrompt></topPrompt>
 	</view>
 </template>
+<!-- git -->
 <script>
 	import feiRecharge from "@/components/fei-recharge/fei-recharge.vue"
 	import permision from "@/js_sdk/wa-permission/permission.js";
