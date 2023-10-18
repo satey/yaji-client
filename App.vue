@@ -1,4 +1,4 @@
-<!-- git-feifei -->
+<!-- git -->
 <script>
 	import Vue from 'vue';
 	import {
