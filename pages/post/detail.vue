@@ -12,6 +12,9 @@
 		</u-navbar>
 		<u-popup :show="showAction" @close="showAction = false" :closeable="false" :round="30">
 			<view style="padding: 50rpx 55rpx;">
+				<view class="delete" @click="shield" style="margin-bottom: 36rpx;">
+					<view style="font-size: 30rpx;">屏蔽该作品</view>
+				</view>
 				<view class="delete" style="margin-bottom: 36rpx;" @click="cai">
 					<view style="font-size: 30rpx;">不喜欢/点踩</view>
 				</view>
@@ -177,6 +180,7 @@
 		},
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				post: {
 					user: {}
 				},
@@ -245,6 +249,19 @@
 			// that.getDigCommentDetail()
 		},
 		methods: {
+			shield() {
+				this.showAction = false;
+				uni.showToast({
+					icon: "none",
+					title: "已屏蔽该作品"
+				})
+				let timeOut = setTimeout(() => {
+					uni.navigateBack({
+						delta: 1
+					});
+					clearTimeout(timeOut)
+				}, 500)
+			},
 			cai() {
 				var that = this;
 				that.$api("post.cai", {

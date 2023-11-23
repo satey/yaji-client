@@ -32,6 +32,9 @@
 	</view>
 </template>
 <script>
+	import {
+		API_URL
+	} from "@/env.js"
 	export default {
 		name: 'page',
 		data() {
@@ -44,7 +47,8 @@
 				copyWechat: 'yajixiaoya ',
 				copyQQ: '704329837',
 				currentId: 0,
-				currentSrc: ""
+				currentSrc: "",
+				platform: uni.getSystemInfoSync().platform,
 			}
 		},
 		onLoad() {
@@ -64,28 +68,42 @@
 			},
 			getRichText() {
 				let that = this;
+				let xhrtype;
+				if (API_URL.indexOf("suoeryoude") == -1) {
+					xhrtype = 0;
+				} else {
+					xhrtype = 1;
+				}
+				console.log(xhrtype)
 				if (that.$Route.query.id == 1) {
 					// 用户协议
-					this.currentId = 1;
-					this.currentSrc =
-						"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/index.html?type=2"
-					this.isUserAgreement = true;
+					switch (this.platform) {
+						case 'ios':
+							this.currentSrc =
+								"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/text.html?type=2&platform=2&xhrtype=" +
+								xhrtype
+							break;
+						case 'android':
+							this.currentSrc =
+								"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/text.html?type=2&platform=1&xhrtype=" +
+								xhrtype
+							break;
+					}
 				}
 				if (that.$Route.query.id == 2) {
 					//隐私
-					this.currentId = 2;
-					uni.getSystemInfo({
-						success(res) {
-							if (res.deviceBrand == "huawei") {
-								that.currentSrc =
-									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/index.html?type=1";
-							} else {
-								that.currentSrc =
-									"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/index.html?type=1";
-							}
-						}
-					})
-					this.isProvicy = true;
+					switch (this.platform) {
+						case 'ios':
+							this.currentSrc =
+								"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/text.html?type=1&platform=2&xhrtype=" +
+								xhrtype
+							break;
+						case 'android':
+							this.currentSrc =
+								"https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/text/text.html?type=1&platform=1&xhrtype=" +
+								xhrtype
+							break;
+					}
 				}
 				if (that.$Route.query.id == 3) {
 					this.currentId = 3;
@@ -98,7 +116,6 @@
 					this.currentId = 4;
 					this.currentSrc = "https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/xieyi/Recharge.html"
 					this.isUserAgreement = true;
-
 				}
 
 				// that.$api('richtext.detail', {

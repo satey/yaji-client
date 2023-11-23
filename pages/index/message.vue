@@ -42,7 +42,7 @@
 								</block>
 							</text>
 							<text v-if="cate == 7">在今日邂逅喜欢了你！</text>
-							<view v-if="cate == 8" style="display: flex;align-items: center;">
+							<!-- <view v-if="cate == 8" style="display: flex;align-items: center;">
 								<block v-if="trendsMsgData.data.channel ==0">通过未知</block>
 								<block v-if="trendsMsgData.data.channel ==1">通过射覆</block>
 								<block v-if="trendsMsgData.data.channel ==2">通过诗词结缘</block>
@@ -53,7 +53,7 @@
 								<image :src="trendsMsgData.data.gift_image" style="width: 55rpx;height: 55rpx;" mode="">
 								</image>
 								<text>x{{trendsMsgData.data.nums}}</text>
-							</view>
+							</view> -->
 							<text v-if="cate == 9">射猜了您的覆题</text>
 							<text v-if="cate == 10">评论了您的射覆</text>
 							<text v-if="cate == 11">回复了您的评论</text>

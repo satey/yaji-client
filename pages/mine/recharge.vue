@@ -6,7 +6,8 @@
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
-		<view style="padding-bottom: 40rpx;">
+		<!-- android -->
+		<view style="padding-bottom: 40rpx;" v-if="phoneMode=='ios'?false:true">
 			<view style="font-size: 30rpx;color: #323232;padding-left: 30rpx;">选择充值数额：</view>
 			<view class="numList">
 				<view class="numItem" :class="currentIndex == index?'numItemActive':''"
@@ -18,7 +19,21 @@
 				</view>
 			</view>
 		</view>
-		<view class="selectType">
+		<!-- ios -->
+		<view style="padding-bottom: 40rpx;" v-if="phoneMode=='ios'?true:false">
+			<view style="font-size: 30rpx;color: #323232;padding-left: 30rpx;">选择充值数额：</view>
+			<view class="numList">
+				<view class="numItem" :class="currentIndex == index?'numItemActive':''"
+					v-for="(item,index) in copperList"
+					@click="selectMoney2(index,item.price,item.title,item.productid)">
+					<view><text class="num">{{item.title}}</text><text class="numText">铜钱</text></view>
+					<view class="money">{{item.price}}元</view>
+					<image v-show="currentIndex == index" src="../../static/czicon.png" class="selectIcon" mode="">
+					</image>
+				</view>
+			</view>
+		</view>
+		<view class="selectType" v-if="phoneMode=='ios'?false:true">
 			<radio-group @change="radioChange">
 				<label>
 					<view style="display: flex;align-items: center;justify-content: space-between;padding: 30rpx;">
@@ -83,32 +98,67 @@
 				copperListItem: null,
 				copperId: null,
 				isChecked: false,
+				phoneMode: uni.getSystemInfoSync().platform,
+				iapChannel: null,
+				product: []
 			};
 		},
 		onLoad() {
 			this.moneyList();
 		},
 		methods: {
-			// isCheckedChange(e) {
-			// 	if (e.detail.value.length) {
-			// 		this.isChecked = true;
-			// 	} else {
-			// 		this.isChecked = false;
-			// 	}
-			// },
 			//充值
 			recharge() {
 				var that = this;
-				// if (!this.isChecked) {
-				// 	that.$u.toast('请勾选协议')
-				// 	return;
-				// }
-				uni.showLoading();
+				uni.showLoading()
 				that.$api("pay.order", {
-					"id": that.copperId
+					"id": that.phoneMode == 'ios' ? "" : that.copperId,
+					"platform": that.phoneMode == 'ios' ? 'ios' : "",
+					"product_id": that.phoneMode == 'ios' ? that.copperId : '',
 				}).then(orderRes => {
 					if (orderRes.code == 1) {
 						var order_sn = orderRes.data;
+						if (that.phoneMode == 'ios') {
+							that.iapChannel.requestOrder(that.product, function() {
+								uni.requestPayment({
+									provider: 'appleiap',
+									orderInfo: {
+										"productid": that.copperId,
+										"quantity": 1,
+										"manualFinishTransaction": false
+									},
+									success: (e) => {
+										that.$api("pay.apple_pay_callback", {
+											order_sn: orderRes.data,
+											transaction_id: e.transactionIdentifier,
+											receipt_data: e.transactionReceipt
+										}).then(apple_pay_res => {
+											console.log(apple_pay_res)
+										})
+									},
+									fail: (err) => {
+										uni.showToast({
+											icon: "none",
+											title: "充值失败"
+										})
+									},
+									complete() {
+										uni.hideLoading()
+										that.iapChannel.restoreCompletedTransactions({
+											manualFinishTransaction: true,
+										}, (res) => {
+											res.forEach((item, index) => {
+												that.iapChannel.finishTransaction(
+													item)
+											})
+										}, (err) => {
+											console.log(err);
+										})
+									}
+								})
+							})
+							return;
+						}
 						that.$api("pay.prepay", {
 							type: that.payType,
 							order_sn: order_sn
@@ -151,18 +201,57 @@
 			//充值铜钱列表
 			moneyList() {
 				var that = this;
-				that.$api("user_recharge.moneyList").then((res) => {
-					if (res.code == 1) {
-						that.copperList = res.data;
-						that.moneyCount = res.data[0].money
-						that.copper = res.data[0].copper;
-						that.copperId = res.data[0].id;
-
-					}
-				})
+				if (uni.getSystemInfoSync().platform == "ios") {
+					uni.showLoading()
+					that.$api("pay.getApplePayProductList").then(res => {
+						if (res.code == 1) {
+							that.product = res.data;
+							uni.getProvider({
+								service: 'payment',
+								success: (res) => {
+									that.iapChannel = res.providers.find((channel) => {
+										return (channel.id === 'appleiap')
+									})
+									that.iapChannel.requestProduct(that.product, function(
+										productRes) {
+										uni.hideLoading()
+										productRes.sort((a, b) => {
+											return a.price - b.price
+										})
+										that.copperList = productRes;
+										that.moneyCount = that.copperList[0].price
+										that.copper = that.copperList[0].title;
+										that.copperId = that.copperList[0].productid;
+									}, function(err) {
+										uni.showToast({
+											icon: "none",
+											title: "订单获取失败"
+										})
+									})
+								}
+							})
+						}
+					})
+				} else {
+					that.$api("user_recharge.moneyList").then((res) => {
+						if (res.code == 1) {
+							that.copperList = res.data;
+							that.moneyCount = res.data[0].money
+							that.copper = res.data[0].copper;
+							that.copperId = res.data[0].id;
+						}
+					})
+				}
 			},
-			//选择
+			//android选择
 			selectMoney(index, money, copper, id) {
+				this.currentIndex = index;
+				this.moneyCount = money;
+				this.copper = copper;
+				this.copperId = id;
+			},
+			//ios选择
+			selectMoney2(index, money, copper, id) {
 				this.currentIndex = index;
 				this.moneyCount = money;
 				this.copper = copper;

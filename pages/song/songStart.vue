@@ -13,7 +13,7 @@
 				</image>
 			</view>
 			<view class="title">桑田对歌</view>
-			<view class="sunTitle">桑田，承载着华夏民族数千年的辉煌与落寞。是先民祭祀、劳作、约会的生活写照。</view>
+			<view class="sunTitle">桑田，承载着华夏民族数千年的辉煌与落寞。是先民祭祀、劳作的生活写照。</view>
 			<view class="okBtn" @click="start">进入</view>
 		</view>
 	</view>
@@ -43,22 +43,45 @@
 			async start() {
 				let that = this;
 				// #ifdef APP-PLUS
-				var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
-				if (result == 1) {
-					uni.navigateTo({
-						url: "/pages/song/songLists"
-					})
-				} else {
-					uni.showModal({
-						title: "请开启录音权限",
-						content: "请去设置里面开启录音权限！",
-						success(res1) {
-							if (res1.confirm) {
-								permision.gotoAppPermissionSetting()
+				if (uni.getSystemInfoSync().platform == "ios") {
+					var recorder = uni.getRecorderManager();
+					var appAuthorizeSetting = uni.getAppAuthorizeSetting();
+					if (appAuthorizeSetting.microphoneAuthorized == 'authorized' || appAuthorizeSetting
+						.microphoneAuthorized ==
+						'not determined') {
+						uni.navigateTo({
+							url: "/pages/song/songLists"
+						})
+					} else {
+						uni.showModal({
+							title: "请开启录音权限",
+							content: "请去设置里面开启录音权限！",
+							success(res1) {
+								if (res1.confirm) {
+									permision.gotoAppPermissionSetting()
+								}
 							}
-						}
-					})
+						})
+					}
+				} else {
+					var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+					if (result == 1) {
+						uni.navigateTo({
+							url: "/pages/song/songLists"
+						})
+					} else {
+						uni.showModal({
+							title: "请开启录音权限",
+							content: "请去设置里面开启录音权限！",
+							success(res1) {
+								if (res1.confirm) {
+									permision.gotoAppPermissionSetting()
+								}
+							}
+						})
+					}
 				}
+
 				// #endif
 				// #ifdef H5
 				uni.navigateTo({

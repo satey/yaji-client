@@ -10,7 +10,8 @@
 			<view style="display: flex;margin-top: 30rpx;" v-for="(item,index) in blackList"
 				@click="$u.route('/pages/user/home', { user_id: item.black_user_id })">
 				<view>
-					<image :src="item.avatar" style="width: 92rpx;height: 92rpx;border-radius: 50%;"></image>
+					<image :src="item.avatar" style="width: 92rpx;height: 92rpx;border-radius: 50%;" mode="aspectFill">
+					</image>
 				</view>
 				<view
 					style="flex:1;height: 92rpx;display: flex;flex-direction: column;justify-content: space-around;margin-left: 20rpx;border-bottom: 1rpx solid #ECECEC;padding-bottom: 30rpx;">

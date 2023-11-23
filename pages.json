@@ -174,7 +174,8 @@
 			"meta": {
 				"auth": true
 			}
-		}, {
+		},
+		{
 			"path": "pages/mine/recharge",
 			"name": "recharge",
 			"style": {
@@ -616,6 +617,14 @@
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path" : "pages/chat/chatRoom",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
 			}
 		}
 	],

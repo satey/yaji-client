@@ -429,6 +429,7 @@
 	export default {
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				isShowDown: false,
 				fei_AnimationName: "",
 				gameUserArr: ["", "", "", "", "", ""],

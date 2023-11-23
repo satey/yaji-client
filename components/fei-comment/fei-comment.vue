@@ -171,7 +171,7 @@
 			</block>
 		</view>
 		<feiOperate ref="feiOperate" :showDeleteComment="showDeleteCommentFlag" :showReport="showReportFlag"
-			@report="report" @tread='tread' @close='closeOperate' @deleteComment="deleteComment">
+			@report="report" @tread='tread' @close='closeOperate' @deleteComment="deleteComment" :showCai="showCai">
 		</feiOperate>
 	</view>
 </template>
@@ -203,7 +203,8 @@
 				showDeleteCommentFlag: true,
 				showReportFlag: true,
 				hoverBg: "",
-				hoverIndex: ""
+				hoverIndex: "",
+				showCai: false,
 			}
 		},
 		mounted() {
@@ -361,9 +362,11 @@
 				if (item.user_id == userInfo.id) {
 					this.showDeleteCommentFlag = true;
 					this.showReportFlag = false;
+					this.showCai = false;
 				} else {
 					this.showDeleteCommentFlag = false;
 					this.showReportFlag = true;
+					this.showCai = true;
 				}
 				this.$refs.feiOperate.show();
 			},

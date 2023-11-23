@@ -947,6 +947,18 @@ export default {
 			method: 'POST',
 			desc: '发起支付',
 		},
+		getApplePayProductList: {
+			url: 'user_recharge/getApplePayProductList',
+			auth: true,
+			method: 'GET',
+			desc: '苹果支付列表',
+		},
+		apple_pay_callback: {
+			url: 'pay/apple_pay_callback',
+			auth: true,
+			method: 'POST',
+			desc: '苹果支付结果主动验证入口',
+		}
 	},
 	share: {
 		add: {

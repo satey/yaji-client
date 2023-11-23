@@ -6,7 +6,7 @@
 				<view
 					style="width: 409rpx;background: rgba(255,255,255,0.6);border-radius: 6rpx 6rpx 6rpx 6rpx;padding: 15rpx 15rpx 10rpx 15rpx;box-sizing: border-box;font-size: 26rpx;color: #807D7D;margin-bottom: 120rpx;">
 					<view class="swiper-item indexTopText" style="overflow: hidden;">
-						匏有苦叶，济有深涉。我的意中人是一位精神小伙，他一定会驾一叶扁舟前来娶我…</view>
+						腹有诗书气自华，胸藏文墨怀若谷。笔下能写锦绣文，心中常怀凌云志。不畏浮云遮望眼，只因我自成风景。</view>
 					<!-- <swiper style="width: 100%;height: 120rpx;" :indicator-dots="false" :autoplay="true"
 						:interval="3000" :duration="1000" :circular='true'>
 						<swiper-item v-for="(item,index) in indexTopData.word">
@@ -40,8 +40,9 @@
 				</view>
 			</u-modal>
 		</view>
+		<!-- <view class="zhibo" @click="$u.route('pages/chat/chatRoom')">zhibo</view> -->
 		<!-- 每日邂逅 -->
-		<view class="encounter">
+		<view class="encounter" v-if="platform=='ios'?false:true">
 			<view class="encounterContainer">
 				<view class="encounterTitle">每日邂逅</view>
 				<scroll-view scroll-x="true" style="white-space: nowrap;width: 100%;margin: 25rpx 0rpx;">
@@ -88,19 +89,22 @@
 			</view>
 		</view>
 		<!-- banner -->
-		<view style="padding: 0 30rpx;margin-top: 30rpx;" v-if="bannerData.length !=0">
-			<swiper v-if="bannerData.length !=0" class="bannerBox" :circular="true" :indicator-dots="false"
-				:autoplay="true" :interval="3000" :duration="1000">
-				<swiper-item>
-					<block v-for="(item,index) in bannerData" :key="index">
-						<view class="swiper-item" v-if="item.status == 'normal'">
-							<image class="banner" :src="item.image" mode="scaleToFill" @click="jumpBanner(item)">
-							</image>
-						</view>
-					</block>
-				</swiper-item>
-			</swiper>
+		<view v-if="platform=='ios'?false:true">
+			<view style="padding: 0 30rpx;margin-top: 30rpx;" v-if="bannerData.length !=0">
+				<swiper v-if="bannerData.length !=0" class="bannerBox" :circular="true" :indicator-dots="false"
+					:autoplay="true" :interval="3000" :duration="1000">
+					<swiper-item>
+						<block v-for="(item,index) in bannerData" :key="index">
+							<view class="swiper-item" v-if="item.status == 'normal'">
+								<image class="banner" :src="item.image" mode="scaleToFill" @click="jumpBanner(item)">
+								</image>
+							</view>
+						</block>
+					</swiper-item>
+				</swiper>
+			</view>
 		</view>
+
 		<!-- 陌上桑林 -->
 		<view class="celebrity" @click="$u.route('pages/song/songStart')">
 			<view class="celebrityContainer">
@@ -226,7 +230,7 @@
 								</image>
 								<view style="color: #3D3D3D;opacity: 0.6;font-size: 30rpx;">没有更多啦，明天再来吧</view>
 							</view>
-							<view @click="forceEncounter"
+							<view v-show="platform=='ios'?false:true" @click="forceEncounter"
 								style="width: 228rpx;height: 65rpx;border-radius: 10rpx;line-height: 65rpx;color:#FFFFFF ;background-color: #F97698;text-align: center;margin: 0 auto;margin-top: 58rpx;">
 								强行邂逅</view>
 							<view style="display: flex;padding: 0rpx 65rpx;margin-top: 50rpx;">
@@ -275,19 +279,21 @@
 				</view>
 			</u-modal>
 		</view>
-		<u-modal :show="$store.state.renew.isRenew" :showConfirmButton="true"
-			:showCancelButton="$store.state.renew.isEnforce==1?false:true" confirmColor="#FE4373" @confirm="download"
-			@cancel="renewCancel">
-			<view>
-				<view class="renewTitle">更新内容</view>
-				<scroll-view scroll-y="true" class="myScroll" style="margin-top: 30rpx;" v-if="progress">
-					<view v-html="$store.state.renew.renewContent"></view>
-				</scroll-view>
-				<view v-if="!progress" style="margin-top: 30rpx;">
-					<progress :percent="progressNum" show-info style="width: 500rpx;" />
+		<view v-if="platform=='ios'?false:true">
+			<u-modal :show="$store.state.renew.isRenew" :showConfirmButton="true"
+				:showCancelButton="$store.state.renew.isEnforce==1?false:true" confirmColor="#FE4373"
+				@confirm="download" @cancel="renewCancel">
+				<view>
+					<view class="renewTitle">更新内容</view>
+					<scroll-view scroll-y="true" class="myScroll" style="margin-top: 30rpx;" v-if="progress">
+						<view v-html="$store.state.renew.renewContent"></view>
+					</scroll-view>
+					<view v-if="!progress" style="margin-top: 30rpx;">
+						<progress :percent="progressNum" show-info style="width: 500rpx;" />
+					</view>
 				</view>
-			</view>
-		</u-modal>
+			</u-modal>
+		</view>
 		<!-- <uc-auth></uc-auth> -->
 		<!-- <uc-tabbar></uc-tabbar> -->
 		<feiRecharge ref="feiRecharge"></feiRecharge>
@@ -310,6 +316,7 @@
 		},
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				tablist: [{
 						name: '每日邂逅',
 						type: 'user',
@@ -603,13 +610,60 @@
 			help2() {
 				this.currentIndex++;
 			},
-			openPoetry() {
+			async openPoetry() {
+				// #ifdef APP-PLUS
+				if (uni.getSystemInfoSync().platform == "ios") {
+					var recorder = uni.getRecorderManager();
+					var appAuthorizeSetting = uni.getAppAuthorizeSetting();
+					if (appAuthorizeSetting.microphoneAuthorized == 'authorized' || appAuthorizeSetting
+						.microphoneAuthorized == 'not determined') {
+						var gameRoomData = this.$store.state.game.gameRoomData;
+						if (gameRoomData.game_room_id != undefined) {
+							this.$u.route('pages/joy/poetry?roomId=' + gameRoomData.game_room_id)
+						} else {
+							this.$u.route('pages/joy/poetryStart')
+						}
+					} else {
+						uni.showModal({
+							title: "请开启录音权限",
+							content: "请去设置里面开启录音权限！",
+							success(res1) {
+								if (res1.confirm) {
+									permision.gotoAppPermissionSetting()
+								}
+							}
+						})
+					}
+				} else {
+					var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+					if (result == 1) {
+						var gameRoomData = this.$store.state.game.gameRoomData;
+						if (gameRoomData.game_room_id != undefined) {
+							this.$u.route('pages/joy/poetry?roomId=' + gameRoomData.game_room_id)
+						} else {
+							this.$u.route('pages/joy/poetryStart')
+						}
+					} else {
+						uni.showModal({
+							title: "请开启录音权限",
+							content: "请去设置里面开启录音权限！",
+							success(res1) {
+								if (res1.confirm) {
+									permision.gotoAppPermissionSetting()
+								}
+							}
+						})
+					}
+				}
+				// #endif
+				// #ifdef H5
 				var gameRoomData = this.$store.state.game.gameRoomData;
 				if (gameRoomData.game_room_id != undefined) {
 					this.$u.route('pages/joy/poetry?roomId=' + gameRoomData.game_room_id)
 				} else {
 					this.$u.route('pages/joy/poetryStart')
 				}
+				// #endif
 			},
 			//广告
 			getAd() {
@@ -699,41 +753,48 @@
 			//下载新版本
 			download() {
 				var that = this;
-				if (that.downloadFlag) {
-					this.progress = false;
-					that.downloadFlag = false;
-					var downloadTask = uni.downloadFile({
-						url: that.$store.state.renew.downloadUrl,
-						success: function(res) {
-							uni.hideLoading()
-							// 安装新版本
-							uni.showModal({
-								title: '安装新版本',
-								content: '新版本已下载完成，是否安装？',
-								success: function(msg) {
-									if (msg.confirm) {
-										console.log(that.downloadFlag)
-										if (that.downloadFlag) {
-											// #ifdef APP-PLUS
+				if (uni.getSystemInfoSync().platform == "ios") {
+					// plus.runtime.launchApplication({
+					// 	action: `itms-apps://itunes.apple.com/cn/app/hello-uni-app/id1417078253?mt=8`
+					// }, function(e) {
+					// 	console.log('Open system default browser failed: ' + e.message);
+					// });
+				} else {
+					if (that.downloadFlag) {
+						this.progress = false;
+						that.downloadFlag = false;
+						var downloadTask = uni.downloadFile({
+							url: that.$store.state.renew.downloadUrl,
+							success: function(res) {
+								uni.hideLoading()
+								// 安装新版本
+								uni.showModal({
+									title: '安装新版本',
+									content: '新版本已下载完成，是否安装？',
+									success: function(msg) {
+										if (msg.confirm) {
+											console.log(that.downloadFlag)
+											if (that.downloadFlag) {
+												// #ifdef APP-PLUS
 
-											plus.runtime.install(res.tempFilePath);
-											// #endif
+												plus.runtime.install(res.tempFilePath);
+												// #endif
+											}
 										}
 									}
-								}
-							});
-						}
-					});
-					downloadTask.onProgressUpdate((res) => {
-						that.progressNum = res.progress;
-						if (parseInt(res.progress) == 100) {
-							that.downloadFlag = true;
-						}
-					})
-				} else {
-					that.$u.toast("正在下载中")
+								});
+							}
+						});
+						downloadTask.onProgressUpdate((res) => {
+							that.progressNum = res.progress;
+							if (parseInt(res.progress) == 100) {
+								that.downloadFlag = true;
+							}
+						})
+					} else {
+						that.$u.toast("正在下载中")
+					}
 				}
-
 			},
 			// 搜索中的角色称号
 			searchName() {
@@ -973,7 +1034,7 @@
 	}
 
 	.encounter {
-		padding: 30rpx;
+		padding: 30rpx 30rpx 0rpx 30rpx;
 		box-sizing: border-box;
 
 		.encounterContainer {
@@ -1028,7 +1089,7 @@
 	}
 
 	.two {
-		padding: 0rpx 30rpx;
+		padding: 30rpx 30rpx 0rpx 30rpx;
 		box-sizing: border-box;
 		display: flex;
 		justify-content: space-between;

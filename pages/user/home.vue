@@ -12,6 +12,12 @@
 					{{ role.realname || '无名氏' }}·{{role.dynasty || '未知朝代' }}
 				</view>
 			</view>
+			<view slot="right">
+				<view v-if="userInfo.id!=$Route.query.user_id" @click="topOperate"
+					style="width: 60rpx;height: 60rpx;background: rgba(255,255,255,0.8);border-radius: 50rpx;text-align: center;line-height: 60rpx;">
+					<i class="ri-more-2-fill " style="font-size: 38rpx;color: #333;"></i>
+				</view>
+			</view>
 		</u-navbar>
 		<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
 			confirmText="确定" cancelText="取消" @cancel="followModule=false" @confirm="unfollow">
@@ -130,15 +136,20 @@
 			<text class="text-base text-white" @click="interest(2)">已关注</text>
 		</view>
 	</view>
+	<feiOperate :showReport='true' :showBlack="true" @black="black" @report='report' ref="feiOperate">
+	</feiOperate>
 	<topPrompt></topPrompt>
 	<uc-auth></uc-auth>
 	</view>
 </template>
 <script>
+	import feiOperate from "@/components/fei-operate/fei-operate.vue";
 	import loginVue from '../auth/login.vue'
 	export default {
 		name: 'mine',
-		components: {},
+		components: {
+			feiOperate
+		},
 		data() {
 			return {
 				type: 'role',
@@ -198,6 +209,31 @@
 			that.user_id = that.$Route.query.user_id
 		},
 		methods: {
+			//举报
+			report() {
+				var that = this;
+				that.$u.route('/pages/public/report', {
+					user_id: that.$Route.query.user_id,
+					type: '用户',
+					selectId: that.$Route.query.archeryId
+				})
+			},
+			black() {
+				let that = this;
+				that.$api("user_black.add", {
+					black_user_id: that.$Route.query.user_id
+				}).then(res => {
+					if (res.code == 1) {
+						uni.showToast({
+							icon: "none",
+							title: res.msg
+						})
+					}
+				})
+			},
+			topOperate() {
+				this.$refs.feiOperate.show();
+			},
 			viewUserImg(item) {
 				uni.previewImage({
 					current: 1,

@@ -33,12 +33,12 @@
 							</block>
 						</text>
 						<text v-if="item.cate == 7">在今日邂逅喜欢了你！</text>
-						<view v-if="item.cate == 8" style="display: flex;align-items: center;">
+					<!-- 	<view v-if="item.cate == 8" style="display: flex;align-items: center;">
 							<text>通过{{item.channel_text}}</text>
 							<text>给你送了</text>
 							<image :src="item.gift_image" style="width: 55rpx;height: 55rpx;" mode=""></image>
 							<text>x{{item.nums}}</text>
-						</view>
+						</view> -->
 						<text v-if="item.cate == 9">射猜了您的覆题</text>
 						<text v-if="item.cate == 10">评论了您的射覆</text>
 						<text v-if="item.cate == 11">回复了您的评论</text>

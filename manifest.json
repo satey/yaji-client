@@ -38,8 +38,9 @@
         "modules" : {
             "VideoPlayer" : {},
             "Record" : {},
-            "Payment" : {},
-            "Push" : {}
+            "Push" : {},
+            "Camera" : {},
+            "Payment" : {}
         },
         "distribute" : {
             "android" : {
@@ -69,19 +70,24 @@
             },
             "ios" : {
                 "idfa" : false,
-                "dSYMs" : false
+                "dSYMs" : false,
+                "capabilities" : {
+                    "entitlements" : {
+                        "com.apple.developer.associated-domains" : [
+                            "applinks:static-mp-15e70763-0ed0-4cbb-afb0-10b1b3db8c43.next.bspapp.com"
+                        ]
+                    }
+                },
+                "privacyDescription" : {
+                    "NSMicrophoneUsageDescription" : "需要使用麦克风录权限，以便完成语音条的录制。",
+                    "NSPhotoLibraryUsageDescription" : "需要读取您的手机相册，以便完成图片上传和发布。",
+                    "NSPhotoLibraryAddUsageDescription" : "需要使用相册写入权限，以便保存图片。"
+                }
             },
             "sdkConfigs" : {
                 "ad" : {},
                 "payment" : {
-                    "weixin" : {
-                        "__platform__" : [ "android" ],
-                        "appid" : "wx946846daf718d666",
-                        "UniversalLinks" : ""
-                    },
-                    "alipay" : {
-                        "__platform__" : [ "android" ]
-                    }
+                    "appleiap" : {}
                 },
                 "push" : {
                     "unipush" : {
@@ -130,33 +136,33 @@
             // "payment" : {}
             "icons" : {
                 "android" : {
-                    "hdpi" : "static/logo-28.png",
-                    "xhdpi" : "static/logo-108.png",
-                    "xxhdpi" : "static/logo-300.png",
-                    "xxxhdpi" : "static/logo-circle.png"
+                    "hdpi" : "unpackage/res/icons/72x72.png",
+                    "xhdpi" : "unpackage/res/icons/96x96.png",
+                    "xxhdpi" : "unpackage/res/icons/144x144.png",
+                    "xxxhdpi" : "unpackage/res/icons/192x192.png"
                 },
                 "ios" : {
-                    "appstore" : "",
+                    "appstore" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/1024.png",
                     "ipad" : {
-                        "app" : "static/logo-28.png",
-                        "app@2x" : "static/logo-circle.png",
-                        "notification" : "static/logo-28.png",
-                        "notification@2x" : "static/logo-28.png",
-                        "proapp@2x" : "static/logo-circle.png",
-                        "settings" : "static/logo-28.png",
-                        "settings@2x" : "static/logo-28.png",
-                        "spotlight" : "static/logo-28.png",
-                        "spotlight@2x" : "static/logo-28.png"
+                        "app" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/76.png",
+                        "app@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/152.png",
+                        "notification" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/20.png",
+                        "notification@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/40.png",
+                        "proapp@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/167.png",
+                        "settings" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/29.png",
+                        "settings@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/58.png",
+                        "spotlight" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/40.png",
+                        "spotlight@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/80.png"
                     },
                     "iphone" : {
-                        "app@2x" : "static/logo-300.png",
-                        "app@3x" : "static/logo-circle.png",
-                        "notification@2x" : "static/logo-28.png",
-                        "notification@3x" : "static/logo-28.png",
-                        "settings@2x" : "static/logo-28.png",
-                        "settings@3x" : "static/logo-28.png",
-                        "spotlight@2x" : "static/logo-28.png",
-                        "spotlight@3x" : "static/logo-108.png"
+                        "app@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/120.png",
+                        "app@3x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/180.png",
+                        "notification@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/40.png",
+                        "notification@3x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/60.png",
+                        "settings@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/58.png",
+                        "settings@3x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/87.png",
+                        "spotlight@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/80.png",
+                        "spotlight@3x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/120.png"
                     }
                 }
             },
@@ -168,6 +174,22 @@
                     "hdpi" : "C:/Users/Administrator/Desktop/qq.png",
                     "xhdpi" : "C:/Users/Administrator/Desktop/qq.png",
                     "xxhdpi" : "C:/Users/Administrator/Desktop/qq.png"
+                }
+            }
+        },
+        "nativePlugins" : {
+            "TRTCCloudUniPlugin-TRTCCloudImpl" : {
+                "__plugin_info__" : {
+                    "name" : "【官方】腾讯云实时音视频SDK",
+                    "description" : "uni-app TRTC SDK 是腾讯云实时音视频通讯解决方案在 uni-app 上的 SDK，提供实时音视频服务",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=7774",
+                    "android_package_name" : "cn.suoeryoude.yaji",
+                    "ios_bundle_id" : "cn.suoeryoude.yaji",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "7774",
+                    "parameters" : {}
                 }
             }
         }
@@ -220,5 +242,6 @@
         },
         "template" : ""
     },
-    "locale" : "zh-Hans"
+    "locale" : "zh-Hans",
+    "_spaceID" : "mp-15e70763-0ed0-4cbb-afb0-10b1b3db8c43"
 }

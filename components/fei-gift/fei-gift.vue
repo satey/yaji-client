@@ -13,9 +13,12 @@
 					</view>
 					<view style="display: flex;align-items: center;justify-content: space-between;margin-top: 125rpx;">
 						<view @click="recharge=false"
-							style="margin-right: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;border: 1rpx solid #C7C7C7;text-align: center;line-height: 65rpx;color: #808080;border-radius: 10rpx;font-size: 28rpx;">
+							style="margin-right: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;border: 1px solid #C7C7C7;text-align: center;line-height: 65rpx;color: #808080;border-radius: 10rpx;font-size: 28rpx;">
 							取消</view>
-						<view @click="recharge=false;$refs.feiRecharge.show()"
+						<view v-if="platform=='ios'" @click="$u.route('/pages/mine/recharge')"
+							style="margin-left: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;background:#F97698;text-align: center;line-height: 65rpx;color: #FFFFFF;border-radius: 10rpx;font-size: 28rpx;">
+							去充值</view>
+						<view v-if="platform=='android'" @click="recharge=false;$refs.feiRecharge.show()"
 							style="margin-left: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;background:#F97698;text-align: center;line-height: 65rpx;color: #FFFFFF;border-radius: 10rpx;font-size: 28rpx;">
 							小额充值</view>
 					</view>
@@ -77,6 +80,7 @@
 				receiver_user_id: "",
 				recharge: false,
 				third_id: null,
+				platform: uni.getSystemInfoSync().platform,
 			}
 		},
 		destroyed() {
@@ -139,7 +143,8 @@
 						let videoItem = await parser.load(that.gift.url)
 						await player.setVideoItem(videoItem)
 						player.loops = 1;
-						player.setContentMode(that.gift.is_full_screen==1?"AspectFill":"AspectFit")
+						player.setContentMode(that.gift.is_full_screen == 1 ? "AspectFill" :
+							"AspectFit")
 						player.startAnimation()
 						player.onFinished(() => {
 							that.showSvga = false

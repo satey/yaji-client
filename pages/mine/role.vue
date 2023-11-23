@@ -509,7 +509,7 @@
 		}
 
 		.contentBody {
-			height: calc(100% - 14%);
+			// height: calc(100% - 14%);
 			padding-top: 10rpx;
 			box-sizing: border-box;
 			background: #fff;

@@ -329,22 +329,45 @@
 		},
 		methods: {
 			async clickRecord() {
-				var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
-				if (result == 1) {
-					this.showTopic = !this.showTopic;
-					this.showRecord = !this.showRecord;
-					return
-				} else {
-					uni.showModal({
-						title: "请开启录音权限",
-						content: "请去设置里面开启录音权限！",
-						success(res1) {
-							if (res1.confirm) {
-								permision.gotoAppPermissionSetting()
+				if (uni.getSystemInfoSync().platform == "ios") {
+					var recorder = uni.getRecorderManager();
+					var appAuthorizeSetting = uni.getAppAuthorizeSetting();
+					if (appAuthorizeSetting.microphoneAuthorized == 'authorized' || appAuthorizeSetting
+						.microphoneAuthorized ==
+						'not determined') {
+						this.showTopic = !this.showTopic;
+						this.showRecord = !this.showRecord;
+						return
+					} else {
+						uni.showModal({
+							title: "请开启录音权限",
+							content: "请去设置里面开启录音权限！",
+							success(res1) {
+								if (res1.confirm) {
+									permision.gotoAppPermissionSetting()
+								}
 							}
-						}
-					})
+						})
+					}
+				} else {
+					var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+					if (result == 1) {
+						this.showTopic = !this.showTopic;
+						this.showRecord = !this.showRecord;
+						return
+					} else {
+						uni.showModal({
+							title: "请开启录音权限",
+							content: "请去设置里面开启录音权限！",
+							success(res1) {
+								if (res1.confirm) {
+									permision.gotoAppPermissionSetting()
+								}
+							}
+						})
+					}
 				}
+
 			},
 			//监听键盘
 			watchKeyboard() {
@@ -356,7 +379,6 @@
 					} else {
 						that.pageHeight = res.height
 					}
-					console.log(that.pageHeight)
 				})
 			},
 			//打开话题弹窗

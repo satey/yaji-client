@@ -163,7 +163,6 @@
 				</view>
 				<view class="flex items-center" v-if="!text" @click="showGiftClick">
 					<image src="@/static/liwu3.png" style="width: 56rpx;height: 56rpx;" mode=""></image>
-					<!-- <i class="ri-gift-fill text-4xl leading-none text-gray-400"></i> -->
 				</view>
 				<view class="flex items-center" v-if="text" @touchend.prevent="handleTextSend">
 					<text class="rounded-full p-2 px-3 text-base text-white bg-gradient-to-r to-fuchsia-500"
@@ -261,6 +260,7 @@
 		},
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				scrollAnimation: false,
 				toUserData: {
 					"avatar": "",
@@ -811,25 +811,50 @@
 			//录音
 			async handleVoice() {
 				let that = this;
-				var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
-				if (result == 1) {
-					this.scrollBottom();
-					that.showRecord = !that.showRecord
-					that.showEmoji = false;
-					that.showPlus = false;
-					that.showGift = false;
-					that.floatHeight = that.showRecord == true ? '40' : "15"
-					return
-				} else {
-					uni.showModal({
-						title: "请开启录音权限",
-						content: "请去设置里面开启录音权限！",
-						success(res1) {
-							if (res1.confirm) {
-								permision.gotoAppPermissionSetting()
+				if (uni.getSystemInfoSync().platform == "ios") {
+					var appAuthorizeSetting = uni.getAppAuthorizeSetting();
+					console.log(appAuthorizeSetting.microphoneAuthorized)
+					if (appAuthorizeSetting.microphoneAuthorized == 'authorized' || appAuthorizeSetting
+						.microphoneAuthorized == 'not determined') {
+						that.scrollBottom();
+						that.showRecord = !that.showRecord
+						that.showEmoji = false;
+						that.showPlus = false;
+						that.showGift = false;
+						that.floatHeight = that.showRecord == true ? '40' : "15"
+						return
+					} else {
+						uni.showModal({
+							title: "请开启录音权限",
+							content: "请去设置里面开启录音权限！",
+							success(res1) {
+								if (res1.confirm) {
+									permision.gotoAppPermissionSetting()
+								}
 							}
-						}
-					})
+						})
+					}
+				} else {
+					var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+					if (result == 1) {
+						this.scrollBottom();
+						that.showRecord = !that.showRecord
+						that.showEmoji = false;
+						that.showPlus = false;
+						that.showGift = false;
+						that.floatHeight = that.showRecord == true ? '40' : "15"
+						return
+					} else {
+						uni.showModal({
+							title: "请开启录音权限",
+							content: "请去设置里面开启录音权限！",
+							success(res1) {
+								if (res1.confirm) {
+									permision.gotoAppPermissionSetting()
+								}
+							}
+						})
+					}
 				}
 			},
 			handleRecordStart(e) {

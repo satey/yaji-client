@@ -14,7 +14,8 @@
 				</image>
 				<text style="font-size: 56rpx;color: #fff;font-weight: bold;">{{money}}</text>
 			</view>
-			<view class="purchase" @click="$u.route('/pages/mine/recharge')">充值铜钱</view>
+			<view class="purchase" @click="$u.route('/pages/mine/recharge')">充值铜钱
+			</view>
 		</view>
 	</view>
 	<view style="padding: 0rpx 30rpx;">
@@ -147,6 +148,7 @@
 		components: {},
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				tabIndex: 0,
 				money: 0,
 				current_page: 1,

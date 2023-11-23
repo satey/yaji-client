@@ -92,11 +92,11 @@
 							class="">{{ userData.digg_count || 0 }}</text><text <text
 							style="color: #fff;font-size: 24rpx;">获赞</text></view>
 				</view>
-				<view style="font-size: 26rpx;color: #fff;opacity: 0.8;">点击更换背景</view>
+				<view style="font-size: 26rpx;color: #fff;opacity: 0.8;" @click="upLoadUserBg">点击更换背景</view>
 			</view>
 		</view>
 		<view class="containerBox">
-			<view class="select" style="display: flex;align-items: center;justify-content: space-around;">
+			<view class="select" style="display: flex;align-items: center;justify-content: space-between;">
 				<view @click="openPostAdd">
 					<image src="@/static/dongtai.png" class="selectImg"></image>
 					<view>发布动态</view>
@@ -228,80 +228,52 @@
 		methods: {
 			...mapActions(['getUserInfo']),
 			//上传背景
+			uploadBgImg() {
+				var that = this;
+				uni.chooseImage({
+					count: 1,
+					sourceType: ['album'],
+					sizeType: "",
+					success(imageRes) {
+						var token = uni.getStorageSync("token");
+						uni.showLoading()
+						uni.uploadFile({
+							url: that.$API_URL + 'index/upload',
+							filePath: imageRes.tempFilePaths[0],
+							name: 'file',
+							formData: {
+								"token": token
+							},
+							success: res => {
+								var data = JSON.parse(res.data);
+								if (data.code == 1) {
+									that.$api("user.update_background_image", {
+										background_image: data.data.fullurl
+									}).then((resData) => {
+										uni.hideLoading()
+										if (resData.code == 1) {
+											that.background_image = data.data
+												.fullurl
+										}
+									})
+								} else {
+									uni.hideLoading()
+								}
+							}
+						})
+					}
+				})
+			},
 			async upLoadUserBg() {
 				var that = this;
 				var result = null;
 				// #ifdef APP-PLUS
-				var result = await permision.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');
-				// #endif
-				if (result == null) {
-					uni.chooseImage({
-						count: 1,
-						sourceType: ['album'],
-						sizeType: "",
-						success(imageRes) {
-							var token = uni.getStorageSync("token");
-							uni.showLoading()
-							uni.uploadFile({
-								url: that.$API_URL + 'index/upload',
-								filePath: imageRes.tempFilePaths[0],
-								name: 'file',
-								formData: {
-									"token": token
-								},
-								success: res => {
-									var data = JSON.parse(res.data);
-									if (data.code == 1) {
-										that.$api("user.update_background_image", {
-											background_image: data.data.fullurl
-										}).then((resData) => {
-											uni.hideLoading()
-											if (resData.code == 1) {
-												that.background_image = data.data.fullurl
-											}
-										})
-									} else {
-										uni.hideLoading()
-									}
-								}
-							})
-						}
-					})
+				if (uni.getSystemInfoSync().platform == "ios") {
+					that.uploadBgImg()
 				} else {
+					var result = await permision.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');
 					if (result == 1) {
-						uni.chooseImage({
-							count: 1,
-							sourceType: ['album'],
-							sizeType: "",
-							success(imageRes) {
-								var token = uni.getStorageSync("token");
-								uni.showLoading()
-								uni.uploadFile({
-									url: that.$API_URL + 'index/upload',
-									filePath: imageRes.tempFilePaths[0],
-									name: 'file',
-									formData: {
-										"token": token
-									},
-									success: res => {
-										var data = JSON.parse(res.data);
-										if (data.code == 1) {
-											that.$api("user.update_background_image", {
-												background_image: data.data.fullurl
-											}).then((resData) => {
-												uni.hideLoading()
-												if (resData.code == 1) {
-													that.background_image = data.data
-														.fullurl
-												}
-											})
-										} else {
-											uni.hideLoading()
-										}
-									}
-								})
-							}
-						})
+						that.uploadBgImg()
 					} else {
 						uni.showModal({
 							title: "权限不足",
@@ -315,8 +287,14 @@
 						})
 					}
 				}
+				// #endif
+
+				// #ifdef H5
+				that.uploadBgImg()
+				// #endif
 			},
 			jumpBanner(item) {
+				console.log(item)
 				if (item.is_external_links == 0) {
 					this.$u.route(item.url)
 				} else {
@@ -381,62 +359,70 @@
 				})
 				this.imgurl = '';
 			},
+			//uploadImg
+			uploadImg() {
+				var that = this;
+				uni.chooseImage({
+					count: 1,
+					sourceType: ['album'],
+					sizeType: "",
+					success(res) {
+						var token = uni.getStorageSync("token");
+						uni.showLoading()
+						uni.uploadFile({
+							url: that.$API_URL + 'index/upload',
+							filePath: res.tempFilePaths[0],
+							name: 'file',
+							formData: {
+								"token": token
+							},
+							success: res => {
+								var data = JSON.parse(res.data);
+								if (data.code == 1) {
+									that.$api("user.update_avatar", {
+										avatar: data.data.fullurl
+									}).then((resData) => {
+										uni.hideLoading()
+										if (resData.code == 1) {
+											that.userImg = data.data.fullurl +
+												'?imageMogr2/thumbnail/280x280';
+											that.getUserInfo()
+										}
+									})
+								} else {
+									uni.hideLoading()
+								}
+							},
+							complete: e => {
+								uni.hideLoading()
+							}
+						})
+					}
+				})
+			},
 			//上传头像
 			async changeImage() {
 				const self = this;
 				const that = this;
-
 				// #ifdef APP-PLUS
-				var result = await permision.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');
-				if (result == 1) {
-					uni.chooseImage({
-						count: 1,
-						sourceType: ['album'],
-						sizeType: "",
-						success(res) {
-							var token = uni.getStorageSync("token");
-							uni.showLoading()
-							uni.uploadFile({
-								url: that.$API_URL + 'index/upload',
-								filePath: res.tempFilePaths[0],
-								name: 'file',
-								formData: {
-									"token": token
-								},
-								success: res => {
-									var data = JSON.parse(res.data);
-									if (data.code == 1) {
-										that.$api("user.update_avatar", {
-											avatar: data.data.fullurl
-										}).then((resData) => {
-											uni.hideLoading()
-											if (resData.code == 1) {
-												that.userImg = data.data.fullurl +
-													'?imageMogr2/thumbnail/280x280';
-												that.getUserInfo()
-											}
-										})
-									} else {
-										uni.hideLoading()
-									}
-								},
-								complete: e => {
-									uni.hideLoading()
-								}
-							})
-						}
-					})
+				if (uni.getSystemInfoSync().platform == "ios") {
+					that.uploadImg()
 				} else {
-					uni.showModal({
-						title: "权限不足",
-						content: "请开启相册读取权限，以便上传图片。！",
-						confirmText: "前往开启",
-						success(res1) {
-							if (res1.confirm) {
-								permision.gotoAppPermissionSetting()
+					var result = await permision.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');
+					if (result == 1) {
+						that.uploadImg()
+					} else {
+						uni.showModal({
+							title: "权限不足",
+							content: "请开启相册读取权限，以便上传图片。！",
+							confirmText: "前往开启",
+							success(res1) {
+								if (res1.confirm) {
+									permision.gotoAppPermissionSetting()
+								}
 							}
-						}
-					})
+						})
+					}
 				}
 				// #endif
 

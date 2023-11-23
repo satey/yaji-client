@@ -116,8 +116,8 @@
 							<text>{{item.createtime}}</text>
 							<text style="margin:0rpx 56rpx;" @click="addComment(item)">评论</text>
 							<block v-if="item.user_id==userInfo.id?false:true">
-								<image @click="showGift(item)" src="@/static/cailiwu.png"
-									style="width: 36rpx;height: 36rpx;" mode="">
+								<image @click="showGift(item)"
+									src="@/static/cailiwu.png" style="width: 36rpx;height: 36rpx;" mode="">
 								</image>
 							</block>
 						</view>
@@ -289,7 +289,7 @@
 		<topPrompt></topPrompt>
 		<feiGift ref="feiGift" channel="2"></feiGift>
 		<feiOperate ref="feiOperate" :showReport="showReport" :showDeleteComment='showDeleteComment' @close='popupClose'
-			@deleteComment="deleteComment" @tread='tread' @report='report'></feiOperate>
+			@deleteComment="deleteComment" @tread='tread' @report='report' :showCai="showCai"></feiOperate>
 	</view>
 </template>
 
@@ -305,6 +305,7 @@
 		},
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				tablist: [{
 					name: '今日诗缘',
 					type: 1
@@ -339,6 +340,7 @@
 				commentList: [],
 				loadmoreText: '',
 				selectType: 1, //1:诗源，2:评论
+				showCai: false,
 			}
 		},
 		onLoad(e) {
@@ -510,16 +512,19 @@
 				this.replyData.cate = cate;
 				if (userInfo.id == item.user_id) {
 					if (cate == 0) {
+						this.showCai = false;
 						this.showDeleteComment = true;
 						this.replyData = []
 						this.replyIndex = null;
 					} else {
 						this.showDeleteComment = true;
+						this.showCai = false;
 						this.showReport = false;
 						this.$refs.feiOperate.show()
 					}
 				} else {
 					this.showReport = true;
+					this.showCai = true;
 					this.showDeleteComment = false;
 				}
 				this.$refs.feiOperate.show()

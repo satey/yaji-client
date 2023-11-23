@@ -47,8 +47,8 @@
 								</image>
 							</block>
 							<block v-else>
-								<image style="width: 44rpx;height: 44rpx;border-radius: 5rpx;" src="@/static/avatar-female.png"
-									mode="aspectFill"></image>
+								<image style="width: 44rpx;height: 44rpx;border-radius: 5rpx;"
+									src="@/static/avatar-female.png" mode="aspectFill"></image>
 							</block>
 						</block>
 					</view>
@@ -103,7 +103,8 @@
 						<text style="margin-left: 10rpx;font-size: 22rpx;color: #999999;">{{detail.zan_nums}}</text>
 					</view>
 					<block v-if="detail.user_id==userInfo.id?false:true">
-						<image @click="showGift" src="@/static/cailiwu.png" style="width: 36rpx;height: 36rpx;" mode="">
+						<image @click="showGift" src="@/static/cailiwu.png"
+							style="width: 36rpx;height: 36rpx;" mode="">
 						</image>
 					</block>
 				</view>
@@ -126,7 +127,8 @@
 		</view>
 		<feiOperate ref="feiOperate" @report='report' :showReport="detail.user_id==userInfo.id?false:true"
 			:showDelete="detail.user_id==userInfo.id?true:false" @delete="deleteClick" @tread="tread"
-			:operateId="$Route.query.archeryId"></feiOperate>
+			:operateId="$Route.query.archeryId" :showCai="showCai" :showShield="showShield" @shield="shield">
+		</feiOperate>
 		<feiGift ref="feiGift" channel="1"></feiGift>
 		<topPrompt></topPrompt>
 	</view>
@@ -144,6 +146,7 @@
 		},
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				detail: [],
 				answerActive: false,
 				answerLength: 0,
@@ -152,6 +155,8 @@
 				commentList: [],
 				userInfo: [],
 				showAnswerFalg: true,
+				showCai: false,
+				showShield: false,
 			}
 		},
 		onLoad(e) {
@@ -164,6 +169,18 @@
 			this.comment_list();
 		},
 		methods: {
+			shield() {
+				uni.showToast({
+					icon: "none",
+					title: "已屏蔽该作品"
+				})
+				let timeOut = setTimeout(() => {
+					uni.navigateBack({
+						delta: 1
+					});
+					clearTimeout(timeOut)
+				}, 500)
+			},
 			answerActiveClose() {
 				this.answerActive = false;
 				this.pirntAnswer = ""
@@ -232,13 +249,13 @@
 					})
 					return;
 				}
-				// if (that.pirntAnswer.match(reg)) {
-				// 	uni.showToast({
-				// 		icon: "none",
-				// 		title: "答案不能有特殊字符"
-				// 	})
-				// 	return;
-				// }
+				if (that.pirntAnswer.match(reg)) {
+					uni.showToast({
+						icon: "none",
+						title: "答案不能有特殊字符"
+					})
+					return;
+				}
 				that.$api("archery.addComment", {
 					"shot_cover_id": that.$Route.query.archeryId,
 					"pid": 0,
@@ -312,6 +329,13 @@
 			},
 			//显示操作
 			showOperate() {
+				if (this.userInfo.id == this.detail.user_id) {
+					this.showCai = false;
+					this.showShield = false;
+				} else {
+					this.showCai = true;
+					this.showShield = true;
+				}
 				this.$refs.feiOperate.show()
 			},
 			//获取详情

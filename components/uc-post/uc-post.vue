@@ -155,6 +155,9 @@
 
 			<u-popup :show="showAction" @close="showAction = false" :closeable="false" :round="30">
 				<view class="" style="padding: 50rpx 55rpx;">
+					<view class="delete" @click="shield" style="margin-bottom: 36rpx;">
+						<view style="font-size: 30rpx;">蔽该作品</view>
+					</view>
 					<view class="delete" @click="handleConcleDig()" style="margin-bottom: 36rpx;">
 						<view style="font-size: 30rpx;">不喜欢/点踩</view>
 					</view>
@@ -234,6 +237,13 @@
 		},
 
 		methods: {
+			shield() {
+				uni.showToast({
+					icon: "none",
+					title: "已屏蔽该作品"
+				})
+				this.showAction = false;
+			},
 			openQuShui(item) {
 				var that = this;
 				var userInfo = uni.getStorageSync("userInfo");

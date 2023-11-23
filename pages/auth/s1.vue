@@ -49,7 +49,7 @@
 				v-if="deletion == false">
 				<block v-for="(item,index) in identity_data" :key="index">
 					<view class="identityItem" @click="identityClick(index,item.identity_id)"
-						:style="index==currentIndex?'border: 1rpx solid #FE4373;':'border: 1rpx solid #CCCCCC;'">
+						:style="index==currentIndex?'border: 1px solid #FE4373;':'border: 1px solid #CCCCCC;'">
 						<image :src="item.image"
 							style="width: 96rpx;height: 128rpx;margin-right: 18rpx;transition: all 0.3s;"
 							mode="heightFix" :style="index==currentIndex?'transform: scale(1.1)':'transform: scale(1)'">
