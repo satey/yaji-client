@@ -1,24 +1,150 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="">
-		<!-- <image class="fixed w-full top-0 left-0 right-0 -z-10" src='@/static/user_background.png' /> -->
-		<u-navbar :bgColor="headColor">
+		<u-navbar bgColor="rgba(255,255,255,0)">
 			<view slot="left">
 				<i class="ri-arrow-left-s-line text-block text-4xl"
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 			<view slot="center">
-				<view style="color: #323232;" v-if="headColor=='#fff'">
+				<!-- <view style="color: #323232;" v-if="headColor=='#fff'">
 					{{ role.realname || '无名氏' }}·{{role.dynasty || '未知朝代' }}
-				</view>
+				</view> -->
 			</view>
 			<view slot="right">
 				<view v-if="userInfo.id!=$Route.query.user_id" @click="topOperate"
-					style="width: 60rpx;height: 60rpx;background: rgba(255,255,255,0.8);border-radius: 50rpx;text-align: center;line-height: 60rpx;">
-					<i class="ri-more-2-fill " style="font-size: 38rpx;color: #333;"></i>
+					style="width: 60rpx;height: 60rpx;border-radius: 50rpx;text-align: center;line-height: 60rpx;">
+					<i class="ri-more-line " style="font-size: 38rpx;color: #333;"></i>
 				</view>
 			</view>
 		</u-navbar>
+		<view class="homeHead" style="position: relative;">
+			<block v-if="user!=null">
+				<block v-if="user.profile_type==1">
+					<view style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;text-align: center;">
+						<image :src="user.profile_bg_url" mode="heightFix" style="width: 100%;height: 100%;z-index: 1;">
+						</image>
+					</view>
+					<view style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;text-align: center;">
+						<image :src="user.profile_url" mode="heightFix" style="width: 100%;height: 100%;z-index: 2;">
+						</image>
+					</view>
+				</block>
+				<block v-else>
+					<view style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;text-align: center;">
+						<image :src="user.bgimg_url" mode="aspectFill" style="width: 100%;height: 100%;z-index: -1;">
+						</image>
+					</view>
+				</block>
+			</block>
+
+		</view>
+		<view class="userContainer" v-if="user!=null">
+			<view style="display: flex;justify-content: space-between;">
+				<view style="display: flex;align-items: center;">
+					<image style="width: 150rpx;height: 150rpx;border-radius: 50%;margin-right: 25rpx;"
+						:src="user.avatar" @click="viewUserImg(user.avatar)" mode="aspectFill"></image>
+					<view
+						style="height: 150rpx;display: flex;flex-direction: column;justify-content: space-between;flex: 1;">
+						<view style="color: #333;font-size: 36rpx;font-weight: bold;">
+							{{ user.role_realname || '无名氏' }}·{{user.role_dynasty || '未知朝代' }}
+						</view>
+						<view style="display: flex;align-items: center;color: #333;font-size: 23rpx">
+							<text>雅集号：{{ user.uid || '********' }}</text>
+							<i @click="copy" class="iconfont icon-fuzhi"
+								style="color:#333 ;font-size: 28rpx;margin-left: 20rpx;"></i>
+						</view>
+						<view style="display: flex;align-items: center;">
+							<view style="position: relative;margin-right: 30rpx;">
+								<text style="position: relative;z-index: 2;">名望：{{ user.total_mw || 0 }}</text>
+								<view
+									style="height: 16rpx;background: #8FFF00;width: 100%;position: absolute;left: 0;top: 50%;transform: translateY(-50%);">
+								</view>
+							</view>
+							<!-- <block v-for="(item,index) in user.achievements" :key="index">
+								<view style="position: relative;">
+									<text style="position: relative;z-index: 2;">{{item}}</text>
+									<view
+										style="height: 16rpx;background: #FFA000;width: 100%;position: absolute;left: 0;top: 50%;transform: translateY(-50%);">
+									</view>
+								</view>
+							</block> -->
+						</view>
+					</view>
+				</view>
+				<view style="display: flex;" v-if="user.user_id!=userInfo.id">
+					<view v-if="user.is_follewed==0" @click="interest(1)"
+						style="background: #FFDDA4;border: 1px solid #FFA000;color: #FFA000;font-size: 26rpx;width: 125rpx;height: 46rpx;text-align: center;line-height: 46rpx;border-radius: 10rpx;">
+						<i class="iconfont icon-wodeguanzhu"></i>
+						<text style="margin-left: 5rpx;">关注</text>
+					</view>
+					<view @click="$u.route(`pages/chat/single`,{user_id:user.user_id})"
+						style="border:1px solid #FFA000;border-radius: 10rpx;width: 68rpx;height: 46rpx;text-align: center;line-height: 46rpx;color:#FFA000 ;margin-left: 21rpx;">
+						<i class="iconfontcolor icon-xinxi"></i>
+					</view>
+				</view>
+			</view>
+			<view style="margin-top: 25rpx;color: #333;font-size: 26rpx;" v-if="user.length !=0">
+				{{user.role_info.content.slice(0,70)}} <text v-if="user.role_info.content.length >70">……</text> <text
+					v-if="user.role_info.content.length >70" style="color:#FFA000;"
+					@click="showUserDetails=true;">查看全部</text>
+			</view>
+		</view>
+		<view class="character">
+			<view style="color: #333;font-size: 30rpx;">性格</view>
+			<view style="display: flex;align-items: center;margin-top: 25rpx;" v-if="user.length!=0">
+				<view class="characterItem" v-if="user.age_group_str!=''">{{user.age_group_str}}</view>
+				<view class="characterItem" v-if="user.animal_branche_str!=''">生肖{{user.animal_branche_str}}</view>
+				<view class="characterItem" v-if="user.stellar_period_str!=''">{{user.stellar_period_str}}</view>
+				<text @click="$u.route('/pages/user/userMore',{user_id:$Route.query.user_id})">了解更多...</text>
+			</view>
+		</view>
+		<view class="flair">
+			<view style="color: #333;font-size: 30rpx;">才华</view>
+			<view style="display: flex;align-items: center;margin-top: 25rpx;" v-if="user.length!=0">
+				<block v-if="user.achievements.length!=0">
+					<block v-for="(item,index) in user.achievements" :key="index">
+						<!-- <view class="flairItem">{{item}}</view> -->
+						<image :src="item" class="flairItem" style="width: 118rpx;height: 125rpx;" mode="aspectFill">
+						</image>
+					</block>
+				</block>
+				<view v-else style="text-align: center;margin-top: 50rpx;width: 100%;">
+					暂未获得才华勋章
+					<!-- <u-empty icon="" text="暂未获得才华勋章" textColor="#a1a1a1"
+						marginTop="0"></u-empty> -->
+				</view>
+
+			</view>
+		</view>
+		<view class="trends">
+			<view style="color: #333;font-size: 30rpx;">动态</view>
+			<view style="display: flex;align-items: center;margin-top: 25rpx;flex-wrap: wrap;" v-if="user.length!=0">
+				<block v-if="user.post_list.length!=0">
+					<block v-for="(item,index) in user.post_list" :key="index">
+						<view class="item"
+							@click="$u.route('/pages/post/preview',{data:JSON.stringify({type:'work',post_id:item.post_id})})">
+							<image style="width: 100%;height: 100%;position: absolute;top:0%;left: 0;z-index: 1;"
+								:src="item.bg_img_url" mode="aspectFill"></image>
+							<image
+								style="width: 100%;position: absolute;top: 50%;left: 0;z-index: 2;transform: translateY(-50%);"
+								:src="item.image_list[0]" mode="widthFix"></image>
+							<view class="content">
+								<text>{{item.content}}</text>
+							</view>
+							<view class="itemFooter">
+								<i class="iconfont icon-aixin1" style="margin-right: 5rpx;"></i>
+								<text>{{item.commentnums}}</text>
+							</view>
+						</view>
+					</block>
+				</block>
+				<view v-else style="width: 100%;">
+					<u-empty icon="/static/iconImage/jilu.png" text="" textColor="#a1a1a1" marginTop="100"></u-empty>
+				</view>
+			</view>
+		</view>
+		<view style="text-align: center;color: #999999;font-size: 28rpx;">~没有更多了~</view>
 		<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
 			confirmText="确定" cancelText="取消" @cancel="followModule=false" @confirm="unfollow">
 			<view style="display: flex;flex-direction: column;">
@@ -28,118 +154,66 @@
 				</view>
 			</view>
 		</u-modal>
-		<view class="homeHead" style="position: relative;">
-			<view style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;text-align: center;">
-				<image :src="user.background_image||'../../static/userBg.png'" mode="aspectFill"
-					style="width: 100%;height: 100%;z-index: -1;">
-				</image>
-			</view>
-			<view style="margin-top: 80rpx;">
-				<image class="rounded-full bg-gray-100" :src="user.avatar || '/static/avatar.png'"
-					style="width: 140rpx;height: 140rpx;"
-					@click="viewUserImg(user.original_avatar || '/static/avatar.png')" mode="aspectFill">
-				</image>
-			</view>
-			<view class="text-xl mt-2" style="display: flex;align-items: center;">
-				<view style="font-size: 36rpx;color: #fff;" class="font-bold">
-					{{ role.realname || '无名氏' }}·{{ role.dynasty || '未知朝代' }}
-				</view>
-				<view style="margin-left: 35rpx;color: #fff;opacity: 0.8;font-size: 26rpx;">名望：{{ user.total_mw || 0 }}
-				</view>
-			</view>
-			<view style="color: #fff;font-size: 26rpx;margin-top: 20rpx;">
-				<text>雅集号：{{ user.uid || '********' }}</text>
-				<text style="margin-left: 26rpx;">IP属地：{{ user.province || '未知' }}</text>
-			</view>
-			<view style="color: #fff;font-size: 26rpx;margin-top: 10rpx;"></view>
-
-			<view style="display: flex;margin-top: 15rpx;">
-				<view style="display: flex;align-items: center;margin-right: 50rpx;"><text
-						style="color: #fff;font-size: 36rpx;margin-right: 10rpx;"
-						class="font-bold">{{ user.follow_count || 0  }}</text><text <text
-						style="color: #fff;font-size: 24rpx;">关注</text></view>
-				<view style="display: flex;align-items: center;margin-right: 50rpx;"><text
-						style="color: #fff;font-size: 36rpx;margin-right: 10rpx;"
-						class="font-bold">{{ user.fans_count || 0 }}</text><text <text
-						style="color: #fff;font-size: 24rpx;">粉丝</text></view>
-				<view style="display: flex;align-items: center;"><text
-						style="color: #fff;font-size: 36rpx;margin-right: 10rpx;"
-						class="font-bold">{{ user.digg_count || 0 }}</text><text <text
-						style="color: #fff;font-size: 24rpx;">获赞</text></view>
-			</view>
-		</view>
-		<view
-			style="padding: 30rpx;border-radius: 30rpx 30rpx 0px 0px;margin-top: -70rpx;background: #fff;position: relative;z-index: 99;">
-			<u-tabs :list="tablist" lineColor="#FE4373" lineWidth="70rpx" lineHeight="16rpx" itemStyle="height: 72rpx;"
-				inactiveStyle="color: #787878; transform: scale(1);"
-				activeStyle="color: #333333; font-weight: blod; transform: scale(1.2);" @change="changeTab">
-			</u-tabs>
-			<block v-if="type === 'post'">
-				<uc-mypost v-for="(item, index) in postList" :key="index" :item="item"></uc-mypost>
-				<u-loadmore v-if="postList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
-				<u-empty v-if="!postList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
-					marginTop="100"></u-empty>
-			</block>
-			<block v-if="type === 'role'">
-				<view class="grid grid-cols-12 gap-4 mt-4" v-if="role != null">
-					<view class="col-span-2 text-gray-500">姓名：</view>
-					<view class="col-span-4">{{ role.realname||"" }}</view>
-					<view class="col-span-2 text-gray-500">拼音：</view>
-					<view class="col-span-4">{{ role.chnname||"" }}</view>
-					<view class="col-span-2 text-gray-500">性别：</view>
-					<view class="col-span-4">{{ role.gender === 1 ? '男' : '女'}}</view>
-					<view class="col-span-2 text-gray-500">朝代：</view>
-					<view class="col-span-4">{{ role.dynasty||"" }}</view>
-					<view class="col-span-2 text-gray-500">生年：</view>
-					<view class="col-span-4">{{ role.birthyear||'?'}}</view>
-					<view class="col-span-2 text-gray-500">卒年：</view>
-					<view class="col-span-4">{{ role.deathyear||'?'}}</view>
-					<view class="col-span-2 text-gray-500">别称：</view>
-					<view class="col-span-4">{{ role.aliasnames||"" }}</view>
-					<view class="col-span-2 text-gray-500">身份：</view>
-					<view class="col-span-4">
-						<!-- <block v-for="(tag, index) in role.titles" :key="index" :item="tag">
-							<text class="mr-4">{{ tag }}</text>
-						</block> -->
-						<text class="mr-4" v-if="role == null">
-							?
-						</text>
-						<block v-else v-for="(tag, index) in role.achievements" :key="index" :item="tag">
-							<text class="mr-4">{{ tag }}</text>
-						</block>
+		<u-popup :show="showUserDetails" @close="showUserDetails = false" mode="bottom" :closeable="false" :round="20">
+			<view class="userDetails" v-if="user.length!=0"
+				style="background: #fff;border-radius: 20rpx 20rpx 0rpx 0rpx;padding: 40rpx 30rpx;box-sizing: border-box;">
+				<view style="display: flex;align-items: center;justify-content: center;">
+					<view style="position: relative;display: inline;">
+						<text class="userDetailsTitle"
+							style="color: #333;font-size: 32rpx;position: relative;z-index: 1;">查看全部</text>
+						<text
+							style="width: 100%;height: 16rpx;position: absolute;left: 0;bottom: 0;background: #FFA000;"></text>
 					</view>
 				</view>
-				<view style="margin-top: 25rpx;display: flex;">
-					<view class="text-gray-500">简介：</view>
-					<view class="" style="flex: 1;color: #323232;font-size: 28rpx;">{{ role.content }}</view>
-				</view>
-
-			</block>
-		</view>
-		<view style="height: 220rpx;"></view>
-	</view>
-
-	<view
-		class="grid grid-cols-2 gap-4 p-4 fixed left-0 right-0 bottom-0 bg-gradient-to-b from-transparent to-white z-10"
-		style="z-index: 999;" v-show="userInfo.id !=$Route.query.user_id">
-		<view class="flex items-center justify-center p-4 rounded-full bg-rose-500"
-			@click="$u.route('pages/chat/single', {user_id:user_id})">
-
-			<i class="ri-message-3-fill text-xl text-white mr-2"></i>
-			<text class="text-base text-white"> 打招呼</text>
-		</view>
-		<view v-show='is_follow==0' class="flex items-center justify-center p-4 rounded-full bg-rose-500">
-			<i class="ri-heart-3-fill text-xl text-white mr-2"></i>
-			<text class="text-base text-white" @click="interest(1)">关注</text>
-		</view>
-		<view v-show="is_follow==1" class="flex items-center justify-center p-4 rounded-full bg-gray-300">
-			<text class="text-base text-white" @click="interest(2)">已关注</text>
-		</view>
-	</view>
-	<feiOperate :showReport='true' :showBlack="true" @black="black" @report='report' ref="feiOperate">
-	</feiOperate>
-	<topPrompt></topPrompt>
-	<uc-auth></uc-auth>
+				<scroll-view scroll-y="true" class="userDetailsScroll">
+					<view style="display: flex;align-items: center;flex-wrap: wrap;font-size: 32rpx;color: #666;">
+						<view style="width: 50%;box-sizing: border-box;margin-bottom: 18rpx;">
+							<text>姓名：</text>
+							<text>{{ user.role_realname||"" }}</text>
+						</view>
+						<view style="width: 50%;box-sizing: border-box;margin-bottom: 18rpx;">
+							<text>拼音：</text>
+							<text>{{ user.role_info.chnname||"?" }}</text>
+						</view>
+						<view style="width: 50%;box-sizing: border-box;margin-bottom: 18rpx;">
+							<text>性别：</text>
+							<text>{{ user.role_info.gender_str}}</text>
+						</view>
+						<view style="width: 50%;box-sizing: border-box;margin-bottom: 18rpx;">
+							<text>朝代：</text>
+							<text>{{ user.role_info.dynasty||"" }}</text>
+						</view>
+						<view style="width: 50%;box-sizing: border-box;margin-bottom: 18rpx;">
+							<text>生年：</text>
+							<text>{{ user.role_info.birthyear||'?'}}</text>
+						</view>
+						<view style="width: 50%;box-sizing: border-box;margin-bottom: 18rpx;">
+							<text>卒年：</text>
+							<text>{{ user.role_info.deathyear||'?'}}</text>
+						</view>
+						<view style="width: 50%;box-sizing: border-box;margin-bottom: 18rpx;">
+							<text>别称：</text>
+							<text>{{user.role_info.aliasnames}}</text>
+						</view>
+						<view style="width: 50%;box-sizing: border-box;margin-bottom: 18rpx;">
+							<text>身份：</text>
+							<block v-for="(item,index) in user.role_info.identity" ;key='index'>
+								<text>
+									{{item}}
+								</text>
+							</block>
+						</view>
+					</view>
+					<view style="color: #333;font-size: 32rpx;margin-top: 35rpx;">
+						<text style="color: #666;">简介：{{user.role_info.content}}
+						</text>
+					</view>
+				</scroll-view>
+			</view>
+		</u-popup>
+		<feiOperate :showReport='true' :showBlack="true" @black="black" @report='report' ref="feiOperate">
+		</feiOperate>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 <script>
@@ -148,10 +222,11 @@
 	export default {
 		name: 'mine',
 		components: {
-			feiOperate
+			feiOperate,
 		},
 		data() {
 			return {
+				showUserDetails: false,
 				type: 'role',
 				tablist: [{
 					name: '角色',
@@ -162,7 +237,7 @@
 					type: 'post',
 					count: 0
 				}],
-				user: {},
+				user: [],
 				role: {},
 				userData: {},
 				postList: [],
@@ -185,10 +260,8 @@
 		onLoad() {
 			let that = this
 			that.getUserProfile()
-			that.getUserRole()
-			that.getUserPost()
-			that.getUserData()
 			that.look_user_home()
+			that.setFontFamily()
 		},
 		onPageScroll(e) {
 			if (parseInt(e.scrollTop) >= 50) {
@@ -198,17 +271,31 @@
 			}
 		},
 		onReachBottom() {
-			let that = this
-			if (that.loadmore === 'nomore') return false
-			that.loadmore = 'loading'
-			that.params.page = ++that.params.page
-			that.getUserPost();
+			// let that = this
+			// if (that.loadmore === 'nomore') return false
+			// that.loadmore = 'loading'
+			// that.params.page = ++that.params.page
+			// that.getUserPost();
 		},
 		mounted() {
 			let that = this
 			that.user_id = that.$Route.query.user_id
 		},
 		methods: {
+			//复制雅集号
+			copy() {
+				var that = this;
+				uni.setClipboardData({
+					data: String(this.user.uid),
+					success: function() {
+						//调用方法成功
+						console.log('success');
+					},
+					fail(err) {
+						console.log(err)
+					}
+				})
+			},
 			//举报
 			report() {
 				var that = this;
@@ -263,14 +350,24 @@
 				})
 			},
 			interest(type) {
-				let that = this
+				let that = this;
 				if (type == 1) {
-					that.$api('user_follow.follow', {
-						user_id: that.$Route.query.user_id
-					}).then(res => {
-						that.is_follow == 1
-						that.getUserProfile()
-					})
+					if (this.userInfo.id == this.user.user_id) {
+						uni.showToast({
+							icon: "none",
+							title: "不能关注自己"
+						})
+					} else {
+						that.$api('user_follow.follow', {
+							user_id: that.$Route.query.user_id
+						}).then(res => {
+							uni.showToast({
+								icon: "none",
+								title: res.msg
+							})
+							that.getUserProfile()
+						})
+					}
 				}
 				if (type == 2) {
 					that.followModule = true;
@@ -302,64 +399,35 @@
 					// });
 				}
 			},
-			changeTab(e) {
-				let that = this
-				that.type = e.type
-			},
-			async getUserProfile() {
+			getUserProfile() {
 				let that = this
 				// console.log(that.$Route.query.user_id);
-				that.$api('user.profile', {
+				that.$api('user.index', {
 					user_id: that.$Route.query.user_id
 				}).then(res => {
+					console.log(res)
 					if (res.code === 1) {
 						that.user = res.data
 						that.is_follow = res.data.is_follow
 					}
 				})
 			},
-			async getUserData() {
-				let that = this
-				that.$api('user.info', {
-					user_id: that.$Route.query.user_id
-				}).then(res => {
-					if (res.code === 1) {
-						that.userData = res.data
+
+			//设置字体
+			setFontFamily() {
+				// #ifdef APP-PLUS
+				uni.loadFontFace({
+					family: 'font-test',
+					// 本地字体路径需转换为平台绝对路径
+					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/AaHouDiHei.ttf')})`,
+					success() {
+						console.log('success')
+					},
+					fail(e) {
+						console.log('fail')
 					}
 				})
-			},
-			async getUserRole() {
-				let that = this
-				that.$api('user.profile', {
-					user_id: that.$Route.query.user_id
-				}).then(res => {
-					if (res.code === 1) {
-						if (res.data != null) {
-							that.role = res.data.role;
-						} else {
-							that.role = null
-						}
-					}
-				})
-			},
-			async getUserPost() {
-				let that = this
-				that.loadmore = 'loading'
-				that.$api('post.user', {
-					page: that.params.page,
-					user_id: that.$Route.query.user_id
-				}).then(res => {
-					if (res.code === 1) {
-						that.paginator.total = res.data.total
-						that.paginator.last_page = res.data.last_page
-						that.postList = [...that.postList, ...res.data.data]
-						if (that.params.page < res.data.last_page) {
-							that.loadmore = 'loadmore'
-						} else {
-							that.loadmore = 'nomore'
-						}
-					}
-				})
+				// #endif
 			},
 		}
 	}
@@ -370,5 +438,125 @@
 		box-sizing: border-box;
 		padding: 140rpx 30rpx 0rpx 30rpx;
 		background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.45) 100%);
+	}
+
+	.userContainer {
+		width: 100vw;
+		background: #fff;
+		box-sizing: border-box;
+		margin-top: -25rpx;
+		position: relative;
+		z-index: 5;
+		border-radius: 25rpx 25rpx 0rpx 0rpx;
+		padding: 50rpx 30rpx 0rpx 30rpx;
+	}
+
+	.character {
+		margin-top: 45rpx;
+		padding: 0rpx 30rpx 45rpx 30rpx;
+		box-sizing: border-box;
+
+		.characterItem {
+			padding: 5rpx 15rpx;
+			border-radius: 50rpx;
+			color: #333;
+			border: 1px solid #FFA000;
+			margin-right: 50rpx;
+		}
+	}
+
+	.flair {
+		padding: 0rpx 10rpx 45rpx 30rpx;
+		box-sizing: border-box;
+
+		.flairItem {
+			border-radius: 15rpx;
+			margin-right: 50rpx;
+			font-size: 30rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-family: font-test !important;
+			overflow: hidden;
+		}
+	}
+
+	.trends {
+		padding: 0rpx 0rpx 30rpx 30rpx;
+		box-sizing: border-box;
+
+		.flairItem {
+			padding: 25rpx 30rpx;
+			border-radius: 15rpx;
+			border: 1px solid #FFA000;
+			margin-right: 50rpx;
+			font-size: 30rpx;
+			color: #FFA000;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-family: font-test !important;
+		}
+
+		.item {
+			width: calc(100% / 3 - 30rpx);
+			height: 270rpx;
+			position: relative;
+			border-radius: 8rpx;
+			overflow: hidden;
+			margin-right: 30rpx;
+			margin-bottom: 25rpx;
+
+			.itemFooter {
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				height: 52rpx;
+				width: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				color: #AAA8A8;
+				font-size: 28rpx;
+				z-index: 5;
+				background: rgba(255, 255, 255, 0.5);
+				padding-right: 20rpx;
+				box-sizing: border-box;
+			}
+		}
+	}
+
+	.userDetailsTitle {
+		font-family: font-test !important;
+	}
+
+	.userDetails {
+		display: flex;
+		flex-direction: column;
+		height: 808rpx;
+	}
+
+	.userDetailsScroll {
+		flex: 1;
+		height: 0;
+		margin-top: 45rpx;
+	}
+
+	.content {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 5;
+		width: 100%;
+		height: 100%;
+		padding: 20rpx 10rpx 10rpx 10rpx;
+		text-align: center;
+		box-sizing: border-box;
+		color: #FFFFFF;
+		font-size: 20rpx;
+		text-align: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 </style>

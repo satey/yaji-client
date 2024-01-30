@@ -103,8 +103,7 @@
 						<text style="margin-left: 10rpx;font-size: 22rpx;color: #999999;">{{detail.zan_nums}}</text>
 					</view>
 					<block v-if="detail.user_id==userInfo.id?false:true">
-						<image @click="showGift" src="@/static/cailiwu.png"
-							style="width: 36rpx;height: 36rpx;" mode="">
+						<image @click="showGift" src="@/static/cailiwu.png" style="width: 36rpx;height: 36rpx;" mode="">
 						</image>
 					</block>
 				</view>
@@ -131,6 +130,7 @@
 		</feiOperate>
 		<feiGift ref="feiGift" channel="1"></feiGift>
 		<topPrompt></topPrompt>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 

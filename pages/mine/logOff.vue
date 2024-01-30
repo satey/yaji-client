@@ -1,11 +1,11 @@
 <template>
-	<view>
+	<view style="background: #f7f7f7;">
 		<u-navbar title="账号注销" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
-		<view style="padding: 30rpx;font-size: 23rpx;">
+		<view style="padding: 30rpx;font-size: 28rpx;color: #333;font-weight: bold;">
 			<view>
 				在您注销您的帐号之前，请充分阅读、理解并同意下列事项：
 			</view>
@@ -27,10 +27,26 @@
 				2.6 注销成功后，我们将删除您的个人信息或对其进行匿名化处理。请您知悉并理解，根据相关法律法规规定，雅集将就相关日志记录保留不少于 6 个月的时间。</br>
 			</view>
 			<view
-				style="background: #FE4373;color: #fff;text-align: center;border-radius: 20rpx;height: 80rpx;line-height: 80rpx;margin-top: 50rpx;"
-				@click="off">
+				style="background: #FFA000;color: #fff;text-align: center;border-radius: 20rpx;height: 80rpx;line-height: 80rpx;margin-top: 50rpx;"
+				@click="showa = true">
 				确定注销账号</view>
 		</view>
+		<u-popup :show="showa" @close="showa = false" mode="center" :closeable="false" :round="20">
+			<view class="log">
+				<view style="text-align: center;font-size: 30rpx;color: #333;">注销账号</view>
+				<view style="font-size: 28rpx;color: #333;margin-top: 89rpx;">注销账号后，同一手机号将在90天内无法重新注册。确定要立即注销当前账号吗?
+				</view>
+				<view style="display: flex;align-items: center;justify-content: center;margin-top: 137rpx;">
+					<view @click="queding"
+						style="margin-right: 21rpx;width: 210rpx;height: 68rpx;background: #FFDDA4;border-radius: 8rpx;text-align: center;line-height: 68rpx;color: #FFA000;font-size: 30rpx;">
+						确定</view>
+					<view @click="showa = false"
+						style="margin-left: 21rpx;width: 210rpx;height: 68rpx;background: #FFA000;border-radius: 8rpx;text-align: center;line-height: 68rpx;color: #fff;font-size: 30rpx;">
+						取消</view>
+				</view>
+			</view>
+		</u-popup>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
@@ -38,17 +54,43 @@
 	export default {
 		data() {
 			return {
-
+				showa: false,
 			};
 		},
 		methods: {
+			queding() {
+				var that = this;
+				that.$api('user.off').then(res => {
+					console.log(res)
+					if (res.code === 1) {
+						that.$u.toast(res.msg)
+						getApp().globalData.socketTask.close();
+						var userInfo = uni.getStorageSync("userInfo");
+						that.$store.commit("setIslogout", true);
+						that.$nextTick(() => {
+							uni.removeStorageSync('token')
+							uni.removeStorageSync('userInfo')
+							uni.removeStorageSync('msgCount')
+							uni.removeStorageSync('pageCount')
+
+							that.$nextTick(() => {
+								uni.reLaunch({
+									url: '/pages/auth/login'
+								})
+							})
+						})
+					} else {
+						that.$u.toast(res.msg)
+					}
+				})
+			},
 			//注销
 			off() {
 				var that = this;
 				uni.showModal({
 					title: "提示",
 					content: "请务必确认您已明确了解注销账号的后果。若您已了解并确认，请点击确认按钮，系统将执行注销操作。确定要立即注销当前账号吗？",
-					confirmColor: "#FE4373",
+					confirmColor: "#FFA000",
 					success: function(res) {
 						if (res.confirm) {
 							console.log('用户点击确定');
@@ -90,5 +132,12 @@
 </script>
 
 <style lang="scss">
-
+	.log {
+		width: 578rpx;
+		height: 525rpx;
+		border-radius: 16rpx;
+		padding: 50rpx 27rpx 62rpx 37rpx;
+		background: #fff;
+		box-sizing: border-box;
+	}
 </style>

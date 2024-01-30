@@ -1,19 +1,13 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
-	<view class="py-20">
-		<image src='@/static/embed/loginBg.png' class="fixed w-full h-full top-0 left-0 right-0 -z-10"></image>
-		<u-navbar bgColor="transparent">
-			<view slot="left">
-				<!-- 	<i class="ri-arrow-left-s-line text-4xl text-white"
-					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i> -->
-			</view>
-		</u-navbar>
+	<view class="login">
+		<!-- 弹窗 -->
 		<u-popup :show="showAction" @close="showAction = false" :closeable="false" :round="30">
-			<view style="padding: 50rpx 30rpx;">
+			<view style="padding: 50rpx 30rpx;background: #fff;border-radius: 30rpx 30rpx 0rpx 0rpx;">
 				<view style="font-size: 32rpx;">请先同意以下协议条款：</view>
 				<view style="margin-top: 50rpx;margin-bottom: 30rpx;">
-					<text style="color:#fb7185 ;" @click="$u.route('/pages/public/page', { id: 1 })">《用户协议》</text>和<text
-						@click="$u.route('/pages/public/page', { id: 2 })" style="color:#fb7185 ;">《隐私政策》</text>
+					<text style="color:#C4A486 ;" @click="$u.route('/pages/public/page', { id: 1 })">《用户协议》</text>和<text
+						@click="$u.route('/pages/public/page', { id: 2 })" style="color:#C4A486 ;">《隐私政策》</text>
 				</view>
 				<view style="display: flex;align-items: center;">
 					<view @click="showAction = false"
@@ -21,152 +15,168 @@
 						拒绝
 					</view>
 					<view @click="yes"
-						style="margin: 0 auto;width: 300rpx;color: #fff;text-align: center;height: 80rpx;line-height: 80rpx;background:#fb7185 ;border-radius: 10rpx;">
+						style="margin: 0 auto;width: 300rpx;color: #fff;text-align: center;height: 80rpx;line-height: 80rpx;background:#C4A486 ;border-radius: 10rpx;">
 						同意并继续</view>
-				</view>
 
+				</view>
 			</view>
 		</u-popup>
-		<view class="logo">
-			<image src="@/static/logo-circle.png" class="logoPic"></image>
-		</view>
-		<view class="px-10 py-20">
-			<!-- <view class="text-2xl text-white">注册登录</view> -->
-			<view class=" rounded-full mb-10" style="margin-top: 30rpx;padding-top: 20rpx;">
-				<u-input v-model="form.mobile" :focus="true" placeholder="请输入手机号" type="number" maxlength="11"
-					@input="handleInput('mobile')" style="border-bottom: 1px solid #ECECEC;border-radius: 0rpx ;"
-					fontSize="32">
-					<!-- <text slot="prefix" class="text-2xl pr-2 mr-4 border-right">+86</text> -->
-				</u-input>
+		<!-- 主题 -->
+		<view class="loginContainer">
+			<view class="loginText">
+				<image style="width: 100%;height: 100%;" src="../../static/embed/loginText.png"></image>
 			</view>
-			<view class=" rounded-full mb-10" style="margin-top: 30rpx;">
-				<u-input placeholder="请输入验证码" type="number" maxlength="6" v-model="form.code" fontSize="32"
-					style="border-bottom: 1px solid #ECECEC;padding-top: 20rpx;border-radius: 0rpx;">
-					<button slot="suffix" class="sendCodeBtn" :disabled="sendBtnDisabled"
-						@click="getSmsCode()">{{ codeText }}</button>
-				</u-input>
+			<!-- 账号 -->
+			<view class="inputBox" style="margin-top: 20%;">
+				<i class="iconfont  icon-shouji" style="color: #C4A486;font-size: 40rpx;margin-right: 5rpx;"></i>
+				<input type="number" v-model="mobile" @input="handleInput('mobile')" maxlength="11" placeholder="输入手机号"
+					placeholder-class="placeholderClass">
 			</view>
-			<view class="grid mt-8 text-center" @click="$noMultipleClicks(commitWork)">
-				<view
-					class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-					@click="onLogin()">登录</view>
+			<!-- 密码 -->
+			<view class="inputBox" style="padding-top: 66rpx;justify-content: space-between;">
+				<view style="display: flex;align-items: center;flex: 1;">
+					<i class="iconfont  icon-duanxin" style="color: #C4A486;font-size: 40rpx;margin-right: 5rpx;"></i>
+					<input type="number" v-model="code" maxlength="6" placeholder="输入验证码"
+						placeholder-class="placeholderClass">
+				</view>
+				<button class="codeText" @click="sendCode" :disabled="sendBtnDisabled">{{codeText}}</button>
 			</view>
-			<view class="flex " style="position: absolute; bottom: 100rpx; text-align: center;">
-				<text class="text-base leading-none text-white opacity-50"
-					@click="$u.route('/pages/public/center')">登录遇到问题?</text>
+			<view class="loginBtn" @click="onLogin()">
+				登录
 			</view>
-			<view class="flex flex-row-right mt-8" style="margin-top: 40rpx;">
+			<view class="flex flex-row-right"
+				style="margin-top: 136rpx;margin-bottom: 162rpx;font-size: 23rpx;display: flex;align-items: center;">
 				<u-checkbox-group>
 					<u-checkbox @change="handleAgree" :checked="protocol" size="28" shape="circle"
-						inactiveColor="#808080" activeColor="#ff6897"></u-checkbox>
+						inactiveColor="#767676" activeColor="#C4A486"></u-checkbox>
 				</u-checkbox-group>
-				<view class="text-base leading-none" style="color: #808080;">
-					<text>阅读并同意</text>
-					<text class="ml-2 mr-4" style="color:#fb7185 ;"
-						@click="$u.route('/pages/public/page', { id: 1 })">《用户协议》</text>
+				<view class="text-base leading-none" style="color: #333333;white-space: pre-wrap;flex: 1;">
+					<text>已阅读并同意</text>
+					<text style="color:#C4A486 ;" @click="$u.route('/pages/public/page', { id: 1 })">《用户协议》</text>
 					<text>和</text>
-					<text class="ml-2 mr-4" style="color:#fb7185 ;"
-						@click="$u.route('/pages/public/page', { id: 2 })">《隐私政策》</text>
+					<text style="color:#C4A486 ;" @click="$u.route('/pages/public/page', { id: 2 })">《隐私政策》</text>
 				</view>
 			</view>
 		</view>
-
 	</view>
-
 </template>
-<!-- fei-dev -->
 <script>
-	import {
-		mapState,
-		mapActions
-	} from 'vuex'
 	export default {
 		name: 'login',
 		data() {
 			return {
-				form: {
-					mobile: '',
-					code: '',
-				},
-				codeText: '获取验证码',
-				protocol: false,
-				isMobileEnd: false,
-				disabledCode: false,
-				policy: '', //协议内容
-				showPopup: false, //控制协议弹窗
-				scrollHeight: uni.getSystemInfoSync().windowHeight - 130, //协议内容滚动高度
-				noClick: true,
-				sendBtnDisabled: false,
-				// --------
-				isClick: true,
 				showAction: false,
+				protocol: false,
+				codeText: '获取验证码',
+				sendBtnDisabled: false,
+				type: "sendCode",
+				mobile: '',
+				code: "",
+				isClick: false,
 			}
 		},
-		computed: {
-			...mapState({
-				userInfo: state => state.user.userInfo,
-			})
-		},
-		mounted() {
-			let that = this
-			that.$api('user.info').then(res => {
-				if (res.code === 1) {
-					console.log('mount', res);
-				} else {
-					that.$u.toast(res.msg)
-				}
-			})
-		},
 		methods: {
-			...mapActions(['getUserInfo']),
+			//登录
+			onLogin() {
+				let that = this;
+				if (!that.protocol) {
+					that.$u.toast('请同意用户协议')
+					that.showAction = true;
+					that.type = "login"
+					return false
+				}
+				uni.showLoading()
+				if (that.isClick) {
+					return;
+				}
+				that.isClick = true;
+				uni.getSystemInfo({
+					success(systemInfo) {
+						that.$api('user.smslogin', {
+							mobile: Number(that.mobile),
+							code: Number(that.code),
+							mobile_message_json: JSON.stringify(systemInfo)
+						}).then(res => {
+							uni.hideLoading()
+							that.isClick = false;
+							if (res.code == 1) {
+								uni.setStorageSync('token', res.data.token);
+								that.$api("user.info").then((userInfo) => {
+									if (userInfo.code == 1) {
+										// getApp().globalData.initFun()
+										uni.setStorageSync("userInfo", userInfo.data)
+										//统计
+										uni.getPushClientId({
+											success(res) {
+												that.$api('stat.init', {
+													"push_clientid": res
+														.cid
+												}).then(res => {})
+											}
+										})
+										that.$nextTick(() => {
+											if (userInfo.data.gender == 0) {
+												uni.reLaunch({
+													url: '/pages/auth/s1'
+												});
+												return;
+											}
+											if (res.msg == "登录成功") {
+												getApp().globalData.initFun()
+												uni.reLaunch({
+													url: '/pages/index/index'
+												});
+											}
+										})
+									}
+								})
+							} else {
+								that.$u.toast(res.msg)
+							}
+						})
+					}
+				})
+			},
+			//监听输入
+			handleInput(key) {
+				let that = this
+				that.isMobileEnd = that.$u.test.mobile(that.mobile);
+			},
+			//确认协议
 			yes() {
 				this.showAction = false;
 				this.protocol = true;
-				this.getSmsCode()
+				if (this.type == 'sendCode') {
+					this.sendCode()
+				} else if (this.type == 'login') {
+					this.onLogin()
+				}
 			},
-			// 登录
-			commitWork() {
-				let that = this
-				//开始你的表演
-			},
-
-			handleInput(key) {
-				let that = this
-				that.isMobileEnd = that.$u.test.mobile(that.form.mobile)
-			},
-			handleAgree(e) {
-				let that = this;
-				that.protocol = e;
-			},
-			getSmsCode() {
+			//发送验证码
+			sendCode() {
 				let that = this
 				if (!that.protocol) {
 					that.showAction = true;
-					return false
+					that.type = "sendCode"
+					return false;
 				}
 				if (!that.isMobileEnd || that.disabledCode) {
 					that.$u.toast('请正确填写')
 					return false
 				}
-				let data = {
-					mobile: Number(that.form.mobile),
-					event: 'register'
-				}
-
-				that.$api('sms.send_sms', data).then(res => {
+				that.$api('sms.send_sms', {
+					mobile: Number(that.mobile),
+				}).then(res => {
 					if (res.code === 1) {
-						if (that.disabledCode) return
-						that.disabledCode = true;
-						this.sendBtnDisabled = true;
+						that.sendBtnDisabled = true;
 						let n = 60
 						let run = setInterval(() => {
 							n -= 1
 							that.codeText = n + 's'
 							if (n < 0) {
 								clearInterval(run)
-								that.disabledCode = false
-								that.codeText = '重新获取'
-								this.sendBtnDisabled = false;
+								that.codeText = '获取验证码'
+								that.sendBtnDisabled = false;
 							}
 						}, 1000)
 						that.$u.toast('验证码已发送，请注意查收短信')
@@ -175,205 +185,89 @@
 					}
 				})
 			},
-
-			onLogin() {
+			//协议勾选
+			handleAgree(e) {
 				let that = this;
-				if (!that.protocol) {
-					that.$u.toast('请同意用户协议')
-					return false
-				}
-				console.log(that.isClick)
-				// if (!that.isMobileEnd || that.disabledCode ) {
-				// 	that.$u.toast('请正确填写信息')
-				// 	return false
-				// }
-				// #ifdef APP-PLUS
-				uni.getPushClientId({
-					success(res) {
-						uni.getSystemInfo({
-							success(systemInfo) {
-								if (that.isClick == false) {
-									return;
-								}
-								uni.showLoading();
-								that.isClick = false;
-								that.$api('user.smslogin', {
-									mobile: Number(that.form.mobile),
-									code: Number(that.form.code),
-									event: 'register',
-									push_clientid: res.cid,
-									mobile_message_json: JSON.stringify(systemInfo)
-								}).then(res => {
-									console.log(res)
-									that.isClick = true;
-									if (res.code === 1) {
-										uni.setStorageSync('token', res.data.token)
-										that.getUserInfo(res.data.token).then(() => {
-											//#ifdef APP-PLUS
-											getApp().globalData.initFun()
-											// #endif
-											//#ifdef H5
-											getApp().globalData.islogout = false;
-											// #endif
-											that.$store.commit("setIslogout", false);
-											uni.hideLoading();
-											getApp().globalData.getHistoryCronyList();
-
-											//统计
-											uni.getPushClientId({
-												success(res) {
-													console.log(res.cid)
-													that.$api('stat.init', {
-														"push_clientid": res
-															.cid
-													}).then(res => {})
-												}
-											})
-											that.$nextTick(() => {
-												if (res.msg == "注册成功") {
-													uni.reLaunch({
-														url: '/pages/auth/s1'
-													});
-												} else if (res.msg == "登录成功") {
-													uni.reLaunch({
-														url: '/pages/index/index'
-													});
-												}
-											})
-										})
-									} else {
-										that.$u.toast(res.msg)
-									}
-								})
-							}
-						})
-					}
-				})
-				// #endif
-				// #ifdef H5
-				let data = {
-					mobile: Number(that.form.mobile),
-					code: Number(that.form.code),
-					event: 'register',
-					push_clientid: '',
-					mobile_message_json: ""
-				}
-				if (that.isClick == false) {
-					return;
-				}
-				uni.showLoading();
-				that.isClick = false;
-				that.$api('user.smslogin', data).then(res => {
-					that.isClick = true;
-					if (res.code === 1) {
-						uni.setStorageSync('token', res.data.token)
-						that.getUserInfo(res.data.token).then(() => {
-							//#ifdef APP-PLUS
-							getApp().globalData.initFun()
-							// #endif
-							//#ifdef H5
-							getApp().globalData.islogout = false;
-							// #endif
-							that.$store.commit("setIslogout", false);
-							uni.hideLoading();
-							getApp().globalData.getHistoryCronyList();
-
-							//统计
-							uni.getPushClientId({
-								success(res) {
-									console.log(res.cid)
-									that.$api('stat.init', {
-										"push_clientid": res.cid
-									}).then(res => {})
-								}
-							})
-							that.$nextTick(() => {
-								if (!that.userInfo.realname && !that.userInfo
-									.dynasty && that
-									.userInfo
-									.gender == 0) {
-									uni.reLaunch({
-										url: '/pages/auth/s1'
-									});
-								} else if (that.userInfo.gender != 0) {
-									if (that.userInfo.realname != '' && that
-										.userInfo.dynasty !=
-										'') {
-										uni.reLaunch({
-											url: '/pages/index/index'
-										});
-									} else {
-										console.log('不知道是否有免费次数');
-									}
-
-								} else {
-									console.log('ok')
-									that.$u.route('/pages/auth/login')
-								}
-								if (!that.userInfo.role_id) {
-									uni.reLaunch({
-										url: '/pages/auth/s1'
-									});
-								}
-								if (that.userInfo.gender == 0) {
-									uni.reLaunch({
-										url: '/pages/auth/s1'
-									});
-								}
-								if (that.userInfo.realname != '' && that.userInfo
-									.dynasty != '' &&
-									that
-									.userInfo.gender !=
-									0) {
-									uni.reLaunch({
-										url: '/pages/index/index'
-									});
-								} else {
-									console.log('ok')
-									uni.reLaunch({
-										url: '/pages/auth/s1'
-									});
-								}
-
-							})
-
-						})
-					} else {
-						that.$u.toast(res.msg)
-					}
-				})
-				// #endif
-
+				that.protocol = e;
 			},
 		}
 	}
 </script>
 <style lang="scss" scoped>
-	.logo {
-		margin-top: 80rpx;
+	.login {
+		width: 100vw;
+		height: 100vh;
+		box-sizing: border-box;
+		background-image: url(/static/embed/loginBgImg.png);
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		background-position: center center;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		padding: 0rpx 30rpx 0rpx 16rpx;
+		box-sizing: border-box;
 
-		.logoPic {
-			width: 208rpx;
-			height: 208rpx;
+		.loginContainer {
+			width: 100%;
+			background-image: url(/static/embed/loginBoxBg.png);
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+			background-position: 100% 100%;
+			padding: 15% 80rpx 0rpx 80rpx;
+			box-sizing: border-box;
+
+			.loginText {
+				height: 98rpx;
+				width: 375rpx;
+				text-align: center;
+				margin: 0 auto;
+				margin-top: 150rpx;
+			}
+
+			.inputBox {
+				display: flex;
+				align-items: center;
+				padding-bottom: 18rpx;
+				border-bottom: 1px solid #C4A486;
+			}
+
+			.codeText {
+				white-space: nowrap;
+				font-size: 26rpx;
+				color: #333333;
+				width: 130rpx;
+				height: 36rpx;
+				line-height: 36rpx;
+				background: none;
+				border: none;
+				padding: 0;
+				margin: 0;
+
+				&::after {
+					border: none !important;
+				}
+			}
+
+			.loginBtn {
+				width: 350rpx;
+				height: 100rpx;
+				background-image: url(/static/embed/loginMask.png);
+				background-repeat: no-repeat;
+				background-size: 100% 100%;
+				background-position: center center;
+				text-align: center;
+				line-height: 100rpx;
+				margin: 0 auto;
+				margin-top: 100rpx;
+				font-weight: bold;
+				color: #C4A486;
+			}
 		}
 	}
 
-	.sendCodeBtn {
-		width: 175rpx;
-		height: 70rpx;
-		line-height: 70rpx;
-		text-align: center;
-		background: #FE4373;
-		color: #fff;
-		font-size: 24rpx;
-
-		&[disabled] {
-			background: #CCCCCC;
-			border: none !important;
-			color: #fff;
-		}
+	.placeholderClass {
+		font-size: 32rpx;
+		color: rgba(0, 0, 0, 0.36);
 	}
 </style>

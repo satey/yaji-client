@@ -3,7 +3,7 @@
     <view>
         <view class="flex mt-6">
             <view class="mr-4" @click="$u.route('/pages/user/home', { user_id: item.id })">
-                <u-avatar size="90" :src="item.avatar || '/static/avatar.png'"></u-avatar>
+                <u-avatar size="90" :src="item.avatar"></u-avatar>
             </view>
             <view class="flex-1" @click="$u.route(' /pages/user/home', { user_id: item.id })">
                 <view class=" mt-4">{{ item.role_realname + ' · ' + item.role_dynasty || '无名氏' }} </view>

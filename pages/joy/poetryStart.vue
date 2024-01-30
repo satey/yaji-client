@@ -30,6 +30,7 @@
 			<view class="cancel" @click="cancel">取消</view>
 		</view> -->
 		<!-- <reward></reward> -->
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 

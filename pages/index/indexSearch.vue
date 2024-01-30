@@ -20,7 +20,7 @@
 					marginTop="100"></u-empty>
 			</block>
 		</view>
-		<uc-auth></uc-auth>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 

@@ -31,35 +31,38 @@
 			<l-svga ref="svgaPlayer"></l-svga>
 		</view>
 		<u-popup :show="showAction" @close="closePopup" :closeable="false" :round="30">
-			<view
-				style="text-align: right;padding-top: 30rpx;padding-right: 30rpx;font-size: 39rpx;box-sizing: border-box;"
-				@click="showAction = false">
-				<text class="ri-close-fill"></text>
-			</view>
-			<view class="grid grid-cols-4 gap-4  p-4 overflow-y-scroll">
-				<block v-for="(item, index) in giftList" :key="index" :item="item" v-if="item.status!='hidden'">
-					<view class="flex flex-col items-center" @click="handleGiftSend(item)">
-						<image class="block w-20 h-20" :src="item.image" lazy-load="false"></image>
-						<text style="color: #323232;font-size: 25rpx;">{{ item.title }}</text>
-						<view style="margin-top: 20rpx;display: flex;align-items: center;">
-							<image style="width: 20rpx;height: 20rpx;" src="@/static/qian.png" mode=""></image>
-							<text style="font-size: 20rpx;color: #808080;margin-left: 5rpx;">{{ item.price }}</text>
+			<view style="background: #fff;border-radius: 20rpx 20rpx 0rpx 0rpx;">
+				<view
+					style="text-align: right;padding-top: 30rpx;padding-right: 30rpx;font-size: 39rpx;box-sizing: border-box;"
+					@click="showAction = false">
+					<text class="ri-close-fill"></text>
+				</view>
+				<view class="grid grid-cols-4 gap-4  p-4 overflow-y-scroll">
+					<block v-for="(item, index) in giftList" :key="index" :item="item" v-if="item.status!='hidden'">
+						<view class="flex flex-col items-center" @click="handleGiftSend(item)">
+							<image class="block w-20 h-20" :src="item.image" lazy-load="false"></image>
+							<text style="color: #323232;font-size: 25rpx;">{{ item.title }}</text>
+							<view style="margin-top: 20rpx;display: flex;align-items: center;">
+								<image style="width: 20rpx;height: 20rpx;" src="@/static/qian.png" mode=""></image>
+								<text style="font-size: 20rpx;color: #808080;margin-left: 5rpx;">{{ item.price }}</text>
+							</view>
 						</view>
+					</block>
+				</view>
+				<view
+					style="display: flex;flex-direction: row;justify-content: end;padding-bottom: 30rpx;margin-right: 27rpx;">
+					<view style="display: flex;align-items: center;margin-right: 20rpx;">
+						<image style="width: 20rpx;height: 20rpx;" src="@/static/qian.png" mode=""></image>
+						<text style="font-size: 20rpx;color: #808080;margin-left: 5rpx;">{{userInfoData.money}}</text>
 					</view>
-				</block>
-			</view>
-			<view
-				style="display: flex;flex-direction: row;justify-content: end;padding-bottom: 30rpx;margin-right: 27rpx;">
-				<view style="display: flex;align-items: center;margin-right: 20rpx;">
-					<image style="width: 20rpx;height: 20rpx;" src="@/static/qian.png" mode=""></image>
-					<text style="font-size: 20rpx;color: #808080;margin-left: 5rpx;">{{userInfoData.money}}</text>
-				</view>
-				<view style="display: flex;align-items: center;font-size: 23rpx;color: #FE4373;"
-					@click="$u.route('/pages/mine/recharge')">
-					<text>马上充值</text>
-					<text class="ri-arrow-right-s-line" style="font-size: 35rpx;"></text>
+					<view style="display: flex;align-items: center;font-size: 23rpx;color: #FE4373;"
+						@click="$u.route('/pages/mine/recharge')">
+						<text>马上充值</text>
+						<text class="ri-arrow-right-s-line" style="font-size: 35rpx;"></text>
+					</view>
 				</view>
 			</view>
+
 		</u-popup>
 	</view>
 </template>

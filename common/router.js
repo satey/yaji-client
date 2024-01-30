@@ -67,8 +67,9 @@ router.beforeEach((to, from, next) => {
 				break;
 		}
 	} else {
-		next()
+		
 	}
+	next()
 })
 // 全局路由后置守卫
 router.afterEach((to, from) => {})

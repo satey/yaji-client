@@ -8,7 +8,7 @@
 		</u-navbar>
 		<!-- android -->
 		<view style="padding-bottom: 40rpx;" v-if="phoneMode=='ios'?false:true">
-			<view style="font-size: 30rpx;color: #323232;padding-left: 30rpx;">选择充值数额：</view>
+			<view style="font-size: 30rpx;color: #323232;padding-left: 30rpx;">充值铜钱数量：</view>
 			<view class="numList">
 				<view class="numItem" :class="currentIndex == index?'numItemActive':''"
 					v-for="(item,index) in copperList" @click="selectMoney(index,item.money,item.copper,item.id)">
@@ -34,6 +34,12 @@
 			</view>
 		</view>
 		<view class="selectType" v-if="phoneMode=='ios'?false:true">
+			<view
+				style="display: flex;flex-direction: row;justify-content: space-between;padding: 30rpx 30rpx 0rpx 30rpx;">
+				<view style="font-size: 32rpx;color: #1F1F1F;">支付：<text style="color: #FFA000;">￥{{moneyCount}}</text>
+				</view>
+				<view style="font-size: 24rpx;color: #A9A8A8;">到账铜钱{{copper}}</view>
+			</view>
 			<radio-group @change="radioChange">
 				<label>
 					<view style="display: flex;align-items: center;justify-content: space-between;padding: 30rpx;">
@@ -48,7 +54,7 @@
 								<view style="color: #A9A8A8;font-size: 22rpx;">亿万用户的选择，更快更安全</view>
 							</view>
 						</view>
-						<radio value="wechat" checked="true" color="#FE4373" style="transform: scale(0.9);" />
+						<radio value="wechat" checked="true" color="#FFA000" style="transform: scale(0.9);" />
 					</view>
 				</label>
 				<!-- 后续开放 -->
@@ -58,13 +64,14 @@
 							<image class="typeImg" src="/static/zfb.png" mode=""></image>
 							<view style="font-size: 30rpx; color: #323232;">支付宝支付</view>
 						</view>
-						<radio value="alipay" color="#FE4373" style="transform: scale(0.9);" />
+						<radio value="alipay" color="#FFA000" style="transform: scale(0.9);" />
 					</view>
 				</label>
 			</radio-group>
 		</view>
-		<view class="footer">
-			<!-- 	<checkbox-group @change="isCheckedChange">
+		<view class="btnOk" @click="recharge">立即购买</view>
+		<!-- view class="footer">
+				<checkbox-group @change="isCheckedChange">
 				<label>
 					<view style="display: flex;align-items: center;margin-bottom: 20rpx;justify-content: center;">
 						<checkbox value="checked" :checked="isChecked" color="#FE4373" style="transform: scale(0.8);" />
@@ -72,7 +79,7 @@
 								@click="$u.route('/pages/public/page', { id: 4 })">《充值协议》</text></view>
 					</view>
 				</label>
-			</checkbox-group> -->
+			</checkbox-group>
 			<view style="display: flex;align-items: center;justify-content: space-between;">
 				<view style="height: 85rpx;display: flex;flex-direction: column;justify-content: space-between;">
 					<view style="font-size: 32rpx;color: #1F1F1F;">支付：<text
@@ -81,8 +88,8 @@
 				</view>
 				<view class="btnOk" @click="recharge">立即充值</view>
 			</view>
-		</view>
-		<topPrompt></topPrompt>
+		</view> -->
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
@@ -110,7 +117,43 @@
 			//充值
 			recharge() {
 				var that = this;
-				uni.showLoading()
+				uni.showLoading({
+					title: "充值中，请勿关闭应用"
+				})
+				if (that.phoneMode == 'ios') {
+					that.iapChannel.requestOrder(that.product, function() {
+						uni.requestPayment({
+							provider: 'appleiap',
+							orderInfo: {
+								"productid": that.copperId,
+								"quantity": 1,
+								"manualFinishTransaction": true
+							},
+							success: (e) => {
+								that.$api("pay.apple_pay_callback", {
+									order_sn: "",
+									transaction_id: e.transactionIdentifier,
+									receipt_data: e.transactionReceipt
+								}).then(apple_pay_res => {
+									console.log(apple_pay_res)
+									if (apple_pay_res.code == 1) {
+										that.iapChannel.finishTransaction(e)
+									}
+								})
+							},
+							fail: (err) => {
+								uni.showToast({
+									icon: "none",
+									title: "充值失败"
+								})
+							},
+							complete() {
+								uni.hideLoading()
+							}
+						})
+					})
+					return;
+				}
 				that.$api("pay.order", {
 					"id": that.phoneMode == 'ios' ? "" : that.copperId,
 					"platform": that.phoneMode == 'ios' ? 'ios' : "",
@@ -118,47 +161,6 @@
 				}).then(orderRes => {
 					if (orderRes.code == 1) {
 						var order_sn = orderRes.data;
-						if (that.phoneMode == 'ios') {
-							that.iapChannel.requestOrder(that.product, function() {
-								uni.requestPayment({
-									provider: 'appleiap',
-									orderInfo: {
-										"productid": that.copperId,
-										"quantity": 1,
-										"manualFinishTransaction": false
-									},
-									success: (e) => {
-										that.$api("pay.apple_pay_callback", {
-											order_sn: orderRes.data,
-											transaction_id: e.transactionIdentifier,
-											receipt_data: e.transactionReceipt
-										}).then(apple_pay_res => {
-											console.log(apple_pay_res)
-										})
-									},
-									fail: (err) => {
-										uni.showToast({
-											icon: "none",
-											title: "充值失败"
-										})
-									},
-									complete() {
-										uni.hideLoading()
-										that.iapChannel.restoreCompletedTransactions({
-											manualFinishTransaction: true,
-										}, (res) => {
-											res.forEach((item, index) => {
-												that.iapChannel.finishTransaction(
-													item)
-											})
-										}, (err) => {
-											console.log(err);
-										})
-									}
-								})
-							})
-							return;
-						}
 						that.$api("pay.prepay", {
 							type: that.payType,
 							order_sn: order_sn
@@ -228,6 +230,19 @@
 											title: "订单获取失败"
 										})
 									})
+									that.iapChannel.restoreCompletedTransactions({
+										manualFinishTransaction: true,
+									}, (res) => {
+										console.log(res)
+										if (res.length != 0) {
+											res.forEach((item, index) => {
+												that.iapChannel
+													.finishTransaction(item)
+											})
+										}
+									}, (err) => {
+										console.log(err);
+									})
 								}
 							})
 						}
@@ -275,14 +290,19 @@
 	}
 
 	.btnOk {
-		width: 200rpx;
+		width: 490rpx;
 		height: 85rpx;
 		line-height: 85rpx;
 		text-align: center;
 		color: #fff;
-		font-size: 28rpx;
+		font-size: 36rpx;
 		border-radius: 43rpx;
-		background: #FE4373;
+		background-image: url(@/static/iconImage/btnBg2.png);
+		background-position: 100% 100%;
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		margin: 0 auto;
+		margin-top: 97rpx;
 	}
 
 	.footerTitle {
@@ -335,8 +355,8 @@
 	}
 
 	.numItemActive {
-		background: rgba(254, 67, 115, 0.1) !important;
-		border: 2rpx solid #FE4373 !important;
+		background: rgba(255, 160, 0, 0.1) !important;
+		border: 2rpx solid #FFA000 !important;
 	}
 
 	.num {

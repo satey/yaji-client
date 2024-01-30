@@ -96,14 +96,14 @@
 			<view class="" v-if="detailContent!=null">
 				<view class="userImg" v-if="userInfo.id == user_id"
 					@click="$u.route('/pages/index/mine', { user_id: detailContent.user_id })">
-					<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
+					<image mode="aspectFill" :src="avatar" class="userImg"></image>
 				</view>
 				<view v-else class="userImg" @click="$u.route('/pages/user/home', { user_id: detailContent.user_id })">
-					<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
+					<image mode="aspectFill" :src="avatar" class="userImg"></image>
 				</view>
 			</view>
 			<view v-else class="userImg" @click="showToast">
-				<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
+				<image mode="aspectFill" :src="avatar" class="userImg"></image>
 			</view>
 			<view style="flex: 1;">
 				<view class="userInfo">
@@ -169,6 +169,7 @@
 			marginTop="100"></u-empty>
 		<topPrompt></topPrompt>
 		<feiGift ref="feiGift" channel="3"></feiGift>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 <script>

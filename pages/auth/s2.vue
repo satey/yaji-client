@@ -178,7 +178,7 @@
 		onLoad(option) {
 			let that = this
 			that.getRoleDynasty()
-
+			console.log("fei")
 		},
 		created() {
 			let that = this

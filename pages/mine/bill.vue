@@ -9,8 +9,6 @@
         <uc-bill v-for="(item, index) in listRecharge" :key="index" :item="item"></uc-bill>
         <u-loadmore v-if="listRecharge.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
         <u-empty v-if="!listRecharge.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
-
-        <uc-auth></uc-auth>
     </view>
 </template>
 <script>

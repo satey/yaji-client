@@ -164,7 +164,7 @@
 				var that = this;
 				var token = uni.getStorageSync("token");
 				uni.uploadFile({
-					url: that.$API_URL + 'index/upload',
+					url: uni.getStorageSync("hostData").host+"/api/hey/" + 'index/upload',
 					filePath: e.tempFilePath,
 					name: 'file',
 					formData: {

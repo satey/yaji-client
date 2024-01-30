@@ -18,7 +18,7 @@
 		</u-popup>
 		<block v-for="(item,index) in listPostComment">
 			<view class="commentItem" style="margin-top: 30rpx;display: flex;" v-if="item.status != 'hidden'">
-				<u-avatar size="85" :src="item.avatar || '/static/avatar.png'" mode="aspectFill"
+				<u-avatar size="85" :src="item.avatar" mode="aspectFill"
 					@click="openHome(item)"></u-avatar>
 				<view style="flex: 1;margin-left: 16rpx;">
 					<view style="display: flex;align-items: center;justify-content: space-between;height: 65rpx;">

@@ -6,7 +6,7 @@ import LibGenerateTestUserSig from './lib-generate-test-usersig-es.min.js';
  * 它是腾讯云用于区分客户的唯一标识。
  */
 
-const SDKAPPID = 1600013298;
+const SDKAPPID = 1600015601;
 /**
  * 签名过期时间，建议不要设置的过短
  * <p>
@@ -26,7 +26,9 @@ const EXPIRETIME = 604800;
  * 文档：https://cloud.tencent.com/document/product/647/17275#Server
  */
 
-const SECRETKEY = 'f8fe0d4de374ebd3c24b1a54a9bc1beb6b0e3d72b2ac2fefec626c5aa8bc94a0';
+const SECRETKEY = 'f29198802ea413e038057da7c57839aaf8c4a41d65c929537de927620f6e8033';
+
+
 /*
  * Module:   GenerateTestUserSig
  *
@@ -46,12 +48,12 @@ const SECRETKEY = 'f8fe0d4de374ebd3c24b1a54a9bc1beb6b0e3d72b2ac2fefec626c5aa8bc9
  */
 
 function genTestUserSig(userID) {
-  const generator = new LibGenerateTestUserSig(SDKAPPID, SECRETKEY, EXPIRETIME);
-  const userSig = generator.genTestUserSig(userID);
-  return {
-    sdkAppId: SDKAPPID,
-    userSig,
-  };
+	const generator = new LibGenerateTestUserSig(SDKAPPID, SECRETKEY, EXPIRETIME);
+	const userSig = generator.genTestUserSig(userID);
+	return {
+		sdkAppId: SDKAPPID,
+		userSig,
+	};
 }
 
 // module.exports = {
@@ -60,4 +62,3 @@ function genTestUserSig(userID) {
 
 // HBuilder 选择 vue3 时, 上面的打包无法通过 import 进行引入
 export default genTestUserSig;
-

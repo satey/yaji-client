@@ -22,9 +22,9 @@
 
 		</view>
 		<!-- <u-loadmore v-if="blackList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" /> -->
-		<u-empty v-if="blackList.length==0" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+		<u-empty v-if="blackList.length==0" icon="/static/iconImage/jilu.png" text="暂无记录" textColor="#a1a1a1"
 			marginTop="100"></u-empty>
-		<topPrompt></topPrompt>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
@@ -44,7 +44,12 @@
 		computed: {
 
 		},
-		created() {
+		onShow() {
+			this.params = {
+				page: 1,
+				limit: 10
+			};
+			this.blackList = []
 			this.initBlackList(this.params)
 		},
 		onReachBottom() {

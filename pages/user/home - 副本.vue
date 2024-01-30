@@ -14,7 +14,7 @@
         <view class="px-4 py-2 bg-white" style="border-top-left-radius: 20rpx; border-top-right-radius: 20rpx;">
             <view class="flex justify-between">
                 <view class="text-center -mt-14" @click="$u.route('/pages/mine/profile')">
-                    <image class="block w-24 h-24 rounded-full" :src="user.avatar || '/static/avatar.png'"></image>
+                    <image class="block w-24 h-24 rounded-full" :src="user.avatar"></image>
                 </view>
                 <view class="flex w-1/2 justify-between">
                     <view class="text-center">
@@ -103,8 +103,6 @@
                 <text class="text-base text-white"  @click="interest(2)">已关注</text>
             </view>
         </view>
-
-        <uc-auth></uc-auth>
     </view>
 </template>
 <script>

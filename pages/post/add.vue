@@ -5,156 +5,273 @@
 			<view slot="left" @click="">
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
-			<view slot="right">
+			<view slot="right" style="display: flex;align-items: center;">
+				<text style="color: #333;font-size: 33rpx;margin-right: 50rpx;" @click="openPreview">预览</text>
 				<view class="fabu" @click="doPublish()">发布</view>
 			</view>
 		</u-navbar>
-
-		<view class="rounded-lg p-4 mt-6">
-			<textarea v-model="form.content" name="" id="" cols="30" :focus="true" rows="10"
-				style="height: 300rpx;font-size: 32rpx;color: #606266;" placeholder="发布内容，打造历史人物这一世风采"
-				placeholder-style="font-size:32rpx;color:#999999;"></textarea>
-			<!-- <u-textarea v-model="form.content" :focus="true" maxlength="500" :count="true" height="300"
-				placeholder="记录此刻想法，分享给有趣的人看…"></u-textarea> -->
-			<!-- <view class="flex flex-wrap">
-				<view class="flex items-center bg-gray-100 rounded-full p-3 text-orange-500 mr-2 mt-2"
-					v-for="(item, index) in form.tags" :key="index" :item="item" @click="delTag(index)">
-					<i class="ri-hashtag mr-1"></i>
-					<view class="text-base">{{item}}</view>
-					<i class="ri-close-line ml-2"></i>
+		<view style="height: 25rpx;background: #f7f7f7;"></view>
+		<view class="contentOne">
+			<view style="display: flex;align-items: center;justify-content: space-between;">
+				<view style="display: flex;align-items: center;">
+					<text style="color: #333;font-size: 35rpx;margin-right: 20rpx;">正文</text>
+					<text style="color: #666666;font-size: 28rpx;">（将显示在窗口正中）</text>
 				</view>
-			</view> -->
-			<view class="flex flex-wrap" v-if="fei_cate.length">
-				<view class="flex items-center rounded-full p-3 text-orange-500 mr-2 mt-2"
-					style="padding: 10rpx 30rpx;color: #FE4373;border: 1px solid #FF6D93;font-size: 28rpx;"
-					@click="delGroup()" v-for="(item,index) in fei_cate">
-					<i class="ri-hashtag mr-1"></i>
-					<view class="text-base">{{item.content}}</view>
-					<i class="ri-close-line ml-2" style="font-size: 30rpx;" @click="delTag(index)"></i>
+				<view style="display: flex;align-items: center;" @click="originalClick">
+					<block v-if="isoriginal==false">
+						<image style="width: 30rpx;height: 30rpx;" src="../../static/iconImage/radio2.png" mode="">
+						</image>
+					</block>
+					<block v-else>
+						<image style="width: 30rpx;height: 30rpx;" src="../../static/iconImage/radio.png" mode="">
+						</image>
+					</block>
+					<text style="color:#333 ;font-size: 28rpx;margin-left: 15rpx;">原创作品</text>
 				</view>
 			</view>
-			<view class="mt-4" v-if="form.images" style="display: flex;align-items: center;">
-				<view v-for="(item,index) in form.images" style="position: relative;margin-right: 20rpx;">
-					<image :src="item" style="width: 158rpx;height: 158rpx;border-radius: 10rpx;" mode="aspectFill">
-					</image>
-					<text class="ri-close-line" @click="delImg(index)"
-						style="position: absolute;top:10rpx;right:10rpx;z-index:5;padding: 0rpx;background: rgba(0,0,0,0.8);margin-left: 30rpx;color: #fff;font-size: 30rpx;border-radius: 50%;box-sizing: border-box;width: 35rpx;height: 35rpx;text-align: center;line-height: 35rpx;">
-					</text>
-				</view>
-			</view>
-			<!--  -->
-			<view class="mt-4" v-if="form.audio" style="display: flex;align-items: center;">
-				<view @click="handlePlayAudio(form.audio)"
-					style="width: 300rpx;background: #FE4373;justify-content: space-around;"
-					class="flex items-center  rounded-full w-32 h-10 bg-gradient-to-r  to-rose-400">
-					<image src="../../static/222.jpg" style="width: 80rpx;height: 45rpx;" mode="heightFix"
-						v-if="audioStatus==false">
-					</image>
-					<image src="/static/bofang.gif" style="width: 80rpx;height: 45rpx;" v-else mode="heightFix"></image>
-					<!-- <i class="ri-voiceprint-line text-2xl text-white" style="flex: 1;" :class="audioStatus ? 'animate-pulse' : ''"></i> -->
-					<text style="color: #FFFFFF;font-size: 28rpx;margin-left: 20rpx;"
-						v-if="form.timer !=0">{{form.timer}}s</text>
-				</view>
-				<view class="ri-close-line" @click="clearAudio"
-					style="padding: 0rpx;background: rgba(0,0,0,0.5);margin-left: 30rpx;color: #fff;font-size: 40rpx;border-radius: 50%;box-sizing: border-box;">
-				</view>
-			</view>
-			<view v-if="form.video" class="mt-4">
-				<view @click="handlePlayVideo(form.video)"
-					class="mt-4 flex items-center justify-center rounded w-60 bg-gray-200">
-					<video class="z-0" :src="form.video" id="video" direction="0" object-fit="fill" page-gesture="true"
-						controls="false"></video>
-				</view>
-			</view>
-			<!-- 话题 -->
-			<!-- <view class="flex pt-4" v-if='fei_cate.length<3'>
-				<view class="flex items-center bg-gray-100 border rounded-full mr-2"
-					style="background: rgba(254, 67, 115, 0.3);padding: 10rpx 20rpx;color: #FE4373;" @click="addCate">
-					<i class="ri-hashtag mr-1"></i>
-					<view class="text-base leading-none">添加话题</view>
-				</view>
-			</view> -->
-			<!-- <view class="flex pt-4">
-                <u-checkbox-group>
-                    <u-checkbox label="是否私密话题" size="28" labelSize="24" shape="circle" inactiveColor="#AAAAAA" activeColor="#FF7043" @change="changeProtocol"></u-checkbox>
-                </u-checkbox-group>
-            </view> -->
+			<textarea v-model="form.content" name="" id="" cols="30" rows="10"
+				style="height: 300rpx;font-size: 32rpx;color: #606266;margin-top: 26rpx;width: 100%;"
+				placeholder="发布内容，打造历史人物这一世风采" placeholder-style="font-size:32rpx;color:#999999;"></textarea>
 		</view>
-
+		<!-- <view style="height: 25rpx;background: #f7f7f7;"></view> -->
+		<!-- <view class="bgImgs">
+			<view style="display: flex;align-items: center;">
+				<text style="color: #333;font-size: 35rpx;margin-right: 20rpx;">背景</text>
+			</view>
+			<view style="display: flex;align-items: center;">
+				<block v-for="(item,index) in bgImg" :key="index">
+					<view class="bgImgItem" @click="bgIndex = index"
+						:style="{border:bgIndex==index?'1px solid #FFA000':'1px solid transparent '}">
+						<image style="width: 100% ;height: 100%;" :src="item.image" mode="aspectFill"></image>
+					</view>
+				</block>
+			</view>
+		</view> -->
+		<view style="height: 25rpx;background: #f7f7f7;"></view>
+		<view class="contentTwo">
+			<view style="display: flex;align-items: center;justify-content: space-between;">
+				<view style="display: flex;align-items: center;">
+					<text style="color: #333;font-size: 35rpx;margin-right: 20rpx;">故事</text>
+					<text style="color: #666666;font-size: 28rpx;">（将显示在窗口底部）</text>
+				</view>
+			</view>
+			<textarea v-model="form.story" maxlength="300" name="" id="" cols="30" rows="10"
+				style="height: 300rpx;font-size: 32rpx;color: #606266;margin-top: 26rpx;width: 100%;"
+				placeholder="内容相关的故事背景，例如诗词的创作背景" placeholder-style="font-size:32rpx;color:#999999;"></textarea>
+			<view class="flex flex-wrap" v-if="fei_cate.length">
+				<view class="flex items-center rounded-full text-orange-500" style="color: #FFA000;font-size: 28rpx;"
+					@click="delGroup()" v-for="(item,index) in fei_cate">
+					<view class="text-base">#{{item.content}}</view>
+					<i class="ri-close-line ml-2" style="font-size: 30rpx;color: #000000;" @click="delTag(index)"></i>
+				</view>
+			</view>
+			<view class="rounded-lg">
+				<view class="mt-4" v-if="form.audio" style="display: flex;align-items: center;">
+					<view @click="handlePlayAudio(form.audio)"
+						style="width: 328rpx;background: #FFA000;justify-content: space-around;padding: 0rpx 10rpx;"
+						class="flex items-center  rounded-full w-32 h-10 bg-gradient-to-r  to-rose-400">
+						<i class="iconfont" :class="isPlay==false?'icon-bofang1':'icon-bofang'"
+							style="font-size: 50rpx;color: #FFFFFF;"></i>
+						<block>
+							<view v-if="isPlay==false"
+								style="display: flex;align-items: center;justify-content: center;flex: 1;">
+								<view class="ri-voiceprint-line" style="color: #fff;font-size: 39rpx;"
+									v-for="(item,index) in 4" :key="index">
+								</view>
+							</view>
+							<view v-if="isPlay"
+								style="display: flex;align-items: center;justify-content: center;flex: 1;">
+								<image src="../../static/bofang.gif" style="width:90rpx;height: 25rpx;">
+								</image>
+							</view>
+						</block>
+						<!-- <image src="/static/bofang.gif" style="width: 80rpx;height: 45rpx;" v-else mode="heightFix"></image> -->
+						<!-- <i class="ri-voiceprint-line text-2xl text-white" style="flex: 1;" :class="audioStatus ? 'animate-pulse' : ''"></i> -->
+						<text style="color: #FFFFFF;font-size: 28rpx;margin-left: 20rpx;"
+							v-if="form.timer !=0">{{form.timer}}s</text>
+					</view>
+					<view class="ri-close-line" @click="clearAudio"
+						style="padding: 0rpx;background: rgba(0,0,0,0.5);margin-left: 30rpx;color: #fff;font-size: 40rpx;border-radius: 50%;box-sizing: border-box;">
+					</view>
+				</view>
+				<view v-if="form.video" class="mt-4">
+					<view @click="handlePlayVideo(form.video)"
+						class="mt-4 flex items-center justify-center rounded w-60 bg-gray-200">
+						<video class="z-0" :src="form.video" id="video" direction="0" object-fit="fill"
+							page-gesture="true" controls="false"></video>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view style="height: 25rpx;background: #f7f7f7;"></view>
 		<!-- 工具栏 -->
 		<view class="">
 			<view class="flex flex-row-center p-4 bg-white" style="border-top: 1px solid #ECECEC;">
 				<view class="flex-1 flex">
-					<view class="flex items-center  p-3 rounded-full mr-4" @click="handleImage">
-						<i class="ri-image-line text-2xl leading-none text-gray-500" style="font-size: 50rpx;"></i>
-					</view>
-					<view class="flex items-center p-3 rounded-full mr-4" @click="clickRecord">
-						<i class="ri-mic-2-line text-2xl leading-none text-gray-500" style="font-size: 50rpx;"></i>
-					</view>
-					<view class="flex items-center  p-3 rounded-full" @click="addCate">
-						<i class="ri-hashtag text-2xl leading-none text-gray-500" style="font-size: 50rpx;"></i>
-					</view>
-				</view>
-				<!-- <view class="flex items-center bg-gray-100 p-3 rounded-full" @click="showPrivacy = true">
-                    <i class="ri-eye-fill text-2xl leading-none text-gray-500 mr-2"></i>
-                    <view class="text-gray-500">{{ privacyText }}</view>
-                </view> -->
-			</view>
-			<!-- 语音 -->
-			<view class="flex flex-col items-center  p-4 h-60 overflow-y-scroll" v-if="showRecord">
-				<!-- <view class="text-xs leading-none text-gray-500" v-if="Isrecord==false">{{ recordTip }}</view> -->
-				<view class="" style="font-size:32rpx ;color: #323232;margin-top: 10rpx;">{{timer==0?'':timer+'s'}}
-				</view>
-				<view style="display: flex;align-items: center;" class="mt-16">
-					<view v-if="Isrecord" @click="delectRecord"
-						style="width: 95rpx;height: 70rpx;background: #ECECEC;border-radius: 35rpx;text-align: center;line-height: 70rpx;margin-right: 60rpx;">
-						<text class="ri-delete-bin-5-line" style="font-size: 35rpx;"></text>
-					</view>
-					<view v-if="Isrecord==false" class="flex justify-center items-center "
-						@touchstart="handleRecordStart" @touchmove.stop.prevent="handleRecordDoing"
-						@touchend="handleRecordStop">
-						<view class="relative flex justify-center items-center rounded-full">
-							<view class="flex justify-center items-center rounded-full w-20 h-20  z-10"
-								style="background: #FE4373;">
-								<i class="ri-mic-fill text-4xl leading-none text-white"></i>
+					<view class="flex items-center  p-3 rounded-full mr-4" @click="selectIndex = 0">
+						<view style="display: flex;align-items: center;justify-content: center;">
+							<view style="position: relative;text-align: center;display: inline;margin: 0 auto;">
+								<text
+									style="color: #333;font-size:32rpx ;position: relative;z-index: 1;font-family: font-test !important;">背景</text>
+								<text v-if="selectIndex==0"
+									style="width: 100%;height: 13rpx;background: #FFA000;position: absolute;left: 0;bottom: 0;"></text>
 							</view>
-							<view v-if="recording" class="animate-ping absolute rounded-full p-2  opacity-50"
-								style="background: #fe4373;">
-								<view class="rounded-full w-20 h-20 p-2  opacity-50" style="background: #fe4373;">
+						</view>
+					</view>
+					<view class="flex items-center  p-3 rounded-full mr-4" @click="selectIndex = 1">
+						<view style="display: flex;align-items: center;justify-content: center;">
+							<view style="position: relative;text-align: center;display: inline;margin: 0 auto;">
+								<text
+									style="color: #333;font-size:32rpx ;position: relative;z-index: 1;font-family: font-test !important;">图片</text>
+								<text v-if="selectIndex==1"
+									style="width: 100%;height: 13rpx;background: #FFA000;position: absolute;left: 0;bottom: 0;"></text>
+							</view>
+						</view>
+					</view>
+					<view class="flex items-center p-3 rounded-full mr-4" @click="selectIndex = 2">
+						<view style="display: flex;align-items: center;justify-content: center;">
+							<view style="position: relative;text-align: center;display: inline;margin: 0 auto;">
+								<text
+									style="color: #333;font-size:32rpx ;position: relative;z-index: 1;font-family: font-test !important;">话题</text>
+								<text v-if="selectIndex==2"
+									style="width: 100%;height: 13rpx;background: #FFA000;position: absolute;left: 0;bottom: 0;"></text>
+							</view>
+						</view>
+					</view>
+					<view class="flex items-center  p-3 rounded-full" @click="selectIndex = 3">
+						<view style="display: flex;align-items: center;justify-content: center;">
+							<view style="position: relative;text-align: center;display: inline;margin: 0 auto;">
+								<text
+									style="color: #333;font-size:32rpx ;position: relative;z-index: 1;font-family: font-test !important;">语音</text>
+								<text v-if="selectIndex==3"
+									style="width: 100%;height: 13rpx;background: #FFA000;position: absolute;left: 0;bottom: 0;"></text>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+			<block v-if="selectIndex==0">
+				<view class="bgImgs" style="padding-bottom: 100rpx;">
+					<!-- <view style="display: flex;align-items: center;">
+						<text style="color: #333;font-size: 35rpx;margin-right: 20rpx;">背景</text>
+					</view> -->
+					<view style="display: flex;align-items: center;flex-flow: wrap;">
+						<block v-for="(item,index) in bgImg" :key="index">
+							<view class="bgImgItem" @click="bgIndex = index"
+								:style="{border:bgIndex==index?'1px solid #FFA000':'1px solid transparent '}">
+								<image style="width: 100% ;height: 100%;" :src="item.image" mode="aspectFill"></image>
+							</view>
+						</block>
+					</view>
+				</view>
+			</block>
+			<!-- 图片 -->
+			<block v-if="selectIndex==1">
+				<view
+					style="padding: 0rpx 85rpx;box-sizing: border-box;display: flex;align-items: center;flex-wrap: wrap;">
+					<view class="upLoadImage" @click="handleImage">
+						<i class="iconfont icon-jia" style="font-size: 37rpx;color: #CCCCCC;"></i>
+					</view>
+					<block v-if="form.images">
+						<view v-for="(item,index) in form.images"
+							:style="index%3==1?'margin-right: 0rpx;':'margin-right: 50rpx;'"
+							style="position: relative;margin-bottom: 25rpx;">
+							<image :src="item" style="width: 158rpx;height: 158rpx;border-radius: 10rpx;"
+								mode="aspectFill">
+							</image>
+							<text class="ri-close-line" @click="delImg(index)"
+								style="position: absolute;top:-10rpx;right:-10rpx;z-index:5;padding: 0rpx;background: rgba(0,0,0,0.5);margin-left: 30rpx;color: #fff;font-size: 30rpx;border-radius: 50%;box-sizing: border-box;width: 35rpx;height: 35rpx;text-align: center;line-height: 35rpx;">
+							</text>
+						</view>
+					</block>
+				</view>
+
+			</block>
+			<block v-if="selectIndex==3">
+				<!-- 语音 -->
+				<view class="flex flex-col items-center  p-4 h-60 overflow-y-scroll">
+					<!-- <view class="text-xs leading-none text-gray-500" v-if="Isrecord==false">{{ recordTip }}</view> -->
+					<view :style="{opacity:timer==0?'0':'1'}"
+						style="font-size:32rpx ;color: #323232;margin-top: 10rpx;">{{timer==0?'0':timer+'s'}}
+					</view>
+					<view style="display: flex;align-items: center;margin-top: 53rpx;">
+						<view v-if="Isrecord" @click="delectRecord"
+							style="width: 95rpx;height: 70rpx;background: #ECECEC;border-radius: 35rpx;text-align: center;line-height: 70rpx;margin-right: 60rpx;">
+							<text class="ri-delete-bin-5-line" style="font-size: 35rpx;"></text>
+						</view>
+						<view v-if="Isrecord==false" class="flex justify-center items-center "
+							@touchstart="handleRecordStart" @touchmove.stop.prevent="handleRecordDoing"
+							@touchend="handleRecordStop">
+							<view class="relative flex justify-center items-center rounded-full">
+								<view class="flex justify-center items-center rounded-full w-20 h-20  z-10"
+									style="background: #FFA000;">
+									<i class="ri-mic-fill text-4xl leading-none text-white"></i>
+								</view>
+								<view v-if="recording" class="animate-ping absolute rounded-full p-2  opacity-50"
+									style="background: #FFA000;">
+									<view class="rounded-full w-20 h-20 p-2  opacity-50" style="background: #FFA000;">
+									</view>
 								</view>
 							</view>
 						</view>
-					</view>
-					<view v-if="Isrecord==true" class="flex justify-center items-center">
-						<view class="relative flex justify-center items-center rounded-full" @click="openRecord">
-							<view class="flex justify-center items-center rounded-full w-20 h-20  z-10"
-								style="background: #FE4373;">
-								<i class="ri-play-fill text-4xl leading-none text-white" v-if="isPlay==false"></i>
-								<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;" v-if="isPlay">
-								</image>
+						<view v-if="Isrecord==true" class="flex justify-center items-center">
+							<view class="relative flex justify-center items-center rounded-full" @click="openRecord">
+								<view class="flex justify-center items-center rounded-full w-20 h-20  z-10"
+									style="background: #FFA000;">
+									<i class="ri-play-fill text-4xl leading-none text-white" v-if="isPlay==false"></i>
+									<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;"
+										v-if="isPlay">
+									</image>
+								</view>
 							</view>
 						</view>
+						<view v-if="Isrecord" @click="okRecord"
+							style="width: 95rpx;height: 70rpx;background: #FFA000;border-radius: 35rpx;text-align: center;line-height: 70rpx;margin-left: 60rpx;">
+							<text class="ri-check-fill" style="font-size: 35rpx;color: #fff;"></text>
+						</view>
 					</view>
-					<view v-if="Isrecord" @click="okRecord"
-						style="width: 95rpx;height: 70rpx;background: #FE4373;border-radius: 35rpx;text-align: center;line-height: 70rpx;margin-left: 60rpx;">
-						<text class="ri-check-fill" style="font-size: 35rpx;color: #fff;"></text>
+					<view style="text-align: center;margin-top: 36rpx;font-size: 26rpx;color: #323232;">按住录音</view>
+				</view>
+			</block>
+			<block v-if="selectIndex==2">
+				<!-- 推荐话题 -->
+				<view>
+					<view style="display: flex;padding: 0rpx 30rpx;box-sizing: border-box;">
+						<input type="text" v-model="tag"
+							style="height: 72rpx;background: #F7F7F7;border-radius: 36rpx;flex: 1;padding-left: 15rpx;font-size: 28rpx;margin-right: 36rpx;"
+							placeholder="添加话题" adjust-position="false" @input="searchAdd" ref="ipt" maxlength="20" />
+						<view
+							style="width: 145rpx;height: 72rpx;line-height: 72rpx;border-radius: 8rpx;text-align: center;line-height: 72rpx;background: #FFA000;color: #fff;"
+							@click.stop="addContentTag(tag)">添加</view>
+					</view>
+					<view
+						style="display: flex;flex-wrap: wrap;padding: 0rpx 20rpx;box-sizing: border-box;padding-bottom: 100rpx">
+						<block v-if="searchTag.length==0">
+							<view class="flex items-center bg-gray-100 rounded-full  mr-2 mt-4"
+								style="font-size: 28rpx;padding: 9rpx 15rpx;"
+								:style="{color:cateIndex==index?'#FFFFFF':'#333',background:cateIndex==index?'#FFA000':'#F7F7F7'}"
+								v-for="(item, index) in cateList" :key="index" :item="item"
+								@click="addTag(item);cateIndex=index">
+								<view class="text-base">#{{ item.title }}</view>
+							</view>
+						</block>
+						<block v-else>
+							<view class="flex items-center bg-gray-100 rounded-full mr-2 mt-4"
+								style="font-size: 28rpx;padding: 9rpx 15rpx;"
+								:style="{color:cateIndex==index?'#FFFFFF':'#333',background:cateIndex==index?'#FFA000':'#F7F7F7'}"
+								v-for="(item, index) in searchTag" :key="index" :item="item"
+								@click="addTag(item);cateIndex=index">
+								<view class="text-base">#{{ item.title }}</view>
+							</view>
+						</block>
 					</view>
 				</view>
-				<view style="text-align: center;margin-top: 36rpx;font-size: 26rpx;color: #323232;">按住录音</view>
-			</view>
-		</view>
-		<!-- 推荐话题 -->
-		<view style="display: flex;flex-wrap: wrap;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="showTopic">
-			<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4"
-				style="color: #767676;font-size: 28rpx;background: #F7F7F7 ;" v-for="(item, index) in cateList"
-				:key="index" :item="item" @click="addTag(item)">
-				<i class="ri-hashtag mr-1"></i>
-				<view class="text-base">{{ item.title }}</view>
-			</view>
+			</block>
 		</view>
 
+
 		<!-- 话题 -->
-		<u-popup :show="showTag" @close="showTag = false" :closeable="true" :round="30"
+		<!-- <u-popup :show="showTag" @close="showTag = false" :closeable="true" :round="30"
 			customStyle="min-height: 500rpx;">
 			<view class="p-4">
 				<view class="text-2xl">添加话题</view>
@@ -166,7 +283,6 @@
 						style="height: 72rpx;background: #FE4373;color: #fff;border-radius: 36rpx;font-size: 28rpx;text-align: center;line-height: 72rpx;width: 116rpx;margin-left: 30rpx;"
 						@click.stop="addContentTag(tag)">添加</view>
 				</view>
-				<!-- <view class="text-gray-500 mt-6">热门话题</view> -->
 				<view class="flex flex-wrap rounded-full">
 					<view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4"
 						v-for="(item, index) in searchTag" :key="index" :item="item" @click="addTag(item)">
@@ -174,40 +290,13 @@
 						<view class="text-base">{{ item.title }}</view>
 					</view>
 				</view>
-				<!-- <u-empty v-if="!searchTag.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
-					marginTop="100"></u-empty> -->
+				<u-empty v-if="!searchTag.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
+					marginTop="100"></u-empty>
 			</view>
 			<view class="sdasdas" :style="{height:pageHeight+'px'}"></view>
-		</u-popup>
-		<!-- 圈子 -->
-		<!-- <u-popup :show="showGroup" @close="showGroup = false" :closeable="true" :round="30" customStyle="min-height: 500rpx;">
-            <view class="p-4">
-                <view class="text-2xl text-center">添加圈子</view>
-                <view class="text-gray-500 mt-6">我的圈子</view>
-                <view class="flex flex-wrap rounded-full">
-                    <view class="flex items-center bg-gray-100 rounded-full p-3 mr-2 mt-4" v-for="(item, index) in listMineGroup" :key="index" :item="item" @click="addGroup(item)">
-                        <i class="ri-focus-fill mr-2"></i>
-                        <view class="text-base">{{ item.title }}</view>
-                    </view>
-                </view>
-                <u-empty v-if="!listMineGroup.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
-            </view>
-        </u-popup> -->
-		<!-- 隐私 -->
-		<!--        <u-popup :show="showPrivacy" @close="showPrivacy = false" :closeable="true" :round="30" customStyle="min-height: 500rpx;">
-            <view class="p-4">
-                <view class="text-2xl text-center">隐私设置</view>
-                <view class="text-gray-500 mt-6">可见范围</view>
-                <view class="flex flex-wrap rounded-full">
-                    <u-radio-group v-model="form.privacy" placement="column" @change="onChangePrivacy">
-                        <u-radio v-for="(item, index) in listPrivacy" :key="index" :label="item.title" :name="item.type" size="28" shape="circle" inactiveColor="#AAAAAA" activeColor="#FF7043" customStyle="margin: 20rpx 0 0 0;"></u-radio>
-                    </u-radio-group>
-                </view>
-            </view>
-        </u-popup>
- -->
+		</u-popup> -->
 		<topPrompt></topPrompt>
-		<uc-auth></uc-auth>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 <script>
@@ -221,6 +310,10 @@
 		components: {},
 		data() {
 			return {
+				isoriginal: false,
+				bgIndex: 0,
+				cateIndex: -1,
+				selectIndex: 0,
 				form: {
 					content: '',
 					tags: [],
@@ -229,7 +322,8 @@
 					video: '',
 					ischat: false,
 					privacy: 'all',
-					timer: 0
+					timer: 0,
+					story: ""
 				},
 				tag: '',
 				group: {},
@@ -264,7 +358,7 @@
 				showImage: false,
 				showRecord: false,
 				showPrivacy: false,
-				audio: null,
+				audio: uni.createInnerAudioContext(),
 				audioStatus: false,
 				video: null,
 				videoStatus: false,
@@ -296,6 +390,7 @@
 				isBack: false,
 				pageHeight: 0,
 				showTopic: true,
+				bgImg: []
 			}
 		},
 		onLoad(e) {
@@ -317,6 +412,7 @@
 			// ---------
 			that.cateInit(1, 5);
 			that.watchKeyboard();
+			that.getBgImg()
 		},
 
 		computed: {
@@ -328,6 +424,62 @@
 			uni.removeStorageSync('post_cate_id')
 		},
 		methods: {
+			openPreview() {
+				var that = this;
+				if (that.form.content == '' && that.form.story == '') {
+					uni.showToast({
+						icon: "none",
+						title: "正文和故事必填一项"
+					})
+					return;
+				}
+				var show_type = '';
+				if (that.form.images.length == 0) {
+					show_type = 5
+				} else {
+					if (that.form.images.length >= 2) {
+						if (that.form.content != '') {
+							show_type = 4
+						} else {
+							show_type = 3
+						}
+					} else {
+						if (that.form.content != '') {
+							show_type = 2
+						} else {
+							show_type = 5
+						}
+					}
+				}
+				var preViewData = {
+					story: that.form.story,
+					content: that.form.content,
+					is_original: that.isoriginal ? 1 : 0,
+					bg_img_id: that.bgImg[that.bgIndex],
+					post_cate_id: that.fei_cate,
+					images: that.form.images,
+					duration_time: that.form.timer,
+					type: 'preView',
+					show_type: show_type,
+					audio: that.form.audio,
+					duration_time: that.form.timer,
+					isPlay: false,
+				}
+				this.$u.route("/pages/post/preview", {
+					data: JSON.stringify(preViewData)
+				})
+			},
+			originalClick() {
+				this.isoriginal = !this.isoriginal;
+			},
+			getBgImg() {
+				this.$api('post.getPostBgImgList').then(res => {
+					console.log(res)
+					if (res.code == 1) {
+						this.bgImg = res.data;
+					}
+				})
+			},
 			async clickRecord() {
 				if (uni.getSystemInfoSync().platform == "ios") {
 					var recorder = uni.getRecorderManager();
@@ -373,12 +525,7 @@
 			watchKeyboard() {
 				var that = this;
 				uni.onKeyboardHeightChange(res => {
-					console.log(res)
-					if (res.height != 0) {
-						that.pageHeight = res.height - 100
-					} else {
-						that.pageHeight = res.height
-					}
+					that.pageHeight = res.height
 				})
 			},
 			//打开话题弹窗
@@ -397,6 +544,7 @@
 					this.$u.toast("语音未准备好");
 					return;
 				}
+				this.audio.stop();
 				this.form.audio = this.recordUrl;
 				this.Isrecord = false;
 				this.showRecord = false;
@@ -414,16 +562,16 @@
 				this.recordUrl = "";
 				this.timer = 0;
 				this.Isrecord = false;
-				this.audio.destroy();
-				this.audio = null;
+				if (this.audio != null) {
+					this.audio.stop();
+				}
 				this.isPlay = false;
 			},
 			//清楚语音
 			clearAudio() {
 				this.form.audio = '';
 				this.recordUrl = "";
-				this.audio.destroy();
-				this.audio = null;
+				this.audio.stop();
 				this.isPlay = false;
 			},
 			//初始化话题
@@ -452,12 +600,15 @@
 				that.$api('post_cate.search_list', {
 					"keyword": that.tag
 				}).then(res => {
+					console.log(res)
 					if (res.code == 1) {
+						that.searchTag = [];
 						that.searchTag = res.data
 					} else {
+						that.searchTag = [];
+						that.cateIndex = -1;
 						that.$u.toast(res.msg)
 					}
-
 				})
 			},
 			addContentTag(item) {
@@ -601,87 +752,108 @@
 			},
 			doPublish() {
 				let that = this;
-				if (that.isClick == false) {
-					return;
-				}
-				that.isClick = false;
-				// let data = {
-				//     content: that.form.content,
-				//     images: that.form.images.toString(),
-				//     tags: that.form.tags.toString(),
-				//     audio: that.form.audio,
-				//     video: that.form.video,
-				//     ischat: that.form.ischat,
-				//     privacy: that.form.privacy,
-				//     group_id: that.group.id > 0 ? that.group.id : 0
-				// }
-				var post_cate_id = ""
-				that.fei_cate.forEach((val, index) => {
-					if (index == that.fei_cate.length - 1) {
-						post_cate_id += val.id
-					} else {
-						post_cate_id += val.id + ','
-					}
+				console.log(that.form)
+				let careIdArr = []
+				that.fei_cate.forEach((item, index) => {
+					careIdArr.push(item.id)
 				})
-				let data = {
+				that.$api("post.createPost", {
+					story: that.form.story,
 					content: that.form.content,
-					images: that.form.images.toString(),
+					is_original: that.isoriginal ? 1 : 0,
+					bg_img_id: that.bgImg[that.bgIndex].bg_img_id,
+					post_cate_id: careIdArr,
+					images: that.form.images,
 					audio: that.form.audio,
-					video: that.form.video,
-					post_cate_id: post_cate_id,
 					duration_time: that.form.timer
-				}
-				that.$api('post.add', data).then(res => {
-					if (res.code === 1) {
-						that.isClick = true;
-						that.form.content = ''
-						that.$u.toast('发布成功')
-						if (that.isBack == true) {
-							that.$u.route({
-								type: 'navigateBack',
-								delta: 1
-							})
-						} else {
-							uni.reLaunch({
-								url: '/pages/index/square',
-							});
-						}
-
-					} else {
-						that.isClick = true;
-						that.$u.toast(res.msg)
+				}).then(res => {
+					console.log(res)
+					if (res.code == 1) {
+						that.$u.route({
+							type: 'navigateBack',
+							delta: 1
+						})
 					}
-
+					uni.showToast({
+						icon: "none",
+						title: res.msg
+					})
 				})
+
+				// if (that.isClick == false) {
+				// 	return;
+				// }
+				// that.isClick = false;
+				// // let data = {
+				// //     content: that.form.content,
+				// //     images: that.form.images.toString(),
+				// //     tags: that.form.tags.toString(),
+				// //     audio: that.form.audio,
+				// //     video: that.form.video,
+				// //     ischat: that.form.ischat,
+				// //     privacy: that.form.privacy,
+				// //     group_id: that.group.id > 0 ? that.group.id : 0
+				// // }
+				// var post_cate_id = ""
+				// that.fei_cate.forEach((val, index) => {
+				// 	if (index == that.fei_cate.length - 1) {
+				// 		post_cate_id += val.id
+				// 	} else {
+				// 		post_cate_id += val.id + ','
+				// 	}
+				// })
+				// let data = {
+				// 	content: that.form.content,
+				// 	images: that.form.images.toString(),
+				// 	audio: that.form.audio,
+				// 	video: that.form.video,
+				// 	post_cate_id: post_cate_id,
+				// 	duration_time: that.form.timer
+				// }
+				// that.$api('post.add', data).then(res => {
+				// 	if (res.code === 1) {
+				// 		that.isClick = true;
+				// 		that.form.content = ''
+				// 		that.$u.toast('发布成功')
+				// 		if (that.isBack == true) {
+				// 			that.$u.route({
+				// 				type: 'navigateBack',
+				// 				delta: 1
+				// 			})
+				// 		} else {
+				// 			uni.reLaunch({
+				// 				url: '/pages/index/square',
+				// 			});
+				// 		}
+
+				// 	} else {
+				// 		that.isClick = true;
+				// 		that.$u.toast(res.msg)
+				// 	}
+
+				// })
 			},
 			handlePlayAudio(audio) {
+				console.log(audio)
+				console.log(this.audio)
+
 				let that = this
 				if (!audio) {
 					that.$u.toast('语音不能为空')
 					return false
 				}
-				if (!that.audio) {
-					that.audio = uni.createInnerAudioContext()
-					that.audio.src = audio;
+				that.$nextTick(function() {
 					that.isPlay = true;
-				}
-				that.audioStatus = !that.audioStatus;
-				if (that.audioStatus) {
-					that.$nextTick(function() {
-						that.audio.play();
-						that.audio.onEnded((e) => {
-							that.audioStatus = false;
-							that.audio.destroy();
-							that.isPlay = false;
-							that.audio = null;
-							clearInterval(that.inter)
-						})
+					that.audio.src = audio;
+					that.audio.play();
+					that.audio.onEnded((e) => {
+						that.audioStatus = false;
+						that.audio.stop();
+						that.isPlay = false;
+						that.audio.src = '';
+						clearInterval(that.inter)
 					})
-				} else {
-					that.$nextTick(function() {
-						that.audio.pause()
-					})
-				}
+				})
 			},
 			// handlePlayVideo(video) {
 			//     let that = this
@@ -772,7 +944,7 @@
 				clearInterval(that.recordTimer)
 				var token = uni.getStorageSync("token");
 				uni.uploadFile({
-					url: that.$API_URL + 'index/upload',
+					url: uni.getStorageSync("hostData").host+"/api/hey/" + 'index/upload',
 					filePath: e.tempFilePath,
 					name: 'file',
 					formData: {
@@ -800,12 +972,12 @@
 					sourceType: ['album'],
 					success: (res) => {
 						res.tempFilePaths.forEach(item => {
-							if (that.form.images.length >= 3) {
-								that.$u.toast('图片不能超过3张')
+							if (that.form.images.length >= 6) {
+								that.$u.toast('图片不能超过6张')
 								return false
 							}
 							uni.uploadFile({
-								url: that.$API_URL + 'index/upload',
+								url: uni.getStorageSync("hostData").host+"/api/hey/" + 'index/upload',
 								filePath: item,
 								name: 'file',
 								formData: {
@@ -859,13 +1031,62 @@
 </script>
 <style lang="scss" scoped>
 	.fabu {
-		width: 92rpx;
-		height: 50rpx;
-		line-height: 50rpx;
+		width: 108rpx;
+		height: 55rpx;
+		line-height: 55rpx;
 		text-align: center;
-		border-radius: 30rpx;
+		border-radius: 5rpx;
 		font-size: 25rpx;
 		color: #fff;
-		background: #FE4373;
+		background: #FFA000;
+		color: #fff;
+		font-size: 33rpx;
+	}
+
+	.contentOne {
+		padding: 25rpx 35rpx;
+		box-sizing: border-box;
+	}
+
+	.contentTwo {
+		padding: 25rpx 35rpx;
+		box-sizing: border-box;
+	}
+
+	.bgImgs {
+		padding: 25rpx 0rpx 25rpx 35rpx;
+		box-sizing: border-box;
+
+		.imgOne {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: #D9D9D9;
+		}
+
+		.bgImgItem {
+			width: 138rpx;
+			height: 165rpx;
+			overflow: hidden;
+			border-radius: 6rpx;
+			margin-right: 25rpx;
+			margin-top: 18rpx;
+
+			&:last-child {
+				margin-right: 0rpx;
+			}
+		}
+	}
+
+	.upLoadImage {
+		width: 158rpx;
+		height: 158rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: #ECECEC;
+		border-radius: 10rpx;
+		margin-right: 50rpx;
+		margin-bottom: 25rpx;
 	}
 </style>

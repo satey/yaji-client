@@ -62,7 +62,8 @@
 								style="margin-left: 10rpx;color: #E87B7B;font-size: 19rpx;"></text>
 						</block>
 					</view>
-					<view style="color: 28rpx;font-size: 28rpx;margin-top: 15rpx;padding: 0rpx 10rpx;box-sizing: border-box;">
+					<view
+						style="color: 28rpx;font-size: 28rpx;margin-top: 15rpx;padding: 0rpx 10rpx;box-sizing: border-box;">
 						{{item.song_title||"暂无主题"}}
 					</view>
 					<view class="songBtn">
@@ -73,6 +74,7 @@
 				</view>
 			</block>
 		</view>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 

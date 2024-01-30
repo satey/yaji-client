@@ -16,6 +16,7 @@
 			<view class="sunTitle">桑田，承载着华夏民族数千年的辉煌与落寞。是先民祭祀、劳作的生活写照。</view>
 			<view class="okBtn" @click="start">进入</view>
 		</view>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 

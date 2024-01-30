@@ -57,10 +57,10 @@
 		<!-- 确定按钮 -->
 		<view style="padding: 30rpx;box-sizing: border-box;">
 			<view
-				style="border-radius: 20px;background: #FE4373;color: #fff;text-align: center;line-height: 40px;margin: 0 auto;height: 40px;"
+				style="border-radius: 20px;background: #FFA000;color: #fff;text-align: center;line-height: 40px;margin: 0 auto;height: 40px;"
 				@click="submit"> 确定 </view>
 		</view>
-
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
@@ -106,7 +106,7 @@
 						// that.imgs.push(res.tempFilePaths[0]);
 						var token = uni.getStorageSync("token");
 						uni.uploadFile({
-							url: that.$API_URL + 'index/upload',
+							url: uni.getStorageSync("hostData").host+"/api/hey/" + 'index/upload',
 							filePath: res.tempFilePaths[0],
 							name: 'file',
 							formData: {

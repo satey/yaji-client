@@ -55,6 +55,7 @@
 			</view>
 			<feiRecorder @getAudioUrl="getAudioUrl" v-if="recordUrl== ''"></feiRecorder>
 		</view>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
@@ -171,7 +172,7 @@
 					success: (imageRes) => {
 						var token = uni.getStorageSync("token");
 						uni.uploadFile({
-							url: that.$API_URL + 'index/upload',
+							url: uni.getStorageSync("hostData").host+"/api/hey/" + 'index/upload',
 							filePath: imageRes.tempFilePaths[0],
 							name: 'file',
 							formData: {
