@@ -3,8 +3,8 @@
 	<view class="">
 		<!-- 暂无角色 -->
 		<view v-if="noRole">
-			<u-modal :show="noRole" :showConfirmButton="false" :showCancelButton="false" confirmColor="#FE4373"
-				confirmText="确定" cancelText="取消" @cancel="noRole=false">
+			<u-modal :show="noRole" :showConfirmButton="false" :background="'#ffffff'" :showCancelButton="false"
+				confirmColor="#FFA000" confirmText="确定" cancelText="取消" @cancel="noRole=false">
 				<view>
 					<view style="display: flex;flex-direction: column;">
 						<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
@@ -17,7 +17,7 @@
 							style="margin-right: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;border: 1rpx solid #C7C7C7;text-align: center;line-height: 65rpx;color: #808080;border-radius: 10rpx;font-size: 28rpx;">
 							取消</view>
 						<view @click="noRoleClick"
-							style="margin-left: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;background:#F97698;text-align: center;line-height: 65rpx;color: #FFFFFF;border-radius: 10rpx;font-size: 28rpx;">
+							style="margin-left: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;background:#FFA000;text-align: center;line-height: 65rpx;color: #FFFFFF;border-radius: 10rpx;font-size: 28rpx;">
 							确定</view>
 					</view>
 				</view>
@@ -38,7 +38,7 @@
 						<view style="display: flex;margin-top: 30rpx;">
 							<u-radio-group v-model="gender">
 								<u-radio :name="item.gender==1?'male':'female'" size="45" shape="circle"
-									inactiveColor="#CCCCCC" activeColor="#FE4373"></u-radio>
+									inactiveColor="#CCCCCC" activeColor="#FFA000"></u-radio>
 							</u-radio-group>
 							<view style="color:#323232;font-size: 36rpx;">{{item.gender==1?'男':'女'}}</view>
 						</view>
@@ -49,7 +49,7 @@
 				v-if="deletion == false">
 				<block v-for="(item,index) in identity_data" :key="index">
 					<view class="identityItem" @click="identityClick(index,item.identity_id)"
-						:style="index==currentIndex?'border: 1rpx solid #FE4373;':'border: 1rpx solid #CCCCCC;'">
+						:style="index==currentIndex?'border: 1px solid #FFA000;':'border: 1px solid #CCCCCC;'">
 						<image :src="item.image"
 							style="width: 96rpx;height: 128rpx;margin-right: 18rpx;transition: all 0.3s;"
 							mode="heightFix" :style="index==currentIndex?'transform: scale(1.1)':'transform: scale(1)'">
@@ -72,15 +72,15 @@
 
 			<view class="grid text-center" style="margin-top: 72rpx;" v-if="deletion == true">
 				<view
-					class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-					style="background: #FE4373 !important;" @click="skip()">
+					class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500 btn"
+					@click="skip()">
 					进入首页
 				</view>
 			</view>
 			<view class="grid text-center" style="margin-top: 72rpx;" v-if="deletion == false">
 				<view
-					class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500"
-					style="background: #FE4373 !important;" @click="onSubmit()">
+					class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500 btn"
+					@click="onSubmit()">
 					生成角色
 				</view>
 			</view>
@@ -237,7 +237,7 @@
 							uni.hideLoading()
 						})
 						uni.hideLoading()
-					} else if (matchRes.code == -1) {
+					} else if (matchRes.code == 2001) {
 						that.isClick = false;
 						that.noRoleMsg = matchRes.msg;
 						that.noRole = true;
@@ -260,11 +260,18 @@
 		transition: all 0.3s;
 	}
 
+	.btn {
+		background-image: url(@/static/iconImage/btnBg2.png) !important;
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		background-position: 100% 100%;
+		width: 490rpx;
+		margin: 0 auto;
+	}
 
 	.sexTitle {
 		color: #323232;
 		font-size: 36rpx;
-		font-weight: bold;
 	}
 
 

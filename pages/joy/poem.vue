@@ -204,8 +204,9 @@
 		</view>
 		<feiGift ref="feiGift" channel="2"></feiGift>
 		<feiOperate ref="feiOperate" :showReport="showReport" :showDeleteComment='showDeleteComment' @close='popupClose'
-			@deleteComment="deleteComment" @tread='tread' @report='report'></feiOperate>
+			@deleteComment="deleteComment" @tread='tread' @report='report' :showCai="showCai"></feiOperate>
 		<topPrompt></topPrompt>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
@@ -219,6 +220,7 @@
 		},
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				centerText: [],
 				lists: [],
 				message: '',
@@ -235,7 +237,8 @@
 				replyIndex: null,
 				showReport: false,
 				userInfo: uni.getStorageSync("userInfo"),
-				page: 1
+				page: 1,
+				showCai: false,
 			}
 		},
 		onReachBottom() {
@@ -341,6 +344,7 @@
 				})
 			},
 			operate(item, cate, index) {
+				console.log("fei")
 				var userInfo = uni.getStorageSync("userInfo");
 				this.replyData = item;
 				this.replyIndex = index;
@@ -350,16 +354,19 @@
 						this.showDeleteComment = true;
 						this.replyData = []
 						this.replyIndex = null;
+						this.showCai = false;
 					} else {
 						this.showDeleteComment = true;
 						this.showReport = false;
+						this.showCai = false;
 						this.$refs.feiOperate.show()
 					}
 				} else {
 					this.showReport = true;
+					this.showCai = true;
 					this.showDeleteComment = false;
-					this.$refs.feiOperate.show()
 				}
+				this.$refs.feiOperate.show()
 			},
 			zan(item, index, cate) {
 				var that = this;

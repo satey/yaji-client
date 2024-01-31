@@ -1,82 +1,112 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="px-4" style="height: 100%;">
-		<image src='@/static/embed/s3.png'
-			style="position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1"></image>
 		<u-navbar bgColor="transparent" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" style="color: #fff !important;"
-					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
-			</view>
-			<view slot="right">
+				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
-		<view v-if="showUserRole">
-			<view style="padding: 20rpx 30rpx 0rpx 30rpx;display: flex;flex-direction: column;box-sizing: border-box;">
-				<view class="container">
-					<view class="contentHead">
-						<view class="text-2xl name">{{ userRole.realname||"无名氏" }}</view>
-						<view
-							style="position: absolute;right: 66rpx;color: #808080;font-size: 28rpx;padding-top:10rpx ;">
-							名望<text style="color: #FE4373;padding-left: 5rpx;">{{userRole.total_mw|| '无'}}</text></view>
+		<view class="content" style="position: relative;">
+			<view v-if="userRole.role_lock!=0"
+				style="width: 100rpx;height: 111rpx;position: absolute;right: 22rpx;top: 18rpx;z-index: 1;">
+				<image style="width:100% ;height: 100%;" src="@/static/iconImage/block.png" mode=""></image>
+				<view
+					style="position: absolute;top:0;left:0;width: 100%;height: 100%;text-align: center;line-height: 111rpx;font-size: 30rpx;color: #fff;font-family: font-test !important;">
+					永久</view>
+			</view>
+			<scroll-view v-if="userRole.role_id !=''"
+				style="height: 808rpx;padding-bottom: 150rpx;box-sizing: border-box;position: relative;"
+				scroll-y="true">
+				<view class="roleName">{{userRole.realname}}</view>
+				<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;">{{userRole.gender == 1?'男':"女"}}
+					{{userRole.dynasty||"未知朝代"}}
+				</view>
+				<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;">别称：{{userRole.aliasnames || "无"}}
+				</view>
+				<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;">身份：{{userRole.achievements || "无"}}
+				</view>
+				<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;">称号：{{userRole.titles || "无"}}</view>
+				<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;">
+					{{ userRole.content || '暂无介绍' }}
+				</view>
+				<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;">稀有等级：<text class="family"
+						style="color: #FFA000;font-size: 28rpx;">{{userRole.mw_level}}</text></view>
+				<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;">初始名望：<text class="family"
+						style="color: #FFA000;font-size: 28rpx;">{{ userRole.role_mw || '无' }}</text></view>
+				<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;">获得时间：<text
+						style="color: #FFA000;font-size: 28rpx;">{{userRole.role_time}}</text></view>
+			</scroll-view>
+			<view v-else
+				style="width: 100%;height: 100%;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+				<view class="family" style="font-size: 46rpx;color: #FFA000;">没有角色</view>
+				<view style="font-size: 30rpx;color: #FFA000;margin-top: 28rpx;">您还没有角色，请获取角色</view>
+			</view>
+		</view>
+		<view style="padding:0rpx 38rpx;margin-top: 42rpx;">
+			<view style="display: flex;align-items: center;justify-content: center;" v-if="preMatchData.length !=0">
+				<block v-if="preMatchData.general_match.free_match_count > 0">
+					<view @click="handleHuoQu()"
+						style="margin-right: 28rpx;width: 260rpx;height: 102rpx;border-radius: 16rpx;background: #FFA000;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+						<view style="color: #FFFFFF;font-size: 30rpx;">重新穿越</view>
+						<view style="color: #FFFFFF;font-size: 30rpx;">
+							免费{{preMatchData.general_match.free_match_count}}次</view>
 					</view>
-					<image src="../../static/fenge.png" style="width: 100%;margin-top: -1px;" mode="widthFix"></image>
-					<view class="contentBody">
-						<view class="types flex" style="display: flex;flex-wrap: wrap;align-items: center;">
-							<view>{{userRole.gender == 1?'男':"女"}}</view>
-							<view style="margin-left: 26rpx;">{{userRole.dynasty||"未知朝代"}}</view>
+				</block>
+				<block v-else>
+					<view @click="handleRematch()"
+						style="margin-right: 28rpx;width: 260rpx;height: 102rpx;border-radius: 16rpx;background: #FFA000;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+						<view style="color: #FFFFFF;font-size: 30rpx;">重新穿越</view>
+						<view style="display: flex;align-items: center;">
+							<image src="../../static/qian.png" style="width: 33rpx;height: 33rpx;" mode=""></image>
+							<text
+								style="color: #FFFFFF;font-size: 30rpx;margin-left: 10rpx;">×{{preMatchData.general_match.next_price}}</text>
 						</view>
-						<view
-							style="padding: 40rpx 38rpx 0rpx 38rpx;box-sizing: border-box;font-size: 28rpx;color: #808080;">
-							<view>
-								<text>别称：</text>
-								<text>{{userRole.aliasnames || "无"}}</text>
-							</view>
-							<view style="margin-top: 20rpx;">
-								<text>身份：</text>
-								<text>{{userRole.achievements || "无"}}</text>
-							</view>
-							<view style="margin-top: 20rpx;">
-								<text>称号：</text>
-								<text>{{userRole.titles || "无"}}</text>
-							</view>
-						</view>
-						<view class="contentText text-xl" style="min-height: 80rpx;">{{ userRole.content || '暂无介绍' }}
-						</view>
-						<view style="padding:0rpx 38rpx;margin-top: 42rpx;">
-							<!-- 后续开放 -->
-							<view v-if="fei_num <= 0"
-								style="text-align: center;font-size: 28rpx;width: 100%; height: 85rpx;background: #FE4373;line-height: 85rpx;color: #FFFFFF;border-radius: 50rpx;"
-								@click="handleHuoQu()">重新获取({{ price }}铜钱)
-							</view>
-							<view v-if="fei_num > 0"
-								style="text-align: center;font-size: 28rpx;width: 100%; height: 85rpx;background: #FE4373;line-height: 85rpx;color: #FFFFFF;border-radius: 50rpx;"
-								@click="handleRematch()">重新穿越
-								免费({{fei_num}}次)
-							</view>
-							<view style="font-size: 28rpx;color: #808080;text-align: center;margin-top: 36rpx;"
-								v-if="money>0">
-								（钱包剩余{{money}}铜钱）</view>
-						</view>
-						<view class="tips text-base" style="margin-top: 60rpx;">
-							<text class="ri-error-warning-fill"
-								style="font-size: 35rpx;color: #999999;margin-right: 5rpx;"></text>
-							<text style="font-size: 28rpx;color: #808080;">每个角色都是全服唯一。</text>
-						</view>
-						<view class="tips text-base" style="margin-top: 20rpx;">
-							<text class="ri-error-warning-fill"
-								style="font-size: 35rpx;color: #999999;margin-right: 5rpx;"></text>
-							<text style="font-size: 28rpx;color: #808080;">若长时间未登录使用，角色可能被回收。</text>
-						</view>
+					</view>
+				</block>
+				<view @click="extractRare()"
+					style="position: relative;;margin-left: 28rpx;width: 260rpx;height: 102rpx;border-radius: 16rpx;background: #FF7A00;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+					<image src="../../static/iconImage/xianshi.png"
+						style="position: absolute;top: 0;left: 0;width: 70rpx;height: 70rpx;z-index: 1;" mode="">
+					</image>
+					<view style="color: #FFFFFF;font-size: 30rpx;font-family: font-test !important;">获取稀有角色</view>
+					<view style="display: flex;align-items: center;">
+						<image src="../../static/qian.png" style="width: 33rpx;height: 33rpx;" mode=""></image>
+						<text
+							style="color: #FFFFFF;font-size: 30rpx;margin-left: 10rpx;">×{{preMatchData.rare_match.next_price}}</text>
 					</view>
 				</view>
 			</view>
+			<!-- 后续开放 -->
+			<!-- <view v-if="fei_num <= 0" class="selectBtn" @click="handleHuoQu()">重新获取({{ price }}铜钱)
+			</view>
+			<view v-if="fei_num > 0" class="selectBtn" @click="handleRematch()">重新穿越
+				免费({{fei_num}}次)
+			</view> -->
+			<view style="font-size: 30rpx;color: #999;text-align: center;margin-top: 36rpx;"
+				v-if='preMatchData.length!=0'>
+				（钱包剩余铜钱×{{money}}，稀有角色卡×{{preMatchData.rare_match.rare_match_prop_count}}）</view>
+		</view>
+		<view class="tips text-base" style="margin-top: 36rpx;">
+			<!-- <text class="ri-error-warning-fill" style="font-size: 35rpx;color: #999999;margin-right: 5rpx;"></text> -->
+			<text style="font-size: 28rpx;color: #666666;">*每个角色都是全服唯一，稀有度4级以上为稀有角色。</text>
+		</view>
+		<view class="tips text-base" style="margin-top: 20rpx;" v-if="userRole.role_lock==0">
+			<!-- <text class="ri-error-warning-fill" style="font-size: 35rpx;color: #999999;margin-right: 5rpx;"></text> -->
+			<text style="font-size: 28rpx;color: #666666;">*连续90天未登录使用，角色将被回收。<text style="color: #FFA000;"
+					@click="showCard=true">使用永久卡</text></text>
 		</view>
 		<!-- 选择朝代 -->
-		<u-modal :show="dynastyPopup" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
-			@cancel="dynastyPopup=false" @confirm="dynastyConfirm">
+		<u-modal :show="dynastyPopup" :showConfirmButton="true" :background="'#fff'" :showCancelButton="true"
+			confirmColor="#FFA000" @cancel="dynastyPopup=false" @confirm="dynastyConfirm">
 			<view style="width: 100%;">
-				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">选择身份</view>
+				<view style="display: flex;align-items: center;justify-content: center;">
+					<view style="position: relative;text-align: center;display: inline;margin: 0 auto;">
+						<text
+							style="color: #333;font-size:32rpx ;position: relative;z-index: 1;font-family: font-test !important;">选择身份</text>
+						<text
+							style="width: 100%;height: 13rpx;background: #FFA000;position: absolute;left: 0;bottom: 0;"></text>
+					</view>
+				</view>
 				<scroll-view scroll-y="true" class="myScroll">
 					<view class="dynastyBox">
 						<view class="dynastyItem" :class="index==selectIndex?'dynastyItemActive':'dynastyItem'"
@@ -91,11 +121,20 @@
 						</view>
 					</view>
 				</scroll-view>
+				<view v-if="selectType==1" :style="{display:preMatchData.general_match.remark==''?'none':'block'}"
+					style="margin-top: 20rpx;font-size: 23rpx;color: #333;">
+					您今天已多次抽取，继续抽取需花费<text style="color: #FFA000;">{{preMatchData.general_match.next_price}}</text>铜钱/次
+				</view>
+				<view v-if="selectType==2" :style="{display:preMatchData.rare_match.remark==''?'none':'block'}"
+					style="margin-top: 20rpx;font-size: 23rpx;color: #333;">
+					您今天已多次抽取，继续抽取需花费<text style="color: #FFA000;">{{preMatchData.rare_match.next_price}}</text>铜钱/次
+				</view>
 			</view>
 		</u-modal>
 		<!-- 充值 -->
-		<u-modal :show="recharge" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
-			confirmText="充值" cancelText="放弃" @cancel="recharge=false" @confirm="$u.route('/pages/mine/recharge')">
+		<u-modal :show="recharge" :showConfirmButton="true" :background="'#fff'" :showCancelButton="true"
+			confirmColor="#FFA000" confirmText="充值" cancelText="放弃" @cancel="recharge=false"
+			@confirm="$u.route('/pages/mine/recharge')">
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">铜钱不足</view>
 				<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
@@ -104,63 +143,92 @@
 			</view>
 		</u-modal>
 		<!-- 确认角色 showRole-->
-		<u-modal :show="showRole" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
-			confirmText="使用" cancelText="放弃" @cancel="showRole=false;dynastyPopup = true;" @confirm="roleConfirm">
-			<view class="w-full text-center">
-				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">获得角色</view>
+		<u-modal :show="showRole" :showConfirmButton="true" :background="'#fff'" :showCancelButton="true"
+			confirmColor="#FFA000" confirmText="使用" cancelText="放弃" @cancel="showRole=false;dynastyPopup = true;"
+			@confirm="roleConfirm">
+			<view class="w-full text-center" style="background: #fff;">
+				<view style="display: flex;align-items: center;justify-content: center;">
+					<view style="position: relative;text-align: center;display: inline;margin: 0 auto;">
+						<text
+							style="color: #333;font-size:32rpx ;position: relative;z-index: 1;font-family: font-test !important;">获得角色</text>
+						<text
+							style="width: 100%;height: 13rpx;background: #FFA000;position: absolute;left: 0;bottom: 0;"></text>
+					</view>
+				</view>
 				<scroll-view scroll-y="true" class="myScroll2"
-					style="background: #FFF7F9;border-radius: 20rpx;margin-top: 10rpx;padding: 30rpx;box-sizing: border-box;">
+					style="background: rgba(255, 221, 164, 0.40);border-radius: 20rpx;margin-top: 20rpx;padding: 30rpx;box-sizing: border-box;height: 669rpx;">
 					<view>
-						<view
-							style="display: flex;align-items: flex-end;flex-wrap: wrap;justify-content: space-between;">
+						<view style="display: flex;align-items: center;flex-wrap: wrap;">
 							<view>
 								<text
-									style="font-size: 36rpx;color: #323232;font-weight: bold;">{{role_fei.realname}}</text>
-								<text
+									style="font-size: 36rpx;color: #323232;margin-right: 10rpx;">{{role_fei.realname}}</text>
+								<!-- <text
 									style="font-size: 28rpx;color: #808080;margin-left: 20rpx">{{role_fei.gender==1?'男':'女'}}</text>
 								<text
-									style="font-size: 28rpx;color: #808080;margin-left: 20rpx">{{role_fei.dynasty}}</text>
+									style="font-size: 28rpx;color: #808080;margin-left: 20rpx">{{role_fei.dynasty}}</text> -->
 							</view>
 
-							<!-- <text
-								style="font-size: 28rpx;color: #808080;margin-left: 20rpx">{{role_fei.birthplace}}</text> -->
-							<view style="display: flex;align-items: center;">
+							<!-- <view style="display: flex;align-items: center;">
 								<text style="font-size: 28rpx;color: #808080;">名望：</text>
-								<text style="font-size: 28rpx;color: #FE4373;">{{role_fei.role_mw}}</text>
-							</view>
+								<text style="font-size: 28rpx;color: #FFA000;">{{role_fei.role_mw}}</text>
+							</view> -->
 						</view>
 						<view v-if="role_fei.length != 0"
 							style="padding: 23rpx 0rpx 0rpx 0rpx;box-sizing: border-box;font-size: 28rpx;color: #808080;text-align: left;">
-							<view>
-								<text>别称：</text>
-								<text>{{role_fei.aliasnames || "无"}}</text>
+							<view style="font-size: 28rpx;color: #808080;">
+								<text style="margin-right: 20rpx;">{{role_fei.dynasty}}</text>
+								<text>{{role_fei.birthyear||'?'}}年-{{role_fei.deathyear||'?'}}年</text>
 							</view>
-							<view style="margin-top: 20rpx;">
-								<text>身份：</text>
-								<text v-if="role_fei.achievements.length == 0">无</text>
-								<block v-else v-for="(item2,index2) in role_fei.achievements" :key="index2">
-									<text style="margin-right: 20rpx;">{{item2}}</text>
+							<view style="margin-top: 15rpx;display: flex;align-items: center;flex-wrap: wrap;">
+								<block v-for="(item2,index2) in role_fei.achievements.split(',')" :key="index2">
+									<view
+										style="width: 125rpx;height: 50rpx;border-radius: 50rpx;text-align: center;line-height: 50rpx;color: #333;font-size: 28rpx;border: 1px solid #FFA000;margin-right: 15rpx;">
+										{{item2}}
+									</view>
 								</block>
-							</view>
-							<view style="margin-top: 20rpx;">
-								<text>称号：</text>
-								<text v-if="role_fei.titles.length == 0">无</text>
-								<block v-else v-for="(item2,index2) in role_fei.titles" :key="index2">
-									<text style="margin-right: 20rpx;">{{item2}}</text>
-								</block>
+
 							</view>
 						</view>
 						<view class="rolecontent"
 							style="color: #808080;font-size: 28rpx;margin-top: 26rpx;text-align: left;min-height: 80rpx;">
 							{{role_fei.content ||'暂无介绍'}}
 						</view>
+						<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;text-align: left;margin-top: 18rpx;">稀有等级：<text class="family"
+								style="color: #FFA000;font-size: 28rpx;">{{role_fei.mw_level||'无'}}</text></view>
+						<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;text-align: left;">初始名望：<text class="family"
+								style="color: #FFA000;font-size: 28rpx;">{{ role_fei.role_mw || '无' }}</text></view>
 					</view>
 				</scroll-view>
 			</view>
 		</u-modal>
-		<u-toast ref="uToast" />
-		<uc-auth></uc-auth>
-		<topPrompt></topPrompt>
+		<u-popup :show="showCard" @close="showCard = false" mode="center" :closeable="false" :round="20">
+			<view class="report">
+				<view class="reportBgBox">
+					<view style="text-align: center;font-size: 32rpx;color: #FFA000;font-family: font-test !important;">
+						使用永久卡</view>
+					<view style="margin-top: 30rpx;">确定要使用一张永久卡吗？使用后当 前角色不会因为自动回收机制被回收。</view>
+				</view>
+				<view
+					style="display: flex;align-items: center;padding: 0rpx 52rpx;box-sizing: border-box;justify-content: space-between;margin-top: 33rpx;">
+					<view class="reportBtn" @click="showCard = false">取消</view>
+					<view class="reportBtn" @click="roleLock">确定</view>
+				</view>
+			</view>
+		</u-popup>
+		<u-popup :show="showNone" @close="showNone = false" mode="center" :closeable="false" :round="20">
+			<view class="report">
+				<view class="reportBgBox">
+					<view style="text-align: center;font-size: 32rpx;color: #FFA000;font-family: font-test !important;">
+						道具不足</view>
+					<view style="margin-top: 30rpx;">{{noneText}}</view>
+				</view>
+				<view
+					style="display: flex;align-items: center;padding: 0rpx 52rpx;box-sizing: border-box;justify-content:center;margin-top: 33rpx;">
+					<view class="reportBtn" @click="showNone = false">知道了</view>
+				</view>
+			</view>
+		</u-popup>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 <script>
@@ -195,7 +263,12 @@
 				role_fei: [],
 				fei_num: 0,
 				recharge: false,
-				money: 0
+				money: 0,
+				showCard: false,
+				showNone: false,
+				noneText: "",
+				preMatchData: [],
+				selectType: 0,
 			}
 		},
 		onLoad(option) {
@@ -203,6 +276,8 @@
 			that.getUserRole()
 			that.getRoleDynasty()
 			that.getMoney()
+			that.setFontFamily();
+			that.getpreMatch()
 		},
 		computed: {
 			...mapState({
@@ -212,7 +287,6 @@
 		mounted() {
 			let that = this
 			let time = uni.getStorageSync('times')
-			// console.log('ssss',time);	
 			that.time = time
 			if (that.time == 0) {
 				that.isXians = true
@@ -221,13 +295,34 @@
 			that.init()
 		},
 		methods: {
+			getpreMatch() {
+				this.$api("role.preMatch").then(res => {
+					if (res.code == 1) {
+						this.preMatchData = res.data
+					}
+				})
+			},
 			getMoney() {
 				let that = this
-				that.$api('user.info', {
-					"role_id": this.role_fei.id
-				}).then(res => {
+				that.$api('user.info').then(res => {
 					if (res.code == 1) {
-						that.money = res.data.money
+						that.money = res.data.money;
+						uni.setStorageSync("userInfo", res.data)
+					}
+				})
+			},
+			//永久卡
+			roleLock() {
+				this.$api("role.roleLock").then(res => {
+					if (res.code == 1) {
+						this.showCard = false;
+						this.getUserRole()
+						this.$forceUpdate()
+						this.getMoney()
+					} else if (res.code == 0) {
+						this.showCard = false;
+						this.noneText = res.msg;
+						this.showNone = true;
 					}
 				})
 			},
@@ -260,32 +355,96 @@
 				uni.showLoading({
 					title: '获取中'
 				})
-				that.$api("user.info").then(userData => {
-					var gender = userData.data.gender;
-					that.$forceUpdate()
-					if (userData.code == 1) {
-						that.$api('role.match', {
-							"gender": userData.data.gender,
-							"identity_id": that.selectId
-						}).then(res => {
-							if (res.code == 1) {
-								that.role_fei = res.data;
-								uni.hideLoading();
-								that.fei_num = that.fei_num - 1;
-								that.showRole = true;
-								that.dynastyPopup = false;
-								that.$api("user.info").then(userData1 => {
-									that.money = userData1.data.money;
-								})
-							} else if (res.code == 0) {
-								that.recharge = true;
-								that.showRole = false;
-								that.dynastyPopup = false;
-							}
-							uni.hideLoading()
-						})
-					}
-				})
+				if (that.selectType == 1) {
+					that.$api("user.info").then(userData => {
+						var gender = userData.data.gender;
+						that.$forceUpdate()
+						if (userData.code == 1) {
+							that.$api('role.match', {
+								"gender": userData.data.gender,
+								"identity_id": that.selectId
+							}).then(res => {
+								if (res.code == 1) {
+									that.role_fei = res.data;
+									that.getpreMatch()
+									uni.hideLoading();
+									// that.fei_num = that.fei_num - 1;
+									that.showRole = true;
+									that.dynastyPopup = false;
+									that.$api("user.info").then(userData1 => {
+										that.money = userData1.data.money;
+									})
+								} else if (res.code == 3001) {
+									that.recharge = true;
+									that.showRole = false;
+									that.dynastyPopup = false;
+								} else if (res.code == 2001) {
+									uni.showToast({
+										icon: "none",
+										title: res.msg
+									})
+									that.recharge = false;
+									that.showRole = false;
+									that.dynastyPopup = false;
+								} else{
+									uni.showToast({
+										icon: "none",
+										title: res.msg
+									})
+									that.recharge = false;
+									that.showRole = false;
+									that.dynastyPopup = false;
+								}
+								uni.hideLoading()
+							})
+						}
+					})
+				} else {
+					that.$api("user.info").then(userData => {
+						var gender = userData.data.gender;
+						that.$forceUpdate()
+						if (userData.code == 1) {
+							that.$api('role.rareMatch', {
+								"gender": userData.data.gender,
+								"identity_id": that.selectId
+							}).then(res => {
+								if (res.code == 1) {
+									that.role_fei = res.data;
+									that.getpreMatch()
+									uni.hideLoading();
+									// that.fei_num = that.fei_num - 1;
+									that.showRole = true;
+									that.dynastyPopup = false;
+									that.$api("user.info").then(userData1 => {
+										that.money = userData1.data.money;
+									})
+								} else if (res.code == 3001) {
+									that.recharge = true;
+									that.showRole = false;
+									that.dynastyPopup = false;
+								} else if (res.code == 2001) {
+									uni.showToast({
+										icon: "none",
+										title: res.msg
+									})
+									that.recharge = false;
+									that.showRole = false;
+									that.dynastyPopup = false;
+								} else{
+									uni.showToast({
+										icon: "none",
+										title: res.msg
+									})
+									that.recharge = false;
+									that.showRole = false;
+									that.dynastyPopup = false;
+								}
+								uni.hideLoading()
+							})
+						}
+					})
+				}
+
 			},
 			//选择朝代
 			selectDynasty(index, id, name) {
@@ -296,6 +455,12 @@
 			//重新匹配
 			handleRematch() {
 				this.dynastyPopup = true;
+				this.selectType = 1;
+			},
+			//稀有抽取
+			extractRare() {
+				this.dynastyPopup = true;
+				this.selectType = 2;
 			},
 			init() {
 				// let that = this
@@ -311,9 +476,7 @@
 			...mapActions(['getUserInfo']),
 			async getUserRole() {
 				let that = this
-				that.$api('user.info', {
-					user_id: that.userInfo.id
-				}).then(res => {
+				that.$api('user.info').then(res => {
 					if (res.code === 1) {
 						if (res.data.achievements != null) {
 							if (res.data.achievements.indexOf(",") == -1) {
@@ -323,7 +486,7 @@
 							}
 						}
 						that.userRole = res.data;
-						that.fei_num = res.data.choose_num
+						// that.fei_num = res.data.choose_num
 						that.showUserRole = true
 					} else {
 						that.showUserRole = false
@@ -349,17 +512,36 @@
 			// 重新获取
 			handleHuoQu() {
 				let that = this;
-				that.$api('user.info', {
-					user_id: that.userInfo.id
-				}).then(res => {
-					if (res.code === 1) {
-						if (res.data.money <= 4) {
-							that.recharge = true;
-						} else {
-							that.handleRematch()
+				if (this.preMatchData.general_match.free_match_count <= 0) {
+					that.$api('user.info', {
+						user_id: that.userInfo.id
+					}).then(res => {
+						if (res.code === 1) {
+							if (res.data.money <= 4) {
+								that.recharge = true;
+							} else {
+								that.handleRematch()
+							}
 						}
+					})
+				} else {
+					that.handleRematch()
+				}
+			},
+			setFontFamily() {
+				// #ifdef APP-PLUS
+				uni.loadFontFace({
+					family: 'font-test',
+					// 本地字体路径需转换为平台绝对路径
+					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/AaHouDiHei.ttf')})`,
+					success() {
+						console.log('success')
+					},
+					fail(e) {
+						console.log('fail')
 					}
 				})
+				// #endif
 			},
 			handleReborn() {
 				let that = this
@@ -468,6 +650,53 @@
 		width: 100%;
 	}
 
+	.content {
+		background-image: url(@/static/iconImage/jiaoseBg.png);
+		background-position: 100% 100%;
+		background-size: 100% 100%;
+		padding: 65rpx 53rpx;
+		box-sizing: border-box;
+		position: relative;
+		height: 808rpx;
+		overflow: hidden;
+
+		.contentBg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		.roleName {
+			font-size: 36rpx;
+			color: #FFA000;
+			font-family: font-test !important;
+			margin-bottom: 18rpx;
+		}
+
+
+	}
+
+	.selectBtn {
+		background-image: url(@/static/iconImage/btnBg2.png);
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		background-position: 100% 100%;
+		margin: 0 auto;
+		width: 490rpx;
+		height: 72rpx;
+		line-height: 72rpx;
+		color: #fff;
+		text-align: center;
+		line-height: 72rpx;
+	}
+
+	.family {
+		font-family: font-test !important;
+	}
+
+	// -------------------
 	.container {
 		flex: 1;
 		height: 0;
@@ -509,7 +738,7 @@
 		}
 
 		.contentBody {
-			height: calc(100% - 14%);
+			// height: calc(100% - 14%);
 			padding-top: 10rpx;
 			box-sizing: border-box;
 			background: #fff;
@@ -590,7 +819,7 @@
 	}
 
 	.dynastyItemActive {
-		border: 1px solid #FE4373;
+		border: 1px solid #FFA000;
 	}
 
 	.rolecontent {
@@ -605,5 +834,33 @@
 		text-overflow: ellipsis;
 		position: relative;
 		box-sizing: border-box;
+	}
+
+	.reportBgBox {
+		width: 526rpx;
+		height: 315rpx;
+		background-image: url(@/static/iconImage/bgimg.png);
+		background-position: 100% 100%;
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		padding: 50rpx 30rpx;
+		box-sizing: border-box;
+		font-size: 28rpx;
+		color: #FFA000;
+		line-height: 40rpx;
+	}
+
+	.reportBtn {
+		width: 190rpx;
+		height: 85rpx;
+		background: #FFDDA4;
+		border-radius: 48px 48px 48px 48px;
+		opacity: 1;
+		border: 1px solid #FFA000;
+		line-height: 85rpx;
+		text-align: center;
+		font-size: 36rpx;
+		font-weight: bold;
+		color: #FFA000;
 	}
 </style>

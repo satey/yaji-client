@@ -33,6 +33,7 @@
 				<image class="imgs" :src="item" v-for="(item,index) in reply_images" @click="openImg2(index)"></image>
 			</view>
 		</view>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 

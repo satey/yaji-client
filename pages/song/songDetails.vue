@@ -151,8 +151,10 @@
 		</u-popup>
 		<feiGift ref="feiGift" channel="4"></feiGift>
 		<feiOperate @close="closePopup" @delete="del" ref="feiOperate" @tread="tread" @report="report"
-			:showDelete="showDelete" :showReport="showReport">
+			:showDelete="showDelete" :showReport="showReport" :showCai="showCai" :showShield="showShield"
+			@shield="shield">
 		</feiOperate>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
@@ -168,6 +170,7 @@
 		},
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				detail: [],
 				replyList: [],
 				page: 1,
@@ -184,7 +187,9 @@
 				replyData: [],
 				recorderStartFlag: true,
 				userClickFlag: false,
-				topAudioFlag: false
+				topAudioFlag: false,
+				showCai: false,
+				showShield: false,
 			}
 		},
 		onLoad() {
@@ -212,6 +217,18 @@
 			this.getReplyList()
 		},
 		methods: {
+			shield() {
+				uni.showToast({
+					icon: "none",
+					title: "已屏蔽该作品"
+				})
+				let timeOut = setTimeout(() => {
+					uni.navigateBack({
+						delta: 1
+					});
+					clearTimeout(timeOut)
+				}, 500)
+			},
 			openMine(item) {
 				var that = this;
 				that.$u.route('/pages/user/home', {
@@ -281,9 +298,11 @@
 				if (this.userInfo.id == item.user_id) {
 					this.showDelete = true;
 					this.showReport = false;
+					this.showCai = false;
 				} else {
 					this.showDelete = false;
 					this.showReport = true;
+					this.showCai = true;
 				}
 				this.replyList.forEach((val, index) => {
 					val.replyIndex = null;
@@ -334,9 +353,13 @@
 				if (this.userInfo.id == this.detail.user_id) {
 					this.showDelete = true;
 					this.showReport = false;
+					this.showCai = false;
+					this.showShield = false;
 				} else {
 					this.showDelete = false;
 					this.showReport = true;
+					this.showCai = true;
+					this.showShield = true;
 				}
 				this.$refs.feiOperate.show();
 			},
@@ -570,6 +593,7 @@
 		border-top-right-radius: 30rpx;
 		border-top-left-radius: 30rpx;
 		padding-bottom: 50rpx;
+		background: #fff;
 	}
 
 	.audioBlock {

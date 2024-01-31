@@ -2,12 +2,12 @@
 	<view>
 		<u-navbar title="举报" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
+				<i class="ri-arrow-left-s-line text-3xl" style="color: #323232 !important;"
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
 		<view style="padding-left: 30rpx;padding-bottom: 30rpx;">
-			<view style="font-size: 32rpx;color: #323232;font-weight: 500;">请选择分类</view>
+			<view style="font-size: 32rpx;color: #323232;">请选择分类</view>
 			<view class="reportList">
 				<view @click="selectType(item,index)" :class="selectIndex == index?'reportItemActive':''"
 					class="reportItem" v-for="(item,index) in ListFeedbackType">{{item}}
@@ -28,7 +28,7 @@
 					</image>
 					<text class="ri-close-line quxiao" @click="deleteImg(index)"></text>
 				</view>
-				<view class="upload" @click="openImg" v-if="imgs.length<3">
+				<view class="upload" @click="openImg2" v-if="imgs.length<3">
 					<view style="margin-bottom: 10rpx;font-size: 50rpx;"><text class="ri-camera-fill"></text></view>
 					<view>上传图片</view>
 				</view>
@@ -38,6 +38,8 @@
 			<view class="reportBtn" @click="submit">提交举报</view>
 		</view>
 		<topPrompt></topPrompt>
+		<feiqslsHit></feiqslsHit>
+		<feiauthority ref="authority" @imageEmpower='imageEmpower'></feiauthority>
 	</view>
 </template>
 
@@ -46,7 +48,7 @@
 		name: "report",
 		data() {
 			return {
-				ListFeedbackType: ['色情低俗', '政治敏感', '造谣传谣', '广告欺诈', '侵犯权益', '其他'],
+				ListFeedbackType: ['色情低俗', '政治敏感', '造谣传谣', '广告欺诈', '侵犯权益', '其他', '侵犯肖像、隐私、名誉、商标、专利、著作权'],
 				reportValue: "",
 				reportType: "",
 				imgs: [],
@@ -57,6 +59,18 @@
 			//删除图片
 			deleteImg(i) {
 				this.imgs.splice(i, 1)
+			},
+			openImg2() {
+				// #ifdef H5
+				this.openImg()
+				// #endif
+				// #ifdef APP
+				this.$refs.authority.show('image')
+				// #endif
+			},
+			//图片授权
+			imageEmpower() {
+				this.openImg()
 			},
 			//上传图片
 			openImg() {
@@ -93,7 +107,7 @@
 					var imgArr = [];
 					that.imgs.forEach((val, index) => {
 						uni.uploadFile({
-							url: that.$API_URL + 'index/upload',
+							url: uni.getStorageSync("hostData").host + "/api/hey/" + 'index/upload',
 							filePath: val,
 							name: 'file',
 							formData: {
@@ -178,12 +192,16 @@
 
 	.reportBtn {
 		border-radius: 43rpx;
-		background: #FE4373;
 		color: #fff;
 		text-align: center;
 		line-height: 85rpx;
 		margin: 0 auto;
 		height: 85rpx;
+		background-image: url(/static/iconImage/btnBg.png);
+		background-position: 100% 100%;
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		font-weight: bold;
 	}
 
 	/* ------------------- */
@@ -222,7 +240,7 @@
 	}
 
 	.reportItemActive {
-		background: rgba(254, 67, 115, 0.1) !important;
-		border: 1rpx solid #FE4373 !important;
+		background: rgba(255, 186, 108, 0.5) !important;
+		border: 1rpx solid #FFBA6C !important;
 	}
 </style>

@@ -1,7 +1,4 @@
-const COS = require('cos-js-sdk-v5')
-//feifei
-// const COS=require("cos-wx-sdk-v5")
-// import Cos from 'cos-js-sdk-v5'
+const COS = require('cos-wx-sdk-v5')
 const Bucket = "yaji-1318192409"; //存储桶的名称，命名规则为 BucketName-APPID，此处填写的存储桶名称必须为此格式
 const Region = "ap-shanghai"; //存储桶所在地域
 //创建一个 COS SDK 实例
@@ -9,20 +6,21 @@ const Region = "ap-shanghai"; //存储桶所在地域
 const cos = new COS({
 	SecretId: 'AKID5KWSK8sdK4kNxSF0joldRAoNrHbr2BDB',
 	SecretKey: '2zqbHrR0VyLet6FIMfzIawEUgpuxwsk5',
+	SimpleUploadMethod: "putObject"
 });
-//创建存储桶
-cos.putBucket({
+cos.headBucket({
 	Bucket: Bucket,
+	/* 必须 */
 	Region: Region,
+	/* 存储桶所在地域，必须字段 */
 }, function(err, data) {
-	console.log(err || data);
+	if (data) {
+		console.log('存储桶存在');
+	} else if (err.statusCode == 403) {
+		console.log('没有该存储桶读权限');
+	}
 });
 
-//查询存储桶列表
-cos.getService(function(err, data) {
-	console.log("[查询存储桶列表]")
-	console.log(data && data.Buckets);
-});
 //删除
 function deleteFileToTencentClound(Key) {
 	return new Promise((resolve, reject) => {
@@ -37,21 +35,33 @@ function deleteFileToTencentClound(Key) {
 	})
 }
 //上传图片到腾讯云
-function uploadFileToTencentClound(filename, filePath) {
+function uploadFileToTencentClound(file) {
+	console.log(file)
 	return new Promise((resolve, reject) => {
-		cos.postObject({
-				Bucket: Bucket,
-				Region: Region,
-				Key: filePath + filename,
-				FilePath: filePath,
-				onProgress: function(info) {
-					console.log("[cos.postObject-seccess]", JSON.stringify(info));
-				}
+		cos.uploadFile({
+			Bucket: Bucket,
+			Region: Region,
+			Key: file[0].name,
+			FilePath:`xingxiang/`+file[0].path,
+			onTaskReady: function(taskId) {
+				/* 非必须 */
+				console.log(taskId);
 			},
-			function(err, data) {
-				console.log("[cos.postObject-err]", err || data);
-				resolve(data.headers.location)
-			})
+			onProgress: function(progressData) {
+				/* 非必须 */
+				console.log(JSON.stringify(progressData));
+			},
+			onFileFinish: function(err, data, options) {
+				/* 非必须 */
+				console.log(options.Key + '上传' + (err ? '失败' : '完成'));
+			},
+			// 支持自定义headers 非必须
+			Headers: {
+				"Content-Type": "image/png"
+			},
+		}, function(err, data) {
+			console.log(err || data);
+		});
 	})
 }
 export default {

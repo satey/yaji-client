@@ -1,46 +1,17 @@
 export default {
 	state: {
 		messageList: [], //消息列表
+		toppingList: [], //置顶消息列表
 		messageCount: 0, //总消息数量
-		receiverId: "",
-		messageListTotal: [], //全部消息列表
-		islogout: false,
-		topMessageList: [], //置顶消息
-		historyMsgList: [], //历史消息
-		giftId: ''
 	},
 	mutations: {
-		//设置登录状态
-		setIslogout(state, bol) {
-			state.islogout = bol
-		},
+
 		//设置消息列表
 		setMessageList(state, arr) {
 			state.messageList = arr;
-			var userInfo = uni.getStorageSync("userInfo");
-			if (!userInfo) {
-				return;
-			}
-			if (state.messageList.length != 0) {
-				var obj = {
-					id: userInfo.id,
-					messageList: state.messageList
-				}
-				uni.setStorageSync("historyCronyList" + userInfo.id, obj)
-			}
 		},
-		//设置底部角标
-		setMsgCount(state, arr) {
-			var num = 0;
-			for (var i = 0; i < arr.length; i++) {
-				num += state.messageList[i].msgNum;
-				// if (arr[i].msgNum != undefined) {
-				// 	if (arr[i].msgNum == true) {
-				// 		state.messageCount = true;
-				// 		break;
-				// 	}
-				// }
-			}
+		//初始化底部角标
+		initMsgCount(state, num) {
 			state.messageCount = num;
 			if (num == 0) {
 				uni.removeTabBarBadge({
@@ -53,91 +24,31 @@ export default {
 				})
 			}
 		},
-		//设置各个列表的角标
-		setMsgCount2(state) {
-			if (state.messageList.length == 0) {
-				state.messageCount = 0;
-				return;
+		//设置底部角标数量
+		setMsgCount(state, num) {
+			state.messageCount = state.messageCount - num;
+			if (state.messageCount == 0) {
+				uni.removeTabBarBadge({
+					index: 2
+				})
+			} else {
+				uni.setTabBarBadge({
+					index: 2,
+					text: `${state.messageCount}`
+				})
 			}
-			var num = 0;
-			for (var i = 0; i < state.messageList.length; i++) {
-				if (state.messageList[i].msgNum != undefined) {
-					num += state.messageList[i].msgNum;
-					// if (state.messageList[i].msgNum == true) {
-					// 	state.messageCount = true;
-					// 	break;
-					// } else {
-					// 	state.messageCount = false;
-					// }
-				}
-			}
-			state.messageCount = num;
-			var userInfo = uni.getStorageSync("userInfo");
-			if (!userInfo) {
-				return;
-			}
-			if (state.messageList.length != 0) {
-				var arr = [];
-				state.messageList.forEach((val, index) => {
-					if (val.user_id != undefined) {
-						arr.push(val)
+		},
+		//设置列表上的未读
+		setMessageListCount(state, item) {
+			state.messageList.data.forEach((items, index) => {
+				if (item.user_id == items.user_id) {
+					if (item.no_read_count != 0) {
+						state.messageList.data[index].no_read_count = state.messageList.data[index]
+							.no_read_count - item
+							.no_read_count;
 					}
-				})
-				var obj = {
-					id: userInfo.id,
-					messageList: arr
-				}
-				uni.setStorageSync("historyCronyList" + userInfo.id, obj)
-			}
-
-			if (num == 0) {
-				uni.removeTabBarBadge({
-					index: 2
-				})
-			} else {
-				uni.setTabBarBadge({
-					index: 2,
-					text: `${num}`
-				})
-			}
-		},
-		//清楚消息红点
-		setMessageListCount(state, id) {
-			var arr = state.messageList;
-			arr.forEach((item, index) => {
-				if (arr[index].user_id == id) {
-					arr[index].msgNum = 0;
 				}
 			})
-			state.messageList = arr;
-		},
-		//设置接收人id
-		setReceiverId(state, id) {
-			state.receiverId = id;
-		},
-		//设置全部消息列表
-		messageListTotal(state, arr) {
-			state.messageListTotal = arr;
-		},
-		setMessageListTotal(state, rid) {
-			for (var i = 0; i < state.messageListTotal.length; i++) {
-				if (state.messageListTotal[i].data.user_id == rid) {
-					state.messageListTotal.splice(i, 1);
-					i--;
-				}
-			}
-		},
-		//添加未读消息
-		appendUnRead(state, arr) {
-			state.messageList = arr
-		},
-		//用户聊天记录
-		setHistoryMsgList(state, arr) {
-			state.historyMsgList = arr;
-		},
-		// 设置礼包id
-		setGiftId(state, id) {
-			state.giftId = id;
 		}
 	},
 	getters: {

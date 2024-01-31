@@ -20,7 +20,9 @@
 			</view>
 		</view>
 		<u-loadmore v-if="!list.length" nomoreText="" color="#a1a1a1" marginTop="20" />
-		<u-empty v-if="!list.length" icon="/static/empty.png" text="数据为空" textColor="#a1a1a1" marginTop="100"></u-empty>
+		<u-empty v-if="!list.length" icon="/static/iconImage/jilu.png" text="" textColor="#a1a1a1"
+			marginTop="100"></u-empty>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 

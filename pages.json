@@ -11,11 +11,10 @@
 				"navigationBarTitleText": "启动"
 			},
 			"meta": {
-				"auth": false
+				"auth": true
 			}
 
-		},
-		{
+		}, {
 			"path": "pages/index/index",
 			"name": "index",
 			"title": "首页",
@@ -93,7 +92,7 @@
 				"navigationBarTitleText": "选择朝代"
 			},
 			"meta": {
-				"auth": true
+				"auth": false
 			}
 		},
 		{
@@ -103,7 +102,7 @@
 				"navigationBarTitleText": "匹配角色"
 			},
 			"meta": {
-				"auth": true
+				"auth": false
 			}
 		}, {
 			"path": "pages/auth/s3",
@@ -112,7 +111,7 @@
 				"navigationBarTitleText": "获得角色"
 			},
 			"meta": {
-				"auth": true
+				"auth": false
 			}
 		},
 		{
@@ -174,7 +173,8 @@
 			"meta": {
 				"auth": true
 			}
-		}, {
+		},
+		{
 			"path": "pages/mine/recharge",
 			"name": "recharge",
 			"style": {
@@ -410,7 +410,10 @@
 			"path": "pages/post/add",
 			"name": "add",
 			"style": {
-				"navigationBarTitleText": "发布"
+				"navigationBarTitleText": "发布",
+				"app-plus": {
+					"softinputMode": "adjustResize"
+				}
 			},
 			"meta": {
 				"auth": true
@@ -475,7 +478,7 @@
 				"auth": true
 			}
 		}, {
-			"path": "pages/chat/charSeting",
+			"path": "pages/chat/chatSeting",
 			"style": {
 				"navigationBarTitleText": "对话设置"
 			},
@@ -617,6 +620,139 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
+		},
+		{
+			"path": "pages/chat/chatRoom",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/user/customized",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/mine/moneyRecord",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/index/lists",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/qsls/qsls",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/mine/room",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/mine/works",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/user/userMore",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/user/information",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/user/setInformation",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/post/postMessage",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/post/preview",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/talent/talent",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/talent/startTalent",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/talent/talentResult",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/public/reputation",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/authentication/authentication",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/mine/achieve",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/index/activity",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
 		}
 	],
 	"globalStyle": {
@@ -627,7 +763,7 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8",
+		"backgroundColor": "#f7f7f7",
 		"app-plus": {
 			"bounce": "none",
 			"softinputMode": "adjustPan"
@@ -635,32 +771,32 @@
 	},
 	"tabBar": {
 		"borderStyle": "white",
-		"color": "#808080",
-		"selectedColor": "#FE4373",
-		"backgroundColor": "#fff",
+		"color": "#333333",
+		"selectedColor": "#333333",
+		"backgroundColor": "#ffffff",
 		"list": [{
-				"text": "首页",
+				"text": "",
 				"pagePath": "pages/index/index",
-				"iconPath": "static/tabbar/index1.png",
-				"selectedIconPath": "static/tabbar/index1On.png"
+				"iconPath": "static/tabbar/index.png",
+				"selectedIconPath": "static/tabbar/index_active.png"
 			},
 			{
-				"text": "动态",
+				"text": "广场",
 				"pagePath": "pages/index/square",
-				"iconPath": "static/tabbar/square1.png",
-				"selectedIconPath": "static/tabbar/ssquare1On.png"
+				"iconPath": "static/tabbar/square.png",
+				"selectedIconPath": "static/tabbar/square_active.png"
 			},
 			{
 				"text": "消息",
 				"pagePath": "pages/index/message",
-				"iconPath": "static/tabbar/message1.png",
-				"selectedIconPath": "static/tabbar/message1On.png"
+				"iconPath": "static/tabbar/message.png",
+				"selectedIconPath": "static/tabbar/message_active.png"
 			},
 			{
 				"text": "我的",
 				"pagePath": "pages/index/mine",
-				"iconPath": "static/tabbar/mine1.png",
-				"selectedIconPath": "static/tabbar/mine1On.png"
+				"iconPath": "static/tabbar/mine.png",
+				"selectedIconPath": "static/tabbar/mine_active.png"
 			}
 		]
 	},

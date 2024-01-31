@@ -10,7 +10,7 @@
             </view>
         </u-navbar>
         <view class="flex mt-10">
-            <image @click="changeImage" class="block m-auto w-24 h-24 rounded-full" :src="userInfo.avatar || '/static/avatar.png'"></image>
+            <image @click="changeImage" class="block m-auto w-24 h-24 rounded-full" :src="userInfo.avatar"></image>
         </view>
         <view class="bg-white mt-10">
             <u-cell-group>
@@ -48,6 +48,7 @@
                 </view>
             </view>
         </u-modal>
+		<feiqslsHit></feiqslsHit>
     </view>
 </template>
 <script>

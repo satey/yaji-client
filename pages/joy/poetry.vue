@@ -422,6 +422,7 @@
 				</view>
 			</view>
 		</u-popup>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 <script>
@@ -429,6 +430,7 @@
 	export default {
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				isShowDown: false,
 				fei_AnimationName: "",
 				gameUserArr: ["", "", "", "", "", ""],
@@ -985,7 +987,7 @@
 					success: (res) => {
 						res.tempFilePaths.forEach(item => {
 							uni.uploadFile({
-								url: that.$API_URL + 'index/upload',
+								url: uni.getStorageSync("hostData").host+"/api/hey/" + 'index/upload',
 								filePath: item,
 								name: 'file',
 								formData: {
@@ -1090,7 +1092,7 @@
 				uni.showLoading()
 				clearInterval(that.recordTimer)
 				uni.uploadFile({
-					url: that.$API_URL + 'index/upload',
+					url: uni.getStorageSync("hostData").host+"/api/hey/" + 'index/upload',
 					filePath: e.tempFilePath,
 					name: 'file',
 					formData: {

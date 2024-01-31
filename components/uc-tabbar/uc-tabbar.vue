@@ -44,7 +44,7 @@
 				let that = this
 				// console.log(name)
 				that.current = name
-				uni.redirectTo({
+				uni.switchTab({
 					url: name
 				})
 			},
