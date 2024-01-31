@@ -11,7 +11,7 @@
 			</view>
 		</u-navbar>
 		<u-popup :show="showAction" @close="showAction = false" :closeable="false" :round="30">
-			<view style="padding: 50rpx 55rpx;">
+			<view style="padding: 50rpx 55rpx;background: #fff;">
 				<view class="delete" @click="shield" style="margin-bottom: 36rpx;">
 					<view style="font-size: 30rpx;">屏蔽该作品</view>
 				</view>
@@ -96,14 +96,14 @@
 			<view class="" v-if="detailContent!=null">
 				<view class="userImg" v-if="userInfo.id == user_id"
 					@click="$u.route('/pages/index/mine', { user_id: detailContent.user_id })">
-					<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
+					<image mode="aspectFill" :src="avatar" class="userImg"></image>
 				</view>
 				<view v-else class="userImg" @click="$u.route('/pages/user/home', { user_id: detailContent.user_id })">
-					<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
+					<image mode="aspectFill" :src="avatar" class="userImg"></image>
 				</view>
 			</view>
 			<view v-else class="userImg" @click="showToast">
-				<image mode="aspectFill" :src="avatar || '/static/avatar.png'" class="userImg"></image>
+				<image mode="aspectFill" :src="avatar" class="userImg"></image>
 			</view>
 			<view style="flex: 1;">
 				<view class="userInfo">
@@ -169,6 +169,7 @@
 			marginTop="100"></u-empty>
 		<topPrompt></topPrompt>
 		<feiGift ref="feiGift" channel="3"></feiGift>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 <script>

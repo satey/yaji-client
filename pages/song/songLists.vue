@@ -18,7 +18,7 @@
 						:style="{color:viewThisCode==0?'#FE4373':'#fff',background:viewThisCode==0?'':'#FE4373'}">
 						<text class="ri-user-fill" style="font-size: 39rpx;"></text>
 					</view>
-					<view @click="$u.route('pages/song/songPublish')"
+					<view @click="publish"
 						style="margin-left: 30rpx;width: 185rpx;height: 65rpx;text-align: center;line-height: 65rpx;border-radius: 10rpx;color: #fff;background: #FE4373;font-size: 28rpx;">
 						起个头</view>
 				</view>
@@ -62,7 +62,8 @@
 								style="margin-left: 10rpx;color: #E87B7B;font-size: 19rpx;"></text>
 						</block>
 					</view>
-					<view style="color: 28rpx;font-size: 28rpx;margin-top: 15rpx;padding: 0rpx 10rpx;box-sizing: border-box;">
+					<view
+						style="color: 28rpx;font-size: 28rpx;margin-top: 15rpx;padding: 0rpx 10rpx;box-sizing: border-box;">
 						{{item.song_title||"暂无主题"}}
 					</view>
 					<view class="songBtn">
@@ -73,6 +74,8 @@
 				</view>
 			</block>
 		</view>
+		<feiqslsHit></feiqslsHit>
+		<feiauthority ref="authority" @audioEmpower='audioEmpower'></feiauthority>
 	</view>
 </template>
 
@@ -101,6 +104,18 @@
 			this.getList();
 		},
 		methods: {
+			publish() {
+				// #ifdef APP
+				this.$refs.authority.show('recorde')
+				// #endif
+				// #ifdef H5
+				this.$u.route('pages/song/songPublish')
+				// #endif
+			},
+			//录音授权
+			audioEmpower() {
+				this.$u.route('pages/song/songPublish')
+			},
 			//查看自己的
 			viewThis() {
 				this.lists = [];

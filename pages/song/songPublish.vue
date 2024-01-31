@@ -11,7 +11,7 @@
 					发布</view>
 			</view>
 		</u-navbar>
-		<view class="publish" @click="upLoadImg">
+		<view class="publish" @click="upLoadImg2">
 			<block v-if="songImg == ''">
 				<view
 					style="width: 100%;height: 100%;background: #F7F7F7;display: flex;flex-direction: column;align-items: center;justify-content: center;">
@@ -33,8 +33,8 @@
 			</view>
 			<view style="margin: 36rpx; 20rpx;border: 1px solid #D8D8D8;height: 80rpx;border-radius: 5rpx;">
 				<input type="text" v-model="songName" maxlength="22"
-					style="width: 100%;height: 100%;padding-left: 10rpx;text-align: center;padding-right: 10rpx;box-sizing: border-box;" placeholder="限22字以内"
-					placeholder-style="font-size: 28rpx;color: #3D3D3D;opacity: 0.4;">
+					style="width: 100%;height: 100%;padding-left: 10rpx;text-align: center;padding-right: 10rpx;box-sizing: border-box;"
+					placeholder="限22字以内" placeholder-style="font-size: 28rpx;color: #3D3D3D;opacity: 0.4;">
 			</view>
 		</view>
 		<view style="padding: 0 53rpx 0 53rpx;margin-top: 56rpx;">
@@ -55,6 +55,8 @@
 			</view>
 			<feiRecorder @getAudioUrl="getAudioUrl" v-if="recordUrl== ''"></feiRecorder>
 		</view>
+		<feiqslsHit></feiqslsHit>
+		<feiauthority ref="authority" @imageEmpower='imageEmpower'></feiauthority>
 	</view>
 </template>
 
@@ -161,6 +163,17 @@
 				this.recordUrl = e.url;
 				this.timer = e.timer;
 			},
+			upLoadImg2() {
+				// #ifdef APP
+				this.$refs.authority.show('image')
+				// #endif
+				// #ifdef H5
+				this.upLoadImg()
+				// #endif
+			},
+			imageEmpower() {
+				this.upLoadImg()
+			},
 			//上传图片
 			upLoadImg() {
 				var that = this;
@@ -171,7 +184,7 @@
 					success: (imageRes) => {
 						var token = uni.getStorageSync("token");
 						uni.uploadFile({
-							url: that.$API_URL + 'index/upload',
+							url: uni.getStorageSync("hostData").host + "/api/hey/" + 'index/upload',
 							filePath: imageRes.tempFilePaths[0],
 							name: 'file',
 							formData: {

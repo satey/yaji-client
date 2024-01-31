@@ -1,4 +1,28 @@
 export default {
+	config: {
+		config1: {
+			url: 'index/configDev',
+			auth: false,
+			method: 'POST',
+			desc: '配置',
+		},
+	},
+	start: {
+		launchInfo: {
+			url: 'user/launchInfo',
+			auth: false,
+			method: 'GET',
+			desc: '启动参数',
+		},
+	},
+	realAuth: {
+		realAuth: {
+			url: 'my/realAuth',
+			auth: false,
+			method: 'POST',
+			desc: '实名认证',
+		},
+	},
 	fengyadu: {
 		fengyadu_redeem_money: {
 			url: 'user_fengyadu_log/fengyadu_redeem_money',
@@ -414,7 +438,37 @@ export default {
 			auth: true,
 			method: 'GET',
 			desc: '关注列表',
-		}
+		},
+		getPostBgImgList: {
+			url: 'post/getPostBgImgList',
+			auth: true,
+			method: 'POST',
+			desc: '获取背景图片列表',
+		},
+		createPost: {
+			url: 'post/createPost',
+			auth: true,
+			method: 'POST',
+			desc: '发布动态',
+		},
+		newRecommend: {
+			url: 'post/newRecommend',
+			auth: true,
+			method: 'POST',
+			desc: '动态广场',
+		},
+		userBrowseLog: {
+			url: 'post/userBrowseLog',
+			auth: true,
+			method: 'POST',
+			desc: '动态已看上报',
+		},
+		getPostDetail: {
+			url: 'post/getPostDetail',
+			auth: true,
+			method: 'POST',
+			desc: '动态详情',
+		},
 	},
 	post_cate: {
 		add: {
@@ -506,6 +560,24 @@ export default {
 			method: 'POST',
 			desc: '删除评论',
 		},
+		newList: {
+			url: 'post_comment/newList',
+			auth: false,
+			method: 'POST',
+			desc: '动态评论列表',
+		},
+		new_reply_comment_list: {
+			url: 'post_comment/new_reply_comment_list',
+			auth: false,
+			method: 'POST',
+			desc: '二级评论列表',
+		},
+		newAdd: {
+			url: 'post_comment/add',
+			auth: false,
+			method: 'POST',
+			desc: '发布动态评论',
+		},
 	},
 	post_comment: {
 		dig: {
@@ -540,6 +612,13 @@ export default {
 			method: 'POST',
 			desc: '送礼物',
 		},
+		// 新---------
+		giveGift2: {
+			url: 'room/giveGift',
+			auth: true,
+			method: 'POST',
+			desc: '房间内送礼物',
+		},
 	},
 	chat: {
 		single: {
@@ -571,6 +650,25 @@ export default {
 			auth: true,
 			method: 'GET',
 			desc: '会话列表',
+		},
+		// 新-----
+		getChatMessageList: {
+			url: 'Chat_message/getChatMessageList',
+			auth: true,
+			method: 'POST',
+			desc: '单聊-聊天记录',
+		},
+		clearUnReadMsg: {
+			url: 'Chat_message/clearUnReadMsg',
+			auth: true,
+			method: 'POST',
+			desc: '单聊-清除未读消息数',
+		},
+		playTogether: {
+			url: 'room/playTogether',
+			auth: true,
+			method: 'POST',
+			desc: '单聊-一起玩接口',
 		},
 	},
 	message: {
@@ -616,6 +714,12 @@ export default {
 			method: 'GET',
 			desc: '添加消息免打扰',
 		},
+		getNoticeList: {
+			url: 'message/getNoticeList',
+			auth: true,
+			method: 'GET',
+			desc: '系统消息通知',
+		},
 	},
 	help: {
 		lists: {
@@ -658,12 +762,29 @@ export default {
 			method: 'GET',
 			desc: '角色列表',
 		},
-
 		match: {
 			url: 'role/match',
 			auth: true,
 			method: 'GET',
 			desc: '角色匹配',
+		},
+		roleLock: {
+			url: 'my/roleLock',
+			auth: true,
+			method: 'GET',
+			desc: '使用角色永久卡',
+		},
+		preMatch: {
+			url: 'role/preMatch',
+			auth: true,
+			method: 'POST',
+			desc: '抽角色前初始化',
+		},
+		rareMatch: {
+			url: 'role/rareMatch',
+			auth: true,
+			method: 'POST',
+			desc: '稀有抽角色',
 		},
 	},
 	richtext: {
@@ -824,7 +945,49 @@ export default {
 			auth: true,
 			method: 'POST',
 			desc: '更换背景',
-		}
+		},
+		myInfo: {
+			url: 'my/info',
+			auth: true,
+			method: 'POST',
+			desc: '我的资料',
+		},
+		infoSave: {
+			url: 'my/infoSave',
+			auth: true,
+			method: 'POST',
+			desc: '我的资料-保存',
+		},
+		moreInfo: {
+			url: 'user/moreInfo',
+			auth: true,
+			method: 'POST',
+			desc: '查看用户更多信息',
+		},
+		index: {
+			url: 'user/index',
+			auth: true,
+			method: 'POST',
+			desc: '用户首页信息',
+		},
+		myPostList: {
+			url: 'my/myPostList',
+			auth: true,
+			method: 'POST',
+			desc: '我的动态',
+		},
+		saveProfile: {
+			url: 'my/saveProfile',
+			auth: true,
+			method: 'POST',
+			desc: '保存形象',
+		},
+		gloryList: {
+			url: 'my/gloryList',
+			auth: true,
+			method: 'POST',
+			desc: '已获得勋章列表',
+		},
 	},
 	user_gift: {
 		lists: {
@@ -832,6 +995,12 @@ export default {
 			auth: true,
 			method: 'GET',
 			desc: '礼物列表',
+		},
+		propList: {
+			url: 'my/propList',
+			auth: true,
+			method: 'GET',
+			desc: '我的道具',
 		},
 	},
 	user_recharge: {
@@ -974,7 +1143,13 @@ export default {
 			auth: false,
 			method: 'GET',
 			desc: '礼物记录',
-		}
+		},
+		propLogList: {
+			url: 'my/propLogList',
+			auth: false,
+			method: 'GET',
+			desc: '道具记录',
+		},
 	},
 	user_black: {
 		lists: {
@@ -996,6 +1171,287 @@ export default {
 			auth: false,
 			method: 'POST',
 			desc: '版本更新',
+		}
+	},
+	TIM: {
+		getGenSig: {
+			url: 'tencent/getGenSig',
+			auth: false,
+			method: 'GET',
+			desc: '根据USERID获取gensig',
+		},
+	},
+	// 形象
+	profile: {
+		profileDetail: {
+			url: 'my/profileDetail',
+			auth: false,
+			method: 'POST',
+			desc: '形象定制首页',
+		},
+		getProfileElement: {
+			url: 'my/getProfileElement',
+			auth: false,
+			method: 'POST',
+			desc: '配饰列表',
+		},
+		saveProfile: {
+			url: 'my/saveProfile',
+			auth: false,
+			method: 'POST',
+			desc: '保存形象',
+		},
+	},
+	home: {
+		index: {
+			url: 'room/index',
+			auth: false,
+			method: 'POST',
+			desc: '首页',
+		},
+	},
+	room: {
+		check: {
+			url: 'room/check',
+			auth: false,
+			method: 'POST',
+			desc: 'check',
+		},
+		entryRoom: {
+			url: 'room/entryRoom',
+			auth: false,
+			method: 'POST',
+			desc: '进入房间',
+		},
+		exitRoom: {
+			url: 'room/exitRoom',
+			auth: false,
+			method: 'POST',
+			desc: '用户主动离开房间',
+		},
+		positionChange: {
+			url: 'room/positionChange',
+			auth: false,
+			method: 'POST',
+			desc: '房间形象变动-PK位/候补席变动',
+		},
+		taskReady: {
+			url: 'room/taskReady',
+			auth: false,
+			method: 'POST',
+			desc: '准备游戏',
+		},
+		preCreateTask: {
+			url: 'room/preCreateTask',
+			auth: false,
+			method: 'POST',
+			desc: '选择令词接口',
+		},
+		createRoomOption: {
+			url: 'room/createRoomOption',
+			auth: false,
+			method: 'POST',
+			desc: '预创建房间',
+		},
+		createRoom: {
+			url: 'room/createRoom',
+			auth: false,
+			method: 'POST',
+			desc: '预创建房间',
+		},
+		refereeTask: {
+			url: 'room/refereeTask',
+			auth: false,
+			method: 'POST',
+			desc: '诗词验证接口',
+		},
+		submitFailTask: {
+			url: 'room/submitFailTask',
+			auth: false,
+			method: 'POST',
+			desc: '失败者任务提交接口',
+		},
+		moreinfo: {
+			url: 'room/moreinfo',
+			auth: false,
+			method: 'POST',
+			desc: '房间更多信息(房间成员列表)',
+		},
+		useSilk: {
+			url: 'room/useSilk',
+			auth: false,
+			method: 'POST',
+			desc: '使用锦囊接口',
+		},
+		submitTaskContent: {
+			url: 'room/submitTaskContent',
+			auth: false,
+			method: 'POST',
+			desc: '用户主动上报诗词',
+		},
+		getUserImSign: {
+			url: 'room/getUserImSign',
+			auth: false,
+			method: 'POST',
+			desc: '获取当前用户UserSig',
+		},
+		roomTrtcStatusNotice: {
+			url: 'room/roomTrtcStatusNotice',
+			auth: false,
+			method: 'POST',
+			desc: 'Trtc语音房通知',
+		},
+		closeRoom: {
+			url: 'room/closeRoom',
+			auth: false,
+			method: 'POST',
+			desc: '解散房间/关闭房间',
+		},
+		removeUser: {
+			url: 'room/removeUser',
+			auth: false,
+			method: 'POST',
+			desc: '房间踢成员',
+		},
+		roomList: {
+			url: 'my/roomList',
+			auth: false,
+			method: 'GET',
+			desc: '我的房间',
+		},
+		roomlogList: {
+			url: 'my/roomlogList',
+			auth: false,
+			method: 'GET',
+			desc: '我的房间足迹',
+		},
+		getInviteUser: {
+			url: 'room/getInviteUser',
+			auth: false,
+			method: 'GET',
+			desc: '待邀请用户列表',
+		},
+		inviteUser: {
+			url: 'room/inviteUser',
+			auth: false,
+			method: 'POST',
+			desc: '邀请好友',
+		},
+	},
+	qsls: {
+		matchroom: {
+			url: 'room/matchroom',
+			auth: false,
+			method: 'GET',
+			desc: '曲水流觞匹配房间',
+		},
+		createCupTaskOption: {
+			url: 'room/createCupTaskOption',
+			auth: false,
+			method: 'POST',
+			desc: '预创建发杯任务',
+		},
+		createCupTask: {
+			url: 'room/createCupTask',
+			auth: false,
+			method: 'POST',
+			desc: '创建发杯任务',
+		},
+		refuseCupTask: {
+			url: 'room/refuseCupTask',
+			auth: false,
+			method: 'POST',
+			desc: '拒绝杯子任务',
+		},
+		acceptCupTask: {
+			url: 'room/acceptCupTask',
+			auth: false,
+			method: 'POST',
+			desc: '接受杯子任务',
+		},
+		timeOutCupTask: {
+			url: 'room/timeOutCupTask',
+			auth: false,
+			method: 'POST',
+			desc: '完成任务超时',
+		},
+		completeCupTask: {
+			url: 'room/completeCupTask',
+			auth: false,
+			method: 'POST',
+			desc: '完成任务',
+		},
+		likeCupTask: {
+			url: 'room/likeCupTask',
+			auth: false,
+			method: 'POST',
+			desc: '点赞杯子任务',
+		},
+		dislikeCupTask: {
+			url: 'room/dislikeCupTask',
+			auth: false,
+			method: 'POST',
+			desc: '点踩杯子任务',
+		},
+		preuseprop: {
+			url: 'room/preuseprop',
+			auth: false,
+			method: 'POST',
+			desc: '获取房间内道具列表',
+		},
+		useprop: {
+			url: 'room/useprop',
+			auth: false,
+			method: 'POST',
+			desc: '使用道具',
+		},
+	},
+	lists: {
+		roomList: {
+			url: 'room/roomList',
+			auth: false,
+			method: 'POST',
+			desc: '房间列表',
+		},
+	},
+	talent: {
+		getQuestionType: {
+			url: 'Talent/getQuestionType',
+			auth: false,
+			method: 'POST',
+			desc: '题目分类',
+		},
+		getQuestionList: {
+			url: 'Talent/getQuestionList',
+			auth: false,
+			method: 'POST',
+			desc: '获取测试题',
+		},
+		submitQuestion: {
+			url: 'Talent/submitQuestion',
+			auth: false,
+			method: 'POST',
+			desc: '答题',
+		},
+		getTalentResult: {
+			url: 'Talent/getTalentResult',
+			auth: false,
+			method: 'POST',
+			desc: '获取结果',
+		}
+	},
+	activity: {
+		getdrawcount: {
+			url: 'activity/getdrawcount',
+			auth: false,
+			method: 'POST',
+			desc: '获取抽签数量',
+		},
+		draw: {
+			url: 'activity/draw',
+			auth: false,
+			method: 'POST',
+			desc: '抽签',
 		}
 	}
 };

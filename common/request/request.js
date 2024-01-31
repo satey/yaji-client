@@ -1,8 +1,8 @@
-import { API_URL } from '@/env'
+// import { API_URL } from '@/env'
 
 export default class Request {
 	config = {
-		baseUrl: API_URL,
+		baseUrl: uni.getStorageSync("hostData").host+'api/hey/',
 		header: {
 			'content-type': 'application/json',
 			'platform': uni.getStorageSync('platform')

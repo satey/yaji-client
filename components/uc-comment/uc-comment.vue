@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<u-popup :show="showAction" @close="closePopup" :closeable="false" :round="30">
-			<view style="padding: 50rpx 55rpx;">
+			<view style="padding: 50rpx 55rpx;background: #fff;border-radius: 20rpx 20rpx 0rpx 0rpx;">
 				<view class="delete" v-if="showDeleteComment" @click="delComment" style="margin-bottom: 36rpx;">
 					<view style="font-size: 30rpx;">删除评论</view>
 				</view>
@@ -18,8 +18,7 @@
 		</u-popup>
 		<block v-for="(item,index) in listPostComment">
 			<view class="commentItem" style="margin-top: 30rpx;display: flex;" v-if="item.status != 'hidden'">
-				<u-avatar size="85" :src="item.avatar || '/static/avatar.png'" mode="aspectFill"
-					@click="openHome(item)"></u-avatar>
+				<u-avatar size="85" :src="item.avatar" mode="aspectFill" @click="openHome(item)"></u-avatar>
 				<view style="flex: 1;margin-left: 16rpx;">
 					<view style="display: flex;align-items: center;justify-content: space-between;height: 65rpx;">
 						<view style="color: #767676;font-size: 28rpx;display: flex;align-items: center;">

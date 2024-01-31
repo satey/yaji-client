@@ -8,18 +8,20 @@
 			<view slot="center" style="display: flex;align-items: center;">
 				<image mode="aspectFill" :src="toUserData.avatar"
 					style="width:50rpx;height:50rpx;border-radius:50%;margin-right: 10rpx;">
-				</image>{{toUserData.name}}
+				</image>
+				<text style="color: #323232;font-size: 36rpx;">{{toUserData.name}}</text>
 			</view>
 			<view slot="right">
 				<i class="ri-more-fill text-3xl"
-					@click="$u.route('/pages/chat/charSeting',{user_id:$Route.query.user_id})"></i>
+					@click="$u.route('/pages/chat/chatSeting',{user_id:$Route.query.user_id})"></i>
 			</view>
 		</u-navbar>
 
 		<!-- 充值 -->
 		<view v-if="recharge">
-			<u-modal :show="recharge" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
-				confirmText="充值" cancelText="放弃" @cancel="recharge=false" @confirm="$u.route('/pages/mine/recharge')">
+			<u-modal :show="recharge" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FFA000"
+				confirmText="充值" cancelText="放弃" @cancel="recharge=false" :background="'#fff'"
+				@confirm="$u.route('/pages/mine/recharge')">
 				<view style="display: flex;flex-direction: column;">
 					<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">铜钱不足</view>
 					<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
@@ -28,17 +30,10 @@
 				</view>
 			</u-modal>
 		</view>
-		<!-- <view
-			style="width: 88rpx;height: 88rpx;border-radius: 15rpx;position: fixed;right: 30rpx;z-index: 999999999999;box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(0,0,0,0.302);"
-			:style="{bottom:floatHeight+'%'}" @click="floatClick">
-			<image style="width: 100%;height: 100%;"
-				src="https://yaji-1318192409.cos.ap-shanghai.myqcloud.com/app_file/gift/giftIcon.png" mode="">
-			</image>
-		</view> -->
 		<scroll-view class="chatContainer" id="chatContainer" :scroll-into-view="scrollTop" @click="boxClick"
 			scroll-y="true" show-scrollbar="false" :scroll-with-animation="false" v-show="slideShow"
 			:refresher-enabled="isScrollDown" :refresher-triggered="scrollFlag" @refresherrefresh="refresher"
-			refresher-background="#F7F7F7" :style="{visibility:showMsg?'':'hidden'}">
+			refresher-background="#F7F7F7">
 			<view v-show="showSvga" id="svgaPlayer"
 				style="z-index: 99999;box-sizing: border-box;position: fixed;top:0;left: 0;width: 100%;height: 100%;">
 				<l-svga ref="svgaPlayer" style="width: 100%;height: 100%;box-sizing: border-box;"></l-svga>
@@ -48,79 +43,169 @@
 					<!-- 时间 -->
 					<view class="text-center" style="padding-top: 10rpx;">
 						<text
-							class="p-1 px-2 rounded text-xs leading-none text-gray-400 bg-gray-50">{{ $u.timeFormat(item.createtime, 'yyyy-mm-dd hh:MM') }}</text>
+							class="p-1 px-2 rounded text-xs leading-none text-gray-400 bg-gray-50">{{ $u.timeFormat(item.message.createtime, 'yyyy-mm-dd hh:MM') }}</text>
 					</view>
 					<!-- 左边 -->
 					<view class="chatLeft mt-6" :id="index==0?'scrollLeftTop':''"
-						v-if="item.user_id == $Route.query.user_id">
-						<view class="flex">
+						v-if="item.from_user_id == $Route.query.user_id">
+						<view class="flex" v-if="item.message.type != 'gift'">
 							<image mode="aspectFill" class="block rounded-full w-10 h-10 mr-3" sty
-								:src="item.avatar || '/static/avatar.png'"
-								@click="$u.route('/pages/user/home',{user_id:item.user_id})">
+								:src="item.from_user_info.avatar"
+								@click="$u.route('/pages/user/home',{user_id:item.from_user_id})">
 							</image>
 						</view>
 						<view>
-							<view v-if="item.type === 'text'"
+							<view v-if="item.message.type === 'text'"
 								class="rounded-3xl rounded-tl-none p-3  bg-gradient-to-r to-fuchsia-500 whitespace-pre-wrap"
 								style="background: #fff;color: #323232;margin-right: 90rpx;font-size: 32rpx;">
-								{{ item.content }}
+								{{ item.message.content }}
 							</view>
-							<view v-if="item.type === 'image'" @click="openImg">
-								<u-album :urls="item.content.split(',')" multipleSize="150" @imgLoad="imgLoad"
+							<view v-if="item.message.type === 'image'" @click="openImg">
+								<u-album :urls="item.message.content.split(',')" singleSize="390" @imgLoad="imgLoad"
 									rowCount="1"></u-album>
+								<!-- <image :src="item.message.content" style="width: 150rpx;height: 150rpx;"
+									mode="aspectFill"></image> -->
 							</view>
-							<view v-if="item.type === 'gift'" @click="openImg">
-								<u-album :urls="item.content.split(',')" multipleSize="150" @imgLoad="imgLoad"
-									rowCount="1"></u-album>
+							<view v-if="item.message.type === 'gift'" style="display: flex;align-items: center;">
+								<view class="flex">
+									<image mode="aspectFill" style="margin-right: 20rpx;"
+										class="block rounded-full w-10 h-10"
+										@click="$u.route('/pages/user/home',{user_id:item.from_user_id})"
+										:src="item.from_user_info.avatar">
+									</image>
+								</view>
+								<u-album @click="openImg" :urls="item.message.content.split(',')" multipleSize="150"
+									@imgLoad="imgLoad" rowCount="1"></u-album>
+								<!-- <image :src="item.message.content" style="width: 150rpx;height: 150rpx;"
+									mode="aspectFill"></image> -->
 							</view>
-							<view v-if="item.type === 'audio'" @click="handlePlayAudio(item,index)"
-								class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
-								<block v-if="item.isPlay==false">
-									<view class="ri-voiceprint-line" style="color: #fff;" v-for="(item,index) in 3"
-										:key="index">
+							<view v-if="item.message.type === 'audio'" @click="handlePlayAudio(item,index)"
+								class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r to-rose-400"
+								style="background: #fff;">
+								<block v-if="item.message.isPlay==false">
+									<view class="ri-voiceprint-line" style="color: #333;font-size: 39rpx;"
+										v-for="(item,index) in 2" :key="index">
 									</view>
 								</block>
 								<block v-else>
-									<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;"
-										v-if="item.isPlay == true">
+									<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;">
 									</image>
 								</block>
+							</view>
+							<view v-if="item.message.type === 'play'" class="playBox" @click="jumpRoom(item)"
+								:style="{background:item.message.background }">
+								<image src="../../static/iconImage/pai.png"
+									style="width: 19rpx;height: 23rpx;position: absolute;top: 8rpx;right: 16rpx;"
+									mode=""></image>
+								<view style="padding: 15rpx 15rpx 15rpx 25rpx;display: flex;align-items: center;">
+									<block v-if="item.message.room_type=='fhl'">
+										<image src="@/static/iconImage/fhl1.png"
+											style="width: 96rpx;height: 89rpx;margin-right: 18rpx;" mode="widthFix">
+										</image>
+									</block>
+									<block v-if="item.message.room_type=='scjl'">
+										<image src="@/static/iconImage/scjl1.png"
+											style="width: 96rpx;height: 89rpx;margin-right: 18rpx;" mode="widthFix">
+										</image>
+									</block>
+									<block v-if="item.message.room_type=='cyjl'">
+										<image src="@/static/iconImage/cyjl1.png"
+											style="width: 96rpx;height: 89rpx;margin-right: 18rpx;" mode="widthFix">
+										</image>
+									</block>
+									<view style="position: relative;">
+										<text
+											style="position: relative;font-size: 23rpx;color: #000;z-index: 5;">{{item.message.room_name}}</text>
+										<view
+											style="height: 6rpx;width: 100%;position: absolute;left: 0;bottom: 0;background: #FFA000;">
+										</view>
+									</view>
+								</view>
+								<view style="height: 39rpx;display: flex;align-items: center;justify-content: center;"
+									:style="{background:item.message.footerColor }">
+									<text style="font-size: 25rpx;color: #fff;">点击进入</text>
+									<i class="iconfont icon-right" style="font-size: 25rpx;color: #fff;"></i>
+								</view>
 							</view>
 						</view>
 					</view>
 					<!-- 右边 -->
 					<view class="chatRight mt-6" :id="index==0?'scrollRightTop':''" v-else>
 						<view>
-							<view v-if="item.type === 'text'"
+							<view v-if="item.message.type === 'text'"
 								class="rounded-3xl rounded-tr-none p-3  text-white bg-gradient-to-r  to-fuchsia-500 whitespace-pre-wrap"
-								style="background: #FF6D93;max-width:80%;margin-left: 90rpx;font-size: 32rpx;">
-								{{ item.content }}
+								style="background: #FFA000;max-width:80%;margin-left: 90rpx;font-size: 32rpx;">
+								{{ item.message.content }}
 							</view>
-							<view v-if="item.type === 'image'" @click="openImg">
-								<u-album :urls="item.content.split(',')" multipleSize="150" @imgLoad="imgLoad"
+							<view v-if="item.message.type === 'image'" @click="openImg">
+								<!-- <image :src="item.message.content" style="width: 150rpx;height: 150rpx;"
+									mode="aspectFill"></image> -->
+								<u-album :urls="item.message.content.split(',')" multipleSize="390" @imgLoad="imgLoad"
 									rowCount="1"></u-album>
 							</view>
-							<view v-if="item.type === 'gift'" @click="openImg">
-								<u-album :urls="item.content.split(',')" multipleSize="150" @imgLoad="imgLoad"
-									rowCount="1"></u-album>
+							<view v-if="item.message.type === 'gift'" style="display: flex;align-items: center;">
+								<u-album @click="openImg" :urls="item.message.content.split(',')" multipleSize="150"
+									@imgLoad="imgLoad" rowCount="1"></u-album>
+								<view class="flex">
+									<image mode="aspectFill" style="margin-left: 20rpx;"
+										class="block rounded-full w-10 h-10 ml-3" :src="item.from_user_info.avatar">
+									</image>
+								</view>
+								<!-- <image :src="item.message.content" style="width: 150rpx;height: 150rpx;"
+									mode="aspectFill"></image> -->
 							</view>
-							<view v-if="item.type === 'audio'" @click="handlePlayAudio(item,index)"
-								class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
-								<block v-if="item.isPlay==false">
-									<view class="ri-voiceprint-line" style="color: #fff;" v-for="(item,index) in 3"
-										:key="index">
+							<view v-if="item.message.type === 'audio'" @click="handlePlayAudio(item,index)"
+								class="flex items-center justify-center rounded-full w-32 h-12 bg-gradient-to-r to-rose-400"
+								style="background: #FFA000;">
+								<block v-if="item.message.isPlay==false">
+									<view class="ri-voiceprint-line" style="color: #fff;font-size: 39rpx;"
+										v-for="(item,index) in 2" :key="index">
 									</view>
 								</block>
 								<block v-else>
-									<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;"
-										v-if="item.isPlay == true">
+									<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;">
 									</image>
 								</block>
 							</view>
+							<view v-if="item.message.type === 'play'" class="playBox" @click="jumpRoom(item)"
+								:style="{background:item.message.background }">
+								<image src="../../static/iconImage/pai.png"
+									style="width: 19rpx;height: 23rpx;position: absolute;top: 8rpx;right: 16rpx;"
+									mode=""></image>
+								<view style="padding: 15rpx 15rpx 15rpx 25rpx;display: flex;align-items: center;">
+									<block v-if="item.message.room_type=='fhl'">
+										<image src="@/static/iconImage/fhl1.png"
+											style="width: 96rpx;height: 89rpx;margin-right: 18rpx;" mode="widthFix">
+										</image>
+									</block>
+									<block v-if="item.message.room_type=='scjl'">
+										<image src="@/static/iconImage/scjl1.png"
+											style="width: 96rpx;height: 89rpx;margin-right: 18rpx;" mode="widthFix">
+										</image>
+									</block>
+									<block v-if="item.message.room_type=='cyjl'">
+										<image src="@/static/iconImage/cyjl1.png"
+											style="width: 96rpx;height: 89rpx;margin-right: 18rpx;" mode="widthFix">
+										</image>
+									</block>
+									<view style="position: relative;">
+										<text
+											style="position: relative;font-size: 23rpx;color: #000;z-index: 5;">{{item.message.room_name}}</text>
+										<view
+											style="height: 6rpx;width: 100%;position: absolute;left: 0;bottom: 0;background: #FFA000;">
+										</view>
+									</view>
+								</view>
+								<view style="height: 39rpx;display: flex;align-items: center;justify-content: center;"
+									:style="{background:item.message.footerColor }">
+									<text style="font-size: 25rpx;color: #fff;">点击进入</text>
+									<i class="iconfont icon-right" style="font-size: 25rpx;color: #fff;"></i>
+								</view>
+							</view>
 						</view>
-						<view class="flex">
-							<image mode="aspectFill" class="block rounded-full w-10 h-10 ml-3"
-								:src="item.avatar || '/static/avatar.png'">
+						<view class="flex" v-if="item.message.type != 'gift'">
+							<image mode="aspectFill" style="margin-left: 20rpx;" class="block rounded-full w-10 h-10"
+								:src="item.from_user_info.avatar">
 							</image>
 						</view>
 					</view>
@@ -128,22 +213,57 @@
 			</view>
 			<view id="scrollBottom" style="height: 20rpx;"></view>
 		</scroll-view>
+		<!-- 创建房间 -->
+		<view style="width: 100%;height: 100vh;position: absolute;top: 0;left: 0;" v-if="showCreate">
+			<u-popup :show="showCreate" @close="showCreate = false;createTypeIndex=-1" mode="bottom" :closeable="true"
+				:round="20">
+				<view class="createRoom">
+					<!-- <view
+						style="width: 250rpx;height: 55rpx;display: flex;align-items: center;justify-content: center;margin: 0 auto;background: #FFDDA4;border-radius: 50rpx;padding: 0rpx 25rpx;box-sizing: border-box;margin-top: 25rpx;">
+						<input type="text" v-model="createRoomTitle" placeholder="请输入房间名称"
+							placeholder-style="color:#666666;fontSize:28rpx;textAlign:center;fontWeight:normal"
+							style="text-align: center;color: #FFA000;font-weight: bold;" />
+					</view> -->
+					<view
+						style="display: flex;align-items: center;justify-content: space-between;padding: 50rpx 80rpx 60rpx 80rpx;box-sizing: border-box;margin-top: 25rpx;">
+						<view class="createImg" @click="createTypeIndex = 0"
+							:style="{border:createTypeIndex==0?'1px solid #F37B1A':'1px solid transparent'}">
+							<image src="@/static/iconImage/fhl.png" style="width: 100%;height: 100%;" mode="aspectFill">
+							</image>
+						</view>
+						<view class="createImg" @click="createTypeIndex = 1"
+							:style="{border:createTypeIndex==1?'1px solid #F37B1A':'1px solid transparent'}">
+							<image src="@/static/iconImage/scjl.png" style="width: 100%;height: 100%;"
+								mode="aspectFill"></image>
+						</view>
+						<view class="createImg" @click="createTypeIndex = 2"
+							:style="{border:createTypeIndex==2?'1px solid #F37B1A':'1px solid transparent'}">
+							<image src="@/static/iconImage/cyjl.png" style="width: 100%;height: 100%;"
+								mode="aspectFill"></image>
+						</view>
+					</view>
+					<view class="sendLink" @click="sendLink">发送房间链接</view>
+				</view>
+			</u-popup>
+		</view>
+
 		<!-- 底部 -->
-		<view class="singleFooter" style="position: relative;">
-			<view v-if="flower.length!=0"
-				style="width: 47.95rpx;height: 73.08rpx;border-radius: 15rpx;position: absolute;right: 60rpx;top: -100rpx;"
-				:style="{bottom:floatHeight+'%'}" @click="floatClick">
-				<view style="position: relative;">
-					<image style="width: 47.95rpx;height: 73.08rpx;" :src="flower.image" mode="heightFix">
-					</image>
-					<text
-						style="color: #F37B1A;font-size: 23.97rpx;position: absolute;right: -28rpx;bottom: 5rpx;">x{{flower.nums}}</text>
+		<view class="singleFooter" style="position: relative;background: #F7F7F7;">
+			<view
+				style="margin-bottom: 30rpx;width: 100%;justify-content: space-between;display: flex;align-items: center;padding-right: 30rpx;box-sizing: border-box;">
+				<view @click="roomCreate"
+					style="width: 175rpx;height: 60rpx;border-radius: 0rpx 36rpx 36rpx 0rpx;background: #FFA000;text-align: center;display: flex;align-items: center;justify-content: center;">
+					<view style="color: #fff;font-size: 30rpx;">一起玩</view>
+					<i class="iconfont icon-right" style="font-size: 26rpx;color: #fff;"></i>
+				</view>
+				<view style="position: relative;" :style="{opacity:flower.nums!=0?'1':'0'}" @click="floatClick">
+					<image style="width: 100rpx;height: 100rpx;" :src="flower.image" mode="heightFix"></image>
+					<text style="color: #F37B1A;;">x{{flower.nums}}</text>
 				</view>
 			</view>
-			<view class="flex p-4" style="width: 100%;box-sizing: border-box;">
+			<view class="flex p-4" style="width: 100%;box-sizing: border-box;background: #fff;">
 				<view class="mr-4 flex items-center" @click="handleVoice">
 					<image src="@/static/laba.png" style="width: 49rpx;height: 49rpx;" mode=""></image>
-					<!-- <i class="ri-mic-2-fill block text-4xl leading-none text-gray-400"></i> -->
 				</view>
 				<view style="flex: 1;position: relative;display: flex;background: #F8F8F7;border-radius: 5rpx;"
 					class="mr-4">
@@ -152,10 +272,9 @@
 						style="padding:20rpx;border-radius: 10rpx;font-size:28rpx;color: rgb(48, 49, 51);width: 100%;box-sizing: border-box;"
 						placeholder="说点什么吧" v-model="text"
 						placeholder-style="color: rgb(192, 196, 204);font-size:30rpx"></textarea>
-					<view class="mr-4 flex items-center" @click="handleEmoji">
+					<!-- <view class="mr-4 flex items-center" @click="handleEmoji">
 						<image src="@/static/biaoqing.png" style="width: 46rpx;height: 46rpx;" mode=""></image>
-						<!-- <i class="ri-emotion-fill block text-4xl leading-none text-gray-400"></i> -->
-					</view>
+					</view> -->
 				</view>
 				<view class="flex items-center mr-4 " @click="handleImage">
 					<image src="@/static/tupian.png" style="width: 44rpx;height: 44rpx;" mode=""></image>
@@ -166,7 +285,7 @@
 				</view>
 				<view class="flex items-center" v-if="text" @touchend.prevent="handleTextSend">
 					<text class="rounded-full p-2 px-3 text-base text-white bg-gradient-to-r to-fuchsia-500"
-						style="background: rgb(254, 67, 115);">发送</text>
+						style="background: #FFA000;">发送</text>
 				</view>
 			</view>
 			<!-- 语音 -->
@@ -175,13 +294,13 @@
 				<view class="flex justify-center items-center mt-16" @touchstart="handleRecordStart"
 					@touchmove.stop.prevent="handleRecordDoing" @touchend="handleRecordStop">
 					<view class="relative flex justify-center items-center rounded-full">
-						<view class="flex justify-center items-center rounded-full w-20 h-20 bg-fuchsia-500 z-10"
-							style="background: #FE4373 !important;">
+						<view class="flex justify-center items-center rounded-full w-20 h-20  z-10"
+							style="background: #FFA000 !important;">
 							<i class="ri-mic-fill text-4xl leading-none text-white"></i>
 						</view>
 						<view v-if="recording" class="animate-ping absolute rounded-full p-2 bg-fuchsia-200 opacity-50"
-							style="background: #FE4373 !important;">
-							<view class="rounded-full w-20 h-20 p-2 bg-fuchsia-500 opacity-50">
+							style="background: #FFA000 !important;">
+							<view class="rounded-full w-20 h-20 p-2 opacity-50">
 							</view>
 						</view>
 					</view>
@@ -196,7 +315,7 @@
 			</view>
 			<!-- 礼物 -->
 			<view v-if="showGift" class="bg-gray-100 h-60 overflow-y-scroll">
-				<view class="grid grid-cols-4 gap-4 bg-gray-100 p-4 ">
+				<view class="grid grid-cols-4 gap-4 bg-gray-100 p-4 " style="padding-bottom: 100rpx;">
 					<view v-for="(item, index) in giftList" :key="index" :item="item" v-if="item.status!='hidden'">
 						<view class="flex flex-col items-center" @click="handleGiftSend(item)">
 							<view style="overflow: hidden;" class="w-20 h-20">
@@ -213,15 +332,16 @@
 					</view>
 				</view>
 				<view
-					style="display: flex;flex-direction: row;justify-content: end;padding-top: 30rpx;margin-right: 27rpx;">
+					style="display: flex;flex-direction: row;justify-content: end;padding-top: 30rpx;margin-right: 27rpx;position: fixed;bottom: 0;left: 0;width: 100%;background: linear-gradient(rgba(255,255,255,0), #FFFFFF);height: 125rpx;align-items: center;padding-right: 30rpx;box-sizing: border-box;">
 					<view style="display: flex;align-items: center;margin-right: 20rpx;">
-						<image style="width: 20rpx;height: 20rpx;" src="@/static/qian.png" mode=""></image>
-						<text style="font-size: 20rpx;color: #808080;margin-left: 5rpx;">{{userInfoData.money}}</text>
+						<image style="width: 38rpx;height: 38rpx;" src="@/static/qian.png" mode=""></image>
+						<text
+							style="font-size: 20rpx;color: #FFA000;margin-left: 10rpx;">余额{{userInfoData.money}}</text>
 					</view>
-					<view style="display: flex;align-items: center;font-size: 23rpx;color: #FE4373;"
+					<view
+						style="width: 140rpx;height: 66rpx;text-align: center;line-height: 66rpx;border-radius: 50rpx;border-radius: 50rpx;font-size: 30rpx;color: #fff;background: #FFA000;"
 						@click="$u.route('/pages/mine/recharge')">
-						<text>马上充值</text>
-						<text class="ri-arrow-right-s-line" style="font-size: 35rpx;"></text>
+						充值
 					</view>
 				</view>
 			</view>
@@ -243,8 +363,9 @@
 			</view>
 		</view>
 		<view class="sdasdas" :style="{height:pageHeight+'px'}"></view>
-		<reward :giftIsShow="giftIsShow" @changend="changend"></reward>
-		<topPrompt></topPrompt>
+		<reward :giftIsShow="giftIsShow"></reward>
+		<feiqslsHit></feiqslsHit>
+		<feiauthority ref="authority" @imageEmpower='imageEmpower' @audioEmpower="audioEmpower"></feiauthority>
 	</view>
 </template>
 <script>
@@ -260,13 +381,16 @@
 		},
 		data() {
 			return {
+				createTypeIndex: -1,
+				createRoomTitle: "",
+				showCreate: false,
 				platform: uni.getSystemInfoSync().platform,
 				scrollAnimation: false,
 				toUserData: {
 					"avatar": "",
 					"name": ""
 				},
-				chatMsgList: [],
+				chatMsgList: null,
 				giftList: [],
 				scrollTop: "",
 				slideShow: true,
@@ -318,66 +442,31 @@
 				userInfoData: [],
 				flower: [],
 				showMsg: false,
+				is_in_black: 0,
+				userInfo: uni.getStorageSync("userInfo")
 			}
-		},
-		computed: {
-			...mapState({
-				userInfo: state => state.user.userInfo,
-			})
 		},
 		onLoad() {
 			var that = this;
+			this.getChatMessageList()
 			this.getGiftList()
 			this.getUserProfile();
-			// this.initSocKet();
-			// this.getChatList();
 			this.watchKeyboard();
 			this.watchRecorder()
-			this.single()
 			this.getUserInfo()
 			this.getflower()
-		},
-
-		onShow() {
-			var openImg = uni.getStorageSync("openImg")
-			if (openImg == "") {
-				let showTimeOut = setTimeout(() => {
-					this.historyPage = 1;
-					this.isScrollDown = true;
-					this.scrollFlag = false;
-					getApp().globalData.socketTask._callbacks.message.splice(1);
-					this.$store.commit("setReceiverId", this.$Route.query.user_id)
-					this.$nextTick(function() {
-						this.chatMsgList = [];
-						this.getChatList();
-						this.initSocKet();
-					})
-					this.scrollBottom()
-					clearTimeout(showTimeOut)
-				}, 250)
-			} else {
-				uni.removeStorageSync("openImg")
-			}
+			this.initSocKet()
 		},
 		onHide() {
 			this.showSvga = false;
-			this.$store.commit("setReceiverId", "");
 		},
 		created() {
 			var that = this;
 			var pages = getCurrentPages();
 			var page = pages[pages.length - 1];
-			that.$store.watch((state, getters) => {
-				if (state.message.giftId != '') {
-					if (page.route == "pages/chat/single") {
-						that.giftIsShow = true;
-					}
-				}
-			})
 		},
 		onUnload() {
 			var that = this;
-			this.$store.commit("setReceiverId", "");
 			getApp().globalData.socketTask._callbacks.message.splice(1)
 			this.audio.destroy()
 			this.showSvga = false;
@@ -385,6 +474,67 @@
 		methods: {
 			imgLoad() {
 				this.scrollBottom()
+			},
+			//创建房间
+			roomCreate() {
+				this.showCreate = true
+			},
+			sendLink() {
+				let type = "";
+				let background = '';
+				let footerColor = ''
+				switch (this.createTypeIndex) {
+					case 0:
+						type = "fhl"
+						background = 'linear-gradient(#FFDBCC, #FFFFFF)';
+						footerColor = '#F7B793'
+						break;
+					case 1:
+						type = "scjl"
+						background = 'linear-gradient(#E9FFC6, #FFFFFF)'
+						footerColor = '#CEEDB6'
+						break;
+					case 2:
+						type = "cyjl"
+						background = 'linear-gradient(#DBFCD3, #FFFFFF)'
+						footerColor = '#C1EDB6'
+						break;
+				}
+				if (type == '') {
+					uni.showToast({
+						icon: "none",
+						title: "请选择类型"
+					})
+					return;
+				}
+				this.$api("chat.playTogether", {
+					to_user_id: this.$Route.query.user_id,
+					type: type,
+				}).then((res) => {
+					if (res.code == 1) {
+						var obj = {
+							from_user_id: this.userInfo.id,
+							from_user_info: {
+								user_id: this.userInfo.id,
+								avatar: this.userInfo.avatar,
+							},
+							message: {
+								content: ``,
+								room_id: res.data.message.room_id,
+								room_name: res.data.message.room_name,
+								room_type: type,
+								type: 'play',
+								background: background,
+								footerColor: footerColor
+							},
+						}
+						this.chatMsgList.push(obj);
+						this.createTypeIndex = -1;
+						this.showCreate = false;
+						this.createRoomTitle = '';
+						this.scrollBottom()
+					}
+				})
 			},
 			getflower() {
 				let that = this;
@@ -395,6 +545,32 @@
 						that.flower = [];
 					}
 				})
+			},
+			jumpRoom(item) {
+				console.log(item.message.room_type)
+				switch (item.message.room_type) {
+					case 'qsls':
+
+						break;
+					case 'fhl':
+						this.$u.route("/pages/chat/chatRoom", {
+							roomId: item.message.room_id,
+							type: item.message.room_type
+						})
+						break;
+					case 'cyjl':
+						this.$u.route("/pages/chat/chatRoom", {
+							roomId: item.message.room_id,
+							type: item.message.room_type
+						})
+						break;
+					case 'scjl':
+						this.$u.route("/pages/chat/chatRoom", {
+							roomId: item.message.room_id,
+							type: item.message.room_type
+						})
+						break;
+				}
 			},
 			getUserInfo() {
 				var that = this;
@@ -410,21 +586,40 @@
 				that.showRecord = false;
 				that.showEmoji = false;
 				that.floatHeight = "40"
+				if (that.is_in_black == 1) {
+					uni.showToast({
+						icon: "none",
+						title: "您已被拉黑"
+					})
+					return;
+				}
 				that.$api("gift.giveGift", {
 					"receiver_user_id": that.$Route.query.user_id,
 					"nums": 1,
 					"gift_id": that.flower.gift_id
 				}).then(res => {
-					console.log(res)
 					if (res.code == 1) {
-						that.sendMessage(that.flower.only_flower_image, 'gift', that.flower.id);
+
 						var obj = {
-							avatar: that.userInfo.avatar,
+							from_user_id: that.userInfo.id,
+							from_user_info: {
+								user_id: that.userInfo.id,
+								avatar: that.userInfo.avatar,
+							},
+							message: {
+								content: that.flower.only_flower_image,
+								gift_id: that.flower.gift_id,
+								gift_svga: that.flower.only_flower_image,
+								type: 'gift',
+								gift_image: that.flower.only_flower_image
+							},
+						}
+						that.sendMessage({
 							content: that.flower.only_flower_image,
-							createtime: that.getDate(),
-							type: "gift",
-							user_id: that.userInfo.id,
-						};
+							gift_id: that.flower.gift_id,
+							gift_svga: that.flower.only_flower_image,
+							type: 'gift',
+						})
 						that.chatMsgList.push(obj);
 						that.scrollBottom()
 						that.getflower()
@@ -454,9 +649,7 @@
 								that.chatMsgList.push(obj);
 								that.sendMessage(res.data.send_message, 'text');
 								that.scrollBottom()
-							} else {
-								that.poetry()
-							}
+							} else {}
 						}
 						uni.setStorageSync('CHATSESSIONID', res.data.session_id)
 					} else {
@@ -476,212 +669,138 @@
 				var that = this;
 				that.scrollFlag = true;
 				that.historyPage++;
-				that.getChatList()
 				that.$nextTick(() => {
-					that.scrollLeftTop()
-					that.scrollRightTop()
+					that.getChatMessageList()
 				})
+			},
 
-			},
-			//诗词结缘
-			poetry() {
+			//获取聊天历史记录
+			getChatMessageList() {
 				var that = this;
-				var poetryItem = uni.getStorageSync("poetryItem");
-				if (poetryItem != '') {
-					that.$api("poetry.single", {
-						poetry_id: poetryItem.id,
-						receiver_id: poetryItem.user_id
-					}).then(res => {
-						if (res.code == 0) {
-							var obj = {
-								avatar: that.userInfo.avatar,
-								content: res.msg,
-								createtime: that.getDate(),
-								type: "text",
-								user_id: that.userInfo.id,
-							};
-							that.chatMsgList.push(obj);
-							that.sendMessage(res.msg, 'text');
-						} else {}
-						uni.removeStorageSync("poetryItem");
-					})
-				}
-			},
-			//礼包
-			changend() {
-				this.giftIsShow = false;
-			},
-			//后台标记已读
-			unread() {
-				var that = this;
-				let params = {
-					type: "read",
-					to_user_id: that.$Route.query.user_id, //接收者的id,
-				};
-				getApp().globalData.socketTask.send({
-					data: JSON.stringify(params),
-					success() {
-						console.log("webscoket后台标记已读");
-					},
-					fail() {
-						console.log("webscoket后台标记已读");
+				that.$api("chat.getChatMessageList", {
+					to_user_id: that.$Route.query.user_id,
+					page: that.historyPage
+				}).then(res => {
+					if (res.code == 1) {
+						that.is_in_black = res.data.is_in_black;
+						res.data.list.forEach((val, index) => {
+							if (val.message.type == 'play') {
+								switch (val.message.room_type) {
+									case "fhl":
+										val.message.background = 'linear-gradient(#FFDBCC, #FFFFFF)';
+										val.message.footerColor = '#F7B793'
+										break;
+									case "scjl":
+										val.message.background = 'linear-gradient(#E9FFC6, #FFFFFF)'
+										val.message.footerColor = '#CEEDB6'
+										break;
+									case "cyjl":
+										val.message.background = 'linear-gradient(#DBFCD3, #FFFFFF)'
+										val.message.footerColor = '#C1EDB6'
+										break;
+								}
+							}
+							val.message.isPlay = false
+						})
+						if (that.historyPage == 1) {
+							that.chatMsgList = res.data.list.reverse()
+						} else {
+							that.chatMsgList.unshift(...res.data.list.reverse())
+						}
+						that.$nextTick(() => {
+							that.scrollFlag = false;
+							if (that.historyPage == res.data.page_data.total_page) {
+								that.isScrollDown = false
+							}
+							if (that.historyPage == 1) {
+								that.scrollBottom();
+							} else {
+								that.scrollLeftTop()
+								that.scrollRightTop()
+							}
+						})
 					}
-				});
+				})
 			},
 			//初始化socket
 			initSocKet() {
 				var that = this;
 				getApp().globalData.socketTask.onMessage((res) => {
-					if (JSON.parse(res.data).cate != 1) {
-						return;
-					}
-					var socketData = JSON.parse(res.data);
-					that.unread()
-					if (socketData.type == "history") {
-						var list = socketData.data;
-						var list2 = [];
-						if (that.historyPage != 1) {
-							if (socketData.data.length == 0) {
-								that.isScrollDown = false;
-								return;
-							} else {
-								list.unshift(...that.chatMsgList);
-								that.scrollFlag = false;
-
-							}
-
-						}
-						list.sort((a, b) => {
-							return a.createtime - b.createtime
-						})
-						list.forEach((val, index) => {
-							list2.push({
-								avatar: val.avatar,
-								content: val.content,
-								createtime: val.createtime,
-								type: val.type,
-								user_id: val.user_id,
-								isPlay: false
-							})
-						})
-						that.chatMsgList = list2;
-						that.showMsg = true;
-						if (that.historyPage == 1) {
-							that.scrollBottom();
-						}
-
-						//------
-						var data = JSON.parse(res.data).last_gift_data;
-						if (data == null) {
-							return;
-						}
-						if (socketData.last_gift_data.readtime == null) {
-							if (data.type == "gift") {
-								that.$nextTick(() => {
-									that.$api('gift.lists').then(giftRes => {
-										if (giftRes.code === 1) {
-											giftRes.data.forEach((val, index) => {
-												if (val.id == data.gift_id) {
-													that.showSvga = true;
-													var setTime1 = setTimeout(() => {
-														if (val.url != null) {
-															that.gift = val;
-															that.handleGiftPlay()
-															clearTimeout(setTime1)
-															that.scrollBottom()
-														}
-													}, 200)
-												}
-											})
+					if (JSON.parse(res.data).cate == 'chat') {
+						var socketData = JSON.parse(res.data);
+						console.log(socketData)
+						switch (JSON.parse(res.data).data.message.type) {
+							case "gift":
+								if (socketData.data.from_user_id == that.$Route.query.user_id) {
+									that.giftList.forEach((val, index) => {
+										if (val.id == socketData.data.message.gift_id) {
+											that.gift = val;
+											that.handleGiftPlay()
 										}
 									})
-								})
-							}
-						}
-					} else if (socketData.type == "text") {
-						if (socketData.data.user_id == that.$Route.query.user_id) {
-							that.scrollAnimation = true;
-							that.chatMsgList.push(socketData.data);
-							that.scrollBottom();
-						}
-					} else if (socketData.type == "image") {
-						if (socketData.data.user_id == that.$Route.query.user_id) {
-							that.scrollAnimation = true;
-							that.chatMsgList.push(socketData.data);
-							that.scrollBottom();
-						}
-					} else if (socketData.type == "gift") {
-						if (socketData.data.user_id == that.$Route.query.user_id) {
-							that.giftList.forEach((val, index) => {
-								if (val.id == socketData.data.gift_id) {
-									that.gift = val;
-									that.handleGiftPlay()
 								}
-							})
-							that.scrollAnimation = true;
-							that.chatMsgList.push(socketData.data);
-							that.scrollBottom();
+								break;
 						}
-					} else if (socketData.type == "audio") {
-						if (socketData.data.user_id == that.$Route.query.user_id) {
-							var list = socketData.data;
-							list.isPlay = false;
+						if (socketData.data.from_user_id == that.$Route.query.user_id) {
+							var item = JSON.parse(res.data).data;
+							item.message.isPlay = false
 							that.scrollAnimation = true;
-							that.chatMsgList.push(list);
+							that.chatMsgList.push(item);
 							that.scrollBottom();
 						}
 					}
 				})
 			},
-			//获取聊天信息
-			getChatList() {
-				var that = this;
-				let params = {
-					type: 'history',
-					msg: 'send',
-					data: '',
-					page: that.historyPage,
-					to_user_id: this.$Route.query.user_id, //接收者的id,
-				}
-				getApp().globalData.socketTask.send({
-					data: JSON.stringify(params),
-					success() {
-						console.log("获取历史聊天记录成功");
-					},
-					fail() {
-						console.log("获取历史聊天记录失败");
-					}
-				});
-			},
+
 			//发送文本消息
 			handleTextSend() {
 				let that = this;
+				if (that.is_in_black == 1) {
+					uni.showToast({
+						icon: "none",
+						title: "您已被拉黑"
+					})
+					return;
+				}
 				if (that.text === '') {
 					return
 				} else {
 					that.scrollAnimation = true;
 					var obj = {
-						avatar: that.userInfo.avatar,
+						from_user_id: that.userInfo.id,
+						from_user_info: {
+							user_id: that.userInfo.id,
+							avatar: that.userInfo.avatar,
+
+						},
+						message: {
+							content: that.text,
+							type: 'text'
+						},
+						to_user_id: "",
+						to_user_info: {},
+					}
+					that.sendMessage({
 						content: that.text,
-						createtime: that.getDate(),
 						type: "text",
-						user_id: that.userInfo.id,
-					};
+					})
 					that.chatMsgList.push(obj);
-					that.sendMessage(that.text, 'text');
 					that.text = '';
 					that.scrollBottom()
 				}
 			},
 			//发送socket信息
-			sendMessage(data, type = 'text', gift_id = "") {
+			sendMessage(data) {
 				let that = this;
 				let params = {
-					type: type,
-					msg: 'send',
-					data: data,
-					gift_id: gift_id,
-					to_user_id: that.$Route.query.user_id //接收者的id,
+					cate: "chat",
+					code: 1,
+					msg: "success",
+					data: {
+						from_user_id: that.userInfo.id,
+						to_user_id: that.$Route.query.user_id,
+						message: data
+					}
 				}
 				console.log("-------发送消息----------")
 				getApp().globalData.socketTask.send({
@@ -697,21 +816,23 @@
 			},
 			//播放语音
 			handlePlayAudio(item, index) {
-				let that = this
-				if (!item.content) {
+				let that = this;
+				if (!item.message.content) {
 					that.$u.toast('语音不能为空');
 					return false
 				} else {
 					that.audio.destroy();
 					that.chatMsgList.forEach((val, index) => {
-						val.isPlay = false;
+						if (val.message.type == 'audio') {
+							val.message.isPlay = false;
+						}
 					})
-					that.audio = uni.createInnerAudioContext()
-					that.audio.src = item.content;
-					that.chatMsgList[index].isPlay = true;
+					that.audio = uni.createInnerAudioContext();
+					that.audio.src = item.message.content;
+					that.chatMsgList[index].message.isPlay = true;
 					that.audio.play()
 					that.audio.onEnded((e) => {
-						that.chatMsgList[index].isPlay = false;
+						that.chatMsgList[index].message.isPlay = false;
 					})
 				}
 			},
@@ -727,6 +848,13 @@
 			},
 			showGiftClick() {
 				var that = this;
+				if (that.is_in_black == 1) {
+					uni.showToast({
+						icon: "none",
+						title: "您已被拉黑"
+					})
+					return;
+				}
 				that.showGift = !that.showGift;
 				that.showEmoji = false;
 				that.showPlus = false;
@@ -770,25 +898,46 @@
 					"gift_id": item.id
 				}).then(data => {
 					if (data.code == 1) {
-						if (data.msg == "赠送成功") {
-							that.getUserInfo()
-							that.sendMessage(that.gift.image, 'gift', item.id);
-							that.scrollAnimation = true;
-							var obj = {
-								avatar: that.userInfo.avatar,
-								content: that.gift.image,
-								createtime: that.getDate(),
-								type: "gift",
+						that.getUserInfo()
+						var obj = {
+							from_user_id: that.userInfo.id,
+							from_user_info: {
 								user_id: that.userInfo.id,
-							};
-							that.chatMsgList.push(obj);
-							that.scrollBottom()
-							if (item.url != null) {
-								that.handleGiftPlay();
-							}
+								avatar: that.userInfo.avatar,
+							},
+							message: {
+								content: that.gift.image,
+								gift_id: that.gift.id,
+								gift_svga: that.gift.url,
+								type: 'gift',
+								gift_image: that.gift.image
+							},
 						}
-					} else {
+						that.chatMsgList.push(obj);
+						that.sendMessage({
+							content: that.gift.image,
+							gift_id: that.gift.id,
+							gift_svga: that.gift.url,
+							type: 'gift',
+						})
+						that.scrollBottom()
+						if (item.url != null) {
+							that.handleGiftPlay();
+						}
+					} else if (data.code == 3001) {
 						that.recharge = true;
+					} else if (data.code == 2001) {
+						that.showGift = false;
+						uni.showToast({
+							icon: "none",
+							title: data.msg,
+						})
+					} else if (data.code == 0) {
+						that.showGift = false;
+						uni.showToast({
+							icon: "none",
+							title: data.msg,
+						})
 					}
 				})
 			},
@@ -808,54 +957,77 @@
 					})
 				})
 			},
+			//录音授权
+			audioEmpower() {
+				this.scrollBottom();
+				this.showRecord = !this.showRecord
+				this.showEmoji = false;
+				this.showPlus = false;
+				this.showGift = false;
+				this.floatHeight = this.showRecord == true ? '40' : "15"
+			},
+			//图片授权
+			imageEmpower() {
+				var that = this;
+				var token = uni.getStorageSync("token")
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['original', 'compressed'],
+					sourceType: ['album'],
+					success: (res) => {
+						res.tempFilePaths.forEach(item => {
+							uni.uploadFile({
+								url: uni.getStorageSync("hostData").host + "/api/hey/" +
+									'index/upload',
+								filePath: item,
+								name: 'file',
+								formData: {
+									"token": token
+								},
+								success: res => {
+									res = JSON.parse(res.data)
+									if (res.code === 1) {
+										var obj = {
+											from_user_id: that.userInfo.id,
+											from_user_info: {
+												user_id: that.userInfo.id,
+												avatar: that.userInfo.avatar,
+
+											},
+											message: {
+												content: res.data.fullurl,
+												type: 'image'
+											},
+										}
+										that.chatMsgList.push(obj);
+										that.sendMessage({
+											content: res.data.fullurl,
+											type: "image",
+										})
+										that.scrollBottom()
+									} else {
+										that.$u.toast(res.msg)
+									}
+								},
+								complete: e => {}
+							})
+						})
+					}
+				})
+			},
 			//录音
-			async handleVoice() {
+			handleVoice() {
 				let that = this;
-				if (uni.getSystemInfoSync().platform == "ios") {
-					var appAuthorizeSetting = uni.getAppAuthorizeSetting();
-					console.log(appAuthorizeSetting.microphoneAuthorized)
-					if (appAuthorizeSetting.microphoneAuthorized == 'authorized' || appAuthorizeSetting
-						.microphoneAuthorized == 'not determined') {
-						that.scrollBottom();
-						that.showRecord = !that.showRecord
-						that.showEmoji = false;
-						that.showPlus = false;
-						that.showGift = false;
-						that.floatHeight = that.showRecord == true ? '40' : "15"
-						return
-					} else {
-						uni.showModal({
-							title: "请开启录音权限",
-							content: "请去设置里面开启录音权限！",
-							success(res1) {
-								if (res1.confirm) {
-									permision.gotoAppPermissionSetting()
-								}
-							}
-						})
-					}
-				} else {
-					var result = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
-					if (result == 1) {
-						this.scrollBottom();
-						that.showRecord = !that.showRecord
-						that.showEmoji = false;
-						that.showPlus = false;
-						that.showGift = false;
-						that.floatHeight = that.showRecord == true ? '40' : "15"
-						return
-					} else {
-						uni.showModal({
-							title: "请开启录音权限",
-							content: "请去设置里面开启录音权限！",
-							success(res1) {
-								if (res1.confirm) {
-									permision.gotoAppPermissionSetting()
-								}
-							}
-						})
-					}
+				if (that.is_in_black == 1) {
+					uni.showToast({
+						icon: "none",
+						title: "您已被拉黑"
+					})
+					return;
 				}
+				// #ifdef APP
+				this.$refs.authority.show('recorde')
+				// #endif
 			},
 			handleRecordStart(e) {
 				let that = this
@@ -906,7 +1078,7 @@
 				that.recording = false
 				clearInterval(that.recordTimer)
 				uni.uploadFile({
-					url: that.$API_URL + 'index/upload',
+					url: uni.getStorageSync("hostData").host + "/api/hey/" + 'index/upload',
 					filePath: e.tempFilePath,
 					name: 'file',
 					formData: {
@@ -915,17 +1087,23 @@
 					success: res => {
 						res = JSON.parse(res.data)
 						if (res.code === 1) {
-							that.sendMessage(res.data.fullurl, 'audio')
-							that.scrollAnimation = true;
 							var obj = {
-								avatar: that.userInfo.avatar,
-								content: res.data.fullurl,
-								createtime: that.getDate(),
-								type: "audio",
-								user_id: that.userInfo.id,
-								isPlay: false,
-							};
+								from_user_id: that.userInfo.id,
+								from_user_info: {
+									user_id: that.userInfo.id,
+									avatar: that.userInfo.avatar,
+								},
+								message: {
+									content: res.data.fullurl,
+									type: 'audio',
+									isPlay: false
+								},
+							}
 							that.chatMsgList.push(obj);
+							that.sendMessage({
+								content: res.data.fullurl,
+								type: "audio",
+							})
 							that.scrollBottom()
 						} else {
 							that.$u.toast(res.msg)
@@ -939,6 +1117,17 @@
 				let that = this
 				var token = uni.getStorageSync("token");
 				getApp().globalData.isSelectImage = true;
+				if (that.is_in_black == 1) {
+					uni.showToast({
+						icon: "none",
+						title: "您已被拉黑"
+					})
+					return;
+				}
+				// #ifdef APP
+				this.$refs.authority.show('image')
+				// #endif
+				// #ifdef H5
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['original', 'compressed'],
@@ -946,7 +1135,8 @@
 					success: (res) => {
 						res.tempFilePaths.forEach(item => {
 							uni.uploadFile({
-								url: that.$API_URL + 'index/upload',
+								url: uni.getStorageSync("hostData").host + "/api/hey/" +
+									'index/upload',
 								filePath: item,
 								name: 'file',
 								formData: {
@@ -955,17 +1145,23 @@
 								success: res => {
 									res = JSON.parse(res.data)
 									if (res.code === 1) {
-										getApp().globalData.isSelectImage = false;
-										that.sendMessage(res.data.fullurl, 'image');
-										that.scrollAnimation = true;
 										var obj = {
-											avatar: that.userInfo.avatar,
-											content: res.data.fullurl,
-											createtime: that.getDate(),
-											type: "image",
-											user_id: that.userInfo.id,
-										};
+											from_user_id: that.userInfo.id,
+											from_user_info: {
+												user_id: that.userInfo.id,
+												avatar: that.userInfo.avatar,
+
+											},
+											message: {
+												content: res.data.fullurl,
+												type: 'image'
+											},
+										}
 										that.chatMsgList.push(obj);
+										that.sendMessage({
+											content: res.data.fullurl,
+											type: "image",
+										})
 										that.scrollBottom()
 									} else {
 										that.$u.toast(res.msg)
@@ -976,6 +1172,7 @@
 						})
 					}
 				})
+				// #endif
 			},
 			//更多
 			handlePlus() {
@@ -1072,11 +1269,52 @@
 		}
 	}
 </script>
-<style>
+<style lang="scss" scoped>
+	.playBox {
+		width: 320rpx;
+		height: 156rpx;
+		border-radius: 18rpx;
+		overflow: hidden;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		overflow: hidden;
+		// background: linear-gradient(#FFDBCC, #FFFFFF);
+	}
+
+	.createRoom {
+		width: 100vw;
+		height: 568rpx;
+		border-radius: 20rpx 20rpx 0rpx 0rpx;
+		background: linear-gradient(#FFE6BD, #FFF3E0, #FFFFFF, #FFFFFF);
+
+		.createImg {
+			width: 120rpx;
+			height: 225rpx;
+			border-radius: 65rpx;
+		}
+
+		.sendLink {
+			width: 236rpx;
+			height: 68rpx;
+			text-align: center;
+			line-height: 68rpx;
+			color: #fff;
+			font-size: 28rpx;
+			border-radius: 10rpx;
+			margin: 0 auto;
+			background: #FFA000;
+		}
+	}
+
+	/* ---------- */
 	.single {
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
+		width: 100vw;
+		box-sizing: border-box;
 	}
 
 	.chatContainer {

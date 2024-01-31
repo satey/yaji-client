@@ -17,6 +17,7 @@
 			<view class="okBtn" @click="start">进入</view>
 		</view>
 		<topPrompt></topPrompt>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 

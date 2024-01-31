@@ -12,7 +12,7 @@
 			</view>
 		</u-navbar>
 
-		<view class="publish" @click="upLoadImg">
+		<view class="publish" @click="upLoadImg2">
 			<block v-if="archeryImg == ''">
 				<view
 					style="width: 100%;height: 100%;background: #F7F7F7;display: flex;flex-direction: column;align-items: center;justify-content: center;">
@@ -58,6 +58,8 @@
 			</view>
 		</view>
 		<topPrompt></topPrompt>
+		<feiqslsHit></feiqslsHit>
+		<feiauthority ref="authority" @imageEmpower='imageEmpower'></feiauthority>
 	</view>
 </template>
 
@@ -128,6 +130,18 @@
 					}
 				})
 			},
+			upLoadImg2() {
+				// #ifdef H5
+				this.upLoadImg()
+				// #endif
+				// #ifdef APP
+				this.$refs.authority.show('image')
+				// #endif
+			},
+			//图片授权
+			imageEmpower() {
+				this.upLoadImg()
+			},
 			//上传图片
 			upLoadImg() {
 				var that = this;
@@ -138,7 +152,7 @@
 					success: (imageRes) => {
 						var token = uni.getStorageSync("token");
 						uni.uploadFile({
-							url: that.$API_URL + 'index/upload',
+							url: uni.getStorageSync("hostData").host + "/api/hey/" + 'index/upload',
 							filePath: imageRes.tempFilePaths[0],
 							name: 'file',
 							formData: {

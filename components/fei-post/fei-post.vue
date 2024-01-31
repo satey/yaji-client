@@ -5,7 +5,7 @@
 		<image mode="aspectFill" class="block rounded-full" @click="showToast" v-if="item.user == null" src="/static/avatar.png"
 			style="width: 85rpx;height: 85rpx;"></image>
 		<view v-else>
-			<image mode="aspectFill" class="block rounded-full" :src="item.user.avatar || '/static/avatar.png'"
+			<image mode="aspectFill" class="block rounded-full" :src="item.user.avatar"
 				@click="openUserHome(item.user_id)" style="width: 85rpx;height: 85rpx;"></image>
 		</view>
 		<view class="flex-1" style="margin-left: 20rpx;padding-bottom: 20rpx;">

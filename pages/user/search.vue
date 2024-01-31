@@ -57,8 +57,7 @@
                 </view>
             </view>
         </u-modal>
-
-        <uc-auth></uc-auth>
+		<feiqslsHit></feiqslsHit>
     </view>
 </template>
 <script>

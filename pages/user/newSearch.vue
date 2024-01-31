@@ -42,8 +42,6 @@
 					<text class="ri-delete-bin-line  mt-8" style="font-size: 30rpx;color: #999;"
 						@click="clearAll"></text>
 				</view>
-				<!-- <image src="../../static/gift/rubish.png" @click="clearAll"
-					style="width: 30rpx; height: 30rpx; float: right;margin-top: -30rpx;"></image> -->
 				<!-- <uc-user v-for="(item, index) in listUserRecommend" :key="index" :item="item" ></uc-user> -->
 				<!-- <uc-userSearch  v-for="(item, index) in listUserRecommend" :key="index" :item="item" ></uc-userSearch> -->
 				<view v-for="(item, index) in listUserRecommend" :key="index" :item="item"
@@ -95,7 +93,7 @@
 	        </view>
 	    </u-modal> -->
 		<topPrompt></topPrompt>
-		<uc-auth></uc-auth>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 

@@ -1,146 +1,55 @@
 <template>
-	<page-meta :root-font-size="'13px'"></page-meta>
-	<u-navbar title="我的钱包" :safeAreaInsetTop="true" :placeholder="true">
-		<view slot="left">
-			<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
-				@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
-		</view>
-	</u-navbar>
-	<view style="padding: 30rpx 40rpx 30rpx 30rpx;">
-		<view class="walletBox">
-			<view style="font-size: 26rpx;color: #fff;">钱包余额</view>
-			<view style="margin-top: 35rpx;display: flex;align-items: center;">
-				<image src="../../static/qian.png" style="width: 60rpx;height: 60rpx;margin-right: 15rpx;" mode="">
-				</image>
-				<text style="font-size: 56rpx;color: #fff;font-weight: bold;">{{money}}</text>
+	<view style="min-height: 100vh;background: #F8F8F8;height: 100%;">
+		<u-navbar title="钱包" :safeAreaInsetTop="true" :placeholder="true">
+			<view slot="left">
+				<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
+					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
-			<view class="purchase" @click="$u.route('/pages/mine/recharge')">充值铜钱
-			</view>
-		</view>
-	</view>
-	<view style="padding: 0rpx 30rpx;">
-		<u-tabs :list="tablist" lineColor="#FE4373" lineWidth="120rpx" lineHeight="16rpx" itemStyle="height: 72rpx;"
-			inactiveStyle="color: #808080; transform: scale(1);font-weight:normal;transition:all 0.3s;"
-			activeStyle="color: #323232 ; font-weight: blod; transform: scale(1.2);transition:all 0.3s;"
-			@change="changeTab">
-		</u-tabs>
-		<view v-show="tabIndex == 0">
-			<view style="margin-top: 30rpx;" v-for="(item,index) in rechargeList">
-				<view
-					style="display: flex;align-items: center;justify-content: space-between;border-bottom: 1rpx solid #ECECEC;padding-bottom: 30rpx;">
-					<view>
-						<view style="color: #323232;font-size: 30rpx;display: flex;align-items: center;">
-							<image src="../../static/qian.png" style="width: 45rpx;height: 45rpx;margin-right: 15rpx;"
-								mode="">
-							</image>
-							<view style="display: flex;align-items: center;">
-								<text style="font-size:20rpx;">x</text>
-								<view>{{item.money}}</view>
-							</view>
+		</u-navbar>
+		<u-popup :show="exchangeActive" @close="exchangeActive = false" mode="center" :closeable="false" :round="20">
+			<view class="exchangeContainer">
+				<view class="exchangeBox">
+					<view style="display: flex;align-items: center;justify-content: space-between;">
+						<view style="display: flex;flex-direction: column;align-items: center;">
+							<text style="color:#FFA000 ;font-size: 28rpx;font-weight: bold;">可兑风雅度</text>
+							<text
+								style="color:#FFA000 ;font-size: 56rpx;font-weight: bold;margin-top: 62rpx;">{{fengyadu.my_usable_fengyadu}}</text>
 						</view>
-						<view style="color: #999;font-size: 26rpx;margin-top: 10rpx;">
-							{{item.createtime}}
+						<view style="display: flex;flex-direction: column;align-items: center;">
+							<text style="color:#FFA000 ;font-size: 28rpx;font-weight: bold;">可兑铜钱</text>
+							<text
+								style="color:#FFA000 ;font-size: 56rpx;font-weight: bold;margin-top: 62rpx;">{{fengyadu.money}}</text>
 						</view>
-					</view>
-					<view style="color: #323232;font-size: 25rpx;text-align: right;">
-						<block v-if="item.type == 1">
-							<view>{{item.remark}}</view>
-							<view style="color: #999;font-size: 26rpx;margin-top: 10rpx;font-weight: bold;">
-								￥{{item.pay_money}}
-							</view>
-						</block>
-						<block v-else>
-							{{item.remark}}
-						</block>
 					</view>
 				</view>
+				<view style="color:#FFFFFF ;font-size: 28rpx;margin-top: -25rpx;">新获得的风雅度，要经过24小时以后才可兑换哦~整百起兑！</view>
+				<view class="exchangeBtn" @click="exchangeFengyaodu">全部兑换</view>
 			</view>
-			<u-loadmore v-if="rechargeList.lenth" :loadmoreText="nomoreText" color="#a1a1a1" marginTop="20" />
-			<u-empty v-if="!rechargeList.length" icon="/static/null3.png" text="暂无记录" textColor="#a1a1a1"
-				marginTop="100"></u-empty>
-		</view>
-		<view v-show="tabIndex == 1">
-			<view style="margin-top: 30rpx;" v-for="(item,index) in rechargeList">
-				<view
-					style="display: flex;align-items: center;justify-content: space-between;border-bottom: 1rpx solid #ECECEC;padding-bottom: 30rpx;">
-					<view>
-						<view style="color: #323232;font-size: 30rpx;display: flex;align-items: center;">
-							<image src="../../static/qian.png" style="width: 45rpx;height: 45rpx;margin-right: 15rpx;"
-								mode="">
-							</image>
-							<view style="display: flex;align-items: center;">
-								<view>{{item.remark}}</view>
-							</view>
-
-						</view>
-						<view style="color: #999;font-size: 26rpx;margin-top: 10rpx;">
-							{{item.createtime}}
-						</view>
-					</view>
-					<view style="color: #323232;font-size: 36rpx;font-weight: bold;">-{{item.money}}</view>
+		</u-popup>
+		<view class="moneyContainer">
+			<view class="record" @click="$u.route('/pages/mine/moneyRecord')">
+				<text>查看记录</text>
+				<i class="iconfont icon-right"></i>
+			</view>
+			<view style="color:#fff ;font-size: 30rpx;">铜钱</view>
+			<view>
+				<view style="display: flex;align-items: center;">
+					<image style="width: 60rpx;height: 60rpx;margin-right: 20rpx;" src="@/static/qian.png" mode="">
+					</image>
+					<text style="font-size: 56rpx;color: #fff;font-family: font-test !important;">{{money}}</text>
+				</view>
+				<view style="display: flex;align-items: center;justify-content: space-between;">
+					<view />
+					<view class="purchaseBtn" @click="$u.route('/pages/mine/recharge')">购买铜钱</view>
 				</view>
 			</view>
-			<u-loadmore v-if="rechargeList.lenth" :loadmoreText="nomoreText" color="#a1a1a1" marginTop="20" />
-			<u-empty v-if="!rechargeList.length" icon="/static/null3.png" text="暂无记录" textColor="#a1a1a1"
-				marginTop="100"></u-empty>
 		</view>
-		<topPrompt></topPrompt>
+		<view class="fengyaContainer">
+			<view class="fengyaNum">{{feng_ya_du}}</view>
+			<view class="exchange" @click="exchangeActive=true">兑换铜钱</view>
+		</view>
+		<feiqslsHit></feiqslsHit>
 	</view>
-
-
-	<!-- <view class="px-4">
-        <u-navbar title="钱包" :safeAreaInsetTop="true" :placeholder="true">
-            <view slot="left">
-                <i class="ri-arrow-left-s-line text-2xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
-            </view>
-            <view slot="right">
-                <text @click="$u.route('/pages/mine/bill')" class="text-gray-500">充值记录</text>
-            </view>
-        </u-navbar>
-        <view class="mt-6">
-            <view>钱包余额</view>
-            <view class="mt-4 text-3xl">
-                <text>{{ userInfo.money }}</text>
-                <text class="text-base leading-none text-gray-500 ml-2">铜币</text>
-            </view>
-        </view>
-        <view class="mt-6 grid grid-cols-2 gap-4">
-            <view v-for="(item, index) in recharge" :key="index" :item="item" @click="handleChoose(item)" class="flex rounded-lg p-4 bg-gray-100">
-                <view class="flex-1 text-xl">{{ item.money }}</view>
-                <view class="text-gray-400">￥{{ item.amount }}</view>
-            </view>
-        </view>
-        <view class="p-4 rounded-lg mt-4 bg-gray-100">
-            <u-input v-model="money" :focus="true" placeholder="输入充值铜币" type="number" maxlength="10" @input="onCheckMoney">
-                <view slot="suffix" class="py-3 px-4 rounded-full text-base text-white bg-gradient-to-r from-rose-400 to-rose-500" @click="handleRecharge()">充值</view>
-            </u-input>
-        </view>
-        <view class="text-base leading-none text-gray-500 mt-4">当前充值 {{ money }} 个铜币，需支付 {{ amount }} 元。</view>
-        <view class="flex flex-col justify-between mt-6">
-            <view class="flex flex-row items-center mt-4" @click="payment = 'wxpay'">
-                <i class="ri-wechat-pay-fill text-3xl leading-none text-green-500 mr-2"></i>
-                <view class="flex-1 text-lg leading-none">微信支付</view>
-                <view class="text-base leading-none text-rose-500">首单随机立减，最高免单</view>
-                <view class="ml-2">
-                    <u-radio-group v-model="payment">
-                        <u-radio name="wxpay" size="28" shape="circle" inactiveColor="#ff6897" activeColor="#ff6897"></u-radio>
-                    </u-radio-group>
-                </view>
-            </view>
-            <view class="flex flex-row items-center mt-4" @click="payment = 'alipay'">
-                <i class="ri-alipay-fill text-3xl leading-none text-blue-500 mr-2"></i>
-                <view class="flex-1 text-lg leading-none">支付宝</view>
-                <view class="text-base leading-none text-rose-500"></view>
-                <view class="ml-2">
-                    <u-radio-group v-model="payment">
-                        <u-radio name="alipay" size="28" shape="circle" inactiveColor="#ff6897" activeColor="#ff6897"></u-radio>
-                    </u-radio-group>
-                </view>
-            </view>
-        </view>
-
-        <uc-auth></uc-auth>
-    </view> -->
 </template>
 <script>
 	export default {
@@ -148,45 +57,61 @@
 		components: {},
 		data() {
 			return {
-				platform: uni.getSystemInfoSync().platform,
-				tabIndex: 0,
 				money: 0,
-				current_page: 1,
-				last_page: 0,
-				rechargeList: [],
-				nomoreText: "加载更多",
-				type: 1,
-				tablist: [{
-					name: '获取记录',
-					type: 1
-				}, {
-					name: '使用记录',
-					type: 2
-				}],
+				feng_ya_du: 0,
+				exchangeActive: false,
+				fengyadu: {}
 			}
+		},
+		onLoad() {
+			this.setFontFamily()
 		},
 		onShow() {
-			this.rechargeList = [];
 			this.getUserInfo();
-			this.getRechargeList(this.tablist[this.tabIndex].type, this.current_page);
-		},
-		onReachBottom() {
-			if (this.current_page == this.last_page) {
-				this.nomoreText = "没有更多了"
-				return;
-			} else {
-				this.current_page++;
-				this.getRechargeList(this.type, this.current_page)
-			}
+			this.exchange()
 		},
 		methods: {
-			//tab切换
-			changeTab(e) {
-				this.tabIndex = e.index;
-				this.current_page = 1;
-				this.rechargeList = [];
-				this.type = e.type;
-				this.getRechargeList(e.type, this.current_page);
+			//兑换
+			exchangeFengyaodu() {
+				let that = this;
+				that.$api("fengyadu.fengyadu_redeem_money").then(res => {
+					that.exchangeActive = false;
+					that.getUserInfo()
+					uni.showToast({
+						icon: "none",
+						title: res.msg
+					})
+				})
+			},
+			//可兑换风雅度信息
+			exchange() {
+				let that = this;
+				that.$api("fengyadu.my_usable_fengyadu").then((res) => {
+					if (res.code == 1) {
+						that.fengyadu = res.data;
+					} else {
+						uni.showToast({
+							icon: "none",
+							title: res.msg
+						})
+					}
+				})
+			},
+			//设置字体
+			setFontFamily() {
+				// #ifdef APP-PLUS
+				uni.loadFontFace({
+					family: 'font-test',
+					// 本地字体路径需转换为平台绝对路径
+					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/AaHouDiHei.ttf')})`,
+					success() {
+						console.log('success')
+					},
+					fail(e) {
+						console.log('fail')
+					}
+				})
+				// #endif
 			},
 			//获取用户信息
 			getUserInfo() {
@@ -194,46 +119,138 @@
 				that.$api("user.info").then(res => {
 					if (res.code == 1) {
 						that.money = res.data.money;
+						that.feng_ya_du = res.data.feng_ya_du;
 					}
 				})
 			},
-			getRechargeList(type, page) {
-				var that = this;
-				that.$api("user_recharge.lists", {
-					"page": page,
-					"money_type": type,
-				}).then(res => {
-					if (res.code == 1) {
-						that.rechargeList.push(...res.data.data)
-						that.last_page = res.data.last_page;
-						if (that.current_page >= that.last_page) {
-							this.nomoreText = "没有更多了"
-							return;
-						}
-					}
-				})
-			}
 		}
 	}
 </script>
 <style lang="scss" scoped>
-	.walletBox {
-		height: 298rpx;
-		background: url(/static/qianbaoBg.png);
-		background-repeat: no-repeat;
-		background-size: 100% 100%;
-		padding: 40rpx;
-		box-sizing: border-box;
+	page {
+		height: 100vh;
+		background: #F8F8F8;
 	}
 
-	.purchase {
-		width: 156rpx;
-		height: 62rpx;
-		text-align: center;
-		line-height: 62rpx;
-		color: #FE4373;
-		border-radius: 30rpx;
-		background: #fff;
-		float: right;
+	.moneyContainer {
+		margin: 50rpx 40rpx;
+		height: 298rpx;
+		background-image: url(@/static/qianbaoBg.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+		position: relative;
+		padding: 52rpx 50rpx 32rpx 35rpx;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+
+		.record {
+			height: 46rpx;
+			line-height: 46rpx;
+			text-align: center;
+			color: #fff;
+			font-size: 26rpx;
+			background: rgba(255, 255, 255, 0.3);
+			position: absolute;
+			top: 0;
+			right: 0;
+			border-radius: 0rpx 20rpx 0rpx 20rpx;
+			padding: 0rpx 10rpx;
+			display: flex;
+			align-items: center;
+		}
+
+		.purchaseBtn {
+			display: inline;
+			padding: 9rpx 28rpx;
+			box-sizing: border-box;
+			background: #fff;
+			line-height: 62rpx;
+			border-radius: 36rpx;
+			font-size: 36rpx;
+			font-family: font-test !important;
+			color: #FFA000;
+		}
+	}
+
+	.fengyaContainer {
+		margin: 50rpx;
+		height: 188rpx;
+		background-image: url(@/static/fengyadu.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+		position: relative;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		position: relative;
+
+		.fengyaNum {
+			font-size: 80rpx;
+			font-weight: bold;
+			line-height: 188rpx;
+			padding-left: 150rpx;
+			background-image: -webkit-linear-gradient(bottom, #FFA102, #FFC52F);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			font-family: font-test !important;
+		}
+
+		.exchange {
+			font-size: 36rpx;
+			color: #FFA000;
+			font-family: font-test !important;
+			padding: 9rpx 10rpx;
+			background: #fff;
+			position: absolute;
+			right: 0;
+			top: 50%;
+			transform: translateY(-50%);
+			border-radius: 31rpx 0rpx 0rpx 31rpx;
+		}
+	}
+
+	.exchangeContainer {
+		height: 615rpx;
+		width: 590rpx;
+		background: linear-gradient(180deg, #FFDC7E 0%, #FF9B05 100%);
+		border-radius: 20rpx 20rpx 20rpx 20rpx;
+		padding: 87rpx 30rpx 95rpx 30rpx;
+		box-sizing: border-box;
+
+		.exchangeBox {
+			height: 388rpx;
+			background-image: url(@/static/iconImage/tiqubg.png);
+			background-position: 100% 100%;
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+			position: relative;
+			box-sizing: border-box;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			position: relative;
+			padding: 43rpx 70rpx 0rpx 70rpx;
+			box-sizing: border-box;
+		}
+
+		.exchangeBtn {
+			background-image: url(@/static/iconImage/tiquBtnBg.png);
+			background-position: 100% 100%;
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+			font-family: font-test !important;
+			width: 416rpx;
+			padding: 30rpx 0rpx;
+			text-align: center;
+			margin: 0 auto;
+			font-size: 36rpx;
+			color: #fff;
+			margin-top: 65rpx;
+		}
 	}
 </style>

@@ -154,6 +154,7 @@
 			:showDelete="showDelete" :showReport="showReport" :showCai="showCai" :showShield="showShield"
 			@shield="shield">
 		</feiOperate>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
@@ -592,6 +593,7 @@
 		border-top-right-radius: 30rpx;
 		border-top-left-radius: 30rpx;
 		padding-bottom: 50rpx;
+		background: #fff;
 	}
 
 	.audioBlock {

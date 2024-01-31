@@ -1,24 +1,43 @@
 <template>
-	<view class="">
-		<u-navbar title="礼物记录" :safeAreaInsetTop="true" :placeholder="true">
+	<view class="recoed">
+		<u-navbar :title="title" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+				<i class="ri-arrow-left-s-line text-4xl text-black"
+					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
-		<view class="giftList">
-			<view class="giftList_item" v-for="(item,index) in giftsList">
-				<view style="display: flex;align-items: center;">
-					<view class="giftList_item_time">{{item.createtime}}</view>
-					<text class="giftList_item_name">{{item.gift.title}}</text>
+		<block v-if="title =='礼物记录'">
+			<view class="giftList" v-if="giftsList.length !=0">
+				<view class="giftList_item" v-for="(item,index) in giftsList">
+					<view style="display: flex;align-items: center;">
+						<view class="giftList_item_time" style="margin-right: 15rpx;">{{item.createtime}}</view>
+						<text class="giftList_item_name">{{item.gift.title}}</text>
+					</view>
+					<block>
+						<text class="giftList_item_price">{{item.nums}}</text>
+					</block>
 				</view>
-				<text class="giftList_item_price"
-					:style="{color:item.nums.indexOf('+')== -1?'':'#FE4373'}">{{item.nums}}</text>
 			</view>
-			<u-loadmore v-if="giftsList.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" />
-			<u-empty v-if="!giftsList.length" icon="/static/null3.png" text="数据为空" textColor="#a1a1a1"
-				marginTop="100"></u-empty>
+		</block>
+		<block v-if="title =='道具记录'">
+			<view class="giftList" v-if="giftsList.length !=0">
+				<view class="giftList_item" v-for="(item,index) in giftsList">
+					<view style="display: flex;align-items: center;">
+						<view class="giftList_item_time" style="margin-right: 15rpx;">{{item.create_time}}</view>
+						<text class="giftList_item_name">{{item.title}}</text>
+					</view>
+					<block>
+						<text class="giftList_item_price">{{item.nums}}</text>
+					</block>
+				</view>
+			</view>
+		</block>
+		<view v-if="giftsList.length ==0" style="text-align: center;margin-top: 50rpx;">
+			<image style="width: 393rpx;height: 416rpx;" src="@/static/iconImage/jilu.png" mode="aspectFill">
+			</image>
 		</view>
 		<topPrompt></topPrompt>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
@@ -28,76 +47,77 @@
 		data() {
 			return {
 				giftsList: [],
-				params: {
-					page: 1,
-				},
-				paginator: {
-					total: 0,
-					last_page: 0,
-				},
-				loadmore: false,
+				title: "",
+				page: 1,
+				urlPath: ''
 			}
 		},
-		computed: {
-
-		},
-		created() {
-			let that = this
-			that.init()
+		onLoad(e) {
+			switch (e.type) {
+				case "prop":
+					this.title = "道具记录"
+					this.urlPath = 'user_gift_log.propLogList'
+					this.getList()
+					break;
+				case "gift":
+					this.title = "礼物记录"
+					this.urlPath = 'user_gift_log.lists'
+					this.getList()
+					break;
+			}
 		},
 		onReachBottom() {
-			let that = this;
-			if (that.loadmore === 'nomore') return false
-			that.loadmore = 'loading'
-			that.params.page = ++that.params.page
-			that.getUserGift();
+			this.page++;
+			this.getList();
 		},
 		methods: {
-			backPage() {
-				uni.navigateTo({
-					url: '/pages/mine/gift'
-				})
-			},
-			init() {
-				let that = this;
-				that.loadmore = 'loading'
-				that.$api('user_gift_log.lists').then(res => {
+			getList() {
+				var that = this;
+				that.$api(`${that.urlPath}`, {
+					page: that.page
+				}).then(res => {
 					if (res.code === 1) {
-						that.giftsList.push(...res.data.data)
-						that.paginator.total = res.data.total
-						that.paginator.last_page = res.data.last_page
-						if (that.params.page < res.data.last_page) {
-							that.loadmore = 'loadmore'
+						if (that.title == '礼物记录') {
+							that.giftsList.push(...res.data.data)
 						} else {
-							that.loadmore = 'nomore'
+							that.giftsList.push(...res.data)
+							console.log(that.giftsList)
 						}
 					} else {
 						that.$u.toast(res.msg)
 					}
 				})
-			}
+			},
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	page {
+		background: #F8F8F8;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	.recoed {
+		background: #F8F8F8;
+		width: 100vw;
+		height: 100vh;
+	}
+
 	.giftList {
 		width: 100%;
 
 		.giftList_item {
 			padding: 0rpx 30rpx;
 			height: 80rpx;
-			// border: 1px solid #000;
-			font-size: 25rpx;
-			color: black;
 			line-height: 80rpx;
 			display: flex;
 			justify-content: space-between;
 			font-size: 28rpx;
-			color: #323232;
+			color: #333333;
 
 			.giftList_item_time {
-				width: 350rpx;
 				box-sizing: border-box;
 			}
 		}

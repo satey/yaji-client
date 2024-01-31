@@ -1,67 +1,61 @@
 <template>
-	<view>
-		<u-navbar title="通知消息" :safeAreaInsetTop="true" :placeholder="true">
-			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
-					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
-			</view>
-		</u-navbar>
-		<view class="px-4" v-if="trendsMsgList.length != 0">
-			<view style="display: flex;justify-content: space-between;padding: 30rpx 0rpx;"
-				v-for="(item,index) in trendsMsgList" :key="index" @click="openDetail(item)">
-				<view>
-					<image mode="aspectFill" :src="item.avatar"
-						style="width: 92rpx;height: 92rpx;border-radius: 50%;margin-right: 20rpx;"></image>
+	<view class="trends">
+		<view>
+			<u-navbar title="通知" :safeAreaInsetTop="true" :placeholder="true">
+				<view slot="left">
+					<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
+						@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 				</view>
-				<view class="noticeRight" style="border-bottom:1px solid #ededed;flex: 1;padding-bottom: 30rpx;">
-					<view style="display: flex;align-items: center;justify-content: space-between;">
-						<text
-							style="font-size: 30rpx;color:#323232;font-weight: bold;">{{item.realname}}·{{item.dynasty}}</text>
-					</view>
-					<view style="display: flex;align-items: center;color: #808080;font-size: 26rpx;">
-						<text v-if="item.cate == 1">给您评论了！</text>
-						<text v-if="item.cate == 2">给您动态点赞了！</text>
-						<text v-if="item.cate == 3">给您评论点赞了！</text>
-						<text v-if="item.cate == 4">回复您的评论了！</text>
-						<text v-if="item.cate == 5">查看您的主页了！</text>
-						<text v-if="item.cate == 6">
-							<block v-if="item.top_poetry_id == 0">
-								给您的诗词点赞！
-							</block>
-							<block v-if="item.top_poetry_id > 0">
-								给您的评论点赞！
-							</block>
-						</text>
-						<text v-if="item.cate == 7">在今日邂逅喜欢了你！</text>
-					<!-- 	<view v-if="item.cate == 8" style="display: flex;align-items: center;">
-							<text>通过{{item.channel_text}}</text>
-							<text>给你送了</text>
-							<image :src="item.gift_image" style="width: 55rpx;height: 55rpx;" mode=""></image>
-							<text>x{{item.nums}}</text>
-						</view> -->
-						<text v-if="item.cate == 9">射猜了您的覆题</text>
-						<text v-if="item.cate == 10">评论了您的射覆</text>
-						<text v-if="item.cate == 11">回复了您的评论</text>
-						<text v-if="item.cate == 12">给您的射覆点赞了</text>
-						<text v-if="item.cate == 13">给您的射覆答案点赞了</text>
-						<text v-if="item.cate == 14">给您的评论点赞了</text>
-						<text v-if="item.cate == 15">给您的诗词评论了</text>
-						<text v-if="item.cate == 16">回复了您的评论</text>
-						<text v-if="item.cate == 17">给您的对歌点赞了</text>
-						<text v-if="item.cate == 18">给您的对歌点赞了</text>
-						<text v-if="item.cate == 19">接了您的对歌</text>
-						<text v-if="item.cate == 20">接了您的对歌</text>
-						<text style="padding-left: 20rpx;">{{ $u.timeFormat(item.createtime, 'mm-dd hh:MM') }}</text>
+			</u-navbar>
+		</view>
+
+		<scroll-view scroll-y="true" class="myScroll">
+			<block v-for="(item,index) in trendsMsgList" :key="index">
+				<view class="items" v-if="item.type == 4">
+					<!-- <view class="notice">
+						<text class="ri-notification-3-fill icon"></text>
+					</view> -->
+					<!-- <image class="userImg" src="../../static/logo-circle.png" mode=""></image> -->
+					<view class="rightBox">
+						<view style="color: #999;font-size: 28rpx;">{{item.createtime}}</view>
+						<view class="contentBox">
+							<view>
+								<view style="color: #333333;font-size: 32rpx;">{{item.content}}
+								</view>
+								<view style="display: flex;align-items: center;justify-content: space-between;">
+									<view></view>
+									<view @click="$u.route('/pages/mine/wallet')"
+										style="margin-top: 20rpx;color: #fff;font-size: 28rpx;text-align: center;border-radius: 26rpx;background: #FFB96A;width: 140rpx;height: 45rpx;line-height: 45rpx;">
+										查看钱包</view>
+								</view>
+							</view>
+						</view>
 					</view>
 				</view>
-			</view>
-		</view>
-		<view v-else>
-			<u-loadmore v-if="trendsMsgList.length" nomoreText="" color="#a1a1a1" marginTop="20" />
-			<u-empty v-if="!trendsMsgList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
-				marginTop="100"></u-empty>
-		</view>
-		<topPrompt></topPrompt>
+				<view class="items" v-else>
+					<!-- <view class="notice">
+						<text class="ri-notification-3-fill icon"></text>
+					</view> -->
+					<!-- <image class="userImg" src="../../static/logo-circle.png" mode=""></image> -->
+					<view class="rightBox">
+						<view style="color: #999;font-size: 28rpx;">{{item.createtime}}</view>
+						<view class="contentBox">
+							<view style="display: flex;align-items: center;">
+								<image style="width: 72rpx;height: 72rpx;border-radius: 50%;"
+									:src="item.ori_user_info.avatar" mode="aspectFill"
+									@click="$u.route('/pages/user/home',{user_id:item.ori_user_info.user_id})"></image>
+								<view style="color: #333333;font-size: 32rpx;margin-left: 20rpx;flex: 1;">
+									{{item.content}}
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</block>
+			<u-empty v-if="!trendsMsgList.length" icon="/static/iconImage/jilu.png" text="暂无通知" textColor="#a1a1a1"
+				marginTop="50"></u-empty>
+		</scroll-view>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
@@ -70,201 +64,85 @@
 		name: "trendsMsg",
 		data() {
 			return {
-				trendsMsgList: []
+				trendsMsgList: [],
+				page: 1
 			}
 		},
 		onLoad() {
 			this.trendsLists()
 		},
+		onReachBottom() {
+			this.page++;
+			this.trendsLists()
+		},
 		methods: {
 			//动态消息列表
-			async trendsLists() {
-				var that = this;
-				that.$api('message.trendsMsgLists').then(res => {
-					console.log(res)
-					if (res.code === 1) {
-						that.trendsMsgList = res.data;
+			trendsLists() {
+				this.$api("message.getNoticeList", {
+					page: this.page
+				}).then(res => {
+					if (res.code == 1) {
+						this.trendsMsgList.push(...res.data.list);
 					}
 				})
 			},
-			openDetail(item) {
-				switch (item.cate) {
-					case 1:
-						this.$u.route('/pages/post/detail', {
-							post_id: item.post_id
-						});
-						break;
-					case 2:
-						this.$u.route('/pages/post/detail', {
-							post_id: item.post_id_or_post_comment_id
-						});
-						break;
-					case 3:
-						this.$u.route('/pages/post/detail', {
-							post_id: item.post_id_or_post_comment_id
-						});
-						break;
-					case 4:
-						this.$u.route('/pages/post/detail', {
-							post_id: item.post_id
-						});
-						break;
-					case 5:
-						this.$u.route('/pages/user/home', {
-							user_id: item.user_id
-						});
-						break;
-					case 6:
-						var data = {
-							id: item.poetry_id
-						}
-						if (item.top_poetry_id == 0) {
-							this.$u.route('/pages/joy/wineDetails', {
-								data: JSON.stringify(data)
-							});
-						}
-						break;
-					case 7:
-						this.$u.route('/pages/user/home', {
-							user_id: item.user_id
-						});
-						break;
-					case 8:
-						switch (item.channel) {
-							case 1:
-								this.$u.route('/pages/joy/archeryDetail', {
-									archeryId: item.third_id
-								});
-								break;
-							case 2:
-								var data = {
-									id: item.third_id
-								}
-								this.$u.route('/pages/joy/wineDetails', {
-									data: JSON.stringify(data)
-								});
-								break;
-							case 3:
-								this.$u.route('/pages/post/detail', {
-									post_id: item.third_id
-								});
-								break;
-							case 4:
-								this.$u.route('/pages/song/songDetails', {
-									songId: item.third_id
-								});
-								break;
-						}
-						break;
-					case 9:
-						this.$u.route('/pages/joy/archeryDetail', {
-							archeryId: item.shot_cover_id
-						});
-						break;
-					case 10:
-						this.$u.route('/pages/joy/archeryDetail', {
-							archeryId: item.shot_cover_id
-						});
-						break;
-					case 11:
-						this.$u.route('/pages/joy/archeryDetail', {
-							archeryId: item.shot_cover_id
-						});
-						break;
-					case 12:
-						this.$u.route('/pages/joy/archeryDetail', {
-							archeryId: item.shot_cover_or_comment_id
-						});
-						break;
-					case 13:
-						this.$u.route('/pages/joy/archeryDetail', {
-							archeryId: item.shot_cover_id
-						});
-						break;
-					case 14:
-						this.$u.route('/pages/joy/archeryDetail', {
-							archeryId: item.shot_cover_id
-						});
-						break;
-					case 15:
-						var data = {
-							id: item.top_poetry_id
-						}
-						this.$u.route('/pages/joy/wineDetails', {
-							data: JSON.stringify(data)
-						});
-						break;
-					case 16:
-						var data = {
-							id: item.top_poetry_id
-						}
-						var userInfo = uni.getStorageSync("userInfo");
-						if (item.user_id == userInfo.id) {
-							this.$u.route('/pages/joy/wineDetails', {
-								data: JSON.stringify(data)
-							});
-						}
-						break;
-					case 17:
-						this.$u.route('/pages/song/songDetails', {
-							songId: item.duet_song_or_reply_id
-						});
-						break;
-					case 18:
-						this.$u.route('/pages/song/songDetails', {
-							songId: item.duet_song_id
-						});
-						break;
-					case 19:
-						this.$u.route('/pages/song/songDetails', {
-							songId: item.duet_song_id
-						});
-						break;
-					case 20:
-						this.$u.route('/pages/song/songDetails', {
-							songId: item.duet_song_id
-						});
-						break;
-				}
-			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	.trends {
+		width: 100vw;
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.myScroll {
+		width: 100%;
+		flex: 1;
+		background: #F8F8F8;
+		box-sizing: border-box;
+
+		.items {
+			display: flex;
+			padding-left: 30rpx;
+			padding-right: 72rpx;
+			padding-top: 45rpx;
+
+			.userImg {
+				width: 96rpx;
+				height: 96rpx;
+				border-radius: 50%;
+			}
+
+			.rightBox {
+				flex: 1;
+				margin-left: 22rpx;
+				margin-top: 11rpx;
+
+				.contentBox {
+					margin-top: 20rpx;
+					width: 100%;
+					background: #fff;
+					border-radius: 20rpx;
+					padding: 37rpx 25rpx;
+					box-sizing: border-box;
+				}
+			}
+		}
+
+	}
+
 	.notice {
 		width: 96rpx;
 		height: 96rpx;
-		background: #FE4373;
+		background: #FFB96A;
 		font-size: 50rpx;
 		border-radius: 50%;
 		text-align: center;
 		line-height: 96rpx;
 		color: #fff;
 		margin-right: 30rpx;
-	}
-
-	.noticeRight {
-		flex: 1;
-		height: 96rpx;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-around;
-	}
-
-	.userImg {
-		width: 96rpx;
-		height: 96rpx;
-		border-radius: 50%;
-		margin-right: 30rpx;
-	}
-
-	.tips {
-		background: #EB3446;
-		color: #fff;
-		width: 30rpx;
-		height: 30rpx;
-		border-radius: 50%;
-		text-align: center;
 	}
 </style>

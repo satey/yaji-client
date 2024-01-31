@@ -2,8 +2,8 @@
     "name" : "雅集",
     "appid" : "__UNI__5018490",
     "description" : "雅集",
-    "versionName" : "1.1.2",
-    "versionCode" : 112,
+    "versionName" : "2.0.1",
+    "versionCode" : 201,
     "transformPx" : false,
     "app" : {
         "launch_path" : "/pages/auth/login"
@@ -18,9 +18,8 @@
         "compilerVersion" : 3,
         "splashscreen" : {
             "alwaysShowBeforeRender" : false,
-            "waiting" : false,
             "autoclose" : false,
-            "delay" : 0
+            "waiting" : false
         },
         "privacy" : {
             "prompt" : "template",
@@ -49,6 +48,8 @@
                     "prompt" : "应用保存运行状态等信息，需要获取读写手机存储（系统提示为访问设备上的照片、媒体内容和文件）权限，请允许。"
                 },
                 "permissions" : [
+                    "<uses-feature android:name=\"android.hardware.camera\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
@@ -66,7 +67,8 @@
                     "prompt" : "为保证您正常、安全地使用，需要获取设备识别码（部分手机提示为获取手机号码）使用权限，请允许。"
                 },
                 "abiFilters" : [ "arm64-v8a" ],
-                "schemes" : "com.suoeryoude.yaji"
+                "schemes" : "com.suoeryoude.yaji",
+                "targetSdkVersion" : 30
             },
             "ios" : {
                 "idfa" : false,
@@ -74,7 +76,8 @@
                 "capabilities" : {
                     "entitlements" : {
                         "com.apple.developer.associated-domains" : [
-                            "applinks:static-mp-15e70763-0ed0-4cbb-afb0-10b1b3db8c43.next.bspapp.com"
+                            "applinks:static-mp-15e70763-0ed0-4cbb-afb0-10b1b3db8c43.next.bspapp.com",
+                            "applinks:yaji.suoeryoude.cn"
                         ]
                     }
                 },
@@ -87,7 +90,14 @@
             "sdkConfigs" : {
                 "ad" : {},
                 "payment" : {
-                    "appleiap" : {}
+                    "alipay" : {
+                        "__platform__" : [ "ios", "android" ]
+                    },
+                    "weixin" : {
+                        "__platform__" : [ "ios", "android" ],
+                        "appid" : "wx946846daf718d666",
+                        "UniversalLinks" : "https://yaji.suoeryoude.cn/uni-universallinks/__UNI__5018490/"
+                    }
                 },
                 "push" : {
                     "unipush" : {
@@ -107,6 +117,12 @@
                         "oppo" : {},
                         "vivo" : {},
                         "meizu" : {}
+                    }
+                },
+                "share" : {
+                    "weixin" : {
+                        "appid" : "wx946846daf718d666",
+                        "UniversalLinks" : "https://yaji.suoeryoude.cn/uni-universallinks/__UNI__5018490/"
                     }
                 }
             },
@@ -142,27 +158,27 @@
                     "xxxhdpi" : "unpackage/res/icons/192x192.png"
                 },
                 "ios" : {
-                    "appstore" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/1024.png",
+                    "appstore" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/1024.png",
                     "ipad" : {
-                        "app" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/76.png",
-                        "app@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/152.png",
-                        "notification" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/20.png",
-                        "notification@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/40.png",
-                        "proapp@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/167.png",
-                        "settings" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/29.png",
-                        "settings@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/58.png",
-                        "spotlight" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/40.png",
-                        "spotlight@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/80.png"
+                        "app" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/76.png",
+                        "app@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/152.png",
+                        "notification" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/20.png",
+                        "notification@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/40.png",
+                        "proapp@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/167.png",
+                        "settings" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/29.png",
+                        "settings@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/58.png",
+                        "spotlight" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/40.png",
+                        "spotlight@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/80.png"
                     },
                     "iphone" : {
-                        "app@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/120.png",
-                        "app@3x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/180.png",
-                        "notification@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/40.png",
-                        "notification@3x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/60.png",
-                        "settings@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/58.png",
-                        "settings@3x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/87.png",
-                        "spotlight@2x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/80.png",
-                        "spotlight@3x" : "C:/Users/Administrator/Desktop/ios/ios图标/iOS多尺寸/iOS多尺寸/120.png"
+                        "app@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/120.png",
+                        "app@3x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/180.png",
+                        "notification@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/40.png",
+                        "notification@3x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/60.png",
+                        "settings@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/58.png",
+                        "settings@3x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/87.png",
+                        "spotlight@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/80.png",
+                        "spotlight@3x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/120.png"
                     }
                 }
             },
@@ -171,9 +187,9 @@
                 "iosStyle" : "common",
                 "useOriginalMsgbox" : true,
                 "android" : {
-                    "hdpi" : "C:/Users/Administrator/Desktop/qq.png",
-                    "xhdpi" : "C:/Users/Administrator/Desktop/qq.png",
-                    "xxhdpi" : "C:/Users/Administrator/Desktop/qq.png"
+                    "hdpi" : "static/start/480.png",
+                    "xhdpi" : "static/start/720.png",
+                    "xxhdpi" : "static/start/1080.png"
                 }
             }
         },
@@ -192,6 +208,10 @@
                     "parameters" : {}
                 }
             }
+        },
+        "uniStatistics" : {
+            "enable" : true,
+            "version" : "2"
         }
     },
     "quickapp" : {},
@@ -208,20 +228,36 @@
         "unipush" : {
             "enable" : false
         },
-        "permission" : {}
+        "permission" : {},
+        "uniStatistics" : {
+            "enable" : false
+        }
     },
     "mp-alipay" : {
-        "usingComponents" : true
+        "usingComponents" : true,
+        "uniStatistics" : {
+            "enable" : false
+        }
     },
     "mp-baidu" : {
-        "usingComponents" : true
+        "usingComponents" : true,
+        "uniStatistics" : {
+            "enable" : false
+        }
     },
     "mp-toutiao" : {
-        "usingComponents" : true
+        "usingComponents" : true,
+        "uniStatistics" : {
+            "enable" : false
+        }
     },
     "uniStatistics" : {
         "enable" : false,
-        "version" : "2"
+        "version" : "2",
+        "collectItems" : {
+            "uniPushClientID" : true,
+            "uniStatPageLog" : true
+        }
     },
     "vueVersion" : "2",
     "h5" : {
@@ -240,8 +276,41 @@
                 }
             }
         },
-        "template" : ""
+        "template" : "",
+        "uniStatistics" : {
+            "enable" : true
+        }
     },
     "locale" : "zh-Hans",
-    "_spaceID" : "mp-15e70763-0ed0-4cbb-afb0-10b1b3db8c43"
+    "_spaceID" : "mp-15e70763-0ed0-4cbb-afb0-10b1b3db8c43",
+    "quickapp-webview-union" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "quickapp-webview-huawei" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-jd" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-lark" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-qq" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-kuaishou" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    }
 }

@@ -206,6 +206,7 @@
 		<feiOperate ref="feiOperate" :showReport="showReport" :showDeleteComment='showDeleteComment' @close='popupClose'
 			@deleteComment="deleteComment" @tread='tread' @report='report' :showCai="showCai"></feiOperate>
 		<topPrompt></topPrompt>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 

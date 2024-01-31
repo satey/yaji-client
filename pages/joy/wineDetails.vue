@@ -287,6 +287,7 @@
 			</view>
 		</view>
 		<topPrompt></topPrompt>
+		<feiqslsHit></feiqslsHit>
 		<feiGift ref="feiGift" channel="2"></feiGift>
 		<feiOperate ref="feiOperate" :showReport="showReport" :showDeleteComment='showDeleteComment' @close='popupClose'
 			@deleteComment="deleteComment" @tread='tread' @report='report' :showCai="showCai"></feiOperate>

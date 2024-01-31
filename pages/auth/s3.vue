@@ -1,26 +1,44 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
-	<view class="px-4">
-		<image src='@/static/embed/s3.png'
-			style="position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1"></image>
+	<view class="px-4" style="background: #F7F7F7;">
+
 		<view style="padding-top: 100rpx;">
-			<view style="font-size: 36rpx;color: #FFFFFF;">获得角色</view>
-			<view style="padding: 50rpx 30rpx 0rpx 30rpx;display: flex;flex-direction: column;box-sizing: border-box;">
-				<view class="container">
-					<view class="contentHead">
-						<view class="text-2xl name">{{ userRole.realname||"无名氏" }}</view>
-						<view
-							style="position: absolute;right: 66rpx;color: #808080;font-size: 28rpx;padding-top:10rpx ;">
-							名望<text style="color: #FE4373;padding-left: 5rpx;">{{userRole.role_mw|| '无'}}</text></view>
+			<!-- <view style="font-size: 36rpx;color: #FFFFFF;">获得角色</view> -->
+			<view
+				style="padding: 28rpx 30rpx 102rpx 30rpx;display: flex;flex-direction: column;box-sizing: border-box;background: #fff;border-radius: 20rpx;">
+				<view style="display: flex;align-items: center;justify-content: center;">
+					<view style="position: relative;text-align: center;display: inline;margin: 0 auto;">
+						<text
+							style="color: #333;font-size:32rpx ;position: relative;z-index: 1;font-family: font-test !important;">获得角色</text>
+						<text
+							style="width: 100%;height: 13rpx;background: #FFA000;position: absolute;left: 0;bottom: 0;"></text>
 					</view>
-					<image src="../../static/fenge.png" style="width: 100%;margin-top: -1px;" mode="widthFix"></image>
+				</view>
+				<view class="container">
+					<view class="contentHead" style="display: flex;align-items: center;margin-bottom: 20rpx;">
+						<view style="color: #333;font-size: 36rpx;margin-right: 25rpx;">{{ userRole.realname||"无名氏" }}
+						</view>
+						<view style="color:#666 ;font-size: 28rpx;">
+							名望：<text style="color: #FFA000;">{{userRole.role_mw|| '无'}}</text></view>
+					</view>
 					<view class="contentBody">
-						<view class="types flex" style="display: flex;flex-wrap: wrap;align-items: center;">
+						<view style="color:#666 ;font-size: 28rpx;">
+							<text style="margin-right: 20rpx;">{{userRole.dynasty}}</text>
+							<text>{{userRole.birthyear||'?'}}年-{{userRole.deathyear||'?'}}年</text>
+						</view>
+						<!-- <view class="types flex" style="display: flex;flex-wrap: wrap;align-items: center;">
 							<view>{{userRole.gender == 1?'男':"女"}}</view>
 							<view style="margin-left: 26rpx;">{{userRole.dynasty||"未知朝代"}}</view>
+						</view> -->
+						<view style="display: flex;align-items: center;margin-top: 50rpx;flex-wrap: wrap;">
+							<block v-for="(item2,index2) in userRole.achievements.split(',')" :key="index2">
+								<view
+									style="width: 125rpx;height: 50rpx;border-radius: 50rpx;text-align: center;line-height: 50rpx;color: #333;font-size: 28rpx;border: 1px solid #FFA000;margin-right: 15rpx;">
+									{{item2}}
+								</view>
+							</block>
 						</view>
-						<view
-							style="padding: 40rpx 38rpx 0rpx 38rpx;box-sizing: border-box;font-size: 28rpx;color: #808080;">
+						<!-- <view>
 							<view>
 								<text>别称：</text>
 								<text>{{userRole.aliasnames||"无"}}</text>
@@ -39,18 +57,19 @@
 									<text>{{item2}}</text>
 								</block>
 							</view>
-						</view>
+						</view> -->
 						<view class="contentText text-xl">{{ userRole.content || '暂无介绍' }} </view>
-						<view style="padding:0rpx 38rpx;margin-top: 60rpx;">
-							<view
-								style="text-align: center;font-size: 28rpx;width: 100%; height: 85rpx;background: #FE4373;line-height: 85rpx;color: #FFFFFF;border-radius: 50rpx;"
-								@click="openIndex()">进入首页
-							</view>
-						</view>
 
 					</view>
 				</view>
 			</view>
+			<view style="padding:0rpx 38rpx;margin-top: 60rpx;">
+				<view class="btna"
+					style="text-align: center;font-size: 28rpx;width: 100%; height: 85rpx;;line-height: 85rpx;color: #FFFFFF;border-radius: 50rpx;"
+					@click="openIndex()">进入首页
+				</view>
+			</view>
+			<view style="color: #666;font-size: 28rpx;text-align: center;margin-top: 50rpx;">进入之后还可以再次更换角色哦~</view>
 		</view>
 	</view>
 </template>
@@ -69,9 +88,30 @@
 		},
 		onLoad(e) {
 			this.userRole = JSON.parse(e.role)
+			this.setFontFamily();
+			this.$api('user.info').then(res => {
+				if (res.code == 1) {
+					uni.setStorageSync("userInfo", res.data)
+					getApp().globalData.initFun()
+				}
+			})
 		},
 		methods: {
-
+			setFontFamily() {
+				// #ifdef APP-PLUS
+				uni.loadFontFace({
+					family: 'font-test',
+					// 本地字体路径需转换为平台绝对路径
+					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/AaHouDiHei.ttf')})`,
+					success() {
+						console.log('success')
+					},
+					fail(e) {
+						console.log('fail')
+					}
+				})
+				// #endif
+			},
 			//重新选择
 			handleRematch() {
 				uni.reLaunch({
@@ -109,6 +149,7 @@
 						gender: that.formGender
 					}
 					that.$api('user.bindrole', data).then(res => {
+						getApp().globalData.initFun()
 						if (res.code === 1) {
 							uni.reLaunch({
 								url: '/pages/index/index'
@@ -131,38 +172,28 @@
 	page {
 		height: 100%;
 		width: 100%;
+		background: #f7f7f7;
 	}
 
 	.container {
 		flex: 1;
 		height: 0;
-		// background: #fff;
+		background: rgba(255, 221, 164, 0.40);
 		border-radius: 25rpx;
-		background-size: 100% 100%;
-		background-repeat: no-repeat;
-		// padding: 50rpx 0rpx 160rpx 0rpx;
+		height: 669rpx;
+		padding: 44rpx 28rpx;
+		box-sizing: border-box;
+		margin-top: 55rpx;
 
 		.contentHead {
-			text-align: center;
 			display: flex;
-			text-align: center;
 			flex-direction: row;
-			align-items: center;
-			justify-content: center;
 			position: relative;
-			padding-bottom: 50rpx;
-			background: #fff;
-			padding-top: 55rpx;
 			border-top-left-radius: 25rpx;
 			border-top-right-radius: 25rpx;
 			border-bottom-left-radius: 5rpx;
 			border-bottom-right-radius: 5rpx;
 
-			.name {
-				color: #5F5D5D;
-				font-weight: bold;
-				font-size: 56rpx;
-			}
 
 			.headDetails {
 				margin-top: 10rpx;
@@ -176,13 +207,6 @@
 		.contentBody {
 			padding-top: 10rpx;
 			box-sizing: border-box;
-			background: #fff;
-			margin-top: -4px;
-			padding-bottom: 160rpx;
-			border-bottom-left-radius: 25rpx;
-			border-bottom-right-radius: 25rpx;
-			border-top-left-radius: 5rpx;
-			border-top-right-radius: 5rpx;
 
 			.types {
 				display: flex;
@@ -199,11 +223,11 @@
 			}
 
 			.contentText {
-				padding: 40rpx 38rpx 0rpx 38rpx;
 				color: #808080;
 				font-size: 28rpx;
 				position: relative;
 				box-sizing: border-box;
+				margin-top: 29rpx;
 
 				.more {
 					position: absolute;
@@ -259,5 +283,14 @@
 
 	.myScroll2 {
 		max-height: 600rpx;
+	}
+
+	.btna {
+		background-image: url(@/static/iconImage/btnBg2.png) !important;
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		background-position: 100% 100%;
+		width: 490rpx;
+		margin: 0 auto;
 	}
 </style>

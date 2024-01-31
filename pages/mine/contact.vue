@@ -22,9 +22,8 @@
 		<!-- <u-loadmore v-if="listUserFollow.length" :status="loadmore" nomoreText="" color="#a1a1a1" marginTop="20" /> -->
 		<u-empty v-if="!listUserFollow.length" icon="/static/wurenwu.png" text="数据为空" textColor="#a1a1a1"
 			marginTop="100"></u-empty>
-
-		<uc-auth></uc-auth>
 		<topPrompt></topPrompt>
+		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 <script>

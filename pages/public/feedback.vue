@@ -28,10 +28,11 @@
 			<view class="questionTitle">上传描述图片</view>
 			<view class="pic-board">
 				<view class="imgsItem" style="position: relative;" v-for="(item,index) in imgs">
-					<img :src="item" alt="" style="width: 100%;height: 100%;border-radius: 10rpx;">
+					<image :src="item" alt="" style="width: 100%;height: 100%;border-radius: 10rpx;" mode="aspectFill">
+					</image>
 					<text class="ri-close-line quxiao" @click="deleteImg(index)"></text>
 				</view>
-				<view class="upload" @click="openImg" v-if="imgs.length<5">
+				<view class="upload" @click="openImg2" v-if="imgs.length<5">
 					<view style="margin-bottom: 10rpx;font-size: 50rpx;"><text class="ri-camera-fill"></text></view>
 					<view>上传图片</view>
 				</view>
@@ -57,10 +58,11 @@
 		<!-- 确定按钮 -->
 		<view style="padding: 30rpx;box-sizing: border-box;">
 			<view
-				style="border-radius: 20px;background: #FE4373;color: #fff;text-align: center;line-height: 40px;margin: 0 auto;height: 40px;"
+				style="border-radius: 20px;background: #FFA000;color: #fff;text-align: center;line-height: 40px;margin: 0 auto;height: 40px;"
 				@click="submit"> 确定 </view>
 		</view>
-
+		<feiqslsHit></feiqslsHit>
+		<feiauthority ref="authority" @imageEmpower='imageEmpower'></feiauthority>
 	</view>
 </template>
 
@@ -96,6 +98,18 @@
 			deleteImg(i) {
 				this.imgs.splice(i, 1)
 			},
+			openImg2() {
+				// #ifdef H5
+				this.openImg()
+				// #endif
+				// #ifdef APP
+				this.$refs.authority.show('image')
+				// #endif
+			},
+			//图片授权
+			imageEmpower() {
+				this.openImg()
+			},
 			//上传图片
 			openImg() {
 				var that = this;
@@ -106,7 +120,7 @@
 						// that.imgs.push(res.tempFilePaths[0]);
 						var token = uni.getStorageSync("token");
 						uni.uploadFile({
-							url: that.$API_URL + 'index/upload',
+							url: uni.getStorageSync("hostData").host + "/api/hey/" + 'index/upload',
 							filePath: res.tempFilePaths[0],
 							name: 'file',
 							formData: {
