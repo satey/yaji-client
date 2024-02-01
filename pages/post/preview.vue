@@ -143,7 +143,7 @@
 						<text>喜欢</text>
 					</view>
 					<view class="operateItem">
-						<image src="../../static/iconImage/gengduo.png" style="width: 52rpx;height: 52rpx;"
+						<image src="../../static/iconImage/pinglun.png" style="width: 52rpx;height: 52rpx;"
 							mode="widthFix"></image>
 						<text>0</text>
 					</view>
@@ -654,7 +654,7 @@
 			width: 576rpx;
 			height: 820rpx;
 			text-align: center;
-			font-size: 46rpx;
+			font-size: 36rpx;
 			font-weight: 500;
 			color: #333333;
 			line-height: 80rpx;
