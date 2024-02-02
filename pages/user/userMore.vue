@@ -6,6 +6,7 @@
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
+		<view style="height: var(--status-bar-height);"></view>
 		<view
 			style="margin-top: 180rpx;display: flex;align-items: center;justify-content: center;flex-direction: column;">
 			<view style="width: 160rpx;height: 160rpx;overflow: hidden;border-radius: 50%;">

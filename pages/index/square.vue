@@ -39,7 +39,8 @@
 								:src="item.bg_img_url"></image>
 							<view class="textContent" style="position: relative;z-index: 2;"
 								:style="{paddingTop:statusBarHeight}">
-								<view class="textContentBox" v-html="item.content">
+								<view class="textContentBox">
+									<text>{{item.content}}</text>
 								</view>
 							</view>
 							<view
@@ -52,7 +53,8 @@
 						<view v-if="item.show_type==5" class="textContent" :style="{paddingTop:statusBarHeight}">
 							<image style="width: 100vw;height: 100vh;position: absolute;top: 0;left: 0;z-index: 0;"
 								:src="item.bg_img_url"></image>
-							<view class="textContentBox" v-html="item.contentText">
+							<view class="textContentBox">
+								<text>{{item.content}}</text>
 							</view>
 						</view>
 						<!-- 多张图片 -->
@@ -85,7 +87,8 @@
 								:src="item.bg_img_url"></image>
 							<view class="textContent" style="position: relative;z-index: 2;"
 								:style="{paddingTop:statusBarHeight}">
-								<view class="textContentBox" v-html="item.content">
+								<view class="textContentBox">
+									<text>{{item.content}}</text>
 								</view>
 							</view>
 							<swiper :current="imagesTextCurrent" @change="imagesTextChange" class="imagesSwiper"
@@ -447,7 +450,7 @@
 			},
 			//打开更多
 			openMore(item) {
-				this.$refs.more.moreShow(item.post_id, item.user_id, true,item)
+				this.$refs.more.moreShow(item.post_id, item.user_id, true, item)
 			},
 			//动态已看上报
 			userBrowseLog(post_id) {
@@ -877,7 +880,6 @@
 
 	//评论弹窗
 	.commentContainer {
-		padding: 0rpx 32rpx 15rpx 32rpx;
 		box-sizing: border-box;
 		height: 850rpx;
 		background: #fff;
@@ -922,6 +924,8 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			padding: 0rpx 32rpx 15rpx 32rpx;
+			box-sizing: border-box;
 
 			.commentInput {
 				flex: 1;

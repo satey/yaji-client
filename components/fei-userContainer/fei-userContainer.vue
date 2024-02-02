@@ -31,9 +31,10 @@
 										<view class="line"></view>
 									</view>
 								</view>
-								<view style="display: flex;align-items: center;" v-if="userProfile!=null">
+								<view style="display: flex;align-items: center;flex-wrap:wrap;"
+									v-if="userProfile!=null">
 									<block v-for="(item,index) in userProfile.role_info.identity" :key="index">
-										<view class="labels">{{item}}</view>
+										<view class="labels" style="margin-top: 10rpx;">{{item}}</view>
 									</block>
 								</view>
 							</view>
@@ -267,7 +268,7 @@
 				margin-left: 16rpx;
 				display: flex;
 				flex-direction: column;
-				height: 122rpx;
+				min-height: 122rpx;
 				justify-content: space-around;
 
 				.line {

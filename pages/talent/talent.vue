@@ -1,26 +1,41 @@
 <template>
-	<view>
+	<view style="display: flex;flex-direction: column;width: 100vw;height: 100vh;">
 		<u-navbar title="知识测试" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
 				<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
-		<view>
-			<view style="font-size:28rpx ;color: #333333;margin-top: 32rpx;margin-left: 35rpx;margin-bottom: 65rpx;">
-				请选择一个分类：</view>
-			<view style="display: flex;align-items: center;flex-wrap: wrap;">
-				<block v-for="(item,index) in lists" :key="index">
-					<view @click="openStartTalent(item)"
-						style="width: 50%;box-sizing: border-box;display: flex;align-items: center;justify-content: center;margin-bottom: 100rpx;">
-						<view class="item">
-							<image style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;"
-								src="../../static/iconImage/shanzi.png" mode=""></image>
-							<view class="itemText">{{item.value}}</view>
-						</view>
+		<view class="talentBox">
+			<image src="@/static/iconImage/tibg.png" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;"
+				mode=""></image>
+			<scroll-view scroll-y="true" style="flex: 1;">
+				<view>
+					<view
+						style="font-size:28rpx ;color: #333333;padding-top: 32rpx;margin-left: 35rpx;margin-bottom: 65rpx;">
+						请选择一个分类：</view>
+					<view
+						style="display: flex;align-items: center;flex-wrap: wrap;padding: 0rpx 25rpx 0rpx 65rpx;box-sizing: border-box;">
+						<block v-for="(item,index) in lists" :key="index">
+							<view @click="openStartTalent(item)"
+								style=" box-sizing: border-box;margin-bottom: 41rpx;margin-right: 41rpx;">
+								<image :src="item.img" style="width:290rpx ;height:296rpx ;" mode="aspectFill"></image>
+								<!-- <view class="talentItem">
+									<view
+										style="color:#333 ;font-size: 56rpx;position: absolute;top: 23rpx;right: 39rpx;font-family: font-test !important;">
+										{{item.value}}</view>
+								</view> -->
+								<!-- <view class="item">
+									<image style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;"
+										src="../../static/iconImage/shanzi.png" mode=""></image>
+									<view class="itemText">{{item.value}}</view>
+								</view> -->
+							</view>
+						</block>
 					</view>
-				</block>
-			</view>
+				</view>
+			</scroll-view>
+
 		</view>
 		<feiqslsHit></feiqslsHit>
 	</view>
@@ -77,7 +92,7 @@
 				uni.loadFontFace({
 					family: 'font-test',
 					// 本地字体路径需转换为平台绝对路径
-					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/AaHouDiHei.ttf')})`,
+					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/honglei.ttf')})`,
 					success() {},
 					fail(e) {
 						console.log('fail')
@@ -104,5 +119,18 @@
 		font-family: font-test !important;
 		position: relative;
 		z-index: inherit;
+	}
+
+	.talentBox {
+		flex: 1;
+		display: flex;
+	}
+
+	.talentItem {
+		width: 290rpx;
+		height: 296rpx;
+		border-radius: 20rpx;
+		background: #fff;
+		position: relative;
 	}
 </style>

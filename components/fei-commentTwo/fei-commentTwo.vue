@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="inputContainer" v-if="showInput">
-			<view class="inputBox">
+			<view class="inputBox" style="padding: 15rpx 32rpx 15rpx 32rpx;box-sizing: border-box;">
 				<view class="textAreaBox">
 					<textarea type="text" v-model="inputMessage" @blur="showInput=false;inputMessage=''"
 						auto-focus="true" confirm-type="send" placeholder-style="font-size:28rpx;color:#999999;"
@@ -12,7 +12,7 @@
 			</view>
 			<view :style="{height:keyboardHeight+'px'}"></view>
 		</view>
-		<view>
+		<view style="padding: 15rpx 32rpx 15rpx 32rpx;box-sizing: border-box;">
 			<block v-for="(item,index) in commentList" :key="index">
 				<view class="commentItem">
 					<image class="commentUserImg" @click="$u.route('pages/user/home',{
@@ -173,6 +173,7 @@
 				operateData: [],
 				showReportFlag: false,
 				showCai: false,
+				phoneMode: uni.getSystemInfoSync().platform,
 			}
 		},
 		created() {
@@ -304,6 +305,9 @@
 				var that = this;
 				uni.onKeyboardHeightChange(res => {
 					that.keyboardHeight = res.height;
+					if (res.height == 0) {
+						that.showInput = false;
+					}
 				})
 			}
 		}

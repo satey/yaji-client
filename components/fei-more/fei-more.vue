@@ -1,14 +1,14 @@
 <template>
 	<view>
 		<!-- 更多弹窗 -->
-		<u-popup :show="morePopup" @close="morePopup = false;postId='';itemData = [];share_weixin_href = []" :closeable="true" :round="30">
+		<u-popup :show="morePopup" @close="morePopup = false;postId='';itemData = [];share_weixin_href = []"
+			:closeable="true" :round="30">
 			<view style="background:#fff;border-radius: 20rpx 20rpx 0rpx 0rpx;">
 				<view style="text-align: center;margin-top: 23rpx;"><text style="color:#333;font-size: 26rpx;">更多</text>
 				</view>
 				<view
 					style="display: flex;align-items: center;margin-top: 26rpx;padding: 0rpx 62rpx;box-sizing: border-box;margin-bottom: 50rpx;">
-					<!-- <view v-if="share_weixin_status==1"
-						style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;"
+					<!-- <view style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;"
 						@click="shareWeChat">
 						<image class="moreImgs" style="width: 96rpx;height: 96rpx;"
 							src="../../static/iconImage/fenxiang.png" mode=""></image>
@@ -58,19 +58,9 @@
 				userInfo: uni.getStorageSync("userInfo"),
 				isShowShield: true,
 				share_weixin_status: 0,
-				share_weixin_href:'',
+				share_weixin_href: '',
 				itemData: []
 			}
-		},
-		created() {
-			console.log("fei")
-			this.$api("config.config1").then(res => {
-				console.log(res)
-				if (res.code == 1) {
-					this.share_weixin_status = res.data.share_weixin_status;
-					this.share_weixin_href = res.data.share_weixin_status
-				}
-			})
 		},
 		methods: {
 			shareWeChat() {
@@ -82,8 +72,9 @@
 						`来自{${this.itemData.user_info.role_realname}·${this.itemData.user_info.role_dynasty}}的动态。` :
 						this.itemData.content,
 					summary: `默认用动态的故事。无故事时显示:来自{${this.itemData.user_info.role_realname}·${this.itemData.user_info.role_dynasty}}的动态。`,
-					imageUrl:this.itemData.image_list.length !=0?this.itemData.image_list[0]:this.itemData.bg_img_url,
-					href:this.share_weixin_href+'?postId'+this.postId,
+					imageUrl: this.itemData.image_list.length != 0 ? this.itemData.image_list[0] : this.itemData
+						.bg_img_url,
+					href: 'https://www.baidu.com/',
 					success: function(res) {
 						console.log("success:" + JSON.stringify(res));
 					},
