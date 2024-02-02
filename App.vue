@@ -248,7 +248,7 @@
 									case "audio":
 										textContent = "[语音]"
 										break;
-									case "type":
+									case "gift":
 										textContent = "[礼物]"
 										break;
 									case "play":

@@ -3,11 +3,10 @@ uni.request({
 	method: "GET",
 	success(res) {
 		if (res.data.code == 1) {
-			// res.data.data = {
-			// 	"host": "https://yaji.ixiaojin.cn/",
-			// 	"socket": "wss://yaji.ixiaojin.cn/websocket",
-			// 	"share_weixin_status": 1
-			// };
+			res.data.data = {
+				"host": "https://yaji.ixiaojin.cn/",
+				"socket": "wss://yaji.ixiaojin.cn/websocket",
+			};
 			uni.setStorageSync("hostData", res.data.data)
 		}
 	}

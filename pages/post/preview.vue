@@ -251,7 +251,7 @@
 			<view class="operate" :style="{paddingBottom:tabBarHeight}">
 				<view v-if="myData.length !=0">
 					<view style="position: relative;">
-						<image class="userImg" :src="myData.user_info.avatar" mode="aspectFill"></image>
+						<image class="userImg" @click="$u.route('/pages/user/home',{user_id:myData.user_info.user_id})" :src="myData.user_info.avatar" mode="aspectFill"></image>
 						<block v-if="userInfo.id!=myData.user_id">
 							<view class="follow" @click="follow" v-if="myData.is_follow!=1">
 								<i class="iconfont  icon-jia" style="color: #FFFFFF;font-size: 20rpx;"></i>
