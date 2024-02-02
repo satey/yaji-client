@@ -767,25 +767,47 @@
 			</view>
 
 			<view class="bottomBar">
-				<view class="bottomInput" @click="sendInput">
-					<text style="color: #FFA000;white-space: nowrap;font-size: 28rpx;">发言：</text>
-				</view>
-				<view class="bottomBarIcon" @click="handleImage2">
-					<image src="@/static/iconImage/roomimg.png" style="width: 100%;height: 100%;" mode=""></image>
-				</view>
-				<view class="bottomBarIcon" @click="showGift=true">
-					<image src="@/static/iconImage/roomliwu.png" style="width: 100%;height: 100%;" mode=""></image>
-				</view>
-				<block>
-					<view class="maiBtn" @click="addTalk" v-if="flagMaiBtn">
-						<i class="iconfont icon-huatong-F" style="font-size: 36rpx;margin-top: 10rpx;color:fff;"></i>
-						<text>上麦</text>
+				<view class="tishi" v-if="tishiFlag">
+					<view style="display: flex;align-items: center;">
+						<block v-if="roomType=='fhl'">
+							<view v-if="selectOrderData!=null"
+								style="color: #000000;font-size: 28rpx;height: 68rpx;line-height: 60rpx;">
+								请发一句含【{{selectOrderData.content}}】字的诗</view>
+						</block>
+						<block v-if="roomType=='cyjl'">
+							<view style="color: #000000;font-size: 28rpx;height: 68rpx;line-height: 60rpx;">
+								请先发一个成语</view>
+						</block>
+						<block v-if="roomType=='scjl'">
+							<view style="color: #000000;font-size: 28rpx;height: 68rpx;line-height: 60rpx;">
+								请先发任意一句古诗</view>
+						</block>
+						<i class="iconfontcolor icon-shouzhi" style="font-size: 41rpx;margin-left: 5rpx;"></i>
 					</view>
-					<view class="maiBtn" @click="belowTalk" v-else>
-						<i class="iconfont icon-huatong-F" style="font-size: 36rpx;margin-top: 10rpx;color:fff;"></i>
-						<text>下麦</text>
+				</view>
+				<view style="display: flex;align-items: center;">
+					<view class="bottomInput" @click="sendInput">
+						<text style="color: #FFA000;white-space: nowrap;font-size: 28rpx;">发言：</text>
 					</view>
-				</block>
+					<view class="bottomBarIcon" @click="handleImage2">
+						<image src="@/static/iconImage/roomimg.png" style="width: 100%;height: 100%;" mode=""></image>
+					</view>
+					<view class="bottomBarIcon" @click="showGift=true">
+						<image src="@/static/iconImage/roomliwu.png" style="width: 100%;height: 100%;" mode=""></image>
+					</view>
+					<block>
+						<view class="maiBtn" @click="addTalk" v-if="flagMaiBtn">
+							<i class="iconfont icon-huatong-F"
+								style="font-size: 36rpx;margin-top: 10rpx;color:fff;"></i>
+							<text>上麦</text>
+						</view>
+						<view class="maiBtn" @click="belowTalk" v-else>
+							<i class="iconfont icon-huatong-F"
+								style="font-size: 36rpx;margin-top: 10rpx;color:fff;"></i>
+							<text>下麦</text>
+						</view>
+					</block>
+				</view>
 			</view>
 		</view>
 		<!-- 输入框 -->
@@ -864,6 +886,7 @@
 		},
 		data() {
 			return {
+				tishiFlag: false,
 				empower: false,
 				roomType: "",
 				transportFlag: false,
@@ -1259,6 +1282,9 @@
 								that.$forceUpdate()
 								break;
 							case "fhl_task_begin":
+								if (Number(socketDate.data.answer_uid) == that.userInfo.id) {
+									that.tishiFlag = true
+								}
 								that.noReadyUser = null;
 								that.noReadyTime = 120;
 								that.taskBeginFlag = true;
@@ -1268,6 +1294,7 @@
 								that.taskBeginInterVal()
 								break;
 							case "fhl_task_trun":
+								that.tishiFlag = false;
 								that.taskTextList = [];
 								that.noReadyTime = 120;
 								clearInterval(that.noReadyInter)
@@ -1276,6 +1303,7 @@
 								that.taskBeginInterVal()
 								break;
 							case "fhl_task_result":
+								that.tishiFlag = false;
 								that.selectOrder = false;
 								that.taskTextList = []
 								that.showToken = true;
@@ -3000,9 +3028,9 @@
 		right: 30rpx;
 		bottom: 30rpx;
 		box-sizing: border-box;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+		// display: flex;
+		// align-items: center;
+		// justify-content: space-between;
 
 		.bottomInput {
 			flex: 1;
@@ -3088,5 +3116,17 @@
 		padding: 50rpx 27rpx 62rpx 37rpx;
 		background: #fff;
 		box-sizing: border-box;
+	}
+
+	.tishi {
+		height: 86rpx;
+		min-width: 260rpx;
+		background-image: url(@/static/iconImage/tishi.png);
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		background-position: 100% 100%;
+		margin-bottom: 15rpx;
+		display: inline-flex;
+		padding: 0rpx 10rpx;
 	}
 </style>

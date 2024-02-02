@@ -988,6 +988,12 @@ export default {
 			method: 'POST',
 			desc: '已获得勋章列表',
 		},
+		post: {
+			url: 'user/userPostList',
+			auth: true,
+			method: 'POST',
+			desc: '查看用户动态列表',
+		}
 	},
 	user_gift: {
 		lists: {

@@ -14,10 +14,11 @@
 					<view
 						style="font-size:28rpx ;color: #333333;padding-top: 32rpx;margin-left: 35rpx;margin-bottom: 65rpx;">
 						请选择一个分类：</view>
-					<view style="display: flex;align-items: center;flex-wrap: wrap;">
+					<view
+						style="display: flex;align-items: center;flex-wrap: wrap;padding: 0rpx 25rpx 0rpx 65rpx;box-sizing: border-box;">
 						<block v-for="(item,index) in lists" :key="index">
 							<view @click="openStartTalent(item)"
-								style="width: 50%;box-sizing: border-box;display: flex;align-items: center;justify-content: center;margin-bottom: 41rpx;">
+								style=" box-sizing: border-box;margin-bottom: 41rpx;margin-right: 41rpx;">
 								<image :src="item.img" style="width:290rpx ;height:296rpx ;" mode="aspectFill"></image>
 								<!-- <view class="talentItem">
 									<view

@@ -267,13 +267,11 @@
 								<view style="margin-right:10rpx;text-align: center;" @click="cai"
 									v-if="taskCompleteData.is_zan!=1">
 									<i class="iconfont  icon-cai" v-if="taskCompleteData.is_cai==0"
-										style="font-size: 45rpx;color: #231F20;"></i>
-									<i class="iconfontcolor  icon-cai1" v-else style="font-size: 45rpx;"></i>
+										style="font-size: 35rpx;color: #231F20;"></i>
+									<i class="iconfontcolor  icon-cai1" v-else style="font-size: 35rpx;"></i>
 									<view style="color: #333333;font-size: 22rpx;">名望-1</view>
 								</view>
 								<view style="text-align: center;">
-									<i class="iconfont  icon-31dianzan" v-if="false"
-										style="font-size: 45rpx;color: #231F20;"></i>
 									<i class="iconfont  icon-liwu2" @click="openUserBox2" style="font-size: 45rpx;"></i>
 									<view style="color: #333333;font-size: 22rpx;">送礼物</view>
 								</view>
@@ -843,6 +841,9 @@
 							case "profile_change_one":
 								if (socketData.data.user_info.length != 0) {
 									that.allStageUser.push(socketData.data.user_info)
+								}
+								if (that.allStageUser.length < 3) {
+									that.taskData = []
 								}
 								that.$forceUpdate()
 								break;

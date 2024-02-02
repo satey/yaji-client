@@ -880,7 +880,6 @@
 
 	//评论弹窗
 	.commentContainer {
-		padding: 0rpx 32rpx 15rpx 32rpx;
 		box-sizing: border-box;
 		height: 850rpx;
 		background: #fff;
@@ -925,6 +924,8 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			padding: 0rpx 32rpx 15rpx 32rpx;
+			box-sizing: border-box;
 
 			.commentInput {
 				flex: 1;

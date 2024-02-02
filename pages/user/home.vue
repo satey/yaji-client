@@ -120,26 +120,24 @@
 		<view class="trends">
 			<view style="color: #333;font-size: 30rpx;">动态</view>
 			<view style="display: flex;align-items: center;margin-top: 25rpx;flex-wrap: wrap;" v-if="user.length!=0">
-				<block v-if="user.post_list.length!=0">
-					<block v-for="(item,index) in user.post_list" :key="index">
-						<view class="item"
-							@click="$u.route('/pages/post/preview',{data:JSON.stringify({type:'work',post_id:item.post_id})})">
-							<image style="width: 100%;height: 100%;position: absolute;top:0%;left: 0;z-index: 1;"
-								:src="item.bg_img_url" mode="aspectFill"></image>
-							<image
-								style="width: 100%;position: absolute;top: 50%;left: 0;z-index: 2;transform: translateY(-50%);"
-								:src="item.image_list[0]" mode="widthFix"></image>
-							<view class="content">
-								<text>{{item.content}}</text>
-							</view>
-							<view class="itemFooter">
-								<i class="iconfont icon-aixin1" style="margin-right: 5rpx;"></i>
-								<text>{{item.commentnums}}</text>
-							</view>
+				<block v-for="(item,index) in userPostList" :key="index">
+					<view class="item"
+						@click="$u.route('/pages/post/preview',{data:JSON.stringify({type:'work',post_id:item.post_id})})">
+						<image style="width: 100%;height: 100%;position: absolute;top:0%;left: 0;z-index: 1;"
+							:src="item.bg_img_url" mode="aspectFill"></image>
+						<image
+							style="width: 100%;position: absolute;top: 50%;left: 0;z-index: 2;transform: translateY(-50%);"
+							:src="item.image_list[0]" mode="widthFix"></image>
+						<view class="content">
+							<text>{{item.content}}</text>
 						</view>
-					</block>
+						<view class="itemFooter">
+							<i class="iconfont icon-aixin1" style="margin-right: 5rpx;"></i>
+							<text>{{item.commentnums}}</text>
+						</view>
+					</view>
 				</block>
-				<view v-else style="width: 100%;">
+				<view v-if="userPostList.length ==0" style="width: 100%;">
 					<u-empty icon="/static/iconImage/jilu.png" text="" textColor="#a1a1a1" marginTop="100"></u-empty>
 				</view>
 			</view>
@@ -254,7 +252,9 @@
 				is_follow: '',
 				followModule: false,
 				headColor: "rgba(0,0,0,0)",
-				userInfo: uni.getStorageSync("userInfo")
+				userInfo: uni.getStorageSync("userInfo"),
+				page: 1,
+				userPostList: []
 			}
 		},
 		onLoad() {
@@ -262,6 +262,7 @@
 			that.getUserProfile()
 			that.look_user_home()
 			that.setFontFamily()
+			that.getPost()
 		},
 		onPageScroll(e) {
 			if (parseInt(e.scrollTop) >= 50) {
@@ -276,12 +277,24 @@
 			// that.loadmore = 'loading'
 			// that.params.page = ++that.params.page
 			// that.getUserPost();
+			this.page++;
+			this.getPost()
 		},
 		mounted() {
 			let that = this
 			that.user_id = that.$Route.query.user_id
 		},
 		methods: {
+			getPost() {
+				this.$api("user.post", {
+					user_id: this.$Route.query.user_id,
+					page: this.page
+				}).then(res => {
+					if (res.code == 1) {
+						this.userPostList.push(...res.data.list)
+					}
+				})
+			},
 			//复制雅集号
 			copy() {
 				var that = this;
@@ -405,7 +418,6 @@
 				that.$api('user.index', {
 					user_id: that.$Route.query.user_id
 				}).then(res => {
-					console.log(res)
 					if (res.code === 1) {
 						that.user = res.data
 						that.is_follow = res.data.is_follow

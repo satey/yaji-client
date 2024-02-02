@@ -8,12 +8,12 @@
 				</view>
 				<view
 					style="display: flex;align-items: center;margin-top: 26rpx;padding: 0rpx 62rpx;box-sizing: border-box;margin-bottom: 50rpx;">
-					<view style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;"
+					<!-- <view style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;"
 						@click="shareWeChat">
 						<image class="moreImgs" style="width: 96rpx;height: 96rpx;"
 							src="../../static/iconImage/fenxiang.png" mode=""></image>
 						<view style="font-size: 23rpx;color: #333;margin-top: 15rpx;white-space: nowrap;">分享到微信</view>
-					</view>
+					</view> -->
 					<block v-if="isShowShield">
 						<view @click="shield" v-if="userInfo.id!=userId"
 							style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;">

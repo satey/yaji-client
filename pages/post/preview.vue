@@ -301,7 +301,7 @@
 					<view style="margin-right: 8rpx;margin-left: 8rpx;">
 						{{myData.user_info.role_realname}}·{{myData.user_info.role_dynasty}}
 					</view>
-					<block v-if="myData.user_info.gender">
+					<block v-if="myData.user_info.gender==1">
 						<i class="iconfont icon-nan1" style="font-size: 22rpx;color: #00C2FF;"></i>
 					</block>
 					<block v-else>
