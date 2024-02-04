@@ -104,10 +104,16 @@
 				}
 			},
 			openRoom(item) {
-				this.$u.route("/pages/chat/chatRoom", {
-					roomId: item.room_id,
-					type: item.type
-				})
+				if (item.type == "qsls") {
+					this.$u.route("/pages/qsls/qsls", {
+						roomId: item.room_id,
+					})
+				} else {
+					this.$u.route("/pages/chat/chatRoom", {
+						roomId: item.room_id,
+						type: item.type
+					})
+				}
 			}
 		}
 	}
