@@ -296,11 +296,55 @@
 					that.closeScoket()
 				})
 			},
+			//获取第三方打开
+			getScheme() {
+				// #ifdef APP
+				if (uni.getStorageSync("token") != '') {
+					console.log("plus.runtime.launcher: "+plus.runtime.launcher);
+					var args = plus.runtime.arguments;
+					console.log(args);
+					if (args) {
+						// // 处理args参数，如直达到某新页面等
+						if (args.indexOf('//') != -1) {
+							var str = args.slice(args.lastIndexOf('//') + 2, args.length);
+							const currentPage = getCurrentPages();
+							if (currentPage[currentPage.length - 1].route == 'pages/start/start') {
+								var timeOut = setTimeout(() => {
+									this.jump(str)
+								}, 2500)
+							} else {
+								this.jump(str)
+							}
+							plus.runtime.arguments = ''
+						}
+					}
+				}
+				// #endif
+			},
+			jump(src) {
+				if (this.GetQueryString(src, "from") == 'post') {
+					this.$u.route('/pages/post/preview', {
+						data: JSON.stringify({
+							type: 'work',
+							post_id: this.GetQueryString(src, "postId")
+						})
+					})
+				}
+			},
+			GetQueryString(src, name) {
+				var p = src.split("&")
+				for (var i = 0; i < p.length; i++) {
+					if (p[i].split("=")[0] == name) {
+						return p[i].split("=")[1]
+					}
+				}
+				return null
+			}
 		},
 		onShow() {
 			var that = this;
 			this.reconnect()
-
+			this.getScheme()
 		},
 		onLaunch: function() {
 			var that = this;

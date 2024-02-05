@@ -8,12 +8,12 @@
 				</view>
 				<view
 					style="display: flex;align-items: center;margin-top: 26rpx;padding: 0rpx 62rpx;box-sizing: border-box;margin-bottom: 50rpx;">
-					<!-- <view style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;"
+					<view style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;"
 						@click="shareWeChat">
 						<image class="moreImgs" style="width: 96rpx;height: 96rpx;"
 							src="../../static/iconImage/fenxiang.png" mode=""></image>
 						<view style="font-size: 23rpx;color: #333;margin-top: 15rpx;white-space: nowrap;">分享到微信</view>
-					</view> -->
+					</view>
 					<block v-if="isShowShield">
 						<view @click="shield" v-if="userInfo.id!=userId"
 							style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;">
@@ -64,6 +64,7 @@
 		},
 		methods: {
 			shareWeChat() {
+				console.log(this.itemData)
 				uni.share({
 					provider: "weixin",
 					scene: "WXSceneSession",
@@ -74,7 +75,7 @@
 					summary: `默认用动态的故事。无故事时显示:来自{${this.itemData.user_info.role_realname}·${this.itemData.user_info.role_dynasty}}的动态。`,
 					imageUrl: this.itemData.image_list.length != 0 ? this.itemData.image_list[0] : this.itemData
 						.bg_img_url,
-					href: 'https://www.baidu.com/',
+					href: 'https://www.suoeryoude.cn/share?from=post&postId=' + this.itemData.post_id,
 					success: function(res) {
 						console.log("success:" + JSON.stringify(res));
 					},
