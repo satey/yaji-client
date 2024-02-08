@@ -246,7 +246,7 @@
 			</view>
 		</u-popup>
 		<!-- 抽屉栏 -->
-		<u-popup :show="showDrawer" @close="showDrawer = false" mode="right" :closeable="false" :round="20">
+		<u-popup :show="showDrawer" @close="showDrawer = false" mode="right" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
 			<view class="drawerContainer">
 				<view>
 					<view style="height: 30rpx;"></view>

@@ -58,7 +58,8 @@
 			</view>
 		</u-popup>
 		<!-- 抽屉 -->
-		<u-popup :show="drawerShow" @close="drawerShow = false" mode="right" :closeable="false" :round="20">
+		<u-popup :show="drawerShow" @close="drawerShow = false" mode="right" :closeable="false"
+			:customStyle="{background:'transparent'}">
 			<view class="drawerContainer">
 				<view style="height: 30rpx;"></view>
 				<block v-for="(item,index) in allUserList.prop_list" :key="index">

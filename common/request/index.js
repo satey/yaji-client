@@ -40,7 +40,9 @@ export default function api(url, data = {}) {
 			uni.removeStorageSync('token');
 			uni.removeStorageSync('userInfo');
 			uni.removeStorageSync('roomData')
-			getApp().globalData.socketTask.close();
+			if(getApp().globalData.socketTask !=null){
+				getApp().globalData.socketTask.close();
+			}
 			clearInterval(getApp().globalData.timmer)
 			getApp().globalData.socketTask = null;
 			store.commit('LOGIN_TIP', true)
