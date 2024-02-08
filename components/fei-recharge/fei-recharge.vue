@@ -1,6 +1,6 @@
 <template>
 	<view class="fei-recharge">
-		<u-popup :show="rechargeShow" @close="showAction = false" :closeable="false" :round="30">
+		<u-popup :show="rechargeShow" @close="showAction = false" :closeable="false" :round="30" :customStyle="{background:'transparent'}">
 			<view style="background: #f7f7f7;border-radius: 30rpx;">
 				<view
 					style="display: flex;align-items: center;justify-content: space-between;padding: 30rpx 30rpx 0rpx 30rpx;">

@@ -14,7 +14,8 @@
 			</view>
 		</view>
 		<!-- 道具 -->
-		<u-popup :show="popsShow" @close="popsShow = false" mode="center" :closeable="false" :round="20">
+		<u-popup :show="popsShow" @close="popsShow = false" mode="center" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="popupContainer">
 				<view style="display: flex;align-items: center;justify-content: center;">
 					<view class="title">
@@ -409,7 +410,7 @@
 
 		<!-- 发布 -->
 		<u-popup :show="showPopup" @close="hidePopup" :closeOnClickOverlay="false" mode="center" :closeable="true"
-			:round="20">
+			:round="20" :customStyle="{background:'transparent'}">
 			<view class="popupContainer">
 				<!-- 选择任务 -->
 				<view style="display: flex;align-items: center;justify-content: center;">
@@ -460,7 +461,7 @@
 		</u-popup>
 		<!-- 命中弹框 -->
 		<u-popup :show="hitShow" @close="hitShow" :closeOnClickOverlay="false" mode="center" :closeable="false"
-			:round="20">
+			:round="20" :customStyle="{background:'transparent'}">
 			<view class="popupContainer">
 				<block v-if="taskData.type!=undefined||taskData.type=='cup_task_accept'">
 					<view
@@ -576,7 +577,7 @@
 		</u-popup>
 		<!-- 输入框 -->
 		<u-popup :show="showInput" @close="showInput = false" mode="bottom" :overlayOpacity="0" :closeable="false"
-			:round="20">
+			:round="20" :customStyle="{background:'transparent'}">
 			<view class="inputContainer">
 				<view class="inputBox">
 					<view class="textAreaBox">

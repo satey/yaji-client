@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<u-popup :show="qslsHitShow" @close="qslsHitShow" mode="center" :closeable="false" :round="20">
+		<u-popup :show="qslsHitShow" @close="qslsHitShow" mode="center" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="popupContainer" v-if="taskData.length !=0">
 				<view style="display: flex;align-items: center;justify-content: center;">
 					<view class="title">

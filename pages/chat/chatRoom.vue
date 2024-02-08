@@ -23,7 +23,7 @@
 			</view>
 		</u-popup>
 		<!-- 礼物 -->
-		<u-popup :show="showGift" @close="showGift = false" mode="bottom" :closeable="false" :round="20">
+		<u-popup :show="showGift" @close="showGift = false" mode="bottom" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
 			<view class="giftContainer">
 				<scroll-view scroll-y="true" class="giftBox">
 					<block>
@@ -179,7 +179,7 @@
 			</view> -->
 		</u-popup>
 		<!-- 创建房间 -->
-		<u-popup :show="showCreateRoom" @close="showCreateRoom = false" mode="bottom" :closeable="false" :round="20">
+		<u-popup :show="showCreateRoom" @close="showCreateRoom = false" mode="bottom" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
 			<view class="createRoomContainer">
 				<view style="display: flex;">
 					<text style="font-size: 32rpx;color: #666666;white-space: nowrap;">房间名称：</text>
@@ -333,7 +333,7 @@
 		</u-popup>
 		<!-- 令牌 -->
 		<u-popup :show="showToken" @close="showToken = false;taskData = null;taskResultData = null;" mode="center"
-			:closeable="false" :round="20">
+			:closeable="false" :round="20" :customStyle="{background:'transparent'}">
 			<view class="tokenContainer">
 				<block v-if="selectOrder">
 					<view class="tokenTitle">
@@ -417,7 +417,7 @@
 			</view>
 		</u-popup>
 		<!-- 上报 -->
-		<u-popup :show="showReport" @close="showReport = false" mode="center" :closeable="false" :round="20">
+		<u-popup :show="showReport" @close="showReport = false" mode="center" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
 			<view class="report">
 				<view class="reportBgBox">
 					<text>库中没有检测到对应诗句，请检查是否 有错别字，或一键上报，我们将持续完 善基础库。</text>
@@ -430,7 +430,7 @@
 			</view>
 		</u-popup>
 		<!-- 认输 -->
-		<u-popup :show="showTransport" @close="showTransport = false" mode="center" :closeable="false" :round="20">
+		<u-popup :show="showTransport" @close="showTransport = false" mode="center" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
 			<view class="report">
 				<view class="reportBgBox"
 					style="text-align: center;display: flex;align-items: center;justify-content: center;">
@@ -812,7 +812,7 @@
 		</view>
 		<!-- 输入框 -->
 		<u-popup :show="showInput" @close="showInput = false" mode="bottom" :overlayOpacity="0" :closeable="false"
-			:round="20">
+			:round="20" :customStyle="{background:'transparent'}">
 			<view class="inputContainer">
 				<view class="inputBox">
 					<view class="textAreaBox">
