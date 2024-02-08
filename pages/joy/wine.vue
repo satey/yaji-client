@@ -33,7 +33,8 @@
 			}
 		},
 		onLoad() {
-			this.webUrl = "/hybrid/html/ball.html?url=" + this.$API_URL
+			var host = uni.getStorageSync("hostData").host
+			this.webUrl = "/hybrid/html/ball.html?url=" +host
 		},
 		onShow() {
 			var that = this;

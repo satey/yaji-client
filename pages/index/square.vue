@@ -328,6 +328,8 @@
 				commentData: [],
 				commentPage: 1,
 				no_read_count: 0,
+				postPage: 1,
+				tabListType: ""
 			}
 		},
 		onLoad(option) {
@@ -346,6 +348,12 @@
 		onHide() {
 			if (this.audio) {
 				this.audio.stop();
+			}
+		},
+		onReachBottom() {
+			if (this.tabListType == 'topic') {
+				this.postPage++;
+				this.getPort()
 			}
 		},
 		methods: {
@@ -476,6 +484,7 @@
 			//Tab切换
 			changeTab(e) {
 				this.audio.stop();
+				this.tabListType = e.type
 				switch (e.type) {
 					case 'trends':
 						uni.showLoading()
@@ -483,6 +492,8 @@
 						this.getData('one')
 						break
 					case 'topic':
+						this.postPage = 1;
+						this.listPostRecommend = [];
 						this.getPort()
 						break
 					case 'more':
@@ -544,14 +555,14 @@
 				})
 			},
 			//获取话题
-			async getPort() {
+			getPort() {
 				let that = this
 				that.$api('post_cate.lst', {
-					page: 1,
+					page: that.postPage,
 					limit: 10
 				}).then(res => {
 					if (res.code === 1) {
-						that.listPostRecommend = [...res.data];
+						that.listPostRecommend = [...that.listPostRecommend, ...res.data];
 						if (res.data.length != 0) {
 							that.loadmore = 'loadmore'
 						} else {
