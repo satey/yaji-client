@@ -36,7 +36,7 @@
 							<view style="flex: 1;font-size: 32rpx;color: #666;">{{item.title}}</view>
 							<text style="font-size: 36rpx;color: #333;" v-if="item.nums!=0">×{{item.nums}}</text>
 						</view>
-						<view style="font-size: 26rpx;color: #666;margin-top: 8rpx">{{item.introduction}}123</view>
+						<view style="font-size: 26rpx;color: #666;margin-top: 8rpx">{{item.introduction}}</view>
 					</view>
 				</view>
 			</block>

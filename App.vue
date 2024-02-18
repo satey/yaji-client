@@ -47,21 +47,23 @@
 			isRoom() {
 				if (uni.getStorageSync("roomData") != '') {
 					const currentPage = getCurrentPages();
-					if (currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route ==
-						'pages/index/index') {
-						uni.$emit("changeRoom", {
-							msg: 'index'
-						})
-					} else if (currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route ==
-						'pages/qsls/qsls') {
-						uni.$emit("changeRoom", {
-							msg: 'qsls'
-						})
-					} else if (currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route ==
-						'pages/chat/chatRoom') {
-						uni.$emit("changeRoom", {
-							msg: 'chatRoom'
-						})
+					if (currentPage.length != 0) {
+						if (currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route ==
+							'pages/index/index') {
+							uni.$emit("changeRoom", {
+								msg: 'index'
+							})
+						} else if (currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route ==
+							'pages/qsls/qsls') {
+							uni.$emit("changeRoom", {
+								msg: 'qsls'
+							})
+						} else if (currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route ==
+							'pages/chat/chatRoom') {
+							uni.$emit("changeRoom", {
+								msg: 'chatRoom'
+							})
+						}
 					}
 				}
 			},
@@ -300,7 +302,7 @@
 			getScheme() {
 				// #ifdef APP
 				if (uni.getStorageSync("token") != '') {
-					console.log("plus.runtime.launcher: "+plus.runtime.launcher);
+					console.log("plus.runtime.launcher: " + plus.runtime.launcher);
 					var args = plus.runtime.arguments;
 					console.log(args);
 					if (args) {

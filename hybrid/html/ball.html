@@ -292,7 +292,6 @@
 		console.log(url)
 		var winHeight = $(window).height();
 		$(window).resize(function() {
-			console.log("fei")
 			var thisHeight = $(this).height();
 			if (thisHeight < 1000) {
 				console.log(thisHeight)
@@ -321,7 +320,7 @@
 		var id = '';
 		var activeZi = ''
 		$.ajax({
-			url: url + "poetry_word/lists?type=0",
+			url: url + "api/hey/poetry_word/lists?type=0",
 			dataType: "jsonp",
 			jsonp: "callback",
 			async: true,
@@ -348,7 +347,7 @@
 
 		$(".next").click(function() {
 			$.ajax({
-				url: url + "poetry_word/lists?type=1",
+				url: url + "api/hey/poetry_word/lists?type=1",
 				dataType: "jsonp",
 				jsonp: "callback",
 				jsonpCallback: "abc",
