@@ -86,7 +86,7 @@
 			</view>
 			<view style="margin-top: 25rpx;color: #333;font-size: 26rpx;" v-if="user.length !=0">
 				{{user.role_info.content.slice(0,70)}} <text v-if="user.role_info.content.length >70">……</text> <text
-					v-if="user.role_info.content.length >70" style="color:#FFA000;"
+					v-if="user.role_info.content!='暂无简介'" style="color:#FFA000;"
 					@click="showUserDetails=true;">查看全部</text>
 			</view>
 		</view>

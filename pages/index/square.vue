@@ -1002,8 +1002,8 @@
 		position: absolute;
 		top: 5rpx;
 		right: 5rpx;
-		width: 12rpx;
-		height: 12rpx;
+		width: 18rpx;
+		height: 18rpx;
 		text-align: center;
 		line-height: 28rpx;
 		font-size: 20rpx;

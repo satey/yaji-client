@@ -151,7 +151,7 @@
 						<image src="../../static/iconImage/gengduo.png" style="width: 52rpx;height: 52rpx;"
 							mode="widthFix"></image>
 					</view>
-					<view class="operateItem" v-if="data.audio!=''" @click="audioSuspend">
+					<view class="operateItem" v-if="data.audio" @click="audioSuspend">
 						<image v-if="data.isPlay==false" style="width: 52rpx;height: 52rpx;"
 							src="@/static/iconImage/erji11.png" mode="">
 						</image>
@@ -200,7 +200,7 @@
 					:src="myData.bg_img_url"></image>
 				<swiper :current="imagesCurrent" @change="imagesChange" class="imagesSwiper" :indicator-dots="false"
 					:autoplay="false" :duration="500" :interval="2000">
-					<block v-for="(imgItem,imgIndex) in myData.images" :key="imgIndex">
+					<block v-for="(imgItem,imgIndex) in myData.image_list" :key="imgIndex">
 						<swiper-item>
 							<view class="imagesSwiperItem">
 								<image style="width: 100%;" :src="imgItem" mode="widthFix">
@@ -251,7 +251,8 @@
 			<view class="operate" :style="{paddingBottom:tabBarHeight}">
 				<view v-if="myData.length !=0">
 					<view style="position: relative;">
-						<image class="userImg" @click="$u.route('/pages/user/home',{user_id:myData.user_info.user_id})" :src="myData.user_info.avatar" mode="aspectFill"></image>
+						<image class="userImg" @click="$u.route('/pages/user/home',{user_id:myData.user_info.user_id})"
+							:src="myData.user_info.avatar" mode="aspectFill"></image>
 						<block v-if="userInfo.id!=myData.user_id">
 							<view class="follow" @click="follow" v-if="myData.is_follow!=1">
 								<i class="iconfont  icon-jia" style="color: #FFFFFF;font-size: 20rpx;"></i>
@@ -279,7 +280,7 @@
 							mode="widthFix"></image>
 						<text style="margin-top: 10rpx;">更多</text>
 					</view>
-					<view class="operateItem" v-if="myData.audio!=''" @click="audioSuspendTwo">
+					<view class="operateItem" v-if="myData.audio" @click="audioSuspendTwo">
 						<image v-if="myData.isPlay==false" style="width: 52rpx;height: 52rpx;"
 							src="@/static/iconImage/erji11.png" mode="">
 						</image>
@@ -407,9 +408,14 @@
 					if (res.code == 1) {
 						res.data.isPlay = false;
 						this.myData = res.data;
-						if (this.myData.audio != '') {
+						if (this.myData.audio) {
 							this.playAudioTwo(res.data.audio)
 						}
+					} else {
+						uni.showToast({
+							icon: "none",
+							title: res.msg
+						})
 					}
 				})
 			}
@@ -543,6 +549,10 @@
 			//多图轮播
 			imagesTextChange(e) {
 				this.imagesTextCurrent = e.detail.current;
+			},
+			//多图轮播
+			imagesChange(e) {
+				this.imagesCurrent = e.detail.current;
 			},
 			//设置字体
 			setFontFamily() {

@@ -23,7 +23,8 @@
 			</view>
 		</u-popup>
 		<!-- 礼物 -->
-		<u-popup :show="showGift" @close="showGift = false" mode="bottom" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
+		<u-popup :show="showGift" @close="showGift = false" mode="bottom" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="giftContainer">
 				<scroll-view scroll-y="true" class="giftBox">
 					<block>
@@ -179,7 +180,8 @@
 			</view> -->
 		</u-popup>
 		<!-- 创建房间 -->
-		<u-popup :show="showCreateRoom" @close="showCreateRoom = false" mode="bottom" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
+		<u-popup :show="showCreateRoom" @close="showCreateRoom = false" mode="bottom" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="createRoomContainer">
 				<view style="display: flex;">
 					<text style="font-size: 32rpx;color: #666666;white-space: nowrap;">房间名称：</text>
@@ -246,7 +248,8 @@
 			</view>
 		</u-popup>
 		<!-- 抽屉栏 -->
-		<u-popup :show="showDrawer" @close="showDrawer = false" mode="right" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
+		<u-popup :show="showDrawer" @close="showDrawer = false" mode="right" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="drawerContainer">
 				<view>
 					<view style="height: 30rpx;"></view>
@@ -417,7 +420,8 @@
 			</view>
 		</u-popup>
 		<!-- 上报 -->
-		<u-popup :show="showReport" @close="showReport = false" mode="center" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
+		<u-popup :show="showReport" @close="showReport = false" mode="center" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="report">
 				<view class="reportBgBox">
 					<text>库中没有检测到对应诗句，请检查是否 有错别字，或一键上报，我们将持续完 善基础库。</text>
@@ -430,7 +434,8 @@
 			</view>
 		</u-popup>
 		<!-- 认输 -->
-		<u-popup :show="showTransport" @close="showTransport = false" mode="center" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
+		<u-popup :show="showTransport" @close="showTransport = false" mode="center" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="report">
 				<view class="reportBgBox"
 					style="text-align: center;display: flex;align-items: center;justify-content: center;">
@@ -993,6 +998,7 @@
 						room_id: that.roomDate.room_info.room_id
 					}).then(res => {
 						if (res.code == 1) {
+							uni.removeStorageSync('roomData')
 							// #ifdef APP-PLUS
 							that.closeTrtcCloud()
 							// #endif
@@ -1005,6 +1011,7 @@
 						room_id: that.roomDate.room_info.room_id
 					}).then(res => {
 						if (res.code == 1) {
+							uni.removeStorageSync('roomData')
 							// #ifdef APP-PLUS
 							that.closeTrtcCloud()
 							// #endif
@@ -1033,6 +1040,7 @@
 					console.log(res)
 					if (res.code == 1) {
 						that.initScoket();
+						uni.setStorageSync("roomData", res.data)
 						that.roomDate = res.data;
 						that.drawerTabIndex = 0;
 						// #ifdef APP
@@ -1090,7 +1098,6 @@
 								}
 							})
 						}
-
 					} else {
 						that.roomIsError = true;
 						uni.showToast({
@@ -1331,6 +1338,7 @@
 										uni.$emit('closeRoom', {
 											msg: '房间解散'
 										})
+										uni.removeStorageSync('roomData')
 										that.trtcCloud.exitRoom();
 										that.closeTrtcCloud()
 										that.$nextTick(() => {
@@ -1571,6 +1579,7 @@
 								}).then(res => {
 									if (res.code == 1) {
 										that.exitRoomFlag = false;
+										uni.removeStorageSync('roomData')
 										that.closeTrtcCloud()
 										that.$nextTick(() => {
 											that.$u.route({
@@ -1633,6 +1642,7 @@
 					}).then(res => {
 						if (res.code == 1) {
 							that.closeTrtcCloud()
+							uni.removeStorageSync('roomData')
 							that.$nextTick(() => {
 								that.$u.route({
 									type: 'navigateBack',
@@ -1648,6 +1658,7 @@
 						}).then(res => {
 							if (res.code == 1) {
 								that.closeTrtcCloud()
+								uni.removeStorageSync('roomData')
 								that.$nextTick(() => {
 									that.$u.route({
 										type: 'navigateBack',
@@ -2090,6 +2101,7 @@
 				that.$api("room.createRoom", paremt).then(res => {
 					that.showCreateRoom = false;
 					if (res.code == 1) {
+						uni.setStorageSync("roomData", res.data)
 						uni.showToast({
 							icon: "none",
 							title: res.msg

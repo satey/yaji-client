@@ -22,7 +22,7 @@
 							<view>
 								<view style="color: #333333;font-size: 32rpx;">{{item.content}}
 								</view>
-								<view style="display: flex;align-items: center;justify-content: space-between;">
+								<view style="display: flex;justify-content: space-between;">
 									<view></view>
 									<view @click="$u.route('/pages/mine/wallet')"
 										style="margin-top: 20rpx;color: #fff;font-size: 28rpx;text-align: center;border-radius: 26rpx;background: #FFB96A;width: 140rpx;height: 45rpx;line-height: 45rpx;">

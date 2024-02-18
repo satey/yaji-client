@@ -136,6 +136,9 @@
 						var userInfo = uni.getStorageSync("userInfo");
 						uni.setStorageSync("skip", userInfo.id);
 						that.noRole = false;
+						that.$api("user.info").then((userInfo) => {
+							uni.setStorageSync("userInfo", userInfo.data)
+						})
 						uni.reLaunch({
 							url: '/pages/index/index',
 							success: (res) => {},
@@ -167,6 +170,9 @@
 					if (res.code === 1) {
 						var userInfo = uni.getStorageSync("userInfo");
 						uni.setStorageSync("skip", userInfo.id)
+						that.$api("user.info").then((userInfo) => {
+							uni.setStorageSync("userInfo", userInfo.data)
+						})
 						uni.reLaunch({
 							url: '/pages/index/index',
 							success: (res) => {},
@@ -207,7 +213,8 @@
 					return false
 				}
 				uni.showLoading({
-					title: '获取中'
+					title: '获取中',
+					mask: true
 				})
 				if (that.isClick == true) {
 					return;

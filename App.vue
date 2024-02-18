@@ -20,28 +20,36 @@
 		methods: {
 			//重连
 			reconnect() {
-				var timeout1 = setTimeout(() => {
-					var token = uni.getStorageSync("token");
-					if (token != '') {
-						if (getApp().globalData.wsOnlion == false) {
-							getApp().globalData.initFun = null;
-							getApp().globalData.socketTask = null;
-							uni.showLoading({
-								title: '连接中',
-								mask: true
-							})
-							if (getApp().globalData.isConnectedFlag == false) {
-								clearInterval(getApp().globalData.timmer)
-								var timeOut = setTimeout(() => {
-									this.initSocket()
-									clearTimeout(timeOut)
-									uni.hideLoading()
-								}, 2000)
+				const currentPage = getCurrentPages();
+				if (currentPage.length != 0) {
+					if (currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route ==
+						'pages/qsls/qsls' || currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1]
+						.route =='pages/chat/chatRoom') {
+						var timeout1 = setTimeout(() => {
+							var token = uni.getStorageSync("token");
+							if (token != '') {
+								if (getApp().globalData.wsOnlion == false) {
+									getApp().globalData.initFun = null;
+									getApp().globalData.socketTask = null;
+									uni.showLoading({
+										title: '连接中',
+										mask: true
+									})
+									if (getApp().globalData.isConnectedFlag == false) {
+										clearInterval(getApp().globalData.timmer)
+										var timeOut = setTimeout(() => {
+											this.initSocket()
+											clearTimeout(timeOut)
+											uni.hideLoading()
+										}, 2000)
+									}
+								}
 							}
-						}
+							clearTimeout(timeout1)
+						}, 2000)
 					}
-					clearTimeout(timeout1)
-				}, 2000)
+				}
+
 			},
 			//是否在房间
 			isRoom() {
@@ -193,12 +201,12 @@
 						getApp().globalData.wsOnlion = true;
 						//添加到离线消息
 						that.getUnRead();
+						that.isRoom()
 					},
 				});
 				// 监听 WebSocket 连接打开事件
 				getApp().globalData.socketTask.onOpen(function(res) {
 					console.log('全局Socket连接已打开！');
-					that.isRoom()
 					that.sendPingPong();
 				})
 				//监听 WebSocket 接受到服务器的消息事件
