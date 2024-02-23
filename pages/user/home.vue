@@ -86,7 +86,7 @@
 			</view>
 			<view style="margin-top: 25rpx;color: #333;font-size: 26rpx;" v-if="user.length !=0">
 				{{user.role_info.content.slice(0,70)}} <text v-if="user.role_info.content.length >70">……</text> <text
-					v-if="user.role_info.content.length >70" style="color:#FFA000;"
+					v-if="user.role_info.content!='暂无简介'" style="color:#FFA000;"
 					@click="showUserDetails=true;">查看全部</text>
 			</view>
 		</view>
@@ -189,18 +189,18 @@
 							<text>卒年：</text>
 							<text>{{ user.role_info.deathyear||'?'}}</text>
 						</view>
-						<view style="width: 50%;box-sizing: border-box;margin-bottom: 18rpx;">
-							<text>别称：</text>
-							<text>{{user.role_info.aliasnames}}</text>
-						</view>
-						<view style="width: 50%;box-sizing: border-box;margin-bottom: 18rpx;">
-							<text>身份：</text>
-							<block v-for="(item,index) in user.role_info.identity" ;key='index'>
-								<text>
-									{{item}}
-								</text>
-							</block>
-						</view>
+					</view>
+					<view style="box-sizing: border-box;margin-bottom: 18rpx;font-size: 32rpx;color: #666;">
+						<text>别称：</text>
+						<text>{{user.role_info.aliasnames}}</text>
+					</view>
+					<view style="box-sizing: border-box;margin-bottom: 18rpx;font-size: 32rpx;color: #666;">
+						<text>身份：</text>
+						<block v-for="(item,index) in user.role_info.identity" ;key='index'>
+							<text style="margin-right: 10rpx;">
+								{{item}}
+							</text>
+						</block>
 					</view>
 					<view style="color: #333;font-size: 32rpx;margin-top: 35rpx;">
 						<text style="color: #666;">简介：{{user.role_info.content}}
@@ -421,6 +421,11 @@
 					if (res.code === 1) {
 						that.user = res.data
 						that.is_follow = res.data.is_follow
+					} else {
+						uni.showToast({
+							icon: "none",
+							title: res.msg
+						})
 					}
 				})
 			},

@@ -215,9 +215,12 @@
 		</scroll-view>
 		<!-- 创建房间 -->
 		<view style="width: 100%;height: 100vh;position: absolute;top: 0;left: 0;" v-if="showCreate">
-			<u-popup :show="showCreate" @close="showCreate = false;createTypeIndex=-1" mode="bottom" :closeable="true"
+			<u-popup :show="showCreate" @close="showCreate = false;createTypeIndex=-1" mode="bottom" :closeable="false"
 				:round="20">
-				<view class="createRoom">
+				<view class="createRoom" style="position: relative;">
+					<text class="ri-close-fill"
+						style="font-size: 32rpx;color: #000;position: absolute;top: 40rpx;right: 35rpx;"
+						@click="showCreate = false"></text>
 					<!-- <view
 						style="width: 250rpx;height: 55rpx;display: flex;align-items: center;justify-content: center;margin: 0 auto;background: #FFDDA4;border-radius: 50rpx;padding: 0rpx 25rpx;box-sizing: border-box;margin-top: 25rpx;">
 						<input type="text" v-model="createRoomTitle" placeholder="请输入房间名称"
@@ -467,9 +470,11 @@
 		},
 		onUnload() {
 			var that = this;
-			getApp().globalData.socketTask._callbacks.message.splice(1)
 			this.audio.destroy()
 			this.showSvga = false;
+			if(Boolean(uni.getStorageSync("roomData"))==false){
+				getApp().globalData.socketTask._callbacks.message.splice(1)
+			}
 		},
 		methods: {
 			imgLoad() {

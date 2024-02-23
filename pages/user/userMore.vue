@@ -35,7 +35,7 @@
 					</view>
 
 					<view style="box-sizing: border-box;margin-bottom: 37rpx;">
-						<text>我的星际：</text>
+						<text>我的星纪：</text>
 						<text style="color: #333;">{{userData.stellar_period_str}}</text>
 					</view>
 				</view>

@@ -109,7 +109,7 @@
 					this.currentId = 3;
 					this.isAboutOur = true
 					uni.setNavigationBarTitle({
-						title: "关于我们"
+						title: "联系我们"
 					})
 				}
 				if (that.$Route.query.id == 4) {

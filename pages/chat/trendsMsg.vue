@@ -11,32 +11,7 @@
 
 		<scroll-view scroll-y="true" class="myScroll">
 			<block v-for="(item,index) in trendsMsgList" :key="index">
-				<view class="items" v-if="item.type == 4">
-					<!-- <view class="notice">
-						<text class="ri-notification-3-fill icon"></text>
-					</view> -->
-					<!-- <image class="userImg" src="../../static/logo-circle.png" mode=""></image> -->
-					<view class="rightBox">
-						<view style="color: #999;font-size: 28rpx;">{{item.createtime}}</view>
-						<view class="contentBox">
-							<view>
-								<view style="color: #333333;font-size: 32rpx;">{{item.content}}
-								</view>
-								<view style="display: flex;align-items: center;justify-content: space-between;">
-									<view></view>
-									<view @click="$u.route('/pages/mine/wallet')"
-										style="margin-top: 20rpx;color: #fff;font-size: 28rpx;text-align: center;border-radius: 26rpx;background: #FFB96A;width: 140rpx;height: 45rpx;line-height: 45rpx;">
-										查看钱包</view>
-								</view>
-							</view>
-						</view>
-					</view>
-				</view>
-				<view class="items" v-else>
-					<!-- <view class="notice">
-						<text class="ri-notification-3-fill icon"></text>
-					</view> -->
-					<!-- <image class="userImg" src="../../static/logo-circle.png" mode=""></image> -->
+				<view class="items" v-if="item.show_type ==1">
 					<view class="rightBox">
 						<view style="color: #999;font-size: 28rpx;">{{item.createtime}}</view>
 						<view class="contentBox">
@@ -46,6 +21,34 @@
 									@click="$u.route('/pages/user/home',{user_id:item.ori_user_info.user_id})"></image>
 								<view style="color: #333333;font-size: 32rpx;margin-left: 20rpx;flex: 1;">
 									{{item.content}}
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+				<view class="items" v-if="item.show_type == 2">
+					<view class="rightBox">
+						<view style="color: #999;font-size: 28rpx;">{{item.createtime}}</view>
+						<view class="contentBox">
+							<view>
+								<view style="color: #333333;font-size: 32rpx;">{{item.content}}
+								</view>
+								<view style="display: flex;justify-content: space-between;">
+									<view></view>
+									<view @click="$u.route(item.href)"
+										style="margin-top: 20rpx;color: #fff;font-size: 28rpx;text-align: center;border-radius: 26rpx;background: #FFB96A;width: 140rpx;height: 45rpx;line-height: 45rpx;">
+										前往查看</view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+				<view class="items" v-if="item.show_type == 3">
+					<view class="rightBox">
+						<view style="color: #999;font-size: 28rpx;">{{item.createtime}}</view>
+						<view class="contentBox">
+							<view>
+								<view style="color: #333333;font-size: 32rpx;">{{item.content}}
 								</view>
 							</view>
 						</view>

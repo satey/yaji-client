@@ -89,6 +89,7 @@
 						})
 						break;
 					case 2:
+						console.log(item.post_id)
 						this.$u.route('/pages/post/preview', {
 							data: JSON.stringify({
 								type: 'work',

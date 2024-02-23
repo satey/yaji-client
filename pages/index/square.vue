@@ -198,8 +198,10 @@
 			<u-empty v-if="!swiperList.length" icon="/static/iconImage/jilu.png" text="" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 			<!-- 评论弹窗 -->
-			<u-popup :show="commentPopup" @close="commentPopup = false;" :closeable="true" :round="30">
-				<view class="commentContainer">
+			<u-popup :show="commentPopup" @close="commentPopup = false;" :closeable="false" :round="30">
+				<view class="commentContainer" style="position: relative;">
+					<u-icon @click="commentPopup = false" name="close" color="#333" size="25" bold
+						style="position: absolute;top: 36rpx;right: 40rpx;"></u-icon>
 					<view style="text-align: center;margin-top: 23rpx;"><text
 							style="color:#323232;font-size: 32rpx;">全部评论（{{commentData.total_comment_count}}）</text>
 					</view>
@@ -219,8 +221,10 @@
 				</view>
 			</u-popup>
 			<!-- 故事弹窗 -->
-			<u-popup :show="storyPopup" @close="storyPopup = false;" :closeable="true" :round="30">
-				<view class="storyContainer">
+			<u-popup :show="storyPopup" @close="storyPopup = false;" :closeable="false" :round="30">
+				<view class="storyContainer" style="position: relative;">
+					<u-icon @click="storyPopup = false" name="close" color="#333" size="25" bold
+						style="position: absolute;top: 43rpx;right: 38rpx;"></u-icon>
 					<view style="display: flex;justify-content: center;">
 						<view style="position: relative;margin-top: 32rpx;display: inline;">
 							<text style="position: relative;z-index: 2;color:#333 ;font-size:32rpx ;">查看全部</text>
@@ -1002,8 +1006,8 @@
 		position: absolute;
 		top: 5rpx;
 		right: 5rpx;
-		width: 12rpx;
-		height: 12rpx;
+		width: 18rpx;
+		height: 18rpx;
 		text-align: center;
 		line-height: 28rpx;
 		font-size: 20rpx;

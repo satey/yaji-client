@@ -6,11 +6,11 @@
 			</view>
 		</u-navbar>
 		<view class="list" v-for="(item,index) in list"
-			@click="$u.route('/pages/public/feedbackSuggest',{ id: item.id })">
+			@click="$u.route('/pages/public/feedbackSuggest',{ id: item.id })" v-if="item.status=='normal'">
 			<view class="listTitle">
 				<text class="title">{{item.title}}</text>
 				<text class="result"
-					:class="item.status=='normal'?'resultColor':'resultActive'">{{item.status=="normal"?"已反馈":"已答复"}}</text>
+					:class="item.status=='normal'?'resultColor':'resultActive'">{{item.code==0?"已反馈":"已答复"}}</text>
 			</view>
 			<view class="content">
 				{{item.content}}
@@ -19,8 +19,7 @@
 				{{ $u.timeFormat(item.createtime, 'yyyy-mm-dd hh:MM') }}
 			</view>
 		</view>
-		<u-loadmore v-if="!list.length" nomoreText="" color="#a1a1a1" marginTop="20" />
-		<u-empty v-if="!list.length" icon="/static/iconImage/jilu.png" text="" textColor="#a1a1a1"
+		<u-empty v-if="!list.length" icon="/static/iconImage/jilu.png" text="暂无数据" textColor="#a1a1a1"
 			marginTop="100"></u-empty>
 		<feiqslsHit></feiqslsHit>
 	</view>

@@ -2,10 +2,10 @@
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<feiauthority ref="authority" @imageEmpower='imageEmpower' @audioEmpower="audioEmpower"></feiauthority>
 	<view class="chatRoom">
-		<image src="@/static/fhlbg.png" v-if="roomType=='fhl'"
+		<image src="@/static/fhlbg.png" v-if="roomType2=='fhl'"
 			style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;" mode="">
 		</image>
-		<image src="@/static/jlbg.png" v-if="roomType=='scjl'||roomType=='cyjl'"
+		<image src="@/static/jlbg.png" v-if="roomType2=='scjl'||roomType2=='cyjl'"
 			style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;" mode="">
 		</image>
 		<u-popup :show="empower" @close="empower = false" mode="center" :closeable="false" :round="20">
@@ -23,7 +23,8 @@
 			</view>
 		</u-popup>
 		<!-- 礼物 -->
-		<u-popup :show="showGift" @close="showGift = false" mode="bottom" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
+		<u-popup :show="showGift" @close="showGift = false" mode="bottom" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="giftContainer">
 				<scroll-view scroll-y="true" class="giftBox">
 					<block>
@@ -152,34 +153,36 @@
 			</view>
 		</u-popup>
 		<!-- 分享 -->
-		<u-popup :show="showShare" @close="showShare = false" mode="bottom" :closeable="true" :round="20">
-			<scroll-view scroll-x="true" class="shareBox">
-				<view style="display: flex;align-items: center;">
-					<block v-for="(item,index) in inviteList" :key="index">
-						<view @click="inviteClick(item)"
-							style="display: flex;flex-direction: column;justify-content: center;align-items: center;margin: 0rpx 30rpx;">
-							<image :src="item.avatar" style="width: 96rpx;height: 96rpx;border-radius: 50%;"
-								mode="aspectFill">
-							</image>
-							<view style="color: #333;font-size: 23rpx;margin-top: 15rpx;white-space: nowrap;">
-								{{item.role_realname }}·{{item.role_dynasty}}
+		<u-popup :show="showShare" @close="showShare = false" mode="bottom" :closeable="false" :round="20">
+			<view style="position: relative;" class="shareBox">
+				<u-icon @click="showShare = false" name="close" color="#333" size="25" bold
+					style="position: absolute;top: 28rpx;right: 35rpx;"></u-icon>
+				<scroll-view scroll-x="true">
+					<view style="display: flex;align-items: center;">
+						<block v-for="(item,index) in inviteList" :key="index">
+							<view @click="inviteClick(item)"
+								style="display: flex;flex-direction: column;justify-content: center;align-items: center;margin: 0rpx 30rpx;">
+								<image :src="item.avatar" style="width: 96rpx;height: 96rpx;border-radius: 50%;"
+									mode="aspectFill">
+								</image>
+								<view style="color: #333;font-size: 23rpx;margin-top: 15rpx;white-space: nowrap;">
+									{{item.role_realname }}·{{item.role_dynasty}}
+								</view>
 							</view>
+						</block>
+						<view v-if="!inviteList.length">
+							暂无最近聊过天的好友
 						</view>
-					</block>
-					<view v-if="!inviteList.length">
-						暂无最近聊过天的好友
+						<!-- <u-empty v-if="!inviteList.length" icon="/static/iconImage/jilu.png" text="暂无最近聊过天的好友"
+							textColor="#a1a1a1" marginTop="0"></u-empty> -->
 					</view>
-					<!-- <u-empty v-if="!inviteList.length" icon="/static/iconImage/jilu.png" text="暂无最近聊过天的好友"
-						textColor="#a1a1a1" marginTop="0"></u-empty> -->
-				</view>
+				</scroll-view>
+			</view>
 
-			</scroll-view>
-			<!-- <view class="shareBox">
-				
-			</view> -->
 		</u-popup>
 		<!-- 创建房间 -->
-		<u-popup :show="showCreateRoom" @close="showCreateRoom = false" mode="bottom" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
+		<u-popup :show="showCreateRoom" @close="showCreateRoom = false" mode="bottom" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="createRoomContainer">
 				<view style="display: flex;">
 					<text style="font-size: 32rpx;color: #666666;white-space: nowrap;">房间名称：</text>
@@ -246,7 +249,8 @@
 			</view>
 		</u-popup>
 		<!-- 抽屉栏 -->
-		<u-popup :show="showDrawer" @close="showDrawer = false" mode="right" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
+		<u-popup :show="showDrawer" @close="showDrawer = false" mode="right" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="drawerContainer">
 				<view>
 					<view style="height: 30rpx;"></view>
@@ -417,7 +421,8 @@
 			</view>
 		</u-popup>
 		<!-- 上报 -->
-		<u-popup :show="showReport" @close="showReport = false" mode="center" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
+		<u-popup :show="showReport" @close="showReport = false" mode="center" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="report">
 				<view class="reportBgBox">
 					<text>库中没有检测到对应诗句，请检查是否 有错别字，或一键上报，我们将持续完 善基础库。</text>
@@ -430,7 +435,8 @@
 			</view>
 		</u-popup>
 		<!-- 认输 -->
-		<u-popup :show="showTransport" @close="showTransport = false" mode="center" :closeable="false" :round="20" :customStyle="{background:'transparent'}">
+		<u-popup :show="showTransport" @close="showTransport = false" mode="center" :closeable="false" :round="20"
+			:customStyle="{background:'transparent'}">
 			<view class="report">
 				<view class="reportBgBox"
 					style="text-align: center;display: flex;align-items: center;justify-content: center;">
@@ -889,6 +895,7 @@
 				tishiFlag: false,
 				empower: false,
 				roomType: "",
+				roomType2: "",
 				transportFlag: false,
 				showTransport: false,
 				backgroundImg: "",
@@ -951,9 +958,11 @@
 			}
 		},
 		onLoad(option) {
+			console.log(option)
 			getApp().globalData.socketTask._callbacks.message.splice(1);
 			var that = this;
-			that.roomType = option.type
+			that.roomType = option.type;
+			that.roomType2 = option.type;
 			that.init(option.roomId)
 			that.setFontFamily();
 			that.watchKeyboard()
@@ -963,7 +972,14 @@
 			uni.$on("changeRoom", (data) => {
 				if (data.msg == 'chatRoom') {
 					getApp().globalData.socketTask._callbacks.message.splice(1);
-					that.init(option.roomId)
+					// that.stage_list = ["", ""];
+					// that.wait_list = ["", "", "", ""];
+					// that.init(option.roomId)
+					uni.redirectTo({
+						url: `/pages/chat/chatRoom?roomId=${option.roomId}&type=${that.roomType2}`,
+						animationType: 'fade-in',
+						animationDuration: 200
+					});
 				}
 			})
 			// #ifdef APP-PLUS
@@ -993,6 +1009,7 @@
 						room_id: that.roomDate.room_info.room_id
 					}).then(res => {
 						if (res.code == 1) {
+							uni.removeStorageSync('roomData')
 							// #ifdef APP-PLUS
 							that.closeTrtcCloud()
 							// #endif
@@ -1005,6 +1022,7 @@
 						room_id: that.roomDate.room_info.room_id
 					}).then(res => {
 						if (res.code == 1) {
+							uni.removeStorageSync('roomData')
 							// #ifdef APP-PLUS
 							that.closeTrtcCloud()
 							// #endif
@@ -1033,6 +1051,7 @@
 					console.log(res)
 					if (res.code == 1) {
 						that.initScoket();
+						uni.setStorageSync("roomData", res.data)
 						that.roomDate = res.data;
 						that.drawerTabIndex = 0;
 						// #ifdef APP
@@ -1090,7 +1109,6 @@
 								}
 							})
 						}
-
 					} else {
 						that.roomIsError = true;
 						uni.showToast({
@@ -1112,8 +1130,8 @@
 				var that = this;
 				getApp().globalData.socketTask.onMessage((res) => {
 					var socketDate = JSON.parse(res.data);
-					console.log(socketDate)
 					if (socketDate.cate == "room") {
+						console.log(socketDate)
 						switch (socketDate.data.type) {
 							case "entry_room":
 								var item = socketDate.data;
@@ -1147,12 +1165,18 @@
 											that.flagMaiBtn = true;
 										}
 										that.stage_list.splice(Number(socketDate.data.key) - 1, 1, "")
-										that.stage_list.forEach((item, index) => {
-											if (item != '') {
-												that.stage_list[index].ready_status = 0
-												that.stage_list[index].is_challenger = 1;
+										socketDate.data.player.forEach((item, index) => {
+											if (item == null) {
+												socketDate.data.player[index] = ''
 											}
 										})
+										that.stage_list = socketDate.data.player;
+										// that.stage_list.forEach((item, index) => {
+										// 	if (item != '') {
+										// 		that.stage_list[index].ready_status = 0
+										// 		// that.stage_list[index].is_challenger = 1;
+										// 	}
+										// })
 									}
 									if (that.stage_list.includes("") == false) {
 										if (that.taskData == null) {
@@ -1160,6 +1184,7 @@
 										}
 										that.readyFlag = false;
 									} else {
+										// that.showToken = false;
 										that.readyFlag = true
 										that.selectOrderData = null;
 										that.noReadyUser = null;
@@ -1285,6 +1310,7 @@
 								if (Number(socketDate.data.answer_uid) == that.userInfo.id) {
 									that.tishiFlag = true
 								}
+								that.showToken = false;
 								that.noReadyUser = null;
 								that.noReadyTime = 120;
 								that.taskBeginFlag = true;
@@ -1331,6 +1357,7 @@
 										uni.$emit('closeRoom', {
 											msg: '房间解散'
 										})
+										uni.removeStorageSync('roomData')
 										that.trtcCloud.exitRoom();
 										that.closeTrtcCloud()
 										that.$nextTick(() => {
@@ -1494,12 +1521,15 @@
 			selectOrderOk() {
 				this.showToken = false;
 				this.selectOrder = false;
-				this.$api("room.taskReady", {
-					room_id: this.roomDate.room_info.room_id,
-					key_word: this.orderList[this.selectOrderIndex].word
-				}).then(res => {
-					this.selectOrderIndex = 0;
-				})
+				if (this.stage_list.includes("") == false) {
+					this.$api("room.taskReady", {
+						room_id: this.roomDate.room_info.room_id,
+						key_word: this.orderList[this.selectOrderIndex].word
+					}).then(res => {
+						this.selectOrderIndex = 0;
+					})
+				}
+
 			},
 			//更换令牌
 			changeOrder() {
@@ -1571,6 +1601,7 @@
 								}).then(res => {
 									if (res.code == 1) {
 										that.exitRoomFlag = false;
+										uni.removeStorageSync('roomData')
 										that.closeTrtcCloud()
 										that.$nextTick(() => {
 											that.$u.route({
@@ -1627,12 +1658,20 @@
 				var isUser = this.stage_list.filter((item, index) => {
 					return item.user_id == this.userInfo.id
 				})
+				if (that.roomDate == null) {
+					that.$u.route({
+						type: 'navigateBack',
+						delta: 1
+					})
+					return;
+				}
 				if (isUser.length == 0) {
 					that.$api("room.exitRoom", {
 						room_id: that.roomDate.room_info.room_id
 					}).then(res => {
 						if (res.code == 1) {
 							that.closeTrtcCloud()
+							uni.removeStorageSync('roomData')
 							that.$nextTick(() => {
 								that.$u.route({
 									type: 'navigateBack',
@@ -1648,6 +1687,7 @@
 						}).then(res => {
 							if (res.code == 1) {
 								that.closeTrtcCloud()
+								uni.removeStorageSync('roomData')
 								that.$nextTick(() => {
 									that.$u.route({
 										type: 'navigateBack',
@@ -1722,6 +1762,9 @@
 						that.orderList = res.data.list;
 						that.showToken = true;
 						that.selectOrder = true;
+						if (that.orderPage == res.data.page_data.total_page) {
+							that.orderPage = 1;
+						}
 					}
 				})
 			},
@@ -2090,6 +2133,7 @@
 				that.$api("room.createRoom", paremt).then(res => {
 					that.showCreateRoom = false;
 					if (res.code == 1) {
+						uni.setStorageSync("roomData", res.data)
 						uni.showToast({
 							icon: "none",
 							title: res.msg
@@ -2398,6 +2442,7 @@
 		display: flex;
 		align-items: center;
 		box-sizing: border-box;
+		position: relative;
 	}
 
 	// 创建

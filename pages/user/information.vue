@@ -133,7 +133,7 @@
 					<view class="box" :class="userData.stellar_period==0?'boxTwo':''" @click="showStar = true;">
 						<view class="box-block">
 							<view class="boxTitle" :style="{color:userData.stellar_period==0?'#BDE2A5':'#FFBC4B'}"
-								style="font-size: 28rpx;">星记</view>
+								style="font-size: 28rpx;">星纪</view>
 							<view style="display: flex;align-items: center;margin-top: 20rpx;justify-content: center;">
 								<!-- <text style="font-size: 26rpx;">解锁</text>
 								<image style="width: 36rpx;height: 36rpx;" src="../../static/hua.png" mode="aspectFill">

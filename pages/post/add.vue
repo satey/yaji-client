@@ -422,7 +422,7 @@
 						if (that.form.content != '') {
 							show_type = 2
 						} else {
-							show_type = 5
+							show_type = 1
 						}
 					}
 				}
@@ -440,6 +440,7 @@
 					duration_time: that.form.timer,
 					isPlay: false,
 				}
+				console.log(preViewData)
 				this.$u.route("/pages/post/preview", {
 					data: JSON.stringify(preViewData)
 				})

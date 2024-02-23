@@ -151,7 +151,7 @@
 						<image src="../../static/iconImage/gengduo.png" style="width: 52rpx;height: 52rpx;"
 							mode="widthFix"></image>
 					</view>
-					<view class="operateItem" v-if="data.audio!=''" @click="audioSuspend">
+					<view class="operateItem" v-if="data.audio" @click="audioSuspend">
 						<image v-if="data.isPlay==false" style="width: 52rpx;height: 52rpx;"
 							src="@/static/iconImage/erji11.png" mode="">
 						</image>
@@ -200,7 +200,7 @@
 					:src="myData.bg_img_url"></image>
 				<swiper :current="imagesCurrent" @change="imagesChange" class="imagesSwiper" :indicator-dots="false"
 					:autoplay="false" :duration="500" :interval="2000">
-					<block v-for="(imgItem,imgIndex) in myData.images" :key="imgIndex">
+					<block v-for="(imgItem,imgIndex) in myData.image_list" :key="imgIndex">
 						<swiper-item>
 							<view class="imagesSwiperItem">
 								<image style="width: 100%;" :src="imgItem" mode="widthFix">
@@ -251,7 +251,8 @@
 			<view class="operate" :style="{paddingBottom:tabBarHeight}">
 				<view v-if="myData.length !=0">
 					<view style="position: relative;">
-						<image class="userImg" @click="$u.route('/pages/user/home',{user_id:myData.user_info.user_id})" :src="myData.user_info.avatar" mode="aspectFill"></image>
+						<image class="userImg" @click="$u.route('/pages/user/home',{user_id:myData.user_info.user_id})"
+							:src="myData.user_info.avatar" mode="aspectFill"></image>
 						<block v-if="userInfo.id!=myData.user_id">
 							<view class="follow" @click="follow" v-if="myData.is_follow!=1">
 								<i class="iconfont  icon-jia" style="color: #FFFFFF;font-size: 20rpx;"></i>
@@ -279,7 +280,7 @@
 							mode="widthFix"></image>
 						<text style="margin-top: 10rpx;">更多</text>
 					</view>
-					<view class="operateItem" v-if="myData.audio!=''" @click="audioSuspendTwo">
+					<view class="operateItem" v-if="myData.audio" @click="audioSuspendTwo">
 						<image v-if="myData.isPlay==false" style="width: 52rpx;height: 52rpx;"
 							src="@/static/iconImage/erji11.png" mode="">
 						</image>
@@ -324,8 +325,10 @@
 			</view>
 			<feiMore ref="more"></feiMore>
 			<!-- 评论弹窗 -->
-			<u-popup :show="commentPopup" @close="commentPopup = false;" :closeable="true" :round="30">
-				<view class="commentContainer">
+			<u-popup :show="commentPopup" @close="commentPopup = false;" :closeable="false" :round="30">
+				<view class="commentContainer" style="position: relative;">
+					<u-icon @click="commentPopup = false" name="close" color="#333" size="25" bold
+						style="position: absolute;top: 36rpx;right: 40rpx;"></u-icon>
 					<view style="text-align: center;margin-top: 23rpx;"><text
 							style="color:#323232;font-size: 32rpx;">全部评论（{{commentData.total_comment_count}}）</text>
 					</view>
@@ -346,8 +349,10 @@
 			</u-popup>
 		</block>
 		<!-- 故事弹窗 -->
-		<u-popup :show="storyPopup" @close="storyPopup = false;" :closeable="true" :round="30">
-			<view class="storyContainer">
+		<u-popup :show="storyPopup" @close="storyPopup = false;" :closeable="false" :round="30">
+			<view class="storyContainer" style="position: relative;">
+				<u-icon @click="storyPopup = false" name="close" color="#333" size="25" bold
+					style="position: absolute;top: 43rpx;right: 38rpx;"></u-icon>
 				<view style="display: flex;justify-content: center;">
 					<view style="position: relative;margin-top: 32rpx;display: inline;">
 						<text style="position: relative;z-index: 2;color:#333 ;font-size:32rpx ;">查看全部</text>
@@ -395,6 +400,7 @@
 		onLoad(e) {
 			this.setFontFamily()
 			this.data = JSON.parse(this.$Route.query.data)
+			console.log(this.data.type)
 			if (this.data.type != 'work') {
 				if (this.data.audio) {
 					this.playAudio(this.data.audio)
@@ -407,9 +413,14 @@
 					if (res.code == 1) {
 						res.data.isPlay = false;
 						this.myData = res.data;
-						if (this.myData.audio != '') {
+						if (this.myData.audio) {
 							this.playAudioTwo(res.data.audio)
 						}
+					} else {
+						uni.showToast({
+							icon: "none",
+							title: res.msg
+						})
 					}
 				})
 			}
@@ -543,6 +554,10 @@
 			//多图轮播
 			imagesTextChange(e) {
 				this.imagesTextCurrent = e.detail.current;
+			},
+			//多图轮播
+			imagesChange(e) {
+				this.imagesCurrent = e.detail.current;
 			},
 			//设置字体
 			setFontFamily() {

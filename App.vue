@@ -20,28 +20,49 @@
 		methods: {
 			//重连
 			reconnect() {
-				var timeout1 = setTimeout(() => {
-					var token = uni.getStorageSync("token");
-					if (token != '') {
-						if (getApp().globalData.wsOnlion == false) {
-							getApp().globalData.initFun = null;
-							getApp().globalData.socketTask = null;
-							uni.showLoading({
-								title: '连接中',
-								mask: true
-							})
-							if (getApp().globalData.isConnectedFlag == false) {
-								clearInterval(getApp().globalData.timmer)
-								var timeOut = setTimeout(() => {
-									this.initSocket()
-									clearTimeout(timeOut)
-									uni.hideLoading()
-								}, 2000)
-							}
+				const currentPage = getCurrentPages();
+				if (currentPage.length != 0) {
+					if (currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route ==
+						'pages/qsls/qsls' || currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1]
+						.route == 'pages/chat/chatRoom') {
+						var token = uni.getStorageSync("token");
+						if (token != '') {
+							var timeout1 = setTimeout(() => {
+								if (getApp().globalData.wsOnlion == false) {
+									getApp().globalData.socketTask = null;
+									uni.showLoading({
+										title: '连接中',
+										mask: true
+									})
+									if (getApp().globalData.isConnectedFlag == false) {
+										clearInterval(getApp().globalData.timmer)
+										var timeOut = setTimeout(() => {
+											this.initSocket()
+											clearTimeout(timeOut)
+											uni.hideLoading()
+										}, 1000)
+									}
+								}
+								clearTimeout(timeout1)
+							}, 1500)
 						}
+					} else {
+						var timeout1 = setTimeout(() => {
+							if (getApp().globalData.wsOnlion == false) {
+								getApp().globalData.socketTask = null;
+								if (getApp().globalData.isConnectedFlag == false) {
+									clearInterval(getApp().globalData.timmer)
+									var timeOut = setTimeout(() => {
+										this.initSocket()
+										clearTimeout(timeOut)
+										uni.hideLoading()
+									}, 1000)
+								}
+							}
+							clearTimeout(timeout1)
+						}, 1500)
 					}
-					clearTimeout(timeout1)
-				}, 2000)
+				}
 			},
 			//是否在房间
 			isRoom() {
@@ -185,7 +206,8 @@
 				if (userInfo.gender == 0) {
 					return;
 				}
-				that.socKetUrl = `${uni.getStorageSync("hostData").socket}?token=${token}&session_id=${session_id}`;
+				that.socKetUrl =
+					`${uni.getStorageSync("hostData").socket}?token=${token}&session_id=${session_id}&user_id=${userInfo.id}`;
 				getApp().globalData.socketTask = uni.connectSocket({
 					url: that.socKetUrl, //仅为示例，并非真实接口地址。
 					complete: () => {
@@ -193,12 +215,12 @@
 						getApp().globalData.wsOnlion = true;
 						//添加到离线消息
 						that.getUnRead();
+						that.isRoom()
 					},
 				});
 				// 监听 WebSocket 连接打开事件
 				getApp().globalData.socketTask.onOpen(function(res) {
 					console.log('全局Socket连接已打开！');
-					that.isRoom()
 					that.sendPingPong();
 				})
 				//监听 WebSocket 接受到服务器的消息事件
@@ -278,17 +300,21 @@
 				getApp().globalData.socketTask.onClose(function(res) {
 					console.log(res)
 					console.log('全局Socket 已关闭！');
-					getApp().globalData.wsOnlion = false;
-					getApp().globalData.socketCount++;
-					getApp().globalData.initFun = null;
-					getApp().globalData.socketTask = null;
-					if (getApp().globalData.isConnectedFlag == false) {
-						clearInterval(getApp().globalData.timmer)
-						var timeOut = setTimeout(() => {
-							that.initSocket()
-							clearTimeout(timeOut)
-						}, 2000)
-					}
+					var setTimeout1 = setTimeout(()=>{
+						clearTimeout(setTimeout1)
+						clearTimeout(timeOut)
+						getApp().globalData.wsOnlion = false;
+						getApp().globalData.socketCount++;
+						getApp().globalData.socketTask = null;
+						if (getApp().globalData.isConnectedFlag == false) {
+							clearInterval(getApp().globalData.timmer)
+							var timeOut = setTimeout(() => {
+								clearTimeout(timeOut)
+								that.initSocket()
+							}, 1000)
+						}
+					},1500)
+					
 				});
 				getApp().globalData.socketTask.onError(function(error) {
 					console.log(error)
@@ -304,7 +330,6 @@
 				if (uni.getStorageSync("token") != '') {
 					console.log("plus.runtime.launcher: " + plus.runtime.launcher);
 					var args = plus.runtime.arguments;
-					console.log(args);
 					if (args) {
 						// // 处理args参数，如直达到某新页面等
 						if (args.indexOf('//') != -1) {
@@ -361,14 +386,15 @@
 				if (res.isConnected == true) {
 					getApp().globalData.isConnectedFlag = false;
 					clearInterval(getApp().globalData.timmer)
-					getApp().globalData.initFun = null;
 					getApp().globalData.wsOnlion = false;
-					getApp().globalData.initFun = null;
 					getApp().globalData.socketTask = null;
-					that.initSocket()
 					uni.hideLoading()
+					that.reconnect()
 				} else {
 					getApp().globalData.isConnectedFlag = true;
+					clearInterval(getApp().globalData.timmer)
+					getApp().globalData.wsOnlion = false;
+					getApp().globalData.socketTask = null;
 					uni.showLoading({
 						mask: true,
 						title: "无网络"
