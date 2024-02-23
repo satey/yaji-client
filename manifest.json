@@ -2,8 +2,8 @@
     "name" : "雅集",
     "appid" : "__UNI__5018490",
     "description" : "雅集",
-    "versionName" : "2.0.3",
-    "versionCode" : 203,
+    "versionName" : "2.0.5",
+    "versionCode" : 205,
     "transformPx" : false,
     "app" : {
         "launch_path" : "/pages/auth/login"
