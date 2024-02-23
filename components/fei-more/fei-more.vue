@@ -2,18 +2,21 @@
 	<view>
 		<!-- 更多弹窗 -->
 		<u-popup :show="morePopup" @close="morePopup = false;postId='';itemData = [];share_weixin_href = []"
-			:closeable="true" :round="30">
-			<view style="background:#fff;border-radius: 20rpx 20rpx 0rpx 0rpx;">
-				<view style="text-align: center;margin-top: 23rpx;"><text style="color:#333;font-size: 26rpx;">更多</text>
+			:closeable="false" :round="30">
+			<view style="background:#fff;border-radius: 20rpx 20rpx 0rpx 0rpx;position: relative;">
+				<u-icon @click="morePopup = false" name="close" color="#333" size="25" bold
+					style="position: absolute;top: 16rpx;right: 16rpx;"></u-icon>
+				<view style="text-align: center;margin-top: 23rpx;font-weight: bold;"><text
+						style="color:#333;font-size: 26rpx;">更多</text>
 				</view>
 				<view
 					style="display: flex;align-items: center;margin-top: 26rpx;padding: 0rpx 62rpx;box-sizing: border-box;margin-bottom: 50rpx;">
-					<view style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;"
+					<!-- <view style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;"
 						@click="shareWeChat">
 						<image class="moreImgs" style="width: 96rpx;height: 96rpx;"
 							src="../../static/iconImage/fenxiang.png" mode=""></image>
 						<view style="font-size: 23rpx;color: #333;margin-top: 15rpx;white-space: nowrap;">分享到微信</view>
-					</view>
+					</view> -->
 					<block v-if="isShowShield">
 						<view @click="shield" v-if="userInfo.id!=userId"
 							style="display: flex;flex-direction: column;align-items: center;margin-right: 61rpx;">

@@ -11,16 +11,20 @@ export default function api(url, data = {}) {
 			let token = uni.getStorageSync('token');
 			if (!token) {
 				cancel('token 不存在');
-				console.log("fei")
+				var currentPage = getCurrentPages();
+				if (currentPage.length != 0){
+					if(currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route !='pages/start/start'){
+						uni.reLaunch({
+							url: '/pages/auth/login'
+						});
+					}
+				}
 				uni.removeStorageSync('token');
 				uni.removeStorageSync('userInfo');
 				uni.removeStorageSync('roomData')
 				getApp().globalData.socketTask.close();
 				clearInterval(getApp().globalData.timmer)
 				getApp().globalData.socketTask = null;
-				uni.reLaunch({
-					url: '/pages/auth/login'
-				});
 			}
 		}
 		config.header.token = uni.getStorageSync('token');
@@ -37,6 +41,14 @@ export default function api(url, data = {}) {
 			// });
 		}
 		if (response.data.code === 401) {
+			var currentPage = getCurrentPages();
+			if (currentPage.length != 0){
+				if(currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route !='pages/start/start'){
+					uni.reLaunch({
+						url: '/pages/auth/login'
+					});
+				}
+			}
 			uni.removeStorageSync('token');
 			uni.removeStorageSync('userInfo');
 			uni.removeStorageSync('roomData')
@@ -46,9 +58,9 @@ export default function api(url, data = {}) {
 			clearInterval(getApp().globalData.timmer)
 			getApp().globalData.socketTask = null;
 			store.commit('LOGIN_TIP', true)
-			uni.reLaunch({
-				url: '/pages/auth/login'
-			});
+			// uni.reLaunch({
+			// 	url: '/pages/auth/login'
+			// });
 		}
 		return response
 	}, (response) => {

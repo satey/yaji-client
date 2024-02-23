@@ -35,30 +35,39 @@
 		data() {
 			return {
 				authorityPopup: false,
-				type: ''
+				type: '',
+				platform: uni.getSystemInfoSync().platform,
 			}
 		},
 		methods: {
 			show(type) {
 				switch (type) {
 					case "recorde":
-						if (uni.getSystemInfoSync().platform == "android") {
-							if (uni.getStorageSync("audioEmpower") == false) {
-								this.type = type;
-								this.authorityPopup = true;
-							} else {
-								this.$emit("audioEmpower")
+						if (this.platform == "android") {
+							if (uni.getSystemInfoSync().platform == "android") {
+								if (uni.getStorageSync("audioEmpower") == false) {
+									this.type = type;
+									this.authorityPopup = true;
+								} else {
+									this.$emit("audioEmpower")
+								}
 							}
+						} else {
+							this.$emit("audioEmpower")
 						}
 						break;
 					case "image":
-						if (uni.getSystemInfoSync().platform == "android") {
-							if (uni.getStorageSync("imageEmpower") == false) {
-								this.type = type;
-								this.authorityPopup = true;
-							} else {
-								this.$emit("imageEmpower")
+						if (this.platform == "android") {
+							if (uni.getSystemInfoSync().platform == "android") {
+								if (uni.getStorageSync("imageEmpower") == false) {
+									this.type = type;
+									this.authorityPopup = true;
+								} else {
+									this.$emit("imageEmpower")
+								}
 							}
+						} else {
+							this.$emit("imageEmpower")
 						}
 						break;
 				}

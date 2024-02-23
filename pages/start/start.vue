@@ -37,6 +37,7 @@
 			}, 2000)
 			if (that.phoneMode == 'ios') {
 				that.$api("pay.getApplePayProductList").then(res => {
+					that.product = res.data;
 					if (res.code == 1) {
 						that.product = res.data;
 						uni.getProvider({

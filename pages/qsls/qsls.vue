@@ -135,17 +135,17 @@
 			<feiQsls v-if="roomData!=null" :roomId='roomData.room_info.room_id' :qslsUserList="allStageUser" ref="qsls">
 			</feiQsls>
 			<view class="headContainerFooter">
-				<!-- 人不够3人 -->
-
-				<block v-if="allStageUser.length <3&& taskData.type==undefined">
-					<view style="display: flex;align-items: center;justify-content: center;height: 100%;">
-						<text class="ri-cup-fill" style="font-size: 50rpx;color: #FFA000;margin-right: 15rpx;"></text>
-						<text style="color:#FFA000;font-size: 32rpx;font-weight: bold;">房间满3人后发杯</text>
-					</view>
-				</block>
-				<!-- 发杯 -->
-				<block v-if="allStageUser.length>=3">
-					<block v-if="taskData.type==undefined">
+				<block v-if="taskData.type==undefined">
+					<!-- 人不够3人 -->
+					<block v-if="allStageUser.length <3">
+						<view style="display: flex;align-items: center;justify-content: center;height: 100%;">
+							<text class="ri-cup-fill"
+								style="font-size: 50rpx;color: #FFA000;margin-right: 15rpx;"></text>
+							<text style="color:#FFA000;font-size: 32rpx;font-weight: bold;">房间满3人后发杯</text>
+						</view>
+					</block>
+					<!-- 发杯 -->
+					<block v-if="allStageUser.length>=3">
 						<view @click="yuHairCup"
 							style="display: flex;align-items: center;justify-content: center;height: 100%;">
 							<view class="fabei">
@@ -154,6 +154,7 @@
 						</view>
 					</block>
 				</block>
+
 				<block v-if="ori_user_info.user_id!=undefined||taskData.type =='cup_task_run'">
 					<view style="display: flex;align-items: center;justify-content: center;height: 100%;">
 						<view class="refuse" v-if="taskData.last_event.remark ==undefined">
@@ -409,9 +410,12 @@
 		</view>
 
 		<!-- 发布 -->
-		<u-popup :show="showPopup" @close="hidePopup" :closeOnClickOverlay="false" mode="center" :closeable="true"
+		<u-popup :show="showPopup" @close="hidePopup" :closeOnClickOverlay="false" mode="center" :closeable="false"
 			:round="20" :customStyle="{background:'transparent'}">
-			<view class="popupContainer">
+			<view class="popupContainer" style="position: relative;">
+				<text class="ri-close-fill"
+					style="font-size: 32rpx;color: #000;position: absolute;top: 36rpx;right:35rpx ;"
+					@click="showPopup = false"></text>
 				<!-- 选择任务 -->
 				<view style="display: flex;align-items: center;justify-content: center;">
 					<view class="title">
@@ -818,6 +822,7 @@
 				}).then(res => {
 					if (res.code == 1) {
 						uni.removeStorageSync('roomData')
+						that.$store.commit("setQslsCupType", "3")
 						that.$u.route({
 							type: 'navigateBack',
 							delta: 1
@@ -830,6 +835,9 @@
 				const that = this;
 				getApp().globalData.socketTask.onMessage((res) => {
 					var socketData = JSON.parse(res.data);
+					if (socketData.type == "pong"){
+						return
+					}
 					console.log(socketData)
 					if (socketData.cate == "room") {
 						switch (socketData.data.type) {
@@ -843,9 +851,6 @@
 							case "profile_change_one":
 								if (socketData.data.user_info.length != 0) {
 									that.allStageUser.push(socketData.data.user_info)
-								}
-								if (that.allStageUser.length < 3) {
-									that.taskData = []
 								}
 								that.$forceUpdate()
 								break;
@@ -1397,6 +1402,18 @@
 					format: "mp3"
 				})
 				// #endif
+			},
+			handleVoice2() {
+				// #ifdef APP
+				this.$refs.authority.show('recorde')
+				// #endif
+				// #ifdef H5
+				this.handleVoice()
+				// #endif
+			},
+			audioEmpower() {
+				console.log("已获得录音权限")
+				// this.handleVoice()
 			},
 			//录音
 			async handleVoice() {

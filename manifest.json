@@ -2,8 +2,8 @@
     "name" : "雅集",
     "appid" : "__UNI__5018490",
     "description" : "雅集",
-    "versionName" : "2.0.2",
-    "versionCode" : 202,
+    "versionName" : "2.0.3",
+    "versionCode" : 203,
     "transformPx" : false,
     "app" : {
         "launch_path" : "/pages/auth/login"
@@ -153,27 +153,27 @@
                     "xxxhdpi" : "unpackage/res/icons/192x192.png"
                 },
                 "ios" : {
-                    "appstore" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/1024.png",
+                    "appstore" : "unpackage/res/icons/1024x1024.png",
                     "ipad" : {
-                        "app" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/76.png",
-                        "app@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/152.png",
-                        "notification" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/20.png",
-                        "notification@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/40.png",
-                        "proapp@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/167.png",
-                        "settings" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/29.png",
-                        "settings@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/58.png",
-                        "spotlight" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/40.png",
-                        "spotlight@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/80.png"
+                        "app" : "unpackage/res/icons/76x76.png",
+                        "app@2x" : "unpackage/res/icons/152x152.png",
+                        "notification" : "unpackage/res/icons/20x20.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png",
+                        "proapp@2x" : "unpackage/res/icons/167x167.png",
+                        "settings" : "unpackage/res/icons/29x29.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "spotlight" : "unpackage/res/icons/40x40.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png"
                     },
                     "iphone" : {
-                        "app@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/120.png",
-                        "app@3x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/180.png",
-                        "notification@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/40.png",
-                        "notification@3x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/60.png",
-                        "settings@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/58.png",
-                        "settings@3x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/87.png",
-                        "spotlight@2x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/80.png",
-                        "spotlight@3x" : "C:/Users/Administrator/Desktop/苹果图标png/图标png/ios/120.png"
+                        "app@2x" : "unpackage/res/icons/120x120.png",
+                        "app@3x" : "unpackage/res/icons/180x180.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png",
+                        "notification@3x" : "unpackage/res/icons/60x60.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "settings@3x" : "unpackage/res/icons/87x87.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png",
+                        "spotlight@3x" : "unpackage/res/icons/120x120.png"
                     }
                 }
             },

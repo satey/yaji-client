@@ -46,7 +46,7 @@
 				</block>
 			</view>
 			<view style="display: flex;flex-wrap: wrap;justify-content: space-between;margin-top: 80rpx;"
-				v-if="deletion == false">
+				v-if="deletion == false&&is_open==1">
 				<block v-for="(item,index) in identity_data" :key="index">
 					<view class="identityItem" @click="identityClick(index,item.identity_id)"
 						:style="index==currentIndex?'border: 1px solid #FFA000;':'border: 1px solid #CCCCCC;'">
@@ -108,7 +108,8 @@
 				identity_id: "",
 				isClick: false,
 				noRole: false,
-				noRoleMsg: ""
+				noRoleMsg: "",
+				is_open: 0,
 			}
 		},
 		onLoad() {
@@ -121,8 +122,10 @@
 					if (res.code == 1) {
 						that.gender_data = res.data.gender_data;
 						that.identity_data = res.data.identity_data
-					} else if (res.code == -1) {
-						that.deletion = true;
+						that.is_open = res.data.is_open;
+						if (res.data.identity_data.length == 0) {
+							that.deletion = true;
+						}
 					}
 				})
 			},
@@ -208,9 +211,11 @@
 					that.$u.toast('性别必须选择')
 					return false
 				}
-				if (that.identity_id == '') {
-					that.$u.toast('身份必须选择')
-					return false
+				if (that.is_open == 1) {
+					if (that.identity_id == '') {
+						that.$u.toast('身份必须选择')
+						return false
+					}
 				}
 				uni.showLoading({
 					title: '获取中',

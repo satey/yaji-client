@@ -14,7 +14,7 @@
 				<u-cell title="隐私政策" :border="false" :isLink="true" @click="$u.route('/pages/public/page', { id: 2 })">
 
 				</u-cell>
-				<u-cell title="关于" :border="false" :isLink="true" @click="$u.route('/pages/public/page', { id: 3 })">
+				<u-cell title="联系我们" :border="false" :isLink="true" @click="$u.route('/pages/public/page', { id: 3 })">
 
 				</u-cell>
 				<u-cell title="注销账号" :border="false" :isLink="true" @click="$u.route('/pages/mine/logOff', { id: 3 })">
