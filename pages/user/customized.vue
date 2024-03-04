@@ -2,7 +2,8 @@
 	<view style="display: flex;flex-direction: column;height: 100vh;">
 		<u-navbar :safeAreaInsetTop="true" :placeholder="false" bgColor="transparent">
 			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" style="color: #fff !important;"
+				<i class="ri-arrow-left-s-line text-3xl"
+					style="color: #fff !important;background: rgba(0, 0, 0,0.2);border-radius: 50%"
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
@@ -23,13 +24,113 @@
 				</image>
 			</view>
 		</view>
+		<view
+			style="padding: 45rpx 0 0rpx 0;box-sizing: border-box;background: #fff;margin-top: -30rpx;border-radius: 33rpx 33rpx 0rpx 0rpx;z-index: 5;">
+			<view
+				style="display: flex;align-items: center;justify-content: center;padding: 0rpx 82rpx;box-sizing: border-box;">
+				<view
+					:style="{color:changIndex==0?'#FFA000':'#666666',borderBottom:changIndex==0?'2rpx solid #FFA000':'2rpx solid #DDDDDD'}"
+					@click="changIndex=0,selectProfileElement(1)"
+					style="flex: 1;font-size: 28rpx;color: #666;text-align: center;padding-bottom: 15rpx;">
+					形象</view>
+				<view
+					:style="{color:changIndex==1?'#FFA000':'#666666',borderBottom:changIndex==1?'2rpx solid #FFA000':'2rpx solid #DDDDDD'}"
+					@click="changIndex=1,selectProfileElement(2)  "
+					style="flex: 1;font-size: 28rpx;color: #FFA000;text-align: center;padding-bottom: 15rpx;">
+					背景
+				</view>
+			</view>
+			<view style="padding-left: 25rpx;">
+				<view class="useMore" style="flex-wrap: wrap;justify-content: start;margin-top: 43rpx;">
+					<block v-for="(item,index) in profileElementList" :key="index">
+						<view
+							style="width: calc(100% / 3 - 15rpx);text-align: center;box-sizing: border-box;margin-bottom: 30rpx;"
+							:style="{marginRight:(index+1)%3==0?'0rpx':'13rpx'}" @click="selectElement(item,index)">
+							<view class="useBox" style="position: relative;"
+								:style="{border:index==selectIndex?'1px solid #FFA000':'1px solid #DDDDDD',background:index==selectIndex?'#FFDDA4':'#fff'}">
+								<block v-if="item.is_used==1">
+									<image src="../../static/shiyong.png"
+										style="width: 110rpx;height: 93rpx;position: absolute;top: 0;left: 0;z-index: 2;"
+										mode=""></image>
+								</block>
+								<block v-else>
+									<image src="../../static/yongyou.png" v-if="item.is_have==1"
+										style="width: 110rpx;height: 93rpx;position: absolute;top: 0;left: 0;z-index: 2;"
+										mode=""></image>
+									<image src="../../static/mianfei.png" v-else-if="item.price == 0"
+										style="width: 110rpx;height: 93rpx;position: absolute;top: 0;left: 0;z-index: 2;"
+										mode=""></image>
+								</block>
+								<image style="width: 100%;height: 100%;" :src="item.url_image" mode="aspectFill">
+								</image>
+							</view>
+							<view
+								style="display: flex;align-items: center;justify-content: center;margin: 10rpx 0rpx;height: 46rpx;">
+								<block v-if="index!=selectIndex">
+									<text style="color: #999;font-size: 22rpx;">{{item.title}}</text>
+									<image src="../../static/qian.png"
+										style="width:22rpx ;height:22rpx ;margin: 0rpx 5rpx;" mode="">
+									</image>
+									<text style="color: #FFA000;font-size: 28rpx;">{{item.price}}</text>
+								</block>
+								<block v-else>
+									<view @click="profileSave"
+										style="line-height: 46rpx;width: 140rpx;height: 46rpx;;border-radius: 6rpx;background: #FFA000; color: 30rpx;color: #fff;">
+										使用</view>
+								</block>
+							</view>
+						</view>
+					</block>
+					<view v-if="!profileElementList.length"
+						style="width: 100% ;display: flex;align-items: center;justify-content: center;">
+						<u-empty icon="/static/iconImage/jilu.png" text="" textColor="#a1a1a1"
+							marginTop="100"></u-empty>
+					</view>
+				</view>
+			</view>
+		</view>
+		<u-popup :show="showPopup" @close="showPopup = false;qian = 0" mode="center" :closeable="false" :round="20">
+			<view class="log">
+				<view style="text-align: center;font-size: 30rpx;color: #333;">取消设置</view>
+				<view style="font-size: 28rpx;color: #333;margin-top: 89rpx;">
+					保存当前形象配置需要花费{{qian==0?'':qian}}铜钱，确定支付并保存吗？</view>
+				<view style="display: flex;align-items: center;justify-content: center;margin-top: 137rpx;">
+					<view @click="showPopup = false;popupMoney = 0"
+						style="margin-right: 21rpx;width: 210rpx;height: 68rpx;background: #FFDDA4;border-radius: 8rpx;text-align: center;line-height: 68rpx;color: #FFA000;font-size: 30rpx;">
+						取消 </view>
+					<view @click="queding"
+						style="margin-left: 21rpx;width: 210rpx;height: 68rpx;background: #FFA000;border-radius: 8rpx;text-align: center;line-height: 68rpx;color: #fff;font-size: 30rpx;">
+						确定</view>
+				</view>
+			</view>
+		</u-popup>
+		<u-popup :show="rechargePopup" @close="rechargePopup = false" mode="center" :closeable="false" :round="20">
+			<view class="log">
+				<view style="text-align: center;font-size: 30rpx;color: #333;">铜钱不足</view>
+				<view style="font-size: 28rpx;color: #333;margin-top: 89rpx;text-align: center;">
+					铜钱不足，是否前往充值页面</view>
+				<view style="display: flex;align-items: center;justify-content: center;margin-top: 137rpx;">
+					<view @click="rechargePopup = false"
+						style="margin-right: 21rpx;width: 210rpx;height: 68rpx;background: #FFDDA4;border-radius: 8rpx;text-align: center;line-height: 68rpx;color: #FFA000;font-size: 30rpx;">
+						取消 </view>
+					<view @click="$u.route('/pages/mine/recharge');rechargePopup = false;"
+						style="margin-left: 21rpx;width: 210rpx;height: 68rpx;background: #FFA000;border-radius: 8rpx;text-align: center;line-height: 68rpx;color: #fff;font-size: 30rpx;">
+						确定</view>
+				</view>
+			</view>
+		</u-popup>
 
-		<view class="tabs">
+
+
+
+		<!-- ---------------------------------老 -->
+		<view class="tabs" style="display: none;">
 			<view class="tabItem" :class="tabCurrentIndex==0?'activeItem':''" @click="tabCurrentIndex = 0">使用形象</view>
 			<view class="tabItem" :class="tabCurrentIndex==1?'activeItem':''" @click="tabCurrentIndex = 1">使用背景</view>
 		</view>
 		<template v-if="tabCurrentIndex ==0">
-			<scroll-view scroll-y="true" style="flex: 1;height: 0;" @scrolltolower="profileBottom">
+			<scroll-view scroll-y="true" style="flex: 1;height: 0;display: none !important;"
+				@scrolltolower="profileBottom">
 				<view class="selectPortrait">
 					<view style="color: #333333;font-size: 30rpx;margin-bottom: 40rpx;margin-top: 15rpx;">使用中</view>
 					<view class="use" style="display: flex;align-items: center;justify-content: space-around;"
@@ -122,7 +223,7 @@
 						</view>
 					</view>
 				</view>
-				<u-popup :show="showPopup" @close="showPopup = false" mode="center" :closeable="false" :round="20">
+				<!-- 	<u-popup :show="showPopup" @close="showPopup = false" mode="center" :closeable="false" :round="20">
 					<view class="log">
 						<view style="text-align: center;font-size: 30rpx;color: #333;">取消设置</view>
 						<view style="font-size: 28rpx;color: #333;margin-top: 89rpx;">
@@ -136,7 +237,7 @@
 								确定</view>
 						</view>
 					</view>
-				</u-popup>
+				</u-popup> -->
 				<u-popup :show="rechargePopup" @close="rechargePopup = false" mode="center" :closeable="false"
 					:round="20">
 					<view class="log">
@@ -155,7 +256,7 @@
 				</u-popup>
 			</scroll-view>
 		</template>
-		<template v-if="tabCurrentIndex ==1">
+		<template v-if="tabCurrentIndex ==1" style="display: none;">
 			<scroll-view scroll-y="true" style="flex: 1;height: 0;">
 				<view class="bgImgContainer" style="background: #FFFDFD;">
 					<view class="useImgBox">
@@ -202,11 +303,12 @@
 		name: "customized",
 		data() {
 			return {
+				changIndex: 0,
 				profileElementList: [],
 				userProfile: null,
 				usedElement: null,
 				tabCurrentIndex: 0,
-				selectIndex: 0,
+				selectIndex: -1,
 				useIndex: 1,
 				odlPrefileElement: [],
 				prefileUrlId: '',
@@ -217,7 +319,8 @@
 				prefileArr: [],
 				showPopup: false,
 				popupMoney: 0,
-				rechargePopup: false
+				rechargePopup: false,
+				qian: 0
 			}
 		},
 		onLoad() {
@@ -324,12 +427,14 @@
 				this.prefileArr.forEach((item, index) => {
 					if (item.is_have == 0) {
 						if (item.price != 0) {
-							this.popupMoney += item.price;
+							this.popupMoney = item.price;
+							this.qian = this.popupMoney
 							this.showPopup = true;
 							return;
 						}
 					}
 				})
+				this.$forceUpdate()
 				if (this.showPopup == true) {
 					return
 				}
@@ -341,7 +446,8 @@
 					profile_type: 1,
 					element_id_list: ids
 				}).then(res => {
-					this.selectProfileElement(1)
+					this.selectIndex = -1;
+					this.selectProfileElement(this.changIndex + 1)
 					if (res.code == 3001) {
 						this.rechargePopup = true
 					} else {

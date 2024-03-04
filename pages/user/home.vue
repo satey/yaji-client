@@ -133,7 +133,7 @@
 						</view>
 						<view class="itemFooter">
 							<i class="iconfont icon-aixin1" style="margin-right: 5rpx;"></i>
-							<text>{{item.commentnums}}</text>
+							<text>{{item.diggnums}}</text>
 						</view>
 					</view>
 				</block>
@@ -533,7 +533,7 @@
 				display: flex;
 				align-items: center;
 				justify-content: flex-end;
-				color: #AAA8A8;
+				color: #fff;
 				font-size: 28rpx;
 				z-index: 5;
 				background: rgba(255, 255, 255, 0.5);

@@ -472,7 +472,7 @@
 			var that = this;
 			this.audio.destroy()
 			this.showSvga = false;
-			if(Boolean(uni.getStorageSync("roomData"))==false){
+			if (Boolean(uni.getStorageSync("roomData")) == false) {
 				getApp().globalData.socketTask._callbacks.message.splice(1)
 			}
 		},
@@ -748,6 +748,22 @@
 						}
 						if (socketData.data.from_user_id == that.$Route.query.user_id) {
 							var item = JSON.parse(res.data).data;
+							if (item.message.type == 'play') {
+								switch (item.message.room_type) {
+									case "fhl":
+										item.message.background = 'linear-gradient(#FFDBCC, #FFFFFF)';
+										item.message.footerColor = '#F7B793'
+										break;
+									case "scjl":
+										item.message.background = 'linear-gradient(#E9FFC6, #FFFFFF)'
+										item.message.footerColor = '#CEEDB6'
+										break;
+									case "cyjl":
+										item.message.background = 'linear-gradient(#DBFCD3, #FFFFFF)'
+										item.message.footerColor = '#C1EDB6'
+										break;
+								}
+							}
 							item.message.isPlay = false
 							that.scrollAnimation = true;
 							that.chatMsgList.push(item);

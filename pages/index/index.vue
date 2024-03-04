@@ -23,7 +23,7 @@
 			</view>
 			<view style="background: #fff;margin-top: -5rpx;">
 				<view class="nav" v-if="homeDate !=null">
-					<image class="navImage" @click="$u.route('/pages/index/lists',{type:'qsls'})"
+					<image class="navImage" @click="$u.route('/pages/index/qslsList',{type:'qsls'})"
 						src="../../static/iconImage/qushui.png" mode="widthFix"></image>
 					<image class="navImage" @click="$u.route('/pages/index/lists',{type:'fhl'})"
 						src="../../static/iconImage/feihua.png" mode="widthFix"></image>
@@ -42,6 +42,14 @@
 							</view>
 						</swiper-item>
 					</swiper>
+				</view>
+				<view style="padding: 20rpx 15rpx 5rpx 15rpx;box-sizing: border-box;">
+					<view class="blackBox" style="display: flex;align-items: center;">
+						<image @click="$u.route('pages/user/famousRole')" src="../../static/mingrentang.png"
+							style="height: 127rpx;" mode="widthFix"></image>
+						<image @click="$u.route('pages/talent/talent')" src="../../static/caihuaceshi.png"
+							style="height: 127rpx;" mode="widthFix"></image>
+					</view>
 				</view>
 				<view class="recommend">
 					<view style="display: flex;align-items: center;justify-content: space-between;">
@@ -393,6 +401,16 @@
 
 	.home {
 		background: #F8F8F8;
+	}
+
+	.blackBox {
+		width: 100%;
+		background-image: url(@/static/blackBg.png);
+		background-position: 100% 100%;
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		padding: 30rpx 25rpx;
+		box-sizing: border-box;
 	}
 
 	.userImages {

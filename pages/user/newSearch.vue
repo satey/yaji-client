@@ -275,12 +275,15 @@
 	.searchBar {
 		height: 72rpx;
 		border-radius: 50rpx;
-		border: 2rpx solid #FE4373;
 		font-size: 28rpx;
 		color: #808080;
 		display: flex;
 		align-items: center;
 		padding-left: 25rpx;
+		background-image: url(@/static/sousuoBg.png);
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		background-position: 100% 100%;
 	}
 
 	.characterTitle {

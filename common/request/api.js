@@ -1100,6 +1100,18 @@ export default {
 			method: 'GET',
 			desc: '称号列表',
 		},
+		talent_ranking: {
+			url: 'user/talent_ranking',
+			auth: false,
+			method: 'GET',
+			desc: '才华榜',
+		},
+		pk_ranking: {
+			url: 'user/pk_ranking',
+			auth: false,
+			method: 'GET',
+			desc: '战绩榜',
+		},
 	},
 	sms: {
 		send_sms: {
@@ -1217,6 +1229,12 @@ export default {
 		},
 	},
 	room: {
+		getStrangerInviteList: {
+			url: 'room/getStrangerInviteList',
+			auth: false,
+			method: 'POST',
+			desc: '房间列表pk邀请列表',
+		},
 		check: {
 			url: 'room/check',
 			auth: false,
@@ -1459,5 +1477,55 @@ export default {
 			method: 'POST',
 			desc: '抽签',
 		}
+	},
+	practice: {
+		entryPracticeRoom: {
+			url: 'practice/entryPracticeRoom',
+			auth: false,
+			method: 'POST',
+			desc: '进入',
+		},
+		ready: {
+			url: 'practice/ready',
+			auth: false,
+			method: 'POST',
+			desc: '准备/开始',
+		},
+		getPartner: {
+			url: 'practice/getPartner',
+			auth: false,
+			method: 'POST',
+			desc: '陪练列表',
+		},
+		getWordList: {
+			url: 'practice/getWordList',
+			auth: false,
+			method: 'POST',
+			desc: '令词列表',
+		},
+		referee: {
+			url: 'practice/referee',
+			auth: false,
+			method: 'POST',
+			desc: '诗词评判',
+		},
+		getResult: {
+			url: 'practice/getResult',
+			auth: false,
+			method: 'POST',
+			desc: '获取练习结果',
+		},
+		chooseRobot: {
+			url: 'practice/chooseRobot',
+			auth: false,
+			method: 'POST',
+			desc: '更换对手',
+		},
+		submitTaskContent: {
+			url: 'practice/submitTaskContent',
+			auth: false,
+			method: 'POST',
+			desc: '上报',
+		},
 	}
 };

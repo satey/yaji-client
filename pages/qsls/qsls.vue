@@ -4,12 +4,16 @@
 		<view class="roomHead">
 			<view style="height: var(--status-bar-height);"></view>
 			<view style="display: flex;align-items: center;justify-content: space-between;">
-				<view class="headLeft">
-					<text v-if="roomData!=null"
-						style="color: #333333;font-size: 26rpx;">{{roomData.room_info.room_name}}</text>
-					<text v-if="roomData!=null"
-						style="color: #666666;font-size: 23rpx;">ID{{roomData.room_info.room_id}}</text>
+				<view style="display: flex;align-items: center;">
+					<i @click="exitRoom" class="ri-arrow-left-s-line text-3xl" style="color: #333"></i>
+					<view class="headLeft">
+						<text v-if="roomData!=null"
+							style="color: #333333;font-size: 26rpx;">{{roomData.room_info.room_name}}</text>
+						<!-- <text v-if="roomData!=null"
+							style="color: #666666;font-size: 23rpx;">ID{{roomData.room_info.room_id}}</text> -->
+					</view>
 				</view>
+
 				<i class="iconfont icon-gengduo1" @click="openDrawer" style="font-size: 46rpx;color: #fff;"></i>
 			</view>
 		</view>
@@ -835,7 +839,7 @@
 				const that = this;
 				getApp().globalData.socketTask.onMessage((res) => {
 					var socketData = JSON.parse(res.data);
-					if (socketData.type == "pong"){
+					if (socketData.type == "pong") {
 						return
 					}
 					console.log(socketData)

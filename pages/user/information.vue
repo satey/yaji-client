@@ -82,7 +82,7 @@
 				</view>
 				<!-- ------------------- -->
 				<view style="display: flex;align-items: center;padding: 0rpx 0rpx;justify-content: space-between;">
-					<view class="box " :class="userData.age_group==0?'boxTwo':''" @click="showAge = true;">
+					<view class="box " :class="userData.age_group==0?'boxTwo':''" @click="selectAge">
 						<view class="box-block">
 							<view class="boxTitle" :style="{color:userData.age_group==0?'#BDE2A5':'#FFBC4B'}"
 								style="font-size: 28rpx;">年龄</view>
@@ -107,7 +107,7 @@
 							</view> -->
 						</view>
 					</view>
-					<view class="box " :class="userData.animal_branche==0?'boxTwo':''" @click="showAttribute = true;">
+					<view class="box " :class="userData.animal_branche==0?'boxTwo':''" @click="selectAttribute">
 						<view class="box-block">
 							<view class="boxTitle" :style="{color:userData.animal_branche==0?'#BDE2A5':'#FFBC4B'}"
 								style="font-size: 28rpx;">生肖</view>
@@ -130,7 +130,7 @@
 							</view> -->
 						</view>
 					</view>
-					<view class="box" :class="userData.stellar_period==0?'boxTwo':''" @click="showStar = true;">
+					<view class="box" :class="userData.stellar_period==0?'boxTwo':''" @click="selectShowStar">
 						<view class="box-block">
 							<view class="boxTitle" :style="{color:userData.stellar_period==0?'#BDE2A5':'#FFBC4B'}"
 								style="font-size: 28rpx;">星纪</view>
@@ -329,6 +329,36 @@
 						this.getInfo()
 					}
 				})
+			},
+			selectShowStar() {
+				if (this.userData.stellar_period_str != "") {
+					this.starList.forEach((item, index) => {
+						if (item.value == this.userData.stellar_period_str) {
+							this.starIndex = index;
+						}
+					})
+				}
+				this.showStar = true;
+			},
+			selectAttribute() {
+				if (this.userData.animal_branche_str != "") {
+					this.attributeList.forEach((item, index) => {
+						if (item.value == this.userData.animal_branche_str) {
+							this.attributeIndex = index;
+						}
+					})
+				}
+				this.showAttribute = true;
+			},
+			selectAge() {
+				if (this.userData.age_group_str != "") {
+					this.ageArr.forEach((item, index) => {
+						if (item.value == this.userData.age_group_str) {
+							this.ageIndex = index;
+						}
+					})
+				}
+				this.showAge = true;
 			},
 			//设置字体
 			setFontFamily() {

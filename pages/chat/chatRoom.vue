@@ -452,11 +452,14 @@
 
 		<view class="roomBody">
 			<view class="roomHead">
-				<view class="headLeft">
-					<text style="color: #333333;font-size: 26rpx;"
-						v-if="roomDate!=null">{{roomDate.room_info.room_name||'未知'}}</text>
-					<text style="color: #666666;font-size: 23rpx;"
-						v-if="roomDate!=null">ID{{roomDate.room_info.room_id||'未知'}}</text>
+				<view style="display: flex;align-items: center;">
+					<i @click="exitRoom" class="ri-arrow-left-s-line text-3xl" style="color: #333"></i>
+					<view class="headLeft">
+						<text style="color: #333333;font-size: 26rpx;"
+							v-if="roomDate!=null">{{roomDate.room_info.room_name||'未知'}}</text>
+						<!-- <text style="color: #666666;font-size: 23rpx;"
+							v-if="roomDate!=null">ID{{roomDate.room_info.room_id||'未知'}}</text> -->
+					</view>
 				</view>
 				<i class="iconfont icon-gengduo1" @click="openDrawer" :style="{color:roomType!='fhl'?'#999':'#fff'}"
 					style="font-size: 46rpx;"></i>
@@ -769,6 +772,10 @@
 							</block>
 						</view>
 					</block>
+					<view>
+						<image src="../../static/lianxi.png" @click="clickPractice" style="width: 46rpx;height: 79rpx;"
+							mode=""></image>
+					</view>
 				</view>
 			</view>
 
@@ -957,6 +964,9 @@
 				roomIsError: false,
 			}
 		},
+		destroyed() {
+			this.closeTrtcCloud()
+		},
 		onLoad(option) {
 			console.log(option)
 			getApp().globalData.socketTask._callbacks.message.splice(1);
@@ -1124,6 +1134,34 @@
 						}, 800)
 					}
 				})
+			},
+			//进入练习房
+			clickPractice() {
+				// this.stage_list.forEach((item,index)=>{
+				// 	if()
+				// })
+
+				if (this.taskBeginFlag == true) {
+					uni.showToast({
+						icon: "none",
+						title: "比赛开始"
+					})
+				} else {
+					var arr = [];
+					arr = this.stage_list.filter((item, index) => {
+						return item.user_id == this.userInfo.id
+					})
+					if (arr.length == 0) {
+						this.$u.route("pages/practice/practice", {
+							roomType: this.roomType2
+						})
+					} else {
+						uni.showToast({
+							icon: "none",
+							title: "请先下麦"
+						})
+					}
+				}
 			},
 			//初始化scoket
 			initScoket() {
@@ -1354,18 +1392,19 @@
 									room_id: that.roomDate.room_info.room_id
 								}).then(res => {
 									if (res.code == 1) {
-										uni.$emit('closeRoom', {
-											msg: '房间解散'
-										})
-										uni.removeStorageSync('roomData')
-										that.trtcCloud.exitRoom();
-										that.closeTrtcCloud()
+										console.log("返回")
 										that.$nextTick(() => {
 											that.$u.route({
 												type: 'navigateBack',
 												delta: 1
 											})
 										})
+										uni.$emit('closeRoom', {
+											msg: '房间解散'
+										})
+										uni.removeStorageSync('roomData')
+										that.trtcCloud.exitRoom();
+										that.closeTrtcCloud()
 									}
 								})
 								break;

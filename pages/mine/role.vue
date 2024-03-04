@@ -47,7 +47,7 @@
 				<block v-if="preMatchData.general_match.free_match_count > 0">
 					<view @click="handleHuoQu()"
 						style="margin-right: 28rpx;width: 260rpx;height: 102rpx;border-radius: 16rpx;background: #FFA000;display: flex;flex-direction: column;align-items: center;justify-content: center;">
-						<view style="color: #FFFFFF;font-size: 30rpx;">重新穿越</view>
+						<view style="color: #FFFFFF;font-size: 30rpx;">重新获取</view>
 						<view style="color: #FFFFFF;font-size: 30rpx;">
 							免费{{preMatchData.general_match.free_match_count}}次</view>
 					</view>
@@ -55,7 +55,7 @@
 				<block v-else>
 					<view @click="handleRematch()"
 						style="margin-right: 28rpx;width: 260rpx;height: 102rpx;border-radius: 16rpx;background: #FFA000;display: flex;flex-direction: column;align-items: center;justify-content: center;">
-						<view style="color: #FFFFFF;font-size: 30rpx;">重新穿越</view>
+						<view style="color: #FFFFFF;font-size: 30rpx;">重新获取</view>
 						<view style="display: flex;align-items: center;">
 							<image src="../../static/qian.png" style="width: 33rpx;height: 33rpx;" mode=""></image>
 							<text
@@ -193,9 +193,12 @@
 							style="color: #808080;font-size: 28rpx;margin-top: 26rpx;text-align: left;min-height: 80rpx;">
 							{{role_fei.content ||'暂无介绍'}}
 						</view>
-						<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;text-align: left;margin-top: 18rpx;">稀有等级：<text class="family"
+						<view
+							style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;text-align: left;margin-top: 18rpx;">
+							稀有等级：<text class="family"
 								style="color: #FFA000;font-size: 28rpx;">{{role_fei.mw_level||'无'}}</text></view>
-						<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;text-align: left;">初始名望：<text class="family"
+						<view style="color: #333333;font-size: 28rpx;margin-bottom: 18rpx;text-align: left;">初始名望：<text
+								class="family"
 								style="color: #FFA000;font-size: 28rpx;">{{ role_fei.role_mw || '无' }}</text></view>
 					</view>
 				</scroll-view>
@@ -386,7 +389,7 @@
 									that.recharge = false;
 									that.showRole = false;
 									that.dynastyPopup = false;
-								} else{
+								} else {
 									uni.showToast({
 										icon: "none",
 										title: res.msg
@@ -430,7 +433,7 @@
 									that.recharge = false;
 									that.showRole = false;
 									that.dynastyPopup = false;
-								} else{
+								} else {
 									uni.showToast({
 										icon: "none",
 										title: res.msg

@@ -81,7 +81,7 @@
 				<view
 					class="rounded-full p-6 text-base leading-none text-white bg-gradient-to-r from-rose-400 to-rose-500 btn"
 					@click="onSubmit()">
-					生成角色
+					获取角色
 				</view>
 			</view>
 		</view>

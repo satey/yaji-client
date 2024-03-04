@@ -229,6 +229,10 @@
 					const currentPage = getCurrentPages();
 					var socketData = JSON.parse(res.data);
 					if (socketData.cate == 'room') {
+						if (socketData.data.type == 'invite_accept') {
+							uni.$emit("invite_accept", socketData)
+							return;
+						}
 						if (currentPage[currentPage.length - 1].route != 'pages/qsls/qsls') {
 							if (socketData.data.type == 'cup_task_run') {
 								that.$store.commit("setQslsCupType", "1")
@@ -300,7 +304,7 @@
 				getApp().globalData.socketTask.onClose(function(res) {
 					console.log(res)
 					console.log('全局Socket 已关闭！');
-					var setTimeout1 = setTimeout(()=>{
+					var setTimeout1 = setTimeout(() => {
 						clearTimeout(setTimeout1)
 						clearTimeout(timeOut)
 						getApp().globalData.wsOnlion = false;
@@ -313,8 +317,8 @@
 								that.initSocket()
 							}, 1000)
 						}
-					},1500)
-					
+					}, 1500)
+
 				});
 				getApp().globalData.socketTask.onError(function(error) {
 					console.log(error)

@@ -369,6 +369,7 @@
 			}
 		},
 		onLoad(e) {
+			console.log(e)
 			let that = this;
 			if (e.postData != undefined) {
 				var postData = JSON.parse(e.postData);

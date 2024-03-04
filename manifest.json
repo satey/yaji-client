@@ -2,8 +2,8 @@
     "name" : "雅集",
     "appid" : "__UNI__5018490",
     "description" : "雅集",
-    "versionName" : "2.0.5",
-    "versionCode" : 205,
+    "versionName" : "2.0.6",
+    "versionCode" : 206,
     "transformPx" : false,
     "app" : {
         "launch_path" : "/pages/auth/login"
@@ -83,9 +83,9 @@
                     }
                 },
                 "privacyDescription" : {
-                    "NSMicrophoneUsageDescription" : "需要使用麦克风录权限，以便完成语音条的录制。",
-                    "NSPhotoLibraryUsageDescription" : "需要读取您的手机相册，以便完成图片上传和发布。",
-                    "NSPhotoLibraryAddUsageDescription" : "需要使用相册写入权限，以便保存图片。"
+                    "NSMicrophoneUsageDescription" : "需要使用麦克风录权限，以便完成语音条的录制、开启语音聊天。",
+                    "NSPhotoLibraryUsageDescription" : "需要读取您的手机相册，以便发送聊天图片、发布动态配图、设置头像或背景图",
+                    "NSPhotoLibraryAddUsageDescription" : "需要使用相册写入权限，以便保存图片到本地相册"
                 },
                 "urltypes" : "com.suoeryoude.yaji"
             },

@@ -260,7 +260,7 @@
 				<view class="moreItem" @click="$u.route('pages/song/songStart')">桑田对歌</view>
 			</view>
 		</template>
-		<view class="tabBar" :style="{height:tabBarHeight}">
+		<!-- <view class="tabBar" :style="{height:tabBarHeight}">
 			<view class="tabBarItem" @click="openTab('/pages/index/index')">
 				<image class="tabIcon" src="@/static/tabbar/index.png" mode=""></image>
 				<text class="tabText"></text>
@@ -281,7 +281,7 @@
 				<image class="tabIcon" src="@/static/tabbar/mine.png" mode="aspectFill"></image>
 				<text class="tabText">我的</text>
 			</view>
-		</view>
+		</view> -->
 		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
@@ -341,7 +341,7 @@
 			this.getData('one')
 		},
 		onShow() {
-			uni.hideTabBar()
+			// uni.hideTabBar()
 			this.trendsMsg()
 			if (this.swiperList.length != 0) {
 				if (this.swiperList[this.trendsIndex].audio) {
