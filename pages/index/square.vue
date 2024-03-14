@@ -19,9 +19,8 @@
 		</view>
 		<!-- 动态 -->
 		<template v-if="currentType == 'trends'">
-			<swiper v-if="swiperList.length!=0" class="mySwiper" :style="'height:'+windowHeight" vertical="true"
-				:indicator-dots="false" :autoplay="false" :duration="500" @change="trendsChange"
-				@animationfinish='trendsFinish'>
+			<swiper v-if="swiperList.length!=0" class="mySwiper" vertical="true" :indicator-dots="false"
+				:autoplay="false" :duration="500" @change="trendsChange" @animationfinish='trendsFinish'>
 				<block v-for="(item,index) in swiperList" :key="index">
 					<swiper-item class="swiperBox">
 						<!-- 单张图片 -->
@@ -30,7 +29,7 @@
 								:src="item.bg_img_url"></image>
 							<view
 								style="position: absolute;top: 0;left: 0;z-index: 0;width: 100vw;height: 100vh;display: flex;align-items: center;justify-content: center;">
-								<image style="width: 100%;" :src="item.image_list[0]" mode="widthFix"></image>
+								<image style="width: 100vw;height: 100vh;" :src="item.image_list[0]" mode="widthFix"></image>
 							</view>
 						</view>
 						<!-- 单张图片文字 -->
@@ -45,7 +44,7 @@
 							</view>
 							<view
 								style="position: absolute;top: 0;left: 0;z-index: 0;width: 100vw;height: 100vh;display: flex;align-items: center;justify-content: center;">
-								<image style="width: 100%;" :src="item.image_list[0]" mode="widthFix"></image>
+								<image style="width: 100vw;height: 100vh;" :src="item.image_list[0]" mode="widthFix"></image>
 							</view>
 
 						</view>
@@ -113,7 +112,7 @@
 							</view>
 						</view>
 						<!-- 右边栏 -->
-						<view class="operate" :style="{paddingBottom:tabBarHeight}">
+						<view class="operate">
 							<view>
 								<view style="position: relative;">
 									<image class="userImg" @click="$u.route('/pages/user/home',{user_id:item.user_id})"
@@ -163,7 +162,7 @@
 						</view>
 
 						<!-- 底部栏 -->
-						<view class="bottom" :style="{paddingBottom:tabBarHeight}">
+						<view class="bottom">
 							<view class="original" v-if="item.is_original ==1">原创</view>
 							<view class="userBox">
 								<image style="width: 36rpx;height: 36rpx;" :src="item.user_info.mw_img"
@@ -703,6 +702,7 @@
 		overflow: hidden;
 		background: #000;
 		position: relative;
+		height: 100vh;
 
 		.swiperBox {
 			width: 100vw;

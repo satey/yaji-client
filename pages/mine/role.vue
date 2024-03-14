@@ -45,25 +45,20 @@
 		<view style="padding:0rpx 38rpx;margin-top: 42rpx;">
 			<view style="display: flex;align-items: center;justify-content: center;" v-if="preMatchData.length !=0">
 				<block v-if="preMatchData.general_match.free_match_count > 0">
-					<view @click="handleHuoQu()"
-						style="margin-right: 28rpx;width: 260rpx;height: 102rpx;border-radius: 16rpx;background: #FFA000;display: flex;flex-direction: column;align-items: center;justify-content: center;">
-						<view style="color: #FFFFFF;font-size: 30rpx;">重新获取</view>
+					<view @click="$u.route('pages/mine/getRole')" class="getBtn"
+						style="margin-right: 28rpx;width: 490rpx;height: 72rpx;border-radius: 16rpx;display: flex;flex-direction: column;align-items: center;justify-content: center;">
 						<view style="color: #FFFFFF;font-size: 30rpx;">
-							免费{{preMatchData.general_match.free_match_count}}次</view>
+							重新获取(免费{{preMatchData.general_match.free_match_count}}次)</view>
 					</view>
 				</block>
 				<block v-else>
-					<view @click="handleRematch()"
-						style="margin-right: 28rpx;width: 260rpx;height: 102rpx;border-radius: 16rpx;background: #FFA000;display: flex;flex-direction: column;align-items: center;justify-content: center;">
-						<view style="color: #FFFFFF;font-size: 30rpx;">重新获取</view>
-						<view style="display: flex;align-items: center;">
-							<image src="../../static/qian.png" style="width: 33rpx;height: 33rpx;" mode=""></image>
-							<text
-								style="color: #FFFFFF;font-size: 30rpx;margin-left: 10rpx;">×{{preMatchData.general_match.next_price}}</text>
-						</view>
+					<view @click="$u.route('pages/mine/getRole')" class="getBtn"
+						style="margin-right: 28rpx;width: 490rpx;height: 72rpx;border-radius: 16rpx;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+						<view style="color: #FFFFFF;font-size: 30rpx;">
+							重新获取({{preMatchData.general_match.next_price}}铜钱/次)</view>
 					</view>
 				</block>
-				<view @click="extractRare()"
+				<!-- <view @click="extractRare()"
 					style="position: relative;;margin-left: 28rpx;width: 260rpx;height: 102rpx;border-radius: 16rpx;background: #FF7A00;display: flex;flex-direction: column;align-items: center;justify-content: center;">
 					<image src="../../static/iconImage/xianshi.png"
 						style="position: absolute;top: 0;left: 0;width: 70rpx;height: 70rpx;z-index: 1;" mode="">
@@ -74,7 +69,7 @@
 						<text
 							style="color: #FFFFFF;font-size: 30rpx;margin-left: 10rpx;">×{{preMatchData.rare_match.next_price}}</text>
 					</view>
-				</view>
+				</view> -->
 			</view>
 			<!-- 后续开放 -->
 			<!-- <view v-if="fei_num <= 0" class="selectBtn" @click="handleHuoQu()">重新获取({{ price }}铜钱)
@@ -82,7 +77,7 @@
 			<view v-if="fei_num > 0" class="selectBtn" @click="handleRematch()">重新穿越
 				免费({{fei_num}}次)
 			</view> -->
-			<view style="font-size: 30rpx;color: #999;text-align: center;margin-top: 36rpx;"
+			<view style="font-size: 30rpx;color: #999;text-align: center;margin-top: 36rpx;white-space: nowrap;"
 				v-if='preMatchData.length!=0'>
 				（钱包剩余铜钱×{{money}}，稀有角色卡×{{preMatchData.rare_match.rare_match_prop_count}}）</view>
 		</view>
@@ -204,7 +199,8 @@
 				</scroll-view>
 			</view>
 		</u-modal>
-		<u-popup :show="showCard" @close="showCard = false" mode="center" :closeable="false" :round="20">
+		<u-popup :show="showCard" @close="showCard = false" :customStyle="{background:'transparent'}" mode="center"
+			:closeable="false" :round="20">
 			<view class="report">
 				<view class="reportBgBox">
 					<view style="text-align: center;font-size: 32rpx;color: #FFA000;font-family: font-test !important;">
@@ -218,7 +214,7 @@
 				</view>
 			</view>
 		</u-popup>
-		<u-popup :show="showNone" @close="showNone = false" mode="center" :closeable="false" :round="20">
+		<u-popup :show="showNone" @close="showNone = false" mode="center" :customStyle="{background:'transparent'}" :closeable="false" :round="20">
 			<view class="report">
 				<view class="reportBgBox">
 					<view style="text-align: center;font-size: 32rpx;color: #FFA000;font-family: font-test !important;">
@@ -281,6 +277,11 @@
 			that.getMoney()
 			that.setFontFamily();
 			that.getpreMatch()
+		},
+		onShow() {
+			this.getUserRole()
+			this.getMoney()
+			this.getpreMatch()
 		},
 		computed: {
 			...mapState({
@@ -865,5 +866,15 @@
 		font-size: 36rpx;
 		font-weight: bold;
 		color: #FFA000;
+	}
+
+	.getBtn {
+		background-image: url(@/static/iconImage/btnBg2.png);
+		background-repeat: none;
+		background-position: 100% 100%;
+		background-size: 100% 100%;
+		border-radius: 43rpx;
+		color: #fff;
+		text-align: center;
 	}
 </style>

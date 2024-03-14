@@ -9,11 +9,14 @@
 					<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 				</view>
 			</u-navbar>
-			<view style="font-size: 56rpx;color: #3D3D3D;padding-top: 70rpx;padding-left: 50rpx;">{{titles}}</view>
+			<view
+				style="font-size: 32rpx;color: #333;padding-top: 105rpx;padding-left: 50rpx;font-family: font-test !important;">
+				{{titles}}
+			</view>
 		</view>
 		<view style="height: 360rpx;"></view>
 		<view class="lists">
-			<view class="item" v-for="(item,index) in roleList" :key="index">
+			<view class="item" v-for="(item,index) in roleList" :key="index" @click="openUserHome(item)">
 				<view style="display: flex;align-items: center;">
 					<block v-if="item.user_avatar == null">
 						<block v-if="item.gender == 2">
@@ -25,38 +28,39 @@
 								style="width: 88rpx;height: 88rpx;border-radius: 50%;"></image>
 						</block>
 					</block>
-					<image @click="openUserHome(item)" v-else :src="item.user_avatar"
-						style="width: 88rpx;height: 88rpx;border-radius: 50%;" mode="">
+					<image v-else :src="item.user_avatar" style="width: 88rpx;height: 88rpx;border-radius: 50%;"
+						mode="">
 					</image>
 					<view style="margin-left: 30rpx;flex: 1;margin-right: 10rpx;">
 						<view style="font-size: 32rpx;color: #3D3D3D;display: flex;align-items: center;">
-							<text @click="openUserHome(item)">{{item.realname}}·{{item.dynasty}}</text>
-							<block v-if="item.gender == 2">
-								<text class="ri-women-fill"
-									style="margin-left: 15rpx;color: #E87B7B;font-size: 25rpx;"></text>
+							<text>{{item.realname}}·{{item.dynasty}}</text>
+							<block v-if="item.gender==1">
+								<i class="iconfont icon-nan1"
+									style="font-size: 22rpx;color: #00C2FF;margin-left: 15rpx;"></i>
 							</block>
-							<block v-if="item.gender == 1">
-								<text class="ri-men-fill"
-									style="margin-left: 15rpx;color: #8FB992;font-size: 25rpx;"></text>
+							<block v-else>
+								<i class="iconfont icon-nv"
+									style="font-size: 22rpx;color: #FFA000;margin-left: 15rpx;"></i>
 							</block>
 						</view>
 						<view style="font-size: 25rpx;color: #3D3D3D;opacity: 0.6;margin-top: 10rpx;">
-							{{item.achievements}}
+							<block v-for="(item,index) in item.achievements.split(',')" :key="index">
+								<text style="margin-right: 15rpx;">{{item}}</text>
+							</block>
 						</view>
 					</view>
 				</view>
-				<view style="display: flex;align-items: center;" v-if="item.user_id != null">
+				<view style="display: flex;align-items: center;margin-right: 32rpx;" v-if="item.user_id != null">
 					<view style="width: 39rpx;height: 39rpx;border-radius: 50%;margin-right: 10rpx;">
 						<image :src="item.mw_image" style="width: 100%;height: 100%;" mode=""></image>
 					</view>
-					<text style="font-size: 28rpx; color: #3D3D3D;width: 100rpx;">{{item.user_total_mw}}</text>
+					<text style="font-size: 25rpx; color: #FFA000;">{{item.user_total_mw}}</text>
 				</view>
-				<view v-else @click="$u.route('/pages/mine/role')"
-					style="margin-right: 26rpx;width: 97rpx;height: 40rpx;background: #FE4373;border-radius: 100rpx 100rpx 100rpx 100rpx;opacity: 1;color: #fff;font-size: 25rpx;text-align: center;line-height: 40rpx;">
-					获取
-				</view>
+				<view v-else
+					style="margin-right: 32rpx;line-height: 46rpx;text-align: center;border-radius: 6rpx;color: #999;font-size: 23rpx;">
+					未激活</view>
 			</view>
-			<u-empty v-if="!roleList.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
+			<u-empty v-if="!roleList.length" icon="/static/iconImage/jilu.png" text="暂无数据" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</view>
 		<topPrompt></topPrompt>
@@ -78,6 +82,7 @@
 			this.titles = e.titles;
 			this.role_id = e.role_title_id;
 			this.searchName()
+			this.setFontFamily()
 		},
 		onReachBottom() {
 			this.page++;
@@ -86,17 +91,10 @@
 		methods: {
 			openUserHome(item) {
 				if (item.user_id == null) {
-					uni.showToast({
-						icon: "none",
-						title: "角色未注册"
+					this.$u.route('/pages/mine/roleDetail', {
+						role_id: item.id
 					})
 					return;
-				}
-				var userInfo = uni.getStorageSync("userInfo");
-				if (userInfo.id == item.user_id) {
-					uni.switchTab({
-						url: "/pages/index/mine"
-					})
 				} else {
 					this.$u.route('pages/user/home', {
 						user_id: item.user_id
@@ -115,6 +113,22 @@
 					}
 				})
 			},
+			//设置字体
+			setFontFamily() {
+				// #ifdef APP-PLUS
+				uni.loadFontFace({
+					family: 'font-test',
+					// 本地字体路径需转换为平台绝对路径
+					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/AaHouDiHei.ttf')})`,
+					success() {
+						console.log('success')
+					},
+					fail(e) {
+						console.log('fail')
+					}
+				})
+				// #endif
+			},
 		}
 	}
 </script>
@@ -127,13 +141,14 @@
 
 		.item {
 			padding: 26rpx 0rpx 26rpx 26rpx;
-			margin-bottom: 26rpx;
-			box-shadow: 0rpx 4rpx 10rpx 0rpx rgba(0, 0, 0, 0.302);
-			border-radius: 6rpx 6rpx 6rpx 6rpx;
+			margin-bottom: 25rpx;
+			border-radius: 20rpx;
 			box-sizing: border-box;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			border: 1px solid #FFA000;
+			background: linear-gradient(rgba(255, 246, 232, 1), rgba(255, 246, 232, 0));
 		}
 	}
 

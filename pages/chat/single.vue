@@ -88,7 +88,7 @@
 									</view>
 								</block>
 								<block v-else>
-									<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;">
+									<image src="../../static/heiyinpin.gif" style="width: 70rpx;height: 33rpx;">
 									</image>
 								</block>
 							</view>
@@ -163,7 +163,7 @@
 									</view>
 								</block>
 								<block v-else>
-									<image src="../../static/bofang.gif" style="width: 90rpx;height: 25rpx;">
+									<image src="../../static/baiyinpin.gif" style="width: 70rpx;height: 33rpx;">
 									</image>
 								</block>
 							</view>

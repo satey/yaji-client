@@ -786,6 +786,12 @@ export default {
 			method: 'POST',
 			desc: '稀有抽角色',
 		},
+		detail: {
+			url: 'role/detail',
+			auth: true,
+			method: 'POST',
+			desc: '角色详情',
+		},
 	},
 	richtext: {
 		lists: {
@@ -993,6 +999,12 @@ export default {
 			auth: true,
 			method: 'POST',
 			desc: '查看用户动态列表',
+		},
+		clear_search_log: {
+			url: 'user/clear_search_log',
+			auth: true,
+			method: 'GET',
+			desc: '清理搜索记录',
 		}
 	},
 	user_gift: {
@@ -1229,6 +1241,31 @@ export default {
 		},
 	},
 	room: {
+		getRoomTaskInfo: {
+			url: 'room_oh/getRoomTaskInfo',
+			auth: false,
+			method: 'POST',
+			desc: '任务信息',
+		},
+		getRoomImInfo: {
+			url: 'room_oh/getRoomImInfo',
+			auth: false,
+			method: 'POST',
+			desc: 'IM聊天信息',
+		},
+		getRoomPositionInfo: {
+			url: 'room_oh/getRoomPositionInfo',
+			auth: false,
+			method: 'POST',
+			desc: '位置信息',
+		},
+		getRoombaseInfo: {
+			url: 'room_oh/getRoombaseInfo',
+			auth: false,
+			method: 'POST',
+			desc: '房间基础信息',
+		},
+		// ----------------
 		getStrangerInviteList: {
 			url: 'room/getStrangerInviteList',
 			auth: false,

@@ -15,7 +15,6 @@
 			</view>
 		</view>
 	</view>
-
 </template>
 
 <script>
@@ -41,9 +40,13 @@
 					this.animationPlay = 'running';
 					this.animationTimeOut = setTimeout(() => {
 						this.show = !this.show;
+						this.animationPlay = "paused";
 						clearTimeout(this.animationTimeOut)
 					}, 1800)
 				})
+			},
+			hide() {
+				this.show = false;
 			},
 			//初始化
 			init() {

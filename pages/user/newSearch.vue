@@ -1,18 +1,17 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
-	<view class="px-4">
-		<u-navbar :safeAreaInsetTop="true" :placeholder="true">
+	<view class="px-4" style="background: #f7f7f7;min-height: 100vh;">
+		<u-navbar :safeAreaInsetTop="true" :placeholder="true" :bgColor="'#f7f7f7'">
 			<view slot="left" @click="back">
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 			<view slot="center">
 				{{titleItem.title}}
 			</view>
-
 		</u-navbar>
 		<block>
 			<view class=""
-				style=" z-index: 58745; position: fixed;width: 720rpx; margin-left: -10rpx;display: flex;align-items: center;background: #fff;">
+				style=" background: #f7f7f7;z-index: 58745; position: fixed;width: 720rpx; margin-left: -10rpx;display: flex;align-items: center;">
 				<view class="searchBar" style="flex: 1;margin-right: 30rpx;">
 					<u-input v-model="params.keywords" :focus="true" placeholder="输入角色名搜索" type="text" maxlength="20">
 						<i slot="prefix" class="ri-search-2-line text-xl leading-none text-gray-500"></i>
@@ -39,13 +38,14 @@
 					v-if="listUserRecommend.length!=0">
 					<view class="text-xl text-gray-500 mt-8" style="font-weight: bold;color: #323232;font-size: 30rpx;">
 						历史记录</view>
-					<text class="ri-delete-bin-line  mt-8" style="font-size: 30rpx;color: #999;"
+					<text class="ri-delete-bin-line  mt-8" style="font-size: 30rpx;color: #CCCCCC;"
 						@click="clearAll"></text>
 				</view>
 				<!-- <uc-user v-for="(item, index) in listUserRecommend" :key="index" :item="item" ></uc-user> -->
 				<!-- <uc-userSearch  v-for="(item, index) in listUserRecommend" :key="index" :item="item" ></uc-userSearch> -->
 				<view v-for="(item, index) in listUserRecommend" :key="index" :item="item"
-					class="rounded text-base leading-none p-2 bg-gray-100 mt-4 mr-4 characterTitle-item ">
+					class=" text-base leading-none p-2  mt-4 mr-4 characterTitle-item "
+					style="background: #D9D9D9;border-radius: 20rpx;">
 					<text @click="LishandleSearch(item)" style="color: #808080;font-size: 24rpx;"> {{ item}}</text>
 				</view>
 
@@ -76,7 +76,7 @@
 			<block v-if="type === 'search'">
 				<!-- <uc-user v-for="(item, index) in listUserSearch" :key="index" :item="item"></uc-user> -->
 				<uc-search v-for="(item, index) in listUserSearch" :key="index" :item="item"></uc-search>
-				<u-empty v-if="!listUserSearch.length" icon="/static/noSearch.png" text="数据为空" textColor="#a1a1a1"
+				<u-empty v-if="!listUserSearch.length" icon="/static/iconImage/jilu.png" text="数据为空" textColor="#333"
 					marginTop="100"></u-empty>
 				<u-loadmore v-if="listUserSearch.length" :status="loadmore" nomoreText="" color="#a1a1a1"
 					marginTop="20" />
@@ -137,8 +137,6 @@
 		},
 		onReachBottom() {
 			let that = this
-			if (that.loadmore === 'nomore') return false
-			that.loadmore = 'loading'
 			that.params.page = ++that.params.page
 			that.getUserSearch()
 		},
@@ -155,7 +153,10 @@
 		methods: {
 			// 清除历史记录
 			clearAll() {
-				let that = this
+				let that = this;
+				that.$api('user.clear_search_log').then(res => {
+					console.log(res)
+				})
 				that.listUserRecommend = []
 			},
 			back() {
@@ -231,6 +232,9 @@
 						// if(res.data.is_free==1){
 						// 	that.isfreed=false
 						// }
+						if (that.params.page == 1) {
+							that.listUserSearch = [];
+						}
 						that.paginator.total = res.data.total
 						that.paginator.last_page = res.data.last_page
 						that.listUserSearch = [...that.listUserSearch, ...res.data]
@@ -272,6 +276,11 @@
 </script>
 
 <style lang="scss" scoped>
+	page {
+		min-height: 100vh;
+		background: #f7f7f7;
+	}
+
 	.searchBar {
 		height: 72rpx;
 		border-radius: 50rpx;

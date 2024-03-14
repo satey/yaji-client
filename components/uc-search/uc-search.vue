@@ -2,7 +2,7 @@
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view v-if="item.user_id != null"
 		style="display: flex;align-items: center;border-bottom: 1px solid #ECECEC;padding: 25rpx 0rpx;box-sizing: border-box;"
-		@click="$u.route('/pages/user/home', { user_id: item.user_id })">
+		@click="jump(item)">
 		<view class="mr-4">
 			<view v-if="item.gender == 1">
 				<image mode="aspectFill" style="" class="block w-14 h-14 rounded-full" :src="item.user_avatar">
@@ -14,7 +14,7 @@
 			</view>
 		</view>
 		<view style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
-			<view class="flex-1" @click="$u.route('/pages/user/home', { user_id: item.user_id })">
+			<view class="flex-1">
 				<view class="text-base leading-none mt-2">{{ item.realname + ' · ' + item.dynasty || '无名氏' }}</view>
 				<view class="flex mt-3">
 
@@ -26,8 +26,8 @@
 				<view class="mt-4">{{ item.bio }}</view>
 			</view>
 			<view class="ml-4" style="display: flex;align-items: center;">
-				<image :src="item.mw_image" style="width: 32rpx;height: 32rpx;" mode=""></image>
-				<text style="margin-left: 10rpx;font-size: 28rpx;color: #3D3D3D;">{{item.user_total_mw}}</text>
+				<image :src="item.mw_image" style="width: 51rpx;height: 43rpx;" mode="aspectFill"></image>
+				<text style="margin-left: 10rpx;font-size: 25rpx;color: #FFA000;">{{item.user_total_mw}}</text>
 				<!-- <text
 					style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%; background-color: rgba(255, 180, 31, 0.3); color: #FFB41F;"
 					@click="$u.route('/pages/user/home', { user_id: item.id })">望</text>
@@ -35,7 +35,7 @@
 			</view>
 		</view>
 	</view>
-	<view v-else
+	<view v-else @click="jump(item)"
 		style="display: flex;align-items: center;border-bottom: 1px solid #ECECEC;padding: 25rpx 0rpx;box-sizing: border-box;">
 		<view class="mr-4">
 			<view v-if="item.gender == 1">
@@ -60,9 +60,10 @@
 				<view class="mt-4">{{ item.bio }}</view>
 			</view>
 			<view class="ml-4">
-				<view @click="$u.route('/pages/mine/role')"
-					style="width: 97rpx;height: 40rpx;line-height: 40rpx;text-align: center;border-radius: 100rpx;background: #FE4373;color: #fff;font-size: 23rpx;">
-					获取</view>
+				<view @click="$u.route('/pages/mine/roleDetail',{
+					role_id:item.id
+				})" style="line-height: 46rpx;text-align: center;border-radius: 6rpx;color: #999;font-size: 23rpx;">
+					未激活</view>
 			</view>
 		</view>
 	</view>
@@ -150,7 +151,20 @@
 
 		},
 		computed: {},
-		methods: {}
+		methods: {
+			jump(item) {
+				if (item.user_id == null) {
+					this.$u.route('/pages/mine/roleDetail', {
+						role_id: item.id
+					})
+					return;
+				} else {
+					this.$u.route('pages/user/home', {
+						user_id: item.user_id
+					})
+				}
+			}
+		}
 	}
 </script>
 

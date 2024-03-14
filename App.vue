@@ -69,6 +69,7 @@
 				if (uni.getStorageSync("roomData") != '') {
 					const currentPage = getCurrentPages();
 					if (currentPage.length != 0) {
+						console.log(currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route)
 						if (currentPage[currentPage.length - 1 <= 0 ? 0 : currentPage.length - 1].route ==
 							'pages/index/index') {
 							uni.$emit("changeRoom", {
@@ -204,6 +205,9 @@
 				}
 				let userInfo = uni.getStorageSync('userInfo');
 				if (userInfo.gender == 0) {
+					return;
+				}
+				if (userInfo.id == null) {
 					return;
 				}
 				that.socKetUrl =
