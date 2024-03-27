@@ -7,12 +7,40 @@ export default {
 			desc: '配置',
 		},
 	},
+	call: {
+		sayHello: {
+			url: 'activity/sayHello',
+			auth: false,
+			method: 'POST',
+			desc: '打招呼',
+		},
+	},
 	start: {
 		launchInfo: {
 			url: 'user/launchInfo',
 			auth: false,
 			method: 'GET',
 			desc: '启动参数',
+		},
+	},
+	teenageMode: {
+		youngModelInfo: {
+			url: 'my/youngModelInfo',
+			auth: false,
+			method: 'GET',
+			desc: '青少年模块信息',
+		},
+		changeYoungModelStatus: {
+			url: 'my/changeYoungModelStatus',
+			auth: false,
+			method: 'GET',
+			desc: '修改青少年模式开关状态',
+		},
+		youngModelSetPwd: {
+			url: 'my/youngModelSetPwd',
+			auth: false,
+			method: 'GET',
+			desc: '设置青少年模式密码',
 		},
 	},
 	realAuth: {
@@ -335,7 +363,53 @@ export default {
 			desc: '统计数据',
 		},
 	},
+	zhiyuan: {
+		addKite: {
+			url: 'activity/addKite',
+			auth: false,
+			method: 'GET',
+			desc: '放飞纸鸢',
+		},
+	},
+	sacrifice: {
+		getSacrificeAncestorList: {
+			url: 'activity/getSacrificeAncestorList',
+			auth: false,
+			method: 'GET',
+			desc: '三祖列表',
+		},
+		addSacrifice: {
+			url: 'activity/addSacrifice',
+			auth: false,
+			method: 'POST',
+			desc: '添加祭拜记录',
+		},
+		getSacrificePropList: {
+			url: 'activity/getSacrificePropList',
+			auth: false,
+			method: 'GET',
+			desc: '贡品列表',
+		},
+		getSacrificeRankingList: {
+			url: 'activity/getSacrificeRankingList',
+			auth: false,
+			method: 'POST',
+			desc: '拜祭排行',
+		}
+	},
 	index: {
+		getKiteList: {
+			url: 'activity/getKiteList',
+			auth: false,
+			method: 'GET',
+			desc: '纸鸢列表',
+		},
+		getGreenGroups: {
+			url: 'activity/getGreenGroups',
+			auth: false,
+			method: 'GET',
+			desc: '首页领取青团',
+		},
 		index_top_image: {
 			url: 'adv/index_top_image',
 			auth: false,
@@ -1513,7 +1587,31 @@ export default {
 			auth: false,
 			method: 'POST',
 			desc: '抽签',
-		}
+		},
+		getRecitePoetryList: {
+			url: 'activity/getRecitePoetryList',
+			auth: false,
+			method: 'POST',
+			desc: '诗词列表/分类',
+		},
+		addRecitePoetry: {
+			url: 'activity/addRecitePoetry',
+			auth: false,
+			method: 'POST',
+			desc: '创建吟诗祈福作品',
+		},
+		dig: {
+			url: 'post/dig',
+			auth: false,
+			method: 'POST',
+			desc: '点赞作品',
+		},
+		getReciteOpusList: {
+			url: 'activity/getReciteOpusList',
+			auth: false,
+			method: 'POST',
+			desc: '吟诗祈福作品列表',
+		},
 	},
 	practice: {
 		entryPracticeRoom: {

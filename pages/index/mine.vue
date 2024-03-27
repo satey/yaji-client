@@ -77,8 +77,8 @@
 				</view>
 			</view>
 
-			<view class="userHome" @click="$u.route('/pages/user/home',{user_id:userInfo.id})">
-				<text>个人主页预览</text>
+			<view class="userHome">
+				<text @click="$u.route('/pages/user/home',{user_id:userInfo.id})">个人主页预览</text>
 				<i class="iconfont icon-right"></i>
 			</view>
 		</view>

@@ -29,7 +29,8 @@
 								:src="item.bg_img_url"></image>
 							<view
 								style="position: absolute;top: 0;left: 0;z-index: 0;width: 100vw;height: 100vh;display: flex;align-items: center;justify-content: center;">
-								<image style="width: 100vw;height: 100vh;" :src="item.image_list[0]" mode="widthFix"></image>
+								<image style="width: 100vw;height: 100vh;" :src="item.image_list[0]" mode="widthFix">
+								</image>
 							</view>
 						</view>
 						<!-- 单张图片文字 -->
@@ -44,7 +45,8 @@
 							</view>
 							<view
 								style="position: absolute;top: 0;left: 0;z-index: 0;width: 100vw;height: 100vh;display: flex;align-items: center;justify-content: center;">
-								<image style="width: 100vw;height: 100vh;" :src="item.image_list[0]" mode="widthFix"></image>
+								<image style="width: 100vw;height: 100vh;" :src="item.image_list[0]" mode="widthFix">
+								</image>
 							</view>
 
 						</view>

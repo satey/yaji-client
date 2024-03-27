@@ -116,8 +116,8 @@
 							<text>{{item.createtime}}</text>
 							<text style="margin:0rpx 56rpx;" @click="addComment(item)">评论</text>
 							<block v-if="item.user_id==userInfo.id?false:true">
-								<image @click="showGift(item)"
-									src="@/static/cailiwu.png" style="width: 36rpx;height: 36rpx;" mode="">
+								<image @click="showGift(item)" src="@/static/cailiwu.png"
+									style="width: 36rpx;height: 36rpx;" mode="">
 								</image>
 							</block>
 						</view>

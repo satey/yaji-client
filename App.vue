@@ -120,12 +120,14 @@
 					uni.setStorageSync("imageEmpower", false)
 					uni.setStorageSync("imageEmpowerCount", 0)
 				}
-
 				uni.getPushClientId({
 					success(res) {
+						console.log(res)
 						that.$api('stat.init', {
 							"push_clientid": res.cid
-						}).then(data => {})
+						}).then(data => {
+							console.log(data)
+						})
 					}
 				})
 			},
@@ -221,10 +223,14 @@
 						that.getUnRead();
 						that.isRoom()
 					},
+					fail(err) {
+						console.log(err)
+					}
 				});
 				// 监听 WebSocket 连接打开事件
 				getApp().globalData.socketTask.onOpen(function(res) {
 					console.log('全局Socket连接已打开！');
+					that.isLogin()
 					that.sendPingPong();
 				})
 				//监听 WebSocket 接受到服务器的消息事件
@@ -303,11 +309,21 @@
 							}
 						}
 					}
+					if (JSON.parse(res.data).cate == 'young_model_notice') {
+						uni.reLaunch({
+							url: `/pages/public/closeTeenageMode?mode=lock`
+						});
+					}
 				})
 
 				getApp().globalData.socketTask.onClose(function(res) {
 					console.log(res)
 					console.log('全局Socket 已关闭！');
+					that.$api("user.info").then(res => {
+						if (res.code == 401) {
+							return;
+						}
+					})
 					var setTimeout1 = setTimeout(() => {
 						clearTimeout(setTimeout1)
 						clearTimeout(timeOut)
@@ -384,7 +400,6 @@
 		onLaunch: function() {
 			var that = this;
 			this.initSocket();
-			this.isLogin()
 			this.pushMsg();
 			// #ifdef APP-PLUS
 			// 锁定竖屏

@@ -26,6 +26,9 @@
 				<u-cell title="当前版本" :border="false" :isLink="true" @click="onVersion()">
 
 				</u-cell>
+				<u-cell title="关于未成年模式" :border="false" :isLink="true" @click="$u.route('/pages/public/teenageMode')">
+
+				</u-cell>
 			</u-cell-group>
 		</view>
 		<view class="logout">

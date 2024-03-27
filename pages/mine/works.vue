@@ -5,6 +5,11 @@
 				<i class="ri-arrow-left-s-line text-3xl" style="color: #333 !important;"
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
+			<view slot="right">
+				<view @click="$u.route('/pages/post/add')"
+					style="width: 108rpx;height: 55rpx;text-align: center;line-height: 55rpx;background: #FFA000;border-radius: 6rpx;color: #fff;font-size: 35rpx;">
+					发布</view>
+			</view>
 		</u-navbar>
 		<view class="tabs">
 			<view class="tabItem" @click="tab(1)" style="margin-right: 85rpx;"

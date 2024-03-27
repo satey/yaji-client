@@ -90,52 +90,56 @@
 					return;
 				}
 				that.isClick = true;
-				uni.getSystemInfo({
-					success(systemInfo) {
-						that.$api('user.smslogin', {
-							mobile: Number(that.mobile),
-							code: Number(that.code),
-							mobile_message_json: JSON.stringify(systemInfo)
-						}).then(res => {
-							uni.hideLoading()
-							that.isClick = false;
-							if (res.code == 1) {
-								uni.setStorageSync('token', res.data.token);
-								that.$api("user.info").then((userInfo) => {
-									if (userInfo.code == 1) {
-										// getApp().globalData.initFun()
-										uni.setStorageSync("userInfo", userInfo.data)
-										//统计
-										uni.getPushClientId({
-											success(res) {
-												that.$api('stat.init', {
-													"push_clientid": res
-														.cid
-												}).then(res => {})
-											}
-										})
-										that.$nextTick(() => {
-											if (userInfo.data.gender == 0) {
-												uni.reLaunch({
-													url: '/pages/auth/s1'
-												});
-												return;
-											}
-											if (res.msg == "登录成功") {
-												getApp().globalData.initFun()
-												uni.reLaunch({
-													url: '/pages/index/index'
-												});
-											}
-										})
-									}
-								})
-							} else {
-								that.$u.toast(res.msg)
-							}
-						})
-					}
-				})
+				try {
+					uni.getSystemInfo({
+						success(systemInfo) {
+							that.$api('user.smslogin', {
+								mobile: Number(that.mobile),
+								code: Number(that.code),
+								mobile_message_json: JSON.stringify(systemInfo)
+							}).then(res => {
+								uni.hideLoading()
+								that.isClick = false;
+								if (res.code == 1) {
+									uni.setStorageSync('token', res.data.token);
+									that.$api("user.info").then((userInfo) => {
+										if (userInfo.code == 1) {
+											// getApp().globalData.initFun()
+											uni.setStorageSync("userInfo", userInfo.data)
+											//统计
+											uni.getPushClientId({
+												success(res) {
+													that.$api('stat.init', {
+														"push_clientid": res
+															.cid
+													}).then(res => {})
+												}
+											})
+											that.$nextTick(() => {
+												if (userInfo.data.gender == 0) {
+													uni.reLaunch({
+														url: '/pages/auth/s1'
+													});
+													return;
+												}
+												if (res.msg == "登录成功") {
+													getApp().globalData.initFun()
+													uni.reLaunch({
+														url: '/pages/index/index'
+													});
+												}
+											})
+										}
+									})
+								} else {
+									that.$u.toast(res.msg)
+								}
+							})
+						}
+					})
+				} catch (err) {
+					that.$u.toast("请求服务器异常")
+				}
 			},
 			//监听输入
 			handleInput(key) {
@@ -164,26 +168,30 @@
 					that.$u.toast('请正确填写')
 					return false
 				}
-				that.$api('sms.send_sms', {
-					mobile: Number(that.mobile),
-				}).then(res => {
-					if (res.code === 1) {
-						that.sendBtnDisabled = true;
-						let n = 60
-						let run = setInterval(() => {
-							n -= 1
-							that.codeText = n + 's'
-							if (n < 0) {
-								clearInterval(run)
-								that.codeText = '获取验证码'
-								that.sendBtnDisabled = false;
-							}
-						}, 1000)
-						that.$u.toast('验证码已发送，请注意查收短信')
-					} else {
-						that.$u.toast(res.msg)
-					}
-				})
+				try {
+					that.$api('sms.send_sms', {
+						mobile: Number(that.mobile),
+					}).then(res => {
+						if (res.code === 1) {
+							that.sendBtnDisabled = true;
+							let n = 60
+							let run = setInterval(() => {
+								n -= 1
+								that.codeText = n + 's'
+								if (n < 0) {
+									clearInterval(run)
+									that.codeText = '获取验证码'
+									that.sendBtnDisabled = false;
+								}
+							}, 1000)
+							that.$u.toast('验证码已发送，请注意查收短信')
+						} else {
+							that.$u.toast(res.msg)
+						}
+					})
+				} catch (err) {
+					that.$u.toast("请求服务器异常")
+				}
 			},
 			//协议勾选
 			handleAgree(e) {

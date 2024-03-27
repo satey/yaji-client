@@ -108,10 +108,10 @@
 								<text style="margin-right: 20rpx;">{{role_fei.dynasty}}</text>
 								<text>{{role_fei.birthyear||'?'}}年-{{role_fei.deathyear||'?'}}年</text>
 							</view>
-							<view style="margin-top: 15rpx;display: flex;align-items: center;flex-wrap: wrap;">
+							<view style="display: flex;align-items: center;flex-wrap: wrap;">
 								<block v-for="(item2,index2) in role_fei.achievements.split(',')" :key="index2">
 									<view
-										style="width: 125rpx;height: 50rpx;border-radius: 50rpx;text-align: center;line-height: 50rpx;color: #333;font-size: 28rpx;border: 1px solid #FFA000;margin-right: 15rpx;">
+										style="margin-top: 15rpx;width: 125rpx;height: 50rpx;border-radius: 50rpx;text-align: center;line-height: 50rpx;color: #333;font-size: 28rpx;border: 1px solid #FFA000;margin-right: 15rpx;">
 										{{item2}}
 									</view>
 								</block>
@@ -232,7 +232,7 @@
 						if (userData.code == 1) {
 							that.$api('role.match', {
 								"gender": userData.data.gender,
-								"identity_id": that.selectId
+								"identity_id": that.identity_id
 							}).then(res => {
 								if (res.code == 1) {
 									that.role_fei = res.data;
@@ -272,7 +272,7 @@
 						if (userData.code == 1) {
 							that.$api('role.rareMatch', {
 								"gender": userData.data.gender,
-								"identity_id": that.selectId
+								"identity_id": that.identity_id
 							}).then(res => {
 								if (res.code == 1) {
 									that.role_fei = res.data;

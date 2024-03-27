@@ -267,6 +267,21 @@
 				</view>
 			</view>
 		</u-popup>
+		<!-- 实名认证 -->
+		<u-popup :show="empower" @close="empower = false" mode="center" :closeable="false" :round="20">
+			<view class="log">
+				<view style="text-align: center;font-size: 30rpx;color: #333;">实名认证</view>
+				<view style="font-size: 28rpx;color: #333;margin-top: 89rpx;">首次创建公开房间需要完成实名认证。</view>
+				<view style="display: flex;align-items: center;justify-content: center;margin-top: 137rpx;">
+					<view @click="$u.route('/pages/authentication/authentication');empower = false"
+						style="margin-right: 21rpx;width: 210rpx;height: 68rpx;background: #FFDDA4;border-radius: 8rpx;text-align: center;line-height: 68rpx;color: #FFA000;font-size: 30rpx;">
+						去认证</view>
+					<view @click="empower = false"
+						style="margin-left: 21rpx;width: 210rpx;height: 68rpx;background: #FFA000;border-radius: 8rpx;text-align: center;line-height: 68rpx;color: #fff;font-size: 30rpx;">
+						取消</view>
+				</view>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -281,6 +296,7 @@
 				user_room_list: [],
 				inviteList: [],
 				lianxiShow: false,
+				empower: false,
 				showCreateRoom: false,
 				createRoomDate: [],
 				createRoomIndex: 0,
@@ -466,19 +482,22 @@
 
 				} else {
 					this.yuCreateRoom('fhl')
-					console.log('fei')
 				}
 			},
 			// 预创建
 			yuCreateRoom(type) {
-				console.log(type)
 				this.$api("room.createRoomOption", {
 					type: type
 				}).then(res => {
 					if (res.code == 1) {
 						console.log(res)
 						this.createRoomDate = res.data;
-						this.showCreateRoom = true;
+						console.log(this.createRoomDate)
+						if (res.data.is_real_auth == 0) {
+							this.empower = true;
+						} else if (res.data.is_real_auth == 1) {
+							this.showCreateRoom = true;
+						}
 					}
 				})
 			},
@@ -790,5 +809,14 @@
 			margin: 0 auto;
 			margin-top: 97rpx;
 		}
+	}
+
+	.log {
+		width: 578rpx;
+		height: 525rpx;
+		border-radius: 16rpx;
+		padding: 50rpx 27rpx 62rpx 37rpx;
+		background: #fff;
+		box-sizing: border-box;
 	}
 </style>
