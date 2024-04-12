@@ -117,6 +117,7 @@
 				}).then(res => {
 					if (res.code == 1) {
 						this.morePopup = false;
+						uni.$emit("deletePost")
 						uni.showToast({
 							icon: "none",
 							title: res.msg

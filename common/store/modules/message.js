@@ -15,11 +15,11 @@ export default {
 			state.messageCount = num;
 			if (num == 0) {
 				uni.removeTabBarBadge({
-					index: 2
+					index: 3
 				})
 			} else {
 				uni.setTabBarBadge({
-					index: 2,
+					index: 3,
 					text: `${num}`
 				})
 			}
@@ -29,11 +29,11 @@ export default {
 			state.messageCount = state.messageCount - num;
 			if (state.messageCount == 0) {
 				uni.removeTabBarBadge({
-					index: 2
+					index: 3
 				})
 			} else {
 				uni.setTabBarBadge({
-					index: 2,
+					index: 3,
 					text: `${state.messageCount}`
 				})
 			}

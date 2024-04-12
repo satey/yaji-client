@@ -39,6 +39,10 @@
 						{{resultData.error_num}}
 					</view>
 				</view>
+				<view
+					style="border-top: 1px solid #999;text-align: center;height: 63rpx;line-height: 63rpx;color:#333 ;font-size: 28rpx;">
+					风雅度奖励：{{resultData.fyd_num}}
+				</view>
 			</view>
 			<view style="color:#333333 ;font-size: 28rpx;margin-bottom: 30rpx;margin-top: 50rpx;">获得成就</view>
 			<view v-if="resultData.length !=0">

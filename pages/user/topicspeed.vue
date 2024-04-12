@@ -1,217 +1,133 @@
 <template>
-	<view class="">
-		<image src="@/static/embed/sexBg.png"
-			style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: -1;">
-		</image>
-		<u-navbar title="话题详情" :safeAreaInsetTop="true" :placeholder="true" :bgColor="headColor">
-			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" @click="pageBack"></i>
-			</view>
-		</u-navbar>
-		<view style="display: flex;justify-content: space-between;padding: 20rpx 30rpx;">
-			<view class="face" style="display: flex;align-items: center;">
-				<view>
-					<i class="ri-hashtag"></i>{{title}}
+	<view style="background: #f7f7f7;min-height: 100vh;">
+		<view class="header" style="">
+			<u-navbar :fixed="true" :title="topTitle" :safeAreaInsetTop="true" :placeholder="true" :bgColor="bgColor">
+				<view slot="left">
+					<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 				</view>
-				<view style="display: flex;">
-					<text class="ri-fire-fill" style="color: #FE4373;font-size: 40rpx;"></text>
-					<view class="mw" style="color: #FE4373;">{{hot}}</view>
+			</u-navbar>
+			<image style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;" src="@/static/topcipBg.png"
+				mode="aspectFill">
+			</image>
+			<view style="position: relative;z-index: 9;width: 100%;">
+				<view style="color: #333333;font-size:32rpx ;font-family: font-test !important;">#{{title}}
 				</view>
-			</view>
-			<view style="display: flex;">
-				<view @click="is_ok()"
-					style="color:#fff;width: 118rpx;height: 60rpx;background: #FE4373;border-radius: 10rpx;text-align: center;line-height: 60rpx;">
-					发动态</view>
+				<view style="color: #333333;font-size:26rpx ;margin-top: 12rpx;">
+					{{desc}}
+				</view>
 			</view>
 		</view>
-		<view class="topic">
+		<view style="height: 403rpx;"></view>
+		<view @click="openAddPost"
+			style="position: fixed;left: 0;bottom: 120rpx;z-index: 10;left: 50%;transform: translate(-50%,-0%);">
+			<image style="width: 306rpx;height: 85rpx;" src="@/static/canyuhuati.png" mode="widthFix"></image>
+		</view>
+		<view>
 			<uc-post @clickDetails="clickDetails" v-for="(item, index) in topicspeedList" :key="index"
 				:item="item"></uc-post>
-			<u-loadmore v-if="topicspeedList.length" :loadmoreText="nomoreText" color="#a1a1a1" marginTop="20" />
-			<u-empty v-if="!topicspeedList.length" icon="/static/null.png" text="数据为空" textColor="#a1a1a1"
-				marginTop="100"></u-empty>
+			<!-- <feiWaterfall :lists="list" :from="'topic'" @waterfallClick="waterfallClick"></feiWaterfall> -->
+			<view v-if="!topicspeedList.length" style="text-align: center;margin-top: 50rpx;">
+				<u-empty icon="/static/iconImage/jilu.png" text="" textColor="#a1a1a1" marginTop="100"></u-empty>
+			</view>
 		</view>
+		<u-popup :show="releaseShow" @close="releaseShow = false" mode="bottom" :overlayOpacity="0.5" :closeable="false"
+			:round="20" :customStyle="{background:'transparent'}">
+			<view class="releaseBox">
+				<view class="releaseBlack">
+					<view style="color:#333 ;font-size: 30rpx;">话题创建成功，若没有关联的动态，不会被推荐 呦！接下来发布一则动态吧。</view>
+					<view @click="openAddPost" style="margin-top: 67rpx;text-align: center;">
+						<image style="width: 306rpx;height: 85rpx;" src="@/static/canyuhuati.png" mode="widthFix">
+						</image>
+					</view>
+					<view @click="releaseShow=false"
+						style="color:#666 ;font-size: 32rpx;text-align: center;margin-top: 20rpx;">不了</view>
+				</view>
+			</view>
+		</u-popup>
 		<feiqslsHit></feiqslsHit>
 	</view>
 </template>
 
 <script>
+	import feiWaterfall from "@/components/fei-waterfall/fei-waterfall"
 	export default {
 		name: 'topicspeed',
+		components: {
+			feiWaterfall
+		},
 		data() {
 			return {
 				page: 1,
-				last_page: 0,
-				topicspeedList: [],
-				hot: '',
+				list: [],
 				title: '',
-				audioStatus: false,
-				nomoreText: "加载更多",
-				headColor: "rgba(0,0,0,0)",
-				path: "",
-				isClick: false,
+				desc: "",
+				releaseShow: false,
+				topicspeedList: [],
+				bgColor: "transparent",
+				topTitle: '',
+				post_cate_id:''
 			}
 		},
 		onLoad(options) {
-			this.path = options.type == 'index' ? 'index' : 'square'
-		},
-		onShow(options) {
-			console.log(this.isClick)
-			if (this.isClick == false) {
-				this.page = 1;
-				this.topicspeedList = [];
-				this.getLists();
-			} else {
-				this.isClick = false;
+			if (this.$Route.query.is_create_post != undefined) {
+				if (this.$Route.query.is_create_post == 0) {
+					this.releaseShow = true;
+				}
 			}
+			this.post_cate_id = this.$Route.query.post_cate_id
+			this.setFontFamily()
+			this.getLists()
+			this.topicspeedList = [];
+			this.getLists2()
+			uni.$on("addPostOk", () => {
+				this.topicspeedList = [];
+				this.page = 1;
+				this.getLists2()
+			})
+		},
+		onShow() {
+
 		},
 		onReachBottom() {
-			if (this.page < this.last_page) {
-				this.page++;
-				this.getLists()
-			} else {
-				this.nomoreText = "没有更多了"
-			}
+			this.page++;
+			this.getLists2()
 		},
 		onPageScroll(e) {
-			if (parseInt(e.scrollTop) >= 30) {
-				this.headColor = "#fff"
+
+		},
+		onPageScroll(e) {
+			if (e.scrollTop >= 80) {
+				this.bgColor = "#fff"
+				this.topTitle = this.title
 			} else {
-				this.headColor = "rgba(0,0,0,0)"
+				this.bgColor = "transparent"
+				this.topTitle = ""
 			}
 		},
 		methods: {
-			//是否点跳转内容页
-			clickDetails() {
-				this.isClick = true;
-			},
-			pageBack() {
-				if (this.path == 'index') {
-					this.$u.route({
-						type: 'navigateBack',
-						delta: 1
-					})
-				} else {
-					uni.reLaunch({
-						url: '/pages/index/square',
-					});
-				}
-			},
-			is_ok() {
-				let that = this;
-				that.$api('post.is_add').then(res => {
-					console.log('ii', res);
-					if (res.data === 0) {
-						that.$u.toast('无角色暂不能发布动态')
-						return
-					} else {
-						var obj = {
-							title: that.title,
-							post_cate_id: this.$Route.query.post_cate_id
-						}
-						uni.navigateTo({
-							url: '/pages/post/add?postData=' + JSON.stringify(obj)
-						})
-					}
-				})
-			},
-			openUrl(id) {
-				var userInfo = uni.getStorageSync("userInfo");
-				if (id == userInfo.id) {
-					this.$u.route('/pages/index/mine')
-				} else {
-					this.$u.route('/pages/user/home', {
-						user_id: id
-					})
-				}
-			},
-			// 点踩
-			handleConcleDig(id, index, userId) {
-				let that = this;
-				that.topicspeedList = []
-				that.$api('user.info').then(res => {
-					if (res.code === 1) {
-						if (userId != res.data.id) {
-							that.$api('post.cai', {
-								post_id: id,
-							}).then(res => {
-								if (res.code === 1) {
-									if (that.topicspeedList[index].cai == 0) {
-										that.topicspeedList[index].cai = 1
-									} else {
-										that.topicspeedList[index].cai = 0
-									}
-									that.getLists()
-								}
-							})
-						} else {
-							that.$u.toast('不能给自己点踩哦')
-						}
-					} else {
-						that.$u.toast(res.msg)
-						return
-					}
-				})
-			},
-			// 点赞红心
-			handlePostDig(id, index) {
-				let that = this;
-				that.$api('post.dig', {
-					post_id: id,
+			getLists() {
+				this.$api("post_cate.getPostByFall", {
+					page: this.page,
+					post_cate_id: this.post_cate_id ,
 				}).then(res => {
-					if (res.code === 1) {
-						if (that.topicspeedList[index].zan == 0) {
-							that.topicspeedList[index].zan = 1
-						} else {
-							that.topicspeedList[index].zan = 0
-						}
-						that.topicspeedList = []
-						that.getLists()
-					} else {
-						that.$u.toast(res.msg)
+					console.log(res)
+					if (res.code == 1) {
+						this.title = res.data.header.title
+						this.desc = res.data.header.desc
+						this.list = [...this.list, ...res.data.list]
 					}
 				})
 			},
-			//听语音
-			handlePlayAudio(audio) {
-				let that = this
-				if (!audio) {
-					that.$u.toast('语音不能为空')
-					return false
-				}
-				if (!that.audio) {
-					that.audio = uni.createInnerAudioContext()
-					that.audio.src = audio
-				}
-				that.audioStatus = !that.audioStatus
-				if (that.audioStatus) {
-					that.$nextTick(function() {
-						that.audio.play()
-						that.audio.onEnded((e) => {
-							that.audioStatus = false
-						})
-					})
-				} else {
-					that.$nextTick(function() {
-						that.audio.pause()
-					})
-				}
-			},
-			//查看图片
-			onPreviewTap(imgs, num) {
-				var that = this;
-				uni.previewImage({
-					current: num,
-					urls: imgs
-				})
+			clickDetails() {
+
 			},
 			//获取数据
-			getLists() {
+			getLists2() {
 				var that = this;
 				that.loadmore = 'loading'
 				that.$api('post.recommend', {
 					"page": that.page,
-					"post_cate_id": this.$Route.query.post_cate_id
+					"post_cate_id": this.post_cate_id 
 				}).then(res => {
 					if (res.code === 1) {
 						that.topicspeedList = [...that.topicspeedList, ...res.data.data];
@@ -233,11 +149,95 @@
 					}
 				})
 			},
-		},
+			//设置字体
+			setFontFamily() {
+				// #ifdef APP-PLUS
+				uni.loadFontFace({
+					family: 'font-test',
+					// 本地字体路径需转换为平台绝对路径
+					source: `url(${plus.io.convertLocalFileSystemURL('_www/static/AaHouDiHei.ttf')})`,
+					success() {
+						console.log('success')
+					},
+					fail(e) {
+						console.log('fail')
+					}
+				})
+				// #endif
+			},
+			openAddPost() {
+				let that = this;
+				var obj = {
+					title: that.title,
+					post_cate_id: this.$Route.query.post_cate_id
+				}
+				this.releaseShow = false;
+				uni.navigateTo({
+					url: '/pages/post/add?postData=' + JSON.stringify(obj)
+				})
+			},
+			waterfallClick(e) {
+				if (e.from == 'topic') {
+					this.$u.route('/pages/post/detail', {
+						post_id: e.item.post_id,
+						from: 'topic',
+						post_cate_id: this.$Route.query.post_cate_id
+					})
+				}
+			},
+		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	page {
+		background: #f7f7f7;
+		min-height: 100vh;
+	}
+
+	.header {
+		width: 100vw;
+		height: 403rpx;
+		position: absolute;
+		top: 0;
+		left: 0;
+		padding: 0rpx 39rpx 12rpx 39rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		justify-content: flex-end;
+		box-sizing: border-box;
+		color: #333;
+		font-size: 28rpx;
+	}
+
+	.list {
+		flex-direction: row;
+		justify-content: space-between;
+		box-sizing: border-box;
+		display: flex;
+		padding-top: 25rpx;
+		padding: 25rpx 10rpx 10rpx 10rpx;
+		box-sizing: border-box;
+
+		.itemBox {
+			flex: 1;
+			flex-basis: 49%;
+			box-sizing: border-box;
+			overflow: hidden;
+
+
+			.container {
+				background: #fff;
+				border-radius: 8rpx;
+				padding: 12rpx;
+				box-sizing: border-box;
+				margin-bottom: 10rpx;
+			}
+		}
+	}
+
+	// -------------
 	.face {
 		display: inline-block;
 		font-size: 32rpx;
@@ -269,5 +269,19 @@
 
 	.content {
 		margin-top: 20rpx;
+	}
+
+	.releaseBox {
+		padding: 30rpx 30rpx 135rpx 30rpx;
+		box-sizing: border-box;
+		color: transparent;
+	}
+
+	.releaseBlack {
+		background: #fff;
+		height: 416rpx;
+		border-radius: 12rpx;
+		padding: 62rpx 32rpx 46rpx 32rpx;
+		box-sizing: border-box;
 	}
 </style>

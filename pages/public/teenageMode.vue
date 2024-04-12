@@ -36,7 +36,9 @@
 		methods: {
 			//青少年模式
 			youngModelInfo() {
-				this.$api("teenageMode.youngModelInfo").then(res => {
+				this.$api("teenageMode.youngModelInfo",{
+					type:1
+				}).then(res => {
 					if (res.code == 1) {
 						this.teenageModeData = res.data;
 					}

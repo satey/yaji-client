@@ -1,32 +1,32 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="">
-		<u-navbar title="设置" :safeAreaInsetTop="true" :placeholder="true" bgColor="rgba(0,0,0,0)">
+		<u-navbar title="设置" :safeAreaInsetTop="true" :placeholder="true" bgColor="#FFF">
 			<view slot="left">
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
 		<view class="bg-white">
 			<u-cell-group :border="false">
-				<u-cell title="用户协议" :border="false" :isLink="true" @click="$u.route('/pages/public/page', { id: 1 })">
+				<u-cell style="padding: 15rpx 0rpx;" title="用户协议" :border="false" :isLink="true" @click="$u.route('/pages/public/page', { id: 1 })">
 
 				</u-cell>
-				<u-cell title="隐私政策" :border="false" :isLink="true" @click="$u.route('/pages/public/page', { id: 2 })">
+				<u-cell style="padding: 15rpx 0rpx;" title="隐私政策" :border="false" :isLink="true" @click="$u.route('/pages/public/page', { id: 2 })">
 
 				</u-cell>
-				<u-cell title="联系我们" :border="false" :isLink="true" @click="$u.route('/pages/public/page', { id: 3 })">
+				<u-cell style="padding: 15rpx 0rpx;" title="联系我们" :border="false" :isLink="true" @click="$u.route('/pages/public/page', { id: 3 })">
 
 				</u-cell>
-				<u-cell title="注销账号" :border="false" :isLink="true" @click="$u.route('/pages/mine/logOff', { id: 3 })">
+				<u-cell style="padding: 15rpx 0rpx;" title="注销账号" :border="false" :isLink="true" @click="$u.route('/pages/mine/logOff', { id: 3 })">
 
 				</u-cell>
-				<u-cell title="意见反馈" :border="false" :isLink="true" @click="$u.route('/pages/public/feedback')">
+				<u-cell style="padding: 15rpx 0rpx;" title="意见反馈" :border="false" :isLink="true" @click="$u.route('/pages/public/feedback')">
 
 				</u-cell>
-				<u-cell title="当前版本" :border="false" :isLink="true" @click="onVersion()">
+				<u-cell style="padding: 15rpx 0rpx;" title="当前版本" :border="false" :isLink="true" @click="onVersion()">
 
 				</u-cell>
-				<u-cell title="关于未成年模式" :border="false" :isLink="true" @click="$u.route('/pages/public/teenageMode')">
+				<u-cell style="padding: 15rpx 0rpx;" title="关于未成年模式" :border="false" :isLink="true" @click="$u.route('/pages/public/teenageMode')">
 
 				</u-cell>
 			</u-cell-group>
@@ -132,7 +132,7 @@
 </script>
 <style>
 	page {
-		background: #F8F8F7;
+		background: #FFF;
 	}
 
 	.logout {

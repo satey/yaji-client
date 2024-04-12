@@ -135,11 +135,16 @@
 			</view>
 		</template>
 		<feiqslsHit></feiqslsHit>
+		<pushAuthority></pushAuthority>
 	</view>
 </template>
 <script>
+	import pushAuthority from "@/components/fei-pushAuthority/fei-pushAuthority"
 	export default {
 		name: 'message',
+		components: {
+			pushAuthority
+		},
 		data() {
 			return {
 				tablist: [{

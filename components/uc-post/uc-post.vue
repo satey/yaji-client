@@ -1,12 +1,12 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="flex px-4 py-2" style="border-bottom: 1rpx solid rgb(238, 238, 238,0.5);padding-top: 20rpx;"
-		v-if="item.status == 'normal'">
+		v-if="item.status == 'normal'" @click.stop="openDetails(item)">
 		<image class="block rounded-full" @click="showToast" v-if="item.user == null" src="/static/avatar.png"
 			style="width: 85rpx;height: 85rpx;" mode="aspectFill"></image>
 		<view v-else>
-			<image class="block rounded-full" :src="item.user.avatar"
-				@click="openUserHome(item.user_id)" mode="aspectFill" style="width: 85rpx;height: 85rpx;"></image>
+			<image class="block rounded-full" :src="item.user.avatar" @click.stop="openUserHome(item.user_id)"
+				mode="aspectFill" style="width: 85rpx;height: 85rpx;"></image>
 		</view>
 		<view class="flex-1" style="margin-left: 20rpx;padding-bottom: 20rpx;">
 			<view style="display: flex;align-items: center;justify-content: space-between;">
@@ -16,7 +16,7 @@
 						style=" display: inline-block; width: 40rpx; text-align: center; margin-right: 20rpx; height: 40rpx; border-radius: 50%;margin-left: 30rpx; line-height: 40rpx; background-color: cornsilk; color: rgb(255, 180, 31);">望</text>
 					<text style="color: rgb(255, 180, 31);">0</text>
 				</view>
-				<view class="leading-none mt-2" @click="openUserHome(item.user_id)" v-else>
+				<view class="leading-none mt-2" v-else>
 					<view style="display: flex;align-items: center;">
 						<text
 							style="color: #323232;font-size: 28rpx;">{{ item.role.realname + ' · ' + item.role.dynasty }}</text>
@@ -31,32 +31,32 @@
 					</view>
 				</view>
 
-				<view @click=" jubao" :style="{visibility: userInfo.id != item.user_id?'visible':'hidden'}">
+				<!-- <view @click=" jubao" :style="{visibility: userInfo.id != item.user_id?'visible':'hidden'}">
 					<i
 						class="ri-more-2-fill text-xl bg-gradient-to-b from-gray-500 to-gray-400 bg-clip-text text-transparent"></i>
-				</view>
+				</view> -->
 			</view>
 
 			<view class="mt-4" style="color: #323232;font-size: 32rpx;">
 				<text v-if="item.is_system_build == 1" @click="">{{ item.content }} <text @click="openQuShui(item)"
 						style="color:#FE4373">跟随进房 <text class="ri-arrow-right-s-line"
 							style="font-size: 26rpx;margin-left: 5rpx;"></text> </text> </text>
-				<text v-else @click="$u.route('/pages/post/detail', { post_id: item.id })">{{ item.content }}</text>
+				<text v-else>{{ item.content }}</text>
 				<!-- 话题 -->
-				<view @tap="$u.route('/pages/user/topicspeed',{post_cate_id:items.id})"
+				<!-- <view @tap="$u.route('/pages/user/topicspeed',{post_cate_id:items.id})"
 					class="text-base leading-none text-gray-500 ml-1"
 					style="color: #FE4373;margin-top: 12rpx;font-size: 28rpx;" v-for="items in item.post_cate"><i
-						class="ri-hashtag mr-1"></i>{{ items.title }}</view>
+						class="ri-hashtag mr-1"></i>{{ items.title }}</view> -->
 			</view>
 			<!-- {{item}} -->
 			<view v-if="item.images" class="mt-4" style="position: relative;">
-				<image @click="onPreviewTap(0)" :src="item.images.split(',')[0]" mode="widthFix"
-					v-if="item.images.split(',').length == 1" style="max-width: 500rpx;border-radius: 10rpx;">
+				<image :src="item.images.split(',')[0]" mode="widthFix" v-if="item.images.split(',').length == 1"
+					style="border-radius: 10rpx;width: 60%;">
 				</image>
 				<view v-if="item.images.split(',').length != 1" style="width: 100%;display: flex;flex-direction: row;">
-					<image @click="onPreviewTap(0)" :src="item.images.split(',')[0]" mode="aspectFill"
+					<image :src="item.images.split(',')[0]" mode="aspectFill"
 						style="width: calc(100% / 2);height: 276rpx;margin-right: 30rpx;border-radius: 10rpx;"></image>
-					<image @click="onPreviewTap(1)" :src="item.images.split(',')[1]" mode="aspectFill"
+					<image :src="item.images.split(',')[1]" mode="aspectFill"
 						style="width: calc(100% / 2);height: 276rpx;border-radius: 10rpx;"></image>
 					<view v-if="item.images.split(',').length >2"
 						style="position: absolute;right: 0;bottom: 0;color: #FFFFFF;z-index: 1;padding: 20rpx;background: rgba(0,0,0,0.5);font-size: 32rpx;">
@@ -64,7 +64,8 @@
 				</view>
 			</view>
 			<view v-if="item.audio" @click="handlePlayAudio(item.audio)"
-				class="mt-4 flex items-center justify-center rounded-full overflow-hidden w-32 h-12 bg-gradient-to-r from-pink-500 to-rose-400">
+				class="mt-4 flex items-center justify-center rounded-full overflow-hidden w-32 h-12 bg-gradient-to-r  to-rose-400"
+				style="background: #FFA000;">
 				<view v-if="!audioStatus" style="display: flex;align-items: center;">
 					<i class="ri-voiceprint-line text-2xl text-white" v-for="(item,index) in 3"></i>
 				</view>
@@ -90,21 +91,20 @@
 			</view> -->
 			<view style="display: flex;flex-direction: row;align-items: center;justify-content: flex-end;width: 100%;">
 				<!-- 评论 -->
-				<view @click="openDetails(item)"
-					style="color: #999999;display: flex;flex-direction: row;align-items: center;width: 100rpx;margin-right: 39rpx;">
+				<view
+					style="color: #999999;display: flex;flex-direction: row;align-items: center;width: 80rpx;margin-right: 39rpx;">
 					<text class="ri-chat-smile-3-line" style="font-size: 40rpx;margin-right: 10rpx;"></text>
 					<text
 						style="font-size: 28rpx;color: #999999;white-space: nowrap;">{{item.commentnums==0?'评论':item.commentnums}}</text>
 				</view>
 				<!-- 点赞 -->
-				<view style="display: flex;flex-direction: row;align-items: center;width: 100rpx;"
-					@click="handlePostDig()">
+				<view style="display: flex;flex-direction: row;align-items: center;width: 80rpx;">
 					<text v-show='is_zan==0' class="ri-heart-line"
 						style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
 					<text v-show='is_zan==1' class="ri-heart-fill"
 						style="font-size: 40rpx;margin-right: 10rpx;color: #fe4373;"></text>
 					<text
-						style="font-size: 28rpx;color: #999999;white-space: nowrap;">{{ item.diggnums ==0?'出彩':item.diggnums }}</text>
+						style="font-size: 28rpx;color: #999999;white-space: nowrap;">{{ item.diggnums ==0?'':item.diggnums }}</text>
 				</view>
 				<!-- 无聊 -->
 				<!-- <view style="color: #999999;display: flex;flex-direction: row;align-items: center;"
@@ -293,9 +293,10 @@
 			},
 			openDetails(item) {
 				this.$u.route('/pages/post/detail', {
-					post_id: item.id
-				});
-				this.$emit("openDetail")
+					post_id: item.id,
+					from: 'topic',
+					post_cate_id: this.$Route.query.post_cate_id
+				})
 			},
 			showToast() {
 				uni.showToast({
@@ -313,12 +314,12 @@
 			},
 			//查看图片
 			onPreviewTap(e) {
-				var that = this;
-				that.$emit("openDetail");
-				uni.previewImage({
-					current: e,
-					urls: that.imgUrl
-				})
+				// var that = this;
+				// that.$emit("openDetail");
+				// uni.previewImage({
+				// 	current: e,
+				// 	urls: that.imgUrl
+				// })
 			},
 			skipTopic(item) {
 				that.hot = uni.setStorageSync('hot', item.post_cate.hot_num)

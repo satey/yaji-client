@@ -1,317 +1,242 @@
 <template>
-	<view>
+	<view
+		style="display: flex;flex-direction: column;background: #F7F7F7;height: 100vh;box-sizing: border-box;overflow: hidden;">
 		<view class="hedaBar">
-			<u-tabs :list="tablist" lineColor="#FFA000" lineWidth="36rpx" lineHeight="6rpx" itemStyle="height: 80rpx;"
-				inactiveStyle="color: #333; transform: scale(1);"
-				activeStyle="color: #FFA000; font-weight: bold; transform: scale(1.2);" @change="changeTab">
-			</u-tabs>
-			<view class="pt-2" style="display: flex;align-items: center;">
-				<i class="iconfontcolor  icon-biaoqing" @click="$u.route('/pages/post/add')"
-					style="font-size: 46rpx;margin-right: 50rpx;"></i>
-				<view style="position: relative;">
-					<view v-if="no_read_count!=0" class="tips2">
+			<view style="display: flex;justify-content: space-between;width: 100%;align-items: center;">
+				<u-tabs :list="tablist" :current="1" lineColor="#FFA000" lineWidth="36rpx" lineHeight="6rpx"
+					itemStyle="height: 80rpx;" inactiveStyle="color: #666; fontSize:36rpx;"
+					activeStyle="color: #FFA000;fontSize:36rpx;" @change="changeTab">
+				</u-tabs>
+				<view class="pt-2" style="display: flex;align-items: center;">
+					<i class="iconfontcolor  icon-biaoqing" @click="$u.route('/pages/post/add')"
+						style="font-size: 46rpx;margin-right: 50rpx;"></i>
+					<view style="position: relative;">
+						<view v-if="no_read_count!=0" class="tips2">
+						</view>
+						<i class="iconfontcolor  icon-yy" @click="$u.route('/pages/post/postMessage')"
+							style="font-size: 46rpx;"></i>
 					</view>
-					<i class="iconfontcolor  icon-yy" @click="$u.route('/pages/post/postMessage')"
-						style="font-size: 46rpx;"></i>
+					<!-- <image src="../../static/iconImage/lingdang.png" style="width: 46rpx;height:46rpx ;" mode=""></image> -->
 				</view>
-				<!-- <image src="../../static/iconImage/lingdang.png" style="width: 46rpx;height:46rpx ;" mode=""></image> -->
+			</view>
+			<view style="margin-top: 30rpx;" v-if="currentType == 'trends'">
+				<scroll-view scroll-x="true" style="white-space: nowrap;">
+					<block v-for="(item,index) in topTab" :key="index">
+						<view @click="topTabClick(item,index)"
+							:style="{background:index==topTabIndex?'#FFA000':'#E4E4E4',color:index==topTabIndex?'#FFF':'#999999'}"
+							style="padding: 0rpx 20rpx;height: 46rpx;color: #999;font-size: 28rpx;border-radius: 50rpx;line-height: 46rpx;text-align: center;margin-right: 30rpx;display: inline-block;">
+							{{item.title}}
+						</view>
+					</block>
+				</scroll-view>
 			</view>
 		</view>
-		<!-- 动态 -->
-		<template v-if="currentType == 'trends'">
-			<swiper v-if="swiperList.length!=0" class="mySwiper" vertical="true" :indicator-dots="false"
-				:autoplay="false" :duration="500" @change="trendsChange" @animationfinish='trendsFinish'>
-				<block v-for="(item,index) in swiperList" :key="index">
-					<swiper-item class="swiperBox">
-						<!-- 单张图片 -->
-						<view v-if="item.show_type==1" class="oneImg">
-							<image style="width: 100vw;height: 100vh;position: absolute;top: 0;left: 0;z-index: 0;"
-								:src="item.bg_img_url"></image>
-							<view
-								style="position: absolute;top: 0;left: 0;z-index: 0;width: 100vw;height: 100vh;display: flex;align-items: center;justify-content: center;">
-								<image style="width: 100vw;height: 100vh;" :src="item.image_list[0]" mode="widthFix">
-								</image>
-							</view>
+		<view style="flex: 1;height: 0;box-sizing: border-box;">
+			<!-- 关注 -->
+			<view v-if="currentType == 'follow'" style="height: 100%;">
+				<scroll-view scroll-y="true" style="height: 100%;" @scrolltolower="followBottom">
+					<feiWaterfall :lists="followList" :from="'follow'" @waterfallClick="waterfallClick"></feiWaterfall>
+					<view style="padding:20rpx 0rpx;font-size: 23rpx;color: #666;text-align: center;" v-if="isMoreFlag">
+						没有更多了</view>
+					<view v-if="!followList.length" style="text-align: center;margin-top: 50rpx;">
+						<u-empty icon="/static/xingqiu.png" text="暂无动态" textColor="#a1a1a1" marginTop="100"></u-empty>
+						<!-- <view style="text-align: center;color: #333;font-size: 30rpx;">当前分类还没有动态，</view>
+						<view style="text-align: center;color: #333;font-size: 30rpx;">抢先发布可获得更多曝光哦</view>
+						<view style="text-align: center;margin-top: 40rpx;">
+							<image @click="$u.route('pages/post/add')" src="../../static/fabu3.png"
+								style="width: 298rpx;height: 85rpx;" mode=""></image>
+						</view> -->
+					</view>
+				</scroll-view>
+			</view>
+			<!-- 动态 -->
+			<view v-if="currentType == 'trends'" style="height: 100%;">
+				<scroll-view scroll-y="true" style="height: 100%;" @scrolltolower="trendsBottom">
+					<feiWaterfall :lists="trendsLists" :from="'trends'" @waterfallClick="waterfallClick"></feiWaterfall>
+					<view style="padding:20rpx 0rpx;font-size: 23rpx;color: #666;text-align: center;" v-if="isMoreFlag">
+						没有更多了</view>
+					<view v-if="!trendsLists.length" style="text-align: center;margin-top: 50rpx;">
+						<u-empty icon="/static/xingqiu.png" text=" " textColor="#a1a1a1" marginTop="100"></u-empty>
+						<view style="text-align: center;color: #333;font-size: 30rpx;">当前分类还没有动态，</view>
+						<view style="text-align: center;color: #333;font-size: 30rpx;">抢先发布可获得更多曝光哦</view>
+						<view style="text-align: center;margin-top: 40rpx;">
+							<image @click="$u.route('pages/post/add')" src="../../static/fabu3.png"
+								style="width: 298rpx;height: 85rpx;" mode=""></image>
 						</view>
-						<!-- 单张图片文字 -->
-						<view v-if="item.show_type==2" class="oneImg">
-							<image style="width: 100vw;height: 100vh;position: absolute;top: 0;left: 0;z-index: 0;"
-								:src="item.bg_img_url"></image>
-							<view class="textContent" style="position: relative;z-index: 2;"
-								:style="{paddingTop:statusBarHeight}">
-								<view class="textContentBox">
-									<text>{{item.content}}</text>
-								</view>
-							</view>
-							<view
-								style="position: absolute;top: 0;left: 0;z-index: 0;width: 100vw;height: 100vh;display: flex;align-items: center;justify-content: center;">
-								<image style="width: 100vw;height: 100vh;" :src="item.image_list[0]" mode="widthFix">
-								</image>
-							</view>
-
-						</view>
-						<!-- 文字 -->
-						<view v-if="item.show_type==5" class="textContent" :style="{paddingTop:statusBarHeight}">
-							<image style="width: 100vw;height: 100vh;position: absolute;top: 0;left: 0;z-index: 0;"
-								:src="item.bg_img_url"></image>
-							<view class="textContentBox">
-								<text>{{item.content}}</text>
-							</view>
-						</view>
-						<!-- 多张图片 -->
-						<view v-if="item.show_type==3" class="manyImg">
-							<image style="width: 100vw;height: 100vh;position: absolute;top: 0;left: 0;z-index: 0;"
-								:src="item.bg_img_url"></image>
-							<swiper :current="imagesCurrent" @change="imagesChange" class="imagesSwiper"
-								:indicator-dots="false" :autoplay="false" :duration="500" :interval="2000">
-								<block v-for="(imgItem,imgIndex) in item.image_list" :key="imgIndex">
-									<swiper-item>
-										<view class="imagesSwiperItem">
-											<image style="width: 100%;" :src="imgItem" mode="widthFix">
-											</image>
+						<!-- <view @click="$u.route('pages/post/add')"
+							style="margin-top:20rpx;text-align: center;font-size: 28rpx;color: #666;">去发布</view> -->
+					</view>
+				</scroll-view>
+			</view>
+			<!-- 话题 -->
+			<view v-if="currentType == 'topic'" style="height: 100%;">
+				<scroll-view scroll-y="true" style="height: 100%;" @scrolltolower="topicBottom">
+					<view class="hotTopic">
+						<image src="@/static/hothuati.png" style="width: 91rpx;height: 300rpx;" mode=""></image>
+						<view class="hotTopicBox">
+							<swiper style="height: 300rpx;width: 100%;" :indicator-dots="false" :autoplay="false"
+								:interval="500" :duration="500" @change="hotTipicChange" :current="hotTopCurrentIndex">
+								<block v-for="(item,index) in hotTopicLists" :key="index">
+									<swiper-item style="height: 300rpx;width: 100%;">
+										<view class="swiper-item"
+											style="height: 300rpx;padding: 36rpx 20rpx 0rpx 20rpx;box-sizing: border-box;">
+											<block v-for="(subItem,subIndex) in item" :key="subIndex">
+												<view
+													@click="$u.route('pages/user/topicspeed',{post_cate_id:subItem.id})"
+													style="display: flex;align-items: center; justify-content: space-between;margin-bottom: 20rpx;">
+													<view style="display: flex;align-items: center;">
+														<image src="../../static/jing.png"
+															style="width: 23rpx;height: 39rpx;margin-right: 5rpx;"
+															mode="">
+														</image>
+														<view style="color: #333;font-size: 30rpx;">
+															{{subItem.title}}
+														</view>
+													</view>
+													<view style="display: flex;align-items: center;">
+														<image src="@/static/hotIcon.png"
+															style="width: 30rpx;height: 30rpx;margin-right: 5rpx;"
+															mode="">
+														</image>
+														<view style="color: #666;font-size: 30rpx;">
+															{{subItem.hot_num}}
+														</view>
+													</view>
+												</view>
+											</block>
 										</view>
 									</swiper-item>
 								</block>
 							</swiper>
-							<!-- 多图文指示点 -->
-							<view class="indicate" :style="{paddingBottom:tabBarHeight}">
-								<block v-for="(imagesItem,imagesIndex) in item.image_list" :key="imagesIndex">
-									<view class="indicateItem" @click="imagesCurrent = imagesIndex"
-										:style="{background:imagesCurrent==imagesIndex?'rgba(255, 255, 255, 1)':'rgba(153, 153, 153, 1)'}">
-									</view>
-								</block>
-							</view>
 						</view>
-						<!-- 多张图片加文字 -->
-						<view v-if="item.show_type==4" class="manyImg">
-							<image style="width: 100vw;height: 100vh;position: absolute;top: 0;left: 0;z-index: 0;"
-								:src="item.bg_img_url"></image>
-							<view class="textContent" style="position: relative;z-index: 2;"
-								:style="{paddingTop:statusBarHeight}">
-								<view class="textContentBox">
-									<text>{{item.content}}</text>
+					</view>
+					<view
+						style="display: flex;align-items: center;justify-content: center;padding-bottom: 25rpx;background: #fff;">
+						<view style="display: flex;align-items: center;">
+							<block v-for="(item,index) in hotTopicLists" :key="index">
+								<view @click="hotTopCurrentIndex = index" class="swiperLine"
+									:style="{background:hotTopCurrentIndex == index?'#FFA000':''}">
 								</view>
-							</view>
-							<swiper :current="imagesTextCurrent" @change="imagesTextChange" class="imagesSwiper"
-								:indicator-dots="false" :circular='true' :autoplay="trendsIndex==index?true:false"
-								:duration="500" :interval="2000" style="position: absolute;top: 0;left: 0;z-index: 1;">
-								<block v-for="(imgItem,imgIndex) in item.image_list" :key="imgIndex">
-									<swiper-item>
-										<view class="imagesSwiperItem">
-											<image style="width: 100%;" :src="imgItem" mode="widthFix">
-											</image>
-										</view>
-									</swiper-item>
-								</block>
-							</swiper>
-							<!-- 多图文指示点 -->
-							<view class="indicate" :style="{paddingBottom:tabBarHeight}">
-								<block v-for="(imagesItem,imagesIndex) in item.image_list" :key="imagesIndex">
-									<view class="indicateItem" @click="imagesTextCurrent = imagesIndex"
-										:style="{background:imagesTextCurrent==imagesIndex?'rgba(255, 255, 255, 1)':'rgba(153, 153, 153, 1)'}">
-									</view>
-								</block>
-							</view>
+							</block>
 						</view>
-						<!-- 右边栏 -->
-						<view class="operate">
-							<view>
-								<view style="position: relative;">
-									<image class="userImg" @click="$u.route('/pages/user/home',{user_id:item.user_id})"
-										:src="item.user_info.avatar" mode="aspectFill"></image>
-									<view class="follow" @click="follow(item)" v-if="item.is_follow!=1">
-										<i class="iconfont  icon-jia" style="color: #FFFFFF;font-size: 20rpx;"></i>
+					</view>
+					<view class="twoList">
+						<view style="margin-top: 25rpx;background: #fff;padding: 25rpx 25rpx;box-sizing: border-box;"
+							v-for="(item,index) in topicLists" :key="index"
+							@click="$u.route('pages/user/topicspeed',{post_cate_id:item.post_cate_id})">
+							<view style="display: flex;align-items: center;">
+								<view
+									style="height: 58rpx;padding: 0rpx 10rpx;box-sizing: border-box;border-radius: 50rpx;border: 1px solid #FFA000;background: #FFE6BD;color: #FE7000;font-size: 28rpx;display: inline-block;line-height: 58rpx;">
+									<view style="display: flex;align-items: center;">
+										<text>#{{item.title}}</text>
+										<i class="iconfont icon-right"></i>
 									</view>
 								</view>
-								<view class="operateItem" @click="like(item,index)">
-									<block v-if="item.is_dig==0">
-										<image src="../../static/iconImage/xinxin.png"
-											style="width: 52rpx;height: 52rpx;" mode="widthFix"></image>
-										<!-- <i class="iconfont  icon-aixin1"
-											style="color: #FFFFFF;font-size: 60rpx;margin-right: 5rpx;"></i> -->
+								<text style="margin-left: 35rpx;color:#FFBE52 ;font-size: 28rpx;"
+									v-if="item.is_topping ==1">[置顶]</text>
+							</view>
+							<view style="padding-left: 50rpx;">
+								<view style="display: flex;align-items: center;margin-top: 30rpx;">
+									<image
+										@click.stop="$u.route('/pages/user/home',{user_id:item.post.user_info.user_id})"
+										:src="item.post.user_info.avatar"
+										style="width: 66rpx;height: 66rpx;border-radius: 50%;" mode="aspectFill">
+									</image>
+									<view style="color: #333;font-size:30rpx;margin: 0rpx 15rpx;">
+										{{item.post.user_info.name_str}}
+									</view>
+									<block v-if="item.post.user_info.gender==1">
+										<i class="iconfont icon-nan1" style="font-size: 22rpx;color: #00C2FF;"></i>
 									</block>
 									<block v-else>
-										<image src="../../static/iconImage/hongxin.png"
-											style="width: 52rpx;height: 52rpx;" mode="widthFix"></image>
-										<!-- <i class="iconfont  icon-aixin1"
-											style="color: red;font-size: 60rpx;margin-right: 5rpx;"></i> -->
+										<i class="iconfont icon-nv" style="font-size: 22rpx;color: #FFA000;"></i>
 									</block>
-									<text> {{item.diggnums ==0?'喜欢':item.diggnums}}</text>
-								</view>
-								<view class="operateItem" @click="getComment(item.post_id)">
-									<image src="../../static/iconImage/pinglun.png" style="width: 52rpx;height: 52rpx;"
-										mode="widthFix"></image>
-									<!-- <i class="iconfont  icon-pinglun"
-										style="color: #FFFFFF !important;font-size: 60rpx;margin-right: 5rpx;"></i> -->
-									<text>{{item.commentnums}}</text>
-								</view>
-								<view class="operateItem" @click="openMore(item)">
-									<image src="../../static/iconImage/gengduo.png" style="width: 52rpx;height: 52rpx;"
-										mode="widthFix"></image>
-									<!-- <i class="iconfontcolor  icon-gengduo"
-										style="font-size: 60rpx;margin-right: 5rpx;"></i> -->
-									<text style="margin-top: 10rpx;">更多</text>
-								</view>
-								<view class="operateItem" v-if="item.audio">
-									<image v-if="item.isPlay==false" style="width: 52rpx;height: 52rpx;"
-										src="@/static/iconImage/erji11.png" mode="" @click="audioSuspend(item,index)">
-									</image>
-									<image v-else style="width: 52rpx;height: 52rpx;"
-										src="@/static/iconImage/erji22.png" mode="" @click="audioSuspend(item,index)">
+									<image :src="item.post.user_info.mw_img"
+										style="width:25rpx;height: 25rpx;margin-left: 15rpx;" mode="aspectFill">
 									</image>
 								</view>
-							</view>
-						</view>
-
-						<!-- 底部栏 -->
-						<view class="bottom">
-							<view class="original" v-if="item.is_original ==1">原创</view>
-							<view class="userBox">
-								<image style="width: 36rpx;height: 36rpx;" :src="item.user_info.mw_img"
-									mode="aspectFill"></image>
-								<view style="margin-right: 8rpx;margin-left: 8rpx;">
-									{{item.user_info.role_realname}}·{{item.user_info.role_dynasty}}
+								<view style="color: #333;font-size: 28rpx;margin-top: 25rpx;">
+									<text>
+										{{item.post.content}}
+									</text>
+									<image v-if="item.post.audio" src="@/static/erji.png" class="erji" mode=""></image>
 								</view>
-								<block v-if="item.user_info.gender==1">
-									<i class="iconfont icon-nan1" style="font-size: 22rpx;color: #00C2FF;"></i>
-								</block>
-								<block v-else>
-									<i class="iconfont icon-nv" style="font-size: 22rpx;color: #FFA000;"></i>
-								</block>
-							</view>
-							<view class="topic">
-								<block v-for="(wordItem,wordIndex) in item.post_cate_list" :key="wordIndex">
-									<text @click="openCate(wordItem.cate_id)">#{{wordItem.title}}</text>
-								</block>
-							</view>
-							<view class="topicTitle" style="">
-								{{item.story.slice(0,40)}}
-								<block v-if="item.story.length>40">
-									<text style="color: #FFA000;font-size: 28rpx;" @click="storyMore(item)">查看更多</text>
-									<i @click="storyMore(item)" class="iconfont icon-right"
-										style="font-size: 28rpx;color:#FFA000 ;"></i>
+								<block v-if="item.post.image_list.length !=0">
+									<view v-if="item.post.image_list.length==1"
+										style="position: relative;margin-top: 20rpx;">
+										<image class="archeryImg"
+											style="width: 335rpx;border-radius:8rpx ;height: 328rpx;" mode="aspectFill"
+											:src="item.post.image_list[0]"></image>
+									</view>
+									<view v-if="item.post.image_list.length>1"
+										style="display: flex;align-items: center;">
+										<view style="position: relative;margin-top: 20rpx;margin-right: 15rpx;">
+											<image v-if="item.post.image_list.length>=3" src="../../static/imgMore.png"
+												style="width: 52rpx;height: 40rpx;position: absolute;top: 16rpx;left: 16rpx;z-index: 5;"
+												mode=""></image>
+											<image class="archeryImg"
+												style="width: 335rpx;height: 328rpx;border-radius:8rpx ;"
+												mode="aspectFill" :src="item.post.image_list[0]"></image>
+										</view>
+										<view style="position: relative;margin-top: 20rpx;">
+											<image class="archeryImg"
+												style="width: 335rpx;height: 328rpx;border-radius:8rpx ;"
+												mode="aspectFill" :src="item.post.image_list[1]"></image>
+										</view>
+									</view>
 								</block>
 							</view>
 						</view>
-					</swiper-item>
-				</block>
-			</swiper>
-			<u-empty v-if="!swiperList.length" icon="/static/iconImage/jilu.png" text="" textColor="#a1a1a1"
-				marginTop="100"></u-empty>
-			<!-- 评论弹窗 -->
-			<u-popup :show="commentPopup" @close="commentPopup = false;" :closeable="false" :round="30">
-				<view class="commentContainer" style="position: relative;">
-					<u-icon @click="commentPopup = false" name="close" color="#333" size="25" bold
-						style="position: absolute;top: 36rpx;right: 40rpx;"></u-icon>
-					<view style="text-align: center;margin-top: 23rpx;"><text
-							style="color:#323232;font-size: 32rpx;">全部评论（{{commentData.total_comment_count}}）</text>
-					</view>
-					<scroll-view class="commentList" scroll-y="true" :show-scrollba="false" lower-threshold="0"
-						@scrolltolower="commentBottom">
-						<commentTwo @commentReply="commentReply" ref="commentTwo" :commentList="commentList">
-						</commentTwo>
-					</scroll-view>
-					<view class="commentBar" @click="commentInputClick">
-						<view class="commentInput" style="font-size:28rpx;color:#999999;">
-							回复作者
+						<view v-if="!topicLists.length" style="text-align: center;margin-top: 50rpx;">
+							<u-empty icon="/static/xingqiu.png" text="暂无动态" textColor="#a1a1a1"
+								marginTop="100"></u-empty>
+							<!-- <view style="text-align: center;color: #333;font-size: 30rpx;">当前分类还没有动态，</view>
+							<view style="text-align: center;color: #333;font-size: 30rpx;">抢先发布可获得更多曝光哦</view>
+							<view style="text-align: center;margin-top: 40rpx;">
+								<image @click="$u.route('pages/post/add')" src="../../static/fabu3.png"
+									style="width: 298rpx;height: 85rpx;" mode=""></image>
+							</view> -->
 						</view>
-						<view
-							style="width: 116rpx;height: 72rpx;text-align: center;line-height: 72rpx;color: #fff;font-size: 28rpx;border-radius: 50rpx;background: #FFA000;">
-							发送</view>
+						<view style="padding:20rpx 0rpx;font-size: 23rpx;color: #666;text-align: center;"
+							v-if="isMoreFlag">没有更多了</view>
 					</view>
-				</view>
-			</u-popup>
-			<!-- 故事弹窗 -->
-			<u-popup :show="storyPopup" @close="storyPopup = false;" :closeable="false" :round="30">
-				<view class="storyContainer" style="position: relative;">
-					<u-icon @click="storyPopup = false" name="close" color="#333" size="25" bold
-						style="position: absolute;top: 43rpx;right: 38rpx;"></u-icon>
-					<view style="display: flex;justify-content: center;">
-						<view style="position: relative;margin-top: 32rpx;display: inline;">
-							<text style="position: relative;z-index: 2;color:#333 ;font-size:32rpx ;">查看全部</text>
-							<text
-								style="width: 100%;height: 13rpx;background: #FFA000;position: absolute;left: 0;bottom: 5rpx;"></text>
-						</view>
+				</scroll-view>
+			</view>
+			<!-- 更多 -->
+			<view v-if="currentType == 'more'" style="height: 100%;">
+				<scroll-view scroll-y="true" style="height: 100%;">
+					<view class="moreBox">
+						<view class="moreItem" @click="$u.route('pages/user/famousRole')">名人堂</view>
+						<view class="moreItem" @click="$u.route('pages/talent/talent')">才华测试</view>
+						<view class="moreItem" @click="$u.route('/pages/joy/poem')">诗词结缘</view>
+						<view class="moreItem" @click="$u.route('pages/joy/archeryStart')">射覆</view>
+						<view class="moreItem" @click="$u.route('pages/song/songStart')">桑田对歌</view>
 					</view>
-					<view v-html="itemStory"
-						style="margin-top: 50rpx;color: #333;font-size: 28rpx;padding: 0rpx 29rpx;box-sizing: border-box;">
-					</view>
-				</view>
-			</u-popup>
-			<feiMore ref="more" @shield="shield"></feiMore>
-		</template>
-		<!-- 话题 -->
-		<template v-if="currentType == 'topic'">
-			<view style="height: var(--status-bar-height );"></view>
-			<view style="padding: 100rpx 30rpx 100rpx 30rpx;box-sizing: border-box;">
-				<takequestion v-for="(item, index) in listPostRecommend" :key="index" :index="index" :item="item">
-				</takequestion>
+				</scroll-view>
 			</view>
-			<u-empty v-if="!listPostRecommend.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
-				marginTop="100"></u-empty>
-		</template>
-		<!-- 更多 -->
-		<template v-if="currentType == 'more'">
-			<view style="height: var(--status-bar-height );"></view>
-			<view class="moreBox">
-				<view class="moreItem" @click="$u.route('pages/user/famousRole')">名人堂</view>
-				<view class="moreItem" @click="$u.route('pages/talent/talent')">才华测试</view>
-				<view class="moreItem" @click="$u.route('/pages/joy/poem')">诗词结缘</view>
-				<view class="moreItem" @click="$u.route('pages/joy/archeryStart')">射覆</view>
-				<view class="moreItem" @click="$u.route('pages/song/songStart')">桑田对歌</view>
-			</view>
-		</template>
-		<!-- <view class="tabBar" :style="{height:tabBarHeight}">
-			<view class="tabBarItem" @click="openTab('/pages/index/index')">
-				<image class="tabIcon" src="@/static/tabbar/index.png" mode=""></image>
-				<text class="tabText"></text>
-			</view>
-			<view class="tabBarItem">
-				<image class="tabIcon" src="@/static/tabbar/square_active.png" mode="aspectFill"></image>
-				<text class="tabText">广场</text>
-			</view>
-			<view class="tabBarItem" @click="openTab('/pages/index/message')" style="position: relative;">
-				<view v-if="$store.state.message.messageCount!=0"
-					style="font-size: 23rpx;width: 16px;height: 16px;border-radius: 50%;background: #f43530;color: #fff;text-align: center;line-height: 16px;position: absolute;top: -10rpx;right: 30.5%;z-index: 1;">
-					{{$store.state.message.messageCount}}
-				</view>
-				<image class="tabIcon" src="@/static/tabbar/message.png" mode="aspectFill"></image>
-				<text class="tabText">消息</text>
-			</view>
-			<view class="tabBarItem" @click="openTab('/pages/index/mine')">
-				<image class="tabIcon" src="@/static/tabbar/mine.png" mode="aspectFill"></image>
-				<text class="tabText">我的</text>
-			</view>
-		</view> -->
-		<feiqslsHit></feiqslsHit>
+			<feiqslsHit></feiqslsHit>
+			<pushAuthority></pushAuthority>
+		</view>
 	</view>
 </template>
 <script>
-	import feiMore from "@/components/fei-more/fei-more.vue"
-	import commentTwo from "@/components/fei-commentTwo/fei-commentTwo.vue"
+	import feiWaterfall from "@/components/fei-waterfall/fei-waterfall"
+	import pushAuthority from "@/components/fei-pushAuthority/fei-pushAuthority"
 	export default {
 		name: 'square',
 		components: {
-			commentTwo,
-			feiMore
+			feiWaterfall,
+			pushAuthority
 		},
 		data() {
 			return {
-				storyPopup: false,
-				itemStory: '',
-				audio: uni.createInnerAudioContext(),
-				windowHeight: uni.getSystemInfoSync().screenHeight + 'px;',
-				// tabBarHeight: uni.getSystemInfoSync().screenHeight - uni.getSystemInfoSync().windowHeight + 'px',
-				tabBarHeight: '50px',
-				statusBarHeight: uni.getSystemInfoSync().statusBarHeight + 'px',
-				morePopup: false,
-				commentPopup: false,
-				imagesCurrent: 0,
-				imagesTextCurrent: 0,
-				trendsIndex: 0,
+				no_read_count: 0,
 				currentType: "trends",
-				topicList: [],
 				tablist: [{
+						name: '关注',
+						type: 'follow',
+						count: 0
+					}, {
 						name: '动态',
 						type: 'trends',
 						count: 0
@@ -327,41 +252,53 @@
 						count: 0
 					},
 				],
-				swiperList: [],
-				listPostRecommend: [],
-				commentList: [],
-				commentData: [],
-				commentPage: 1,
-				no_read_count: 0,
-				postPage: 1,
-				tabListType: ""
+				topTab: [],
+				topTabIndex: 0,
+				topicLists: [],
+				hotTopicLists: [],
+				hotTopCurrentIndex: 0,
+				page: 1,
+				trendsLists: [],
+				followList: [],
+				tag_id: '',
+				isMoreFlag: false,
 			}
 		},
 		onLoad(option) {
 			this.setFontFamily();
-			this.getData('one')
+			this.getPostTag()
+			this.getTrends()
 		},
 		onShow() {
-			// uni.hideTabBar()
 			this.trendsMsg()
-			if (this.swiperList.length != 0) {
-				if (this.swiperList[this.trendsIndex].audio) {
-					this.playAudio(this.swiperList[this.trendsIndex], this.trendsIndex)
-				}
-			}
 		},
 		onHide() {
-			if (this.audio) {
-				this.audio.stop();
-			}
-		},
-		onReachBottom() {
-			if (this.tabListType == 'topic') {
-				this.postPage++;
-				this.getPort()
-			}
+
 		},
 		methods: {
+			waterfallClick(e) {
+				console.log(e)
+				if (e.from == 'follow') {
+					this.$u.route('/pages/post/detail', {
+						post_id: e.item.post_id,
+						from: 'follow'
+					})
+				} else if (e.from == 'trends') {
+					this.$u.route('/pages/post/detail', {
+						post_id: e.item.post_id,
+						from: 'trends',
+						tag_id: this.topTab[this.topTabIndex].tag_id
+					})
+				}
+			},
+			getPostTag() {
+				this.$api("post.getPostTag").then(res => {
+					if (res.code == 1) {
+						this.topTab = res.data
+					}
+				})
+			},
+			//消息
 			trendsMsg() {
 				var that = this;
 				that.$api('message.trendsMsg').then(res => {
@@ -370,136 +307,32 @@
 					}
 				})
 			},
-			storyMore(item) {
-				this.storyPopup = true;
-				this.itemStory = item.story
-			},
-			getData(type) {
-				var that = this;
-				that.$api("post.newRecommend").then(res => {
-					uni.hideLoading()
-					if (res.code == 1) {
-						res.data.forEach((item, index) => {
-							item.isPlay = false;
-							item.isObserve = false;
-						})
-						if (that.swiperList.length != 0) {
-							for (var i = 0; i < that.swiperList.length; i++) {
-								for (var j = 0; j < res.data.length; j++) {
-									if (that.swiperList[i].post_id == res.data[j].post_id) {
-										res.data.splice(j, 1)
-									}
-								}
-							}
-						}
-						that.swiperList.push(...res.data);
-						if (type == 'one') {
-							if (that.swiperList.length == 0) {
-								return;
-							}
-							if (res.data[0].audio) {
-								this.playAudio(res.data[0], 0)
-							}
-							this.userBrowseLog(res.data[0].post_id)
-						}
-					}
-				})
-			},
-			//播放音频
-			playAudio(item, index) {
-				let that = this;
-				if (item.audio != '' && item.audio != null) {
-					that.audio.stop();
-					that.swiperList.forEach((val, index) => {
-						val.isPlay = false;
-					})
-					that.$nextTick(() => {
-						that.audio.src = item.audio;
-						that.swiperList[index].isPlay = true;
-						that.audio.play()
-						that.audio.onEnded((e) => {
-							that.swiperList[index].isPlay = false;
-							that.audio.stop();
-							that.audio.src = '';
-						})
-					})
-				} else {
-					that.audio.stop();
-					that.audio.src = '';
-				}
-			},
-			//屏蔽作品
-			shield(postId) {
-				this.swiperList.forEach((item, index) => {
-					if (item.post_id == postId) {
-						this.swiperList.splice(index, 1)
-					}
-				})
-			},
-			//屏幕滚动轮播图
-			trendsChange(e) {
-				this.trendsIndex = e.detail.current;
-				this.playAudio(this.swiperList[e.detail.current], e.detail.current);
-			},
-			//屏幕滚动轮播图结束
-			trendsFinish(e) {
-				if (this.swiperList.length > 3) {
-					if (e.detail.current >= this.swiperList.length - 2) {
-						if (this.swiperList[e.detail.current].isObserve == false) {
-							this.getData("two")
-						}
-					}
-					this.userBrowseLog(this.swiperList[e.detail.current].post_id)
-					this.swiperList[e.detail.current].isObserve = true
-				}
-			},
-			commentInputClick() {
-				this.$refs.commentTwo.showCommentBar()
+			// 热门话题滚动
+			hotTipicChange(e) {
+				this.hotTopCurrentIndex = e.detail.current
 			},
 			openTab(path) {
 				uni.switchTab({
 					url: path
 				});
 			},
-			//打开更多
-			openMore(item) {
-				this.$refs.more.moreShow(item.post_id, item.user_id, true, item)
-			},
-			//动态已看上报
-			userBrowseLog(post_id) {
-				this.$api("post.userBrowseLog", {
-					post_id: post_id
-				}).then(res => {})
-			},
-			//打开话题
-			openCate(id) {
-				this.$u.route('/pages/user/topicspeed', {
-					post_cate_id: id,
-					type: 'index'
-				})
-			},
-			//多图轮播
-			imagesChange(e) {
-				this.imagesCurrent = e.detail.current;
-			},
-			//多图轮播
-			imagesTextChange(e) {
-				this.imagesTextCurrent = e.detail.current;
-			},
 			//Tab切换
 			changeTab(e) {
-				this.audio.stop();
-				this.tabListType = e.type
+				this.tabListType = e.type;
+				this.page = 1;
 				switch (e.type) {
+					case 'follow':
+						this.getFollow()
+						this.followList = []
+						break
 					case 'trends':
-						uni.showLoading()
-						this.swiperList = [];
-						this.getData('one')
+						this.getTrends()
+						this.trendsLists = [];
 						break
 					case 'topic':
-						this.postPage = 1;
-						this.listPostRecommend = [];
-						this.getPort()
+						this.getHotTopIc()
+						this.getTopIcList()
+						this.topicLists = []
 						break
 					case 'more':
 						break
@@ -508,116 +341,100 @@
 				}
 				this.currentType = e.type;
 			},
-			//更多评论
-			moreComment(item) {
+			//分类点击
+			topTabClick(item, index) {
+				this.topTabIndex = index;
+				this.page = 1;
+				this.trendsLists = [];
+				this.tag_id = item.tag_id
 				console.log(item)
-				this.$api("comment.listsMore", {
-					page: 1,
-					limit: 10,
-					post_id: item.post_id,
-					top_post_comment_id: item.id
+				this.getTrends()
+			},
+			//关注
+			getFollow() {
+				this.$api("post_cate.getFollowUserPostList", {
+					page: this.page,
 				}).then(res => {
 					console.log(res)
 					if (res.code == 1) {
-						item.oldCommentArr.push(...res.data)
-					}
-				})
-			},
-			//评论成功
-			commentReply(data, isFlag) {
-				if (isFlag) {
-					this.getComment(data.post_id)
-				}
-				this.swiperList.forEach((item, index) => {
-					if (item.post_id == data.post_id) {
-						item.commentnums++;
-					}
-				})
-			},
-			//获取评论
-			getComment(postId) {
-				this.commentPopup = true;
-				this.commentPage = 1;
-				this.commentList = [];
-				this.commentData = [];
-				this.getCommentList(postId)
-			},
-			getCommentList(post_id) {
-				this.$api("comment.newList", {
-					post_id: post_id,
-					page: this.commentPage,
-				}).then(res => {
-					if (res.code == 1) {
-						res.data.list.forEach((item, index) => {
-							item.newCommentArr = [];
-							item.oldCommentArr = [];
-							item.page = 0;
-						})
-						this.commentList.push(...res.data.list);
-						this.commentData = res.data;
-						this.$refs.commentTwo.getCommentData(res.data)
-					}
-				})
-			},
-			//获取话题
-			getPort() {
-				let that = this
-				that.$api('post_cate.lst', {
-					page: that.postPage,
-					limit: 10
-				}).then(res => {
-					if (res.code === 1) {
-						that.listPostRecommend = [...that.listPostRecommend, ...res.data];
-						if (res.data.length != 0) {
-							that.loadmore = 'loadmore'
-						} else {
-							that.loadmore = 'nomore'
+						this.followList = [...this.followList, ...res.data.list]
+						if (this.page > 1) {
+							if (res.data.list.length < 10) {
+								this.isMoreFlag = true;
+							} else {
+								this.isMoreFlag = false;
+							}
 						}
 					}
 				})
 			},
-			//关注
-			follow(item) {
-				item.is_follow = !item.is_follow;
-				this.$api("user_follow.follow", {
-					user_id: item.user_id
+			//动态
+			getTrends() {
+				this.$api("post_cate.getPostByFall", {
+					page: this.page,
+					yaling_id: '',
+					post_cate_id: '',
+					tag_id: this.tag_id,
 				}).then(res => {
-					uni.showToast({
-						icon: "none",
-						title: res.msg
-					})
-				})
-			},
-			//点赞
-			like(item, index) {
-				item.is_dig = !item.is_dig
-				if (item.is_dig) {
-					item.diggnums++;
-				} else {
-					item.diggnums--;
-				}
-				this.$api("post.dig", {
-					post_id: item.post_id
-				}).then(res => {
-					if (res.code == 1) {} else {
-						item.is_dig = false;
+					console.log(res)
+					if (res.code == 1) {
+						this.trendsLists = [...this.trendsLists, ...res.data.list]
+						if (this.page > 1) {
+							if (res.data.list.length < 0) {
+								this.isMoreFlag = true;
+							} else {
+								this.isMoreFlag = false;
+							}
+						}
 					}
 				})
 			},
-			commentBottom() {
-				if (this.commentList.length != 0) {
-					this.commentPage++;
-					this.getCommentList(this.commentData.post_id)
-				}
+			//热门话题
+			getHotTopIc() {
+				this.$api("post_cate.hot_list").then(res => {
+					if (res.code == 1) {
+						this.hotTopicLists = this.toSplit(res.data, 4)
+					}
+				})
 			},
-			//audio暂停
-			audioSuspend(item, index) {
-				this.swiperList[index].isPlay = !this.swiperList[index].isPlay;
-				if (this.swiperList[index].isPlay) {
-					this.audio.play()
-				} else {
-					this.audio.pause()
+			toSplit(arrlist, size) {
+				let index = 0;
+				let setArr = [];
+				while (index < arrlist.length) {
+					setArr.push(arrlist.slice(index, index += size))
 				}
+				return setArr
+			},
+			//话题列表
+			getTopIcList() {
+				this.$api("post_cate.getTopicList", {
+					page: this.page
+				}).then(res => {
+					if (res.code == 1) {
+						this.topicLists = [...this.topicLists, ...res.data.list];
+						if (this.page > 1) {
+							if (res.data.list.length < 10) {
+								this.isMoreFlag = true;
+							} else {
+								this.isMoreFlag = false;
+							}
+						}
+					}
+				})
+			},
+			followBottom() {
+				this.page++;
+				this.getFollow()
+			},
+			//动态滚动到底部
+			trendsBottom() {
+				this.page++;
+				this.getTrends()
+			},
+			//话题滚动到底部
+			topicBottom() {
+				this.page++;
+				this.getTopIcList()
 			},
 			//设置字体
 			setFontFamily() {
@@ -639,6 +456,72 @@
 	}
 </script>
 <style lang="scss" scoped>
+	page {
+		background: #F7F7F7;
+		min-height: 100vh;
+	}
+
+	.swiperLine {
+		width: 43rpx;
+		height: 5rpx;
+		border-radius: 36rpx;
+		background: rgba(0, 0, 0, 0.3);
+		margin-right: 6rpx;
+	}
+
+	.hotTopic {
+		background: #fff;
+		display: flex;
+		align-items: center;
+		padding: 25rpx;
+		box-sizing: border-box;
+
+		.hotTopicBox {
+			background-image: url(/static/hothuatibg.png);
+			background-position: 100% 100%;
+			background-size: 100% 100%;
+			background-repeat: no-repeat;
+			height: 300rpx;
+			flex: 1;
+			margin-left: 9rpx;
+			box-sizing: border-box;
+		}
+	}
+
+
+	// ---------
+	.list {
+		flex-direction: row;
+		justify-content: space-between;
+		box-sizing: border-box;
+		display: flex;
+		padding-top: 25rpx;
+		padding: 25rpx 10rpx 10rpx 10rpx;
+		box-sizing: border-box;
+
+		.itemBox {
+			flex: 1;
+			flex-basis: 49%;
+			box-sizing: border-box;
+			overflow: hidden;
+
+
+			.container {
+				background: #fff;
+				border-radius: 8rpx;
+				padding: 12rpx;
+				box-sizing: border-box;
+				margin-bottom: 10rpx;
+			}
+		}
+	}
+
+	.erji {
+		width: 35rpx;
+		height: 35rpx;
+	}
+
+	// ------------
 	.storyContainer {
 		width: 100vw;
 		height: 850rpx;
@@ -682,19 +565,12 @@
 	.hedaBar {
 		width: 100vw;
 		height: calc(--status-bar-height + 88rpx);
-		position: fixed;
-		top: 0;
-		left: 0;
-		z-index: 999;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
 		box-sizing: border-box;
-		background: rgba(255, 254, 254, 0.4);
+		background: rgba(255, 255, 255, 1);
 		padding-top: var(--status-bar-height);
 		padding-left: 30rpx;
 		padding-right: 30rpx;
-		padding-bottom: 5rpx;
+		padding-bottom: 30rpx;
 		backdrop-filter: blur(20px);
 	}
 
@@ -957,7 +833,7 @@
 	}
 
 	.moreBox {
-		padding-top: 100rpx;
+		padding-top: 20rpx;
 		padding-left: 35rpx;
 		padding-right: 35rpx;
 		box-sizing: border-box;

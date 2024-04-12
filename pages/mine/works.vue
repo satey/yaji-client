@@ -27,16 +27,22 @@
 			style="padding: 0rpx 0rpx 0rpx 30rpx;display: flex;align-items: center;flex-wrap: wrap;">
 			<block v-for="(item,index) in lists" :key="index">
 				<view class="item"
-					@click="$u.route('/pages/post/preview',{data:JSON.stringify({type:'work',post_id:item.post_id})})">
+					@click="$u.route('/pages/post/preview2',{data:JSON.stringify({type:'work',post_id:item.post_id})})">
 					<image style="width: 100%;height: 100%;position: absolute;top:0%;left: 0;z-index: 1;"
 						:src="item.bg_img_url" mode="aspectFill"></image>
 					<image
 						style="width: 100%;position: absolute;top: 50%;left: 0;z-index: 2;transform: translateY(-50%);"
-						:src="item.image_list[0]" mode="widthFix"></image>
+						:src="item.image_list[0]" mode="aspectFill"></image>
 					<view class="content" style="">
-						<text>{{item.content}}</text>
+						<text class="textLine">{{item.content}}</text>
 					</view>
-					<view class="itemFooter">
+					<view class="itemFooter" v-if="currentIndex==1">
+						<!-- <i class="iconfont icon-aixin1" style="margin-right: 5rpx;"></i> -->
+						<image src="../../static/yanjing.png" style="width: 30rpx;height: 30rpx;margin-right: 5rpx;"
+							mode=""></image>
+						<text>{{item.viewnums}}</text>
+					</view>
+					<view class="itemFooter" v-if="currentIndex==2">
 						<i class="iconfont icon-aixin1" style="margin-right: 5rpx;"></i>
 						<text>{{item.diggnums}}</text>
 					</view>
@@ -58,10 +64,20 @@
 				lists: []
 			}
 		},
-		onShow() {
+		onLoad() {
 			this.page = 1;
 			this.lists = [];
 			this.getLists()
+			uni.$on("addPostOk", () => {
+				this.lists = []
+				this.page = 1;
+				this.getLists()
+			})
+			uni.$on("deletePost", () => {
+				this.lists = []
+				this.page = 1;
+				this.getLists()
+			})
 		},
 		onReachBottom() {
 			this.page++;
@@ -167,5 +183,13 @@
 			align-items: center;
 			justify-content: center;
 		}
+	}
+
+	.textLine {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 </style>

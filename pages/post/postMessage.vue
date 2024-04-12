@@ -81,7 +81,7 @@
 			openDetail(item) {
 				switch (item.cate) {
 					case 1:
-						this.$u.route('/pages/post/preview', {
+						this.$u.route('/pages/post/preview2', {
 							data: JSON.stringify({
 								type: 'work',
 								post_id: item.post_id
@@ -90,7 +90,7 @@
 						break;
 					case 2:
 						console.log(item.post_id)
-						this.$u.route('/pages/post/preview', {
+						this.$u.route('/pages/post/preview2', {
 							data: JSON.stringify({
 								type: 'work',
 								post_id: item.post_id
@@ -98,7 +98,7 @@
 						})
 						break;
 					case 3:
-						this.$u.route('/pages/post/preview', {
+						this.$u.route('/pages/post/preview2', {
 							data: JSON.stringify({
 								type: 'work',
 								post_id: item.post_id
@@ -106,7 +106,7 @@
 						})
 						break;
 					case 4:
-						this.$u.route('/pages/post/preview', {
+						this.$u.route('/pages/post/preview2', {
 							data: JSON.stringify({
 								type: 'work',
 								post_id: item.post_id

@@ -94,12 +94,16 @@
 				var that = this;
 				uni.onPushMessage((res) => {
 					console.log(res)
+					if (res.type == 'click') {
+						return;
+					}
 					uni.createPushMessage({
 						title: res.data.title,
 						content: res.data.content,
 						icon: "./static/logo.png",
 						sound: "system",
-						fail() {
+						fail(err) {
+							console.log(err)
 							uni.showToast({
 								icon: "error",
 								title: "通知栏失败"
@@ -298,7 +302,8 @@
 									content: textContent,
 									icon: "./static/logo.png",
 									sound: "system",
-									fail() {
+									fail(err) {
+										console.log(err)
 										uni.showToast({
 											icon: "error",
 											title: "通知栏失败"

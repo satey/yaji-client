@@ -134,9 +134,9 @@
 			<!-- 右边栏 -->
 			<view class="operate" :style="{paddingBottom:tabBarHeight}">
 				<view>
-					<view style="position: relative;">
+					<!-- <view style="position: relative;">
 						<image class="userImg" :src="userInfo.avatar" mode="aspectFill"></image>
-					</view>
+					</view> -->
 					<view class="operateItem">
 						<image src="../../static/iconImage/xinxin.png" style="width: 52rpx;height: 52rpx;"
 							mode="widthFix"></image>

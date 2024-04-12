@@ -19,7 +19,7 @@
 					</block>
 				</block>
 
-				<image @click="$u.route('/pages/user/customized')" class="dingzhi" src="@/static/iconImage/dingzhi.png"
+				<image @click="$u.route('/pages/user/customized')" class="dingzhi" src="@/static/iconImage/dingzhi2.png"
 					mode=""></image>
 			</view>
 			<view class="userContainer">
@@ -311,11 +311,13 @@
 		background: #ffffff;
 		border-radius: 25rpx;
 		font-size: 28rpx;
-		padding: 30rpx 45rpx;
+		padding: 30rpx 25rpx;
 		color: #000;
 
 		.menuItem {
 			padding-bottom: 28rpx;
+			font-size: 30rpx;
+			color: #333;
 			margin-top: 26rpx;
 			border-bottom: 1px solid #F8F8F8;
 

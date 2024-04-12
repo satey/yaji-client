@@ -1,4 +1,12 @@
 export default {
+	yaling: {
+		getTodayPostYaling: {
+			url: 'post/getTodayPostYaling',
+			auth: false,
+			method: 'POST',
+			desc: '今日雅令',
+		},
+	},
 	config: {
 		config1: {
 			url: 'index/configDev',
@@ -441,6 +449,12 @@ export default {
 		}
 	},
 	post: {
+		getPostTag: {
+			url: 'post/getPostTag',
+			auth: false,
+			method: 'POST',
+			desc: '动态分类列表(标签列表)',
+		},
 		search: {
 			url: 'post_cate/find_post_cate',
 			auth: false,
@@ -543,10 +557,40 @@ export default {
 			method: 'POST',
 			desc: '动态详情',
 		},
+		newGetPostDetail: {
+			url: 'post/newGetPostDetail',
+			auth: true,
+			method: 'POST',
+			desc: '新动态详情',
+		},
 	},
 	post_cate: {
+		getPostByFullScreen: {
+			url: 'post/getPostByFullScreen',
+			auth: true,
+			method: 'POST',
+			desc: '动态全屏',
+		},
+		getFollowUserPostList: {
+			url: 'post/getFollowUserPostList',
+			auth: true,
+			method: 'POST',
+			desc: '已关注用户动态瀑布流/全屏页',
+		},
+		getPostByFall: {
+			url: 'post/getPostByFall',
+			auth: true,
+			method: 'POST',
+			desc: '动态瀑布流',
+		},
+		getTopicList: {
+			url: 'post_cate/getTopicList',
+			auth: true,
+			method: 'POST',
+			desc: '话题列表(新)',
+		},
 		add: {
-			url: 'post_cate/add',
+			url: 'post_cate/createPostCate',
 			auth: true,
 			method: 'POST',
 			desc: '添加话题',

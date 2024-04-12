@@ -64,7 +64,14 @@
 							mode="aspectFill"></image>
 						<view
 							style="display: flex;flex-direction: column;height: 85rpx;justify-content: space-between;margin-left: 10rpx;">
-							<view style="color:#333333 ;font-size: 28rpx;">{{zhiyuanData.user_info.role_name_str}}
+							<view style="color:#333333 ;font-size: 28rpx;">
+								<text style="margin-right: 10rpx;">{{zhiyuanData.user_info.role_name_str}}</text>
+								<block v-if="zhiyuanData.user_info.gender==1">
+									<i class="iconfont icon-nan1" style="font-size: 22rpx;color: #00C2FF;"></i>
+								</block>
+								<block v-else>
+									<i class="iconfont icon-nv" style="font-size: 22rpx;color: #FFA000;"></i>
+								</block>
 							</view>
 							<view style="color:#666666 ;font-size: 26rpx;">
 								<block v-for="(item2,index2) in zhiyuanData.user_info.achievements" :key="index2">
@@ -93,7 +100,7 @@
 		</u-popup>
 		<view style="height: 1033rpx;position: fixed;top: 0;left: 0;">
 			<view style="position: relative;" @click="homeJump">
-				<view style="position: absolute;z-index: 50;left: 18rpx;top: 690rpx;">
+				<!-- <view style="position: absolute;z-index: 50;left: 18rpx;top: 690rpx;">
 					<view style="position: relative;">
 						<view v-if="fruitTextFlag"
 							style="width: 115rpx;height: 50rpx;background: #333333;border-radius: 2rpx;display: flex;align-items: center;justify-content: center;position: absolute;left: 130rpx;">
@@ -103,7 +110,7 @@
 						</view>
 						<image src="../../static/ditian.png" style="width: 251rpx;height: 155rpx" mode=""></image>
 					</view>
-				</view>
+				</view> -->
 				<feiQsls :fromTo="'index'" :roomId="roomId" :qslsUserList="homeDate.profile_list"
 					v-if="homeDate!=null&&roomId!=null"></feiQsls>
 			</view>
@@ -117,18 +124,9 @@
 		<view style="height: 1033rpx;"></view>
 		<view style="position: relative;z-index: 5;margin-top: 0rpx;">
 			<view class="headContainerFooter">
-				<view style="position: absolute;top: -165rpx;right: 35rpx;">
-					<view @click="$u.route('pages/poetry/recitingPoetry')" class="activity"
-						style="margin-bottom: 18rpx;">吟诗</view>
-					<view @click="$u.route('pages/sacrifice/sacrifice')" class="activity">祭祖</view>
-				</view>
 				<view style="display: flex;align-items: center;justify-content: center;height: 100%;">
 					<view class="activity" style="margin-right:35rpx ;">
-						<text v-if="fruitTimes<=0" @click="getGreenGroups">领青团</text>
-						<view v-else>
-							<view style="font-size: 23rpx;">领青团</view>
-							<view>{{countDown}}</view>
-						</view>
+						<view @click="$u.route('pages/poetry/recitingPoetry')" class="activity" style="">吟诗</view>
 					</view>
 					<view class="fabei" @click="homeJump">
 						发杯
@@ -557,7 +555,9 @@
 			},
 			//青少年模式
 			youngModelInfo() {
-				this.$api("teenageMode.youngModelInfo").then(res => {
+				this.$api("teenageMode.youngModelInfo",{
+					type:1
+				}).then(res => {
 					if (res.code == 1) {
 						if (res.data.young_model_switch == 1) {
 							if (res.data.is_dialog == 1) {

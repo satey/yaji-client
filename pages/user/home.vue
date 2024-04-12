@@ -122,14 +122,14 @@
 			<view style="display: flex;align-items: center;margin-top: 25rpx;flex-wrap: wrap;" v-if="user.length!=0">
 				<block v-for="(item,index) in userPostList" :key="index">
 					<view class="item"
-						@click="$u.route('/pages/post/preview',{data:JSON.stringify({type:'work',post_id:item.post_id})})">
+						@click="$u.route('/pages/post/preview2',{data:JSON.stringify({type:'work',post_id:item.post_id})})">
 						<image style="width: 100%;height: 100%;position: absolute;top:0%;left: 0;z-index: 1;"
 							:src="item.bg_img_url" mode="aspectFill"></image>
 						<image
 							style="width: 100%;position: absolute;top: 50%;left: 0;z-index: 2;transform: translateY(-50%);"
-							:src="item.image_list[0]" mode="widthFix"></image>
+							:src="item.image_list[0]" mode="aspectFill"></image>
 						<view class="content">
-							<text>{{item.content}}</text>
+							<text class="textLine">{{item.content}}</text>
 						</view>
 						<view class="itemFooter">
 							<i class="iconfont icon-aixin1" style="margin-right: 5rpx;"></i>
@@ -575,5 +575,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+
+	}
+
+	.textLine {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 </style>

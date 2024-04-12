@@ -830,6 +830,34 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
+		},
+		{
+			"path": "pages/index/release",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/post/addTopic",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/post/preview2",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/user/yaling",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
 		}
 	],
 	"globalStyle": {
@@ -854,8 +882,8 @@
 		"list": [{
 				"text": "",
 				"pagePath": "pages/index/index",
-				"iconPath": "static/tabbar/index.png",
-				"selectedIconPath": "static/tabbar/index_active.png"
+				"iconPath": "static/tabbar/index2.png",
+				"selectedIconPath": "static/tabbar/index1.png"
 			},
 			{
 				"text": "广场",
@@ -864,10 +892,16 @@
 				"selectedIconPath": "static/tabbar/square_active.png"
 			},
 			{
+				"text": "发布",
+				"pagePath": "pages/index/release",
+				"iconPath": "static/tabbar/fabu3.png",
+				"selectedIconPath": "static/tabbar/fabu3.png"
+			},
+			{
 				"text": "消息",
 				"pagePath": "pages/index/message",
-				"iconPath": "static/tabbar/message.png",
-				"selectedIconPath": "static/tabbar/message_active.png"
+				"iconPath": "static/tabbar/message1.png",
+				"selectedIconPath": "static/tabbar/message2.png"
 			},
 			{
 				"text": "我的",

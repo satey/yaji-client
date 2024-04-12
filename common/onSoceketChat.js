@@ -119,10 +119,10 @@
 	        let noreadnum = uni.getStorageSync('noreadnum'+User.userinfo.id);
 	        if(noreadnum && noreadnum>0){
 	            //设置tabber角标
-	            return uni.setTabBarBadge({
-	                index:Config.TabbarIndex,
-	            text:noreadnum>99?'99+':noreadnum.toString()
-	            });
+	            // return uni.setTabBarBadge({
+	            //     index:Config.TabbarIndex,
+	            // text:noreadnum>99?'99+':noreadnum.toString()
+	            // });
 	        }
 	        return uni.removeTabBarBadge({
 	            index:Config.TabbarIndex
@@ -291,10 +291,10 @@
 		
 		__UpdateTabbarBadege(num){
 		    if(num && num > 0){
-		        return uni.setTabBarBadge({
-		            index:Config.TabbarIndex,
-		        text:num > 99 ? '99+':num.toString()
-		        });
+		        // return uni.setTabBarBadge({
+		        //     index:Config.TabbarIndex,
+		        // text:num > 99 ? '99+':num.toString()
+		        // });
 		    }
 		    return uni.removeTabBarBadge({
 		        index:Config.TabbarIndex

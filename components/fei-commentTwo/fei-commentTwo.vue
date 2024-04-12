@@ -3,7 +3,8 @@
 		<view class="inputContainer" v-if="showInput">
 			<view class="inputBox" style="padding: 15rpx 32rpx 15rpx 32rpx;box-sizing: border-box;">
 				<view class="textAreaBox">
-					<textarea type="text" v-model="inputMessage" @blur="showInput=false;inputMessage=''"
+					<textarea type="text" v-model="inputMessage"
+						@blur="showInput=false;inputMessage='';replyData.post_comment_id='';inputPlaceholder='回复作者'"
 						auto-focus="true" confirm-type="send" placeholder-style="font-size:28rpx;color:#999999;"
 						:placeholder="inputPlaceholder" auto-height="true" :adjust-position="false"
 						class="myTextArea" />
@@ -245,6 +246,9 @@
 			},
 			showCommentBar() {
 				this.showInput = true;
+				if (this.replyData.post_comment_id == undefined) {
+					this.inputPlaceholder = "回复作者"
+				}
 				this.replyData.post_id = this.commentData.post_id;
 			},
 			//添加评论
@@ -306,7 +310,9 @@
 				uni.onKeyboardHeightChange(res => {
 					that.keyboardHeight = res.height;
 					if (res.height == 0) {
-						that.showInput = false;
+						if (this.inputMessage == '') {
+							that.showInput = false;
+						}
 					}
 				})
 			}
@@ -359,7 +365,6 @@
 			.textAreaBox {
 				background: #fff;
 				border-radius: 50rpx;
-				min-height: 70rpx;
 				max-height: 200rpx;
 				padding: 15rpx 30rpx;
 				box-sizing: border-box;
