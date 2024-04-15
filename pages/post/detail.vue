@@ -194,8 +194,8 @@
 									</block>
 								</view>
 								<view v-if="item.full_screen_show_type!=5" class="topicTitle" style="">
-									{{item.content.slice(0,140)}}
-									<block v-if="item.content.length>140">
+									<text class="textLine">{{item.content}}</text>
+									<block>
 										<text style="color: #FFA000;font-size: 32rpx;"
 											@click="storyMore(item)">查看更多</text>
 										<i @click="storyMore(item)" class="iconfont icon-right"
@@ -950,5 +950,13 @@
 		100% {
 			transform: rotate(360deg);
 		}
+	}
+
+	.textLine {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 8;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 </style>

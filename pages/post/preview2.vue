@@ -183,14 +183,9 @@
 								style="color: #BDFF00;margin-right: 20rpx;">#{{wordItem.title}}</text>
 						</block>
 					</view>
-					<block v-if="myData.full_screen_show_type==5">
-						<view v-if="myData.content.length>140">
-							<text style="color: #FFA000;font-size: 32rpx;" @click="storyMore(myData)">查看更多</text>
-						</view>
-					</block>
 					<view v-if="myData.full_screen_show_type!=5" class="topicTitle" style="">
-						{{myData.content.slice(0,140)}}
-						<block v-if="myData.content.length>140">
+						<text class="textLine">{{myData.content}}</text>
+						<block>
 							<text style="color: #FFA000;font-size: 32rpx;" @click="storyMore(myData)">查看更多</text>
 							<i @click="storyMore(myData)" class="iconfont icon-right"
 								style="font-size: 28rpx;color:#FFA000 ;"></i>
@@ -778,5 +773,13 @@
 		100% {
 			transform: rotate(360deg);
 		}
+	}
+
+	.textLine {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 8;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 </style>
