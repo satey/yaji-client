@@ -12,7 +12,7 @@
 			</view>
 			<view class="title">曲水流觞</view>
 			<view class="sunTitle">古代三月初三上巳节的传统习俗，最早可追溯到周代，后发展成为一种聚会雅事。著名的有王羲之的兰亭集会。</view>
-			<view class="okBtn" @click="start" :style="{background:isModule==false?'#FE4373':'#13D898'}">
+			<view class="okBtn" @click="start" :style="{background:isModule==false?'#FFA000':'#13D898'}">
 				{{isModule==false?'开始体验':'匹配中...'}}
 			</view>
 			<view v-show="isModule" class="sunTitle" style="text-align: center;font-size: 23rpx;">
@@ -192,7 +192,7 @@
 
 		.cancel {
 			margin-top: 50rpx;
-			color: #FE4373;
+			color: #FFA000;
 		}
 	}
 

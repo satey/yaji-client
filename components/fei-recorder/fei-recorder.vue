@@ -9,7 +9,7 @@
 			</view>
 			<view class="relative flex justify-center items-center rounded-full">
 				<view @click="startRecorder" class="flex justify-center items-center rounded-full z-10"
-					style="background: #FE4373;width: 112rpx;height: 112rpx;">
+					style="background: #FFA000;width: 112rpx;height: 112rpx;">
 					<i v-if="operateNum == 1" class="ri-mic-fill text-4xl leading-none text-white"
 						style="font-size: 50rpx;"></i>
 					<i v-if="operateNum == 2" class="ri-play-fill text-4xl leading-none text-white"
@@ -18,14 +18,14 @@
 						mode="heightFix"></image>
 				</view>
 				<view v-if="recorderFlag" class="animate-ping absolute rounded-full p-2  opacity-50"
-					style="background: #fe4373;">
+					style="background: #FFA000;">
 					<view class="rounded-full  p-2  opacity-50"
-						style="background: #fe4373;width: 112rpx;height: 112rpx;">
+						style="background: #FFA000;width: 112rpx;height: 112rpx;">
 					</view>
 				</view>
 			</view>
 			<view v-if="operateNum == 2||operateNum == 3" @click="submit"
-				style="width: 95rpx;height: 70rpx;background: #FE4373;border-radius: 35rpx;text-align: center;line-height: 70rpx;margin-left: 60rpx;">
+				style="width: 95rpx;height: 70rpx;background: #FFA000;border-radius: 35rpx;text-align: center;line-height: 70rpx;margin-left: 60rpx;">
 				<text class="ri-check-fill" style="font-size: 35rpx;color: #fff;"></text>
 			</view>
 		</view>
@@ -164,7 +164,7 @@
 				var that = this;
 				var token = uni.getStorageSync("token");
 				uni.uploadFile({
-					url: uni.getStorageSync("hostData").host+"/api/hey/" + 'index/upload',
+					url: uni.getStorageSync("hostData").host + "/api/hey/" + 'index/upload',
 					filePath: e.tempFilePath,
 					name: 'file',
 					formData: {

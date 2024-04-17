@@ -49,7 +49,7 @@
 									<text class="ri-heart-line" style="color: #808080;font-size: 35rpx;"></text>
 								</block>
 								<block v-else>
-									<text class="ri-heart-fill" style="color: #FE4373;font-size: 35rpx;"></text>
+									<text class="ri-heart-fill" style="color: red;font-size: 35rpx;"></text>
 								</block>
 								<view
 									style="font-size: 23rpx;margin-left: 10rpx;color: #808080;width: 50rpx;white-space: nowrap;">
@@ -71,7 +71,7 @@
 			</view>
 		</view>
 		<view style="padding-bottom: 50rpx;" v-if="!replyList.length">
-			<u-empty icon="/static/wupinglun.png" text="暂无歌曲内容" textColor="#a1a1a1" marginTop="0"></u-empty>
+			<u-empty icon="/static/xingqiu.png" text="暂无歌曲内容" textColor="#a1a1a1" marginTop="0"></u-empty>
 		</view>
 		<view class="audioLists" v-else>
 			<view class="audioItem" v-for="(item,index) in replyList" :key="index">
@@ -87,7 +87,7 @@
 					</view>
 					<view style="margin-top: 15rpx;display: flex;align-items: center;justify-content: space-between;">
 						<view class="audioBlock" @click="replyItem(item,index)" @longpress="replyOperate(item)"
-							:style="{background:replyData.id == item.id?'#FE4373':'#FF6D93'}">
+							:style="{background:replyData.id == item.id?'#FFA000':'#FFA000'}">
 							<view style="display: flex;align-items: center;">
 								<block v-if="item.replyIndex == null">
 									<text class="ri-voiceprint-line" style="color: #fff;font-size: 40rpx;"
@@ -112,7 +112,7 @@
 							</block>
 							<block v-else>
 								<text class="ri-heart-fill"
-									style="color: #FE4373;font-size: 35rpx;margin-right: 15rpx"></text>
+									style="color: red;font-size: 35rpx;margin-right: 15rpx"></text>
 							</block>
 							<text style="font-size: 28rpx;color: #808080;">{{item.zan_nums}}</text>
 						</view>
@@ -120,7 +120,7 @@
 					<view style="display: flex;align-items: center;margin-top: 28rpx;">
 						<text
 							style="font-size: 25rpx;color: #3D3D3D;opacity: 0.6rpx;margin-right: 30rpx;opacity: 0.6;">{{item.createtime}}</text>
-						<text style="font-size: 25rpx;color: #FE4373;opacity: 0.6rpx;margin-right: 30rpx;"
+						<text style="font-size: 25rpx;color: #FFA000;opacity: 0.6rpx;margin-right: 30rpx;"
 							@click="replyConnect(item)">接一句</text>
 						<block v-if="userInfo.id != item.user_id">
 							<image @click="showGift2(item)" src="@/static/cailiwu.png"
@@ -599,7 +599,7 @@
 	.audioBlock {
 		width: 275rpx;
 		height: 65rpx;
-		background: #FF6D93;
+		background: #FFA000;
 		border-radius: 38rpx 38rpx 38rpx 38rpx;
 		opacity: 1;
 		text-align: center;
@@ -642,7 +642,7 @@
 		font-size: 28rpx;
 		line-height: 65rpx;
 		color: #fff;
-		background: #FE4373;
+		background: #FFA000;
 		border-radius: 10rpx;
 	}
 

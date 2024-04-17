@@ -19,7 +19,7 @@
 				</view>
 				<view class="flex items-center">
 					<view @touchstart.prevent="submit"
-						style="width: 116rpx;height: 72rpx;text-align: center;line-height: 72rpx;border-radius: 50rpx;background:#FE4373 ;font-size: 28rpx;color: #fff;">
+						style="width: 116rpx;height: 72rpx;text-align: center;line-height: 72rpx;border-radius: 50rpx;background:#FFA000 ;font-size: 28rpx;color: #fff;">
 						发送</view>
 				</view>
 			</view>
@@ -56,12 +56,12 @@
 						<view style="font-size: 28rpx;color: #323232;margin:0rpx 5rpx;">{{item.role_realname}}</view>
 					</view>
 					<text style="font-size: 28rpx;color: #323232;height: 45rpx;line-height: 45rpx;">等<text
-							style="color: #fe4373;">{{zanCount}}</text>人点赞</text>
+							style="color: #FFA000;">{{zanCount}}</text>人点赞</text>
 				</view>
 			</view>
 			<view class="footerBottom"
 				style="display: flex;align-items: center;justify-content: space-between;width: 100%;">
-				<u-tabs :list="tablist" lineColor="#FE4373" lineWidth="120rpx" lineHeight="16rpx"
+				<u-tabs :list="tablist" lineColor="#FFA000" lineWidth="120rpx" lineHeight="16rpx"
 					itemStyle="height: 72rpx;"
 					inactiveStyle="color: #808080; transform: scale(1);font-weight:normal;transition:all 0.3s;"
 					activeStyle="color: #323232 ; font-weight: blod; transform: scale(1.2);transition:all 0.3s;"
@@ -73,7 +73,7 @@
 			<view v-show="tabIndex==0" class="lists"
 				style="padding: 0rpx 36rpx;box-sizing: border-box;margin-top: 43rpx;">
 				<view v-if="!lists.length">
-					<u-empty icon="/static/null.png" text=" " textColor="#a1a1a1" marginTop="100"></u-empty>
+					<u-empty icon="/static/xingqiu.png" text=" " textColor="#a1a1a1" marginTop="100"></u-empty>
 					<view v-html="loadmoreText" style="text-align: center;font-size: 20rpx;color: #999;"></view>
 				</view>
 
@@ -105,7 +105,7 @@
 								</block>
 								<block v-else>
 									<text @click="zan(item,index,1)" class="ri-heart-fill"
-										style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+										style="font-size: 35rpx;color: red;margin-right: 8rpx;"></text>
 								</block>
 								<text v-if="item.diggnums!=0"
 									style="font-size: 28rpx;color: #808080;">{{item.diggnums}}</text>
@@ -160,7 +160,7 @@
 											</block>
 											<block v-else>
 												<text @click="zan(replyItem,index,2)" class="ri-heart-fill"
-													style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+													style="font-size: 35rpx;color: red;margin-right: 8rpx;"></text>
 											</block>
 											<text v-if="replyItem.diggnums!=0"
 												style="font-size: 28rpx;color: #808080;">{{replyItem.diggnums}}</text>
@@ -212,7 +212,7 @@
 											</block>
 											<block v-else>
 												<text @click="zan(newItem,index,3)" class="ri-heart-fill"
-													style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+													style="font-size: 35rpx;color: red;margin-right: 8rpx;"></text>
 											</block>
 											<text v-if="newItem.diggnums!=0"
 												style="font-size: 28rpx;color: #808080;">{{newItem.diggnums}}</text>
@@ -226,7 +226,7 @@
 							</view>
 						</block>
 						<view v-if="item.children_count > 0" @click="clickMort(item,index)"
-							style="color: #FE4373;margin-top: 20rpx;font-size: 28rpx;">
+							style="color: #FFA000;margin-top: 20rpx;font-size: 28rpx;">
 							展开{{ item.children_count}}条回复 <text class="ri-arrow-down-s-line"
 								style="font-size: 30rpx;"></text>
 						</view>
@@ -235,7 +235,7 @@
 			</view>
 			<!-- 评论 -->
 			<view v-show="tabIndex == 1" class="lists" style="box-sizing: border-box;">
-				<u-empty v-if="!lists.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
+				<u-empty v-if="!lists.length" icon="/static/xingqiu.png" text="暂无内容" textColor="#a1a1a1"
 					marginTop="100"></u-empty>
 				<view v-else class="listItem" style="border: none !important;margin-bottom: 0rpx;"
 					v-for="(item,index) in lists" :key="index">
@@ -271,7 +271,7 @@
 								</block>
 								<block v-else>
 									<text @click="zan(item,index,1)" class="ri-heart-fill"
-										style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+										style="font-size: 35rpx;color: red;margin-right: 8rpx;"></text>
 								</block>
 								<text v-if="item.diggnums!=0"
 									style="font-size: 28rpx;color: #808080;">{{item.diggnums}}</text>
@@ -838,7 +838,7 @@
 	.follow {
 		width: 100rpx;
 		height: 42rpx;
-		background: #FE4373;
+		background: #FFA000;
 		font-size: 24rpx;
 		color: #fff;
 		border-radius: 30rpx;
@@ -936,7 +936,7 @@
 	}
 
 	.okBtn {
-		background: #FE4373;
+		background: #FFA000;
 		border-radius: 43px;
 		height: 80rpx;
 		text-align: center;
@@ -947,7 +947,7 @@
 	}
 
 	.okBtn1 {
-		background: #FE4373;
+		background: #FFA000;
 		border-radius: 43px;
 		height: 60rpx;
 		text-align: center;

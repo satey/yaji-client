@@ -11,6 +11,11 @@
 		<!-- 聊天 -->
 		<template v-if="currentType=='chat'">
 			<view class="chatContainer">
+				<view style="padding: 0rpx 15rpx 15rpx 15rpx;box-sizing: border-box;" v-if="adLength">
+					<view style="width: 100%;height: 166rpx;">
+						<feiAd type='2' @changeAd="changeAd"></feiAd>
+					</view>
+				</view>
 				<!-- 动态消息 -->
 				<view @click="$u.route('/pages/chat/trendsMsg')">
 					<view class="SystemNoticeContainer">
@@ -139,11 +144,13 @@
 	</view>
 </template>
 <script>
+	import feiAd from "@/components/fei-ad/fei-ad.vue"
 	import pushAuthority from "@/components/fei-pushAuthority/fei-pushAuthority"
 	export default {
 		name: 'message',
 		components: {
-			pushAuthority
+			pushAuthority,
+			feiAd
 		},
 		data() {
 			return {
@@ -176,6 +183,8 @@
 				friendCurrentIndex: 0,
 				listUserFollow: [],
 				tabsIndex: 0,
+				adv: [],
+				adLength: true
 			}
 		},
 		onLoad(option) {
@@ -193,6 +202,23 @@
 		},
 
 		methods: {
+			changeAd(e) {
+				this.adLength = e.length == 0 ? false : true
+			},
+			//点击广告
+			adClick(item) {
+				console.log(item)
+				if (item.is_external_links == 1) {
+					// #ifdef H5
+					window.location.href = item.url
+					// #endif
+					// #ifdef APP
+					plus.runtime.openURL(item.url)
+					// #endif
+				} else {
+					this.$u.route(item.url)
+				}
+			},
 			changeTab(e) {
 				let that = this;
 				that.page = 1;

@@ -14,19 +14,19 @@
 				<view></view>
 				<view style="display: flex;align-items: center;">
 					<view @click="viewThis"
-						style="width: 65rpx;height: 65rpx;opacity: 1;border: 2rpx solid #FE4373;border-radius: 50%;text-align: center;line-height: 65rpx;color: #FE4373;"
-						:style="{color:viewThisCode==0?'#FE4373':'#fff',background:viewThisCode==0?'':'#FE4373'}">
+						style="width: 65rpx;height: 65rpx;opacity: 1;border: 2rpx solid #FFA000;border-radius: 50%;text-align: center;line-height: 65rpx;color: #FFA000;"
+						:style="{color:viewThisCode==0?'#FFA000':'#fff',background:viewThisCode==0?'':'#FFA000'}">
 						<text class="ri-user-fill" style="font-size: 39rpx;"></text>
 					</view>
 					<view @click="$u.route('pages/joy/archeryPublish')"
-						style="margin-left: 30rpx;width: 185rpx;height: 65rpx;text-align: center;line-height: 65rpx;border-radius: 10rpx;color: #fff;background: #FE4373;font-size: 28rpx;">
+						style="margin-left: 30rpx;width: 185rpx;height: 65rpx;text-align: center;line-height: 65rpx;border-radius: 10rpx;color: #fff;background: #FFA000;font-size: 28rpx;">
 						发一个</view>
 				</view>
 			</view>
 		</view>
 		<view style="height: 360rpx;"></view>
 		<view style="margin: 0 auto;">
-			<u-empty v-if="!lists.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
+			<u-empty v-if="!lists.length" icon="/static/xingqiu.png" text="数据为空" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</view>
 		<view class="archeryList">
@@ -35,8 +35,12 @@
 					<view style="padding: 15rpx 15rpx 15rpx 30rpx;"
 						@click="$u.route('pages/joy/archeryDetail',{archeryId:item.id})">
 						<view class="archeryItem">
-							<view class="archeryImgBox">
+							<view class="archeryImgBox" style="position: relative;">
 								<image class="archeryImg" mode="widthFix" :src="item.image" alt=""></image>
+								<view class="archeryImg zhezhao">
+								</view>
+								<!-- <image class="archeryImg" mode="widthFix" style="position: absolute;top: 0;left: 0;opacity: 0.8;backdrop-filter: blur(100px)"
+									src="@/static/zhezhao2.png" alt=""></image> -->
 							</view>
 							<view style="display: flex;align-items: center;margin-top: 15rpx;">
 								<image :src="item.avatar"
@@ -46,13 +50,11 @@
 								<view style="font-size: 28rpx;color: #323232;margin-left: 10rpx;">
 									{{item.role_realname}}·{{item.role_dynasty}}
 								</view>
-								<block v-if="item.gender == 2">
-									<text class="ri-women-fill"
-										style="margin-left: 15rpx;color: #E87B7B;font-size: 19rpx;"></text>
+								<block v-if="item.gender==1">
+									<i class="iconfont icon-nan1" style="font-size: 22rpx;color: #00C2FF;margin-left: 10rpx;"></i>
 								</block>
-								<block v-if="item.gender == 1">
-									<text class="ri-men-fill"
-										style="margin-left: 15rpx;color: #8FB992;font-size: 19rpx;"></text>
+								<block v-else>
+									<i class="iconfont icon-nv" style="font-size: 22rpx;color: #FFA000;margin-left: 10rpx;"></i>
 								</block>
 							</view>
 							<view style="display: flex;align-items: center;margin-top: 15rpx;margin-left: 10rpx;">
@@ -78,8 +80,10 @@
 					<view style="padding: 15rpx 30rpx 15rpx 15rpx;"
 						@click="$u.route('pages/joy/archeryDetail',{archeryId:item.id})">
 						<view class="archeryItem">
-							<view class="archeryImgBox">
+							<view class="archeryImgBox" style="position: relative;">
 								<image class="archeryImg" mode="widthFix" :src="item.image" alt=""></image>
+								<view class="archeryImg zhezhao">
+								</view>
 							</view>
 							<view style="display: flex;align-items: center;margin-top: 15rpx;">
 								<image :src="item.avatar"
@@ -89,13 +93,11 @@
 								<view style="font-size: 28rpx;color: #323232;margin-left: 10rpx;">
 									{{item.role_realname}}·{{item.role_dynasty}}
 								</view>
-								<block v-if="item.gender == 2">
-									<text class="ri-women-fill"
-										style="margin-left: 15rpx;color: #E87B7B;font-size: 19rpx;"></text>
+								<block v-if="item.gender==1">
+									<i class="iconfont icon-nan1" style="font-size: 22rpx;color: #00C2FF;margin-left: 10rpx;"></i>
 								</block>
-								<block v-if="item.gender == 1">
-									<text class="ri-men-fill"
-										style="margin-left: 15rpx;color: #8FB992;font-size: 19rpx;"></text>
+								<block v-else>
+									<i class="iconfont icon-nv" style="font-size: 22rpx;color: #FFA000;margin-left: 10rpx;"></i>
 								</block>
 							</view>
 							<view style="display: flex;align-items: center;margin-top: 15rpx;margin-left: 10rpx;">
@@ -234,7 +236,7 @@
 			display: flex;
 			align-items: center;
 			z-index: 999;
-			border: 1px solid #FE4373;
+			border: 1px solid #FFA000;
 			margin-top: 50rpx;
 
 			.searchIcon {
@@ -245,5 +247,12 @@
 				line-height: 80rpx;
 			}
 		}
+	}
+
+	.zhezhao {
+		position: absolute;
+		top: 0;
+		left: 0;
+		backdrop-filter: blur(10px);
 	}
 </style>

@@ -49,7 +49,7 @@
 					<text v-show='is_zan==0' class="ri-heart-line"
 						style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
 					<text v-show='is_zan==1' class="ri-heart-fill"
-						style="font-size: 40rpx;margin-right: 10rpx;color: #fe4373;"></text>
+						style="font-size: 40rpx;margin-right: 10rpx;color: #FFA000;"></text>
 					<view style="font-size: 24rpx;color: #999999;width: 20rpx;white-space: nowrap;width: 50rpx;">
 						{{ item.diggnums ==0?'出彩':item.diggnums }}
 					</view>

@@ -246,11 +246,6 @@
 						type: 'topic',
 						count: 0
 					},
-					{
-						name: '更多',
-						type: 'more',
-						count: 0
-					},
 				],
 				topTab: [],
 				topTabIndex: 0,

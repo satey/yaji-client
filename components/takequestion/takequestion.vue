@@ -5,7 +5,7 @@
 		<view class="takeQuestion-item" @tap="$u.route('/pages/user/topicspeed',{post_cate_id:item.id,type:'index'})"
 			:style="{background:colors[index % 4 ]}">
 			<view style="display: flex;align-items: center;margin-right: 10rpx;">
-				<text class="ri-fire-fill" style="color: #FE4373;font-size: 40rpx;"></text>
+				<text class="ri-fire-fill" style="color: #FFA000;font-size: 40rpx;"></text>
 				<view class="question-title">
 					{{item.title}}
 				</view>

@@ -9,7 +9,7 @@
 				<i class="ri-more-2-fill " style="font-size: 38rpx;color: #333;" @click='showOperate'></i>
 			</view>
 		</u-navbar>
-		<u-modal :show="answerActive" :showConfirmButton="false" :showCancelButton="false" confirmColor="#FE4373"
+		<u-modal :show="answerActive" :showConfirmButton="false" :showCancelButton="false" confirmColor="#FFA000"
 			confirmText="充值" cancelText="放弃" @cancel="answerActive=false" @confirm="">
 			<view style="display: flex;flex-direction: column;width: 100%;">
 				<view style="font-size: 28rpx;color: #3D3D3D;margin-bottom: 78rpx;">请填写您的答案</view>
@@ -21,14 +21,16 @@
 						style="width: 250rpx;height: 80rpx;font-size: 28rpx;color: #767676;line-height: 80rpx;text-align: center;border-radius: 8rpx;margin: 0 auto;margin-top: 66rpx;border:1px solid #C7C7C7">
 						取消</view>
 					<view @click="submit"
-						style="width: 250rpx;height: 80rpx;font-size: 28rpx;color: #FFFFFF;line-height: 80rpx;text-align: center;background: #FE4373;border-radius: 8rpx;margin: 0 auto;margin-top: 66rpx;">
+						style="width: 250rpx;height: 80rpx;font-size: 28rpx;color: #FFFFFF;line-height: 80rpx;text-align: center;background: #FFA000;border-radius: 8rpx;margin: 0 auto;margin-top: 66rpx;">
 						发射</view>
 				</view>
 			</view>
 		</u-modal>
 		<view style="padding: 30rpx;box-sizing: border-box;">
-			<view style="border-radius: 5rpx;overflow: hidden;">
+			<view style="border-radius: 5rpx;overflow: hidden;position: relative;">
 				<image style="width: 100%;border-radius: 5rpx;" :src="detail.image" mode="widthFix"></image>
+				<view v-if="zhezhaoFlag" class="zhezhao" style="width: 100%;height: 100%;">
+				</view>
 			</view>
 			<view style="display: flex;align-items: center;justify-content: space-between;margin-top: 36rpx;">
 				<view style="display: flex;align-items: center;" @click.stop="openUserDetail">
@@ -73,7 +75,7 @@
 						style="width: 32rpx;height: 32rpx;margin-left: 12rpx;margin-right: 33rpx;"></image>
 					<block v-if="detail.user_id==userInfo.id?false:true">
 						<text class="ri-add-line" v-if="detail.is_follow != 1" @click.stop="observe"
-							style="color: #fff;background: #FE4373;border-radius: 50%;font-size: 27rpx;padding: 3rpx;"></text>
+							style="color: #fff;background: #FFA000;border-radius: 50%;font-size: 27rpx;padding: 3rpx;"></text>
 					</block>
 				</view>
 				<view style="color:#3D3D3D ;font-size: 28rpx;opacity: 0.6;">{{detail.createtime}}</view>
@@ -99,7 +101,7 @@
 					<view style="margin:0rpx 30rpx;" @click="zan">
 						<text v-if="detail.is_zan == 0" class="ri-heart-line"
 							style="font-size: 35rpx;color: #979797;"></text>
-						<text v-else class="ri-heart-fill" style="font-size: 35rpx;color: #FE4373;"></text>
+						<text v-else class="ri-heart-fill" style="font-size: 35rpx;color: red;"></text>
 						<text style="margin-left: 10rpx;font-size: 22rpx;color: #999999;">{{detail.zan_nums}}</text>
 					</view>
 					<block v-if="detail.user_id==userInfo.id?false:true">
@@ -108,20 +110,20 @@
 					</block>
 				</view>
 				<view @click="answerActive=true"
-					style="width: 185rpx;height: 65rpx;background: #FE4373;border-radius: 10rpx;text-align: center;line-height: 65rpx;color: #fff;font-size: 28rpx;">
+					style="width: 185rpx;height: 65rpx;background: #FFA000;border-radius: 10rpx;text-align: center;line-height: 65rpx;color: #fff;font-size: 28rpx;">
 					我来射
 				</view>
 			</view>
 			<view :style="{display:detail.is_guess == 1?'block':'none'}"
 				style="font-size: 28rpx;color: #323232;opacity: 0.8;margin-top: 36rpx;">题目已被猜出，您可以 <text
-					style="color: #FE4373;margin-left: 12rpx;"
+					style="color: #FFA000;margin-left: 12rpx;"
 					@click="showAnswer">{{showAnswerFalg==true?'显示':'隐藏'}}答案</text> </view>
 		</view>
 		<view style="padding: 0rpx 30rpx;box-sizing: border-box;">
 			<feiComment v-show="commentList.length" :commentList='commentList' ref="feiComment" :answer="detail.answer">
 			</feiComment>
 			<view v-if="!commentList.length" style="padding-bottom: 50rpx;">
-				<u-empty icon="/static/wupinglun.png" text="暂无人射答" textColor="#a1a1a1" marginTop="0"></u-empty>
+				<u-empty icon="/static/xingqiu.png" text="暂无人射答" textColor="#a1a1a1" marginTop="0"></u-empty>
 			</view>
 		</view>
 		<feiOperate ref="feiOperate" @report='report' :showReport="detail.user_id==userInfo.id?false:true"
@@ -157,6 +159,7 @@
 				showAnswerFalg: true,
 				showCai: false,
 				showShield: false,
+				zhezhaoFlag: true,
 			}
 		},
 		onLoad(e) {
@@ -222,6 +225,7 @@
 			},
 			//显示答案
 			showAnswer() {
+				this.zhezhaoFlag = !this.zhezhaoFlag
 				this.showAnswerFalg = !this.showAnswerFalg;
 				this.$refs.feiComment.showAnswer()
 			},
@@ -374,5 +378,11 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
+	.zhezhao {
+		position: absolute;
+		top: 0;
+		left: 0;
+		backdrop-filter: blur(10px);
+	}
 </style>

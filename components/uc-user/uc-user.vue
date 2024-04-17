@@ -89,7 +89,7 @@
 	.know {
 		width: 106rpx;
 		height: 44rpx;
-		background: #FE4373;
+		background: #FFA000;
 		border-radius: 22px;
 		text-align: center;
 		font-size: 24rpx;

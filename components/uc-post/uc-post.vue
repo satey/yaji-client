@@ -1,7 +1,7 @@
 <template>
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="flex px-4 py-2" style="border-bottom: 1rpx solid rgb(238, 238, 238,0.5);padding-top: 20rpx;"
-		v-if="item.status == 'normal'" @click.stop="openDetails(item)">
+		v-if="item.status == 'normal'">
 		<image class="block rounded-full" @click="showToast" v-if="item.user == null" src="/static/avatar.png"
 			style="width: 85rpx;height: 85rpx;" mode="aspectFill"></image>
 		<view v-else>
@@ -37,9 +37,9 @@
 				</view> -->
 			</view>
 
-			<view class="mt-4" style="color: #323232;font-size: 32rpx;">
+			<view class="mt-4" style="color: #323232;font-size: 32rpx;" @click.stop="openDetails(item)">
 				<text v-if="item.is_system_build == 1" @click="">{{ item.content }} <text @click="openQuShui(item)"
-						style="color:#FE4373">跟随进房 <text class="ri-arrow-right-s-line"
+						style="color:#FFA000">跟随进房 <text class="ri-arrow-right-s-line"
 							style="font-size: 26rpx;margin-left: 5rpx;"></text> </text> </text>
 				<text v-else>{{ item.content }}</text>
 				<!-- 话题 -->
@@ -49,7 +49,7 @@
 						class="ri-hashtag mr-1"></i>{{ items.title }}</view> -->
 			</view>
 			<!-- {{item}} -->
-			<view v-if="item.images" class="mt-4" style="position: relative;">
+			<view @click.stop="openDetails(item)" v-if="item.images" class="mt-4" style="position: relative;">
 				<image :src="item.images.split(',')[0]" mode="widthFix" v-if="item.images.split(',').length == 1"
 					style="border-radius: 10rpx;width: 60%;">
 				</image>
@@ -91,18 +91,19 @@
 			</view> -->
 			<view style="display: flex;flex-direction: row;align-items: center;justify-content: flex-end;width: 100%;">
 				<!-- 评论 -->
-				<view
+				<view @click.stop="openDetails(item)"
 					style="color: #999999;display: flex;flex-direction: row;align-items: center;width: 80rpx;margin-right: 39rpx;">
 					<text class="ri-chat-smile-3-line" style="font-size: 40rpx;margin-right: 10rpx;"></text>
 					<text
 						style="font-size: 28rpx;color: #999999;white-space: nowrap;">{{item.commentnums==0?'评论':item.commentnums}}</text>
 				</view>
 				<!-- 点赞 -->
-				<view style="display: flex;flex-direction: row;align-items: center;width: 80rpx;">
+				<view @click="handlePostDig(item)"
+					style="display: flex;flex-direction: row;align-items: center;width: 80rpx;">
 					<text v-show='is_zan==0' class="ri-heart-line"
 						style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
 					<text v-show='is_zan==1' class="ri-heart-fill"
-						style="font-size: 40rpx;margin-right: 10rpx;color: #fe4373;"></text>
+						style="font-size: 40rpx;margin-right: 10rpx;color: red;"></text>
 					<text
 						style="font-size: 28rpx;color: #999999;white-space: nowrap;">{{ item.diggnums ==0?'':item.diggnums }}</text>
 				</view>
@@ -437,8 +438,9 @@
 				})
 			},
 			// 点赞红心
-			handlePostDig() {
-				let that = this
+			handlePostDig(item) {
+				let that = this;
+				this.is_zan = this.is_zan == 0 ? 1 : 0
 				that.$api('post.dig', {
 					post_id: that.item.id,
 				}).then(res => {

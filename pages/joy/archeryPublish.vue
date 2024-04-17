@@ -7,7 +7,7 @@
 			</view>
 			<view slot="right">
 				<view @click="add"
-					style="width: 92rpx;height: 52rpx;color: #fff;border-radius: 50rpx;background: #FE4373;text-align: center;line-height: 50rpx;font-size: 26rpx;">
+					style="width: 92rpx;height: 52rpx;color: #fff;border-radius: 50rpx;background: #FFA000;text-align: center;line-height: 50rpx;font-size: 26rpx;">
 					发布</view>
 			</view>
 		</u-navbar>
@@ -30,7 +30,7 @@
 		</view>
 		<view style="padding: 0 53rpx 0 53rpx;">
 			<view style="display: flex;font-size: 36rpx;color: #3D3D3D;">答案 <text
-					style="color: #FE4373;font-size: 39rpx;margin-left: 10rpx;">*</text></view>
+					style="color: #FFA000;font-size: 39rpx;margin-left: 10rpx;">*</text></view>
 			<view style="margin: 36rpx; 20rpx;border: 1px solid #D8D8D8;height: 80rpx;border-radius: 5rpx;">
 				<input type="text" v-model="answer" maxlength="5"
 					style="width: 100%;height: 100%;padding-left: 10rpx;text-align: center;"

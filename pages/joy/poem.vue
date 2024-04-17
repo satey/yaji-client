@@ -23,7 +23,7 @@
 				</view>
 				<view class="flex items-center">
 					<view @touchstart.prevent="submit"
-						style="width: 116rpx;height: 72rpx;text-align: center;line-height: 72rpx;border-radius: 50rpx;background:#FE4373 ;font-size: 28rpx;color: #fff;">
+						style="width: 116rpx;height: 72rpx;text-align: center;line-height: 72rpx;border-radius: 50rpx;background:#FFA000 ;font-size: 28rpx;color: #fff;">
 						发送</view>
 				</view>
 			</view>
@@ -39,7 +39,7 @@
 		<view class="centerText">{{centerText.word}}</view>
 		<view style="text-align: center;font-size: 44rpx;color: #3D3D3D;margin-top: 30rpx;">今日诗令</view>
 		<view @click="addPoem"
-			style="width: 280rpx;height: 92rpx;text-align: center;line-height: 92rpx;color: #fff;border-radius: 10rpx;font-size: 32rpx;margin: 50rpx auto;background: #FE4373;">
+			style="width: 280rpx;height: 92rpx;text-align: center;line-height: 92rpx;color: #fff;border-radius: 10rpx;font-size: 32rpx;margin: 50rpx auto;background: #FFA000;">
 			发布诗句
 		</view>
 		<view style="font-size: 30rpx;color: #3D3D3D;text-align: center;" @click="$u.route('pages/joy/wine')">
@@ -47,7 +47,7 @@
 			<text class="ri-arrow-right-s-line"></text>
 		</view>
 		<view class="lists" style="padding: 0rpx 36rpx;box-sizing: border-box;margin-top: 43rpx;">
-			<u-empty v-if="!lists.length" icon="/static/null.png" text="暂无内容" textColor="#a1a1a1"
+			<u-empty v-if="!lists.length" icon="/static/xingqiu.png" text="暂无内容" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 			<view class="listItem" v-for="(item,index) in lists" :key="index">
 				<view style="width: 96rpx;height: 96rpx;border-radius: 50%;overflow: hidden;margin-right: 26rpx;">
@@ -76,7 +76,7 @@
 							</block>
 							<block v-else>
 								<text @click="zan(item,index,1)" class="ri-heart-fill"
-									style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+									style="font-size: 35rpx;color: red;margin-right: 8rpx;"></text>
 							</block>
 							<text v-if="item.diggnums!=0"
 								style="font-size: 28rpx;color: #808080;">{{item.diggnums}}</text>
@@ -130,7 +130,7 @@
 										</block>
 										<block v-else>
 											<text @click="zan(replyItem,index,2)" class="ri-heart-fill"
-												style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+												style="font-size: 35rpx;color: red;margin-right: 8rpx;"></text>
 										</block>
 										<text v-if="replyItem.diggnums!=0"
 											style="font-size: 28rpx;color: #808080;">{{replyItem.diggnums}}</text>
@@ -181,7 +181,7 @@
 										</block>
 										<block v-else>
 											<text @click="zan(newItem,index,3)" class="ri-heart-fill"
-												style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+												style="font-size: 35rpx;color: red;margin-right: 8rpx;"></text>
 										</block>
 										<text v-if="newItem.diggnums!=0"
 											style="font-size: 28rpx;color: #808080;">{{newItem.diggnums}}</text>
@@ -195,7 +195,7 @@
 						</view>
 					</block>
 					<view v-if="item.children_count > 0" @click="clickMort(item,index)"
-						style="color: #FE4373;margin-top: 20rpx;font-size: 28rpx;">
+						style="color: #FFA000;margin-top: 20rpx;font-size: 28rpx;">
 						展开{{ item.children_count}}条回复 <text class="ri-arrow-down-s-line"
 							style="font-size: 30rpx;"></text>
 					</view>

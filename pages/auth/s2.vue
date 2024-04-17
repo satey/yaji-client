@@ -358,7 +358,7 @@
 							content: '免费获取角色次数不足，将以【无名氏】身份进入。',
 							confirmText: "确定", //这块是确定按钮的文字
 							cancelText: "取消", //这块是取消的文字
-							confirmColor: "#FE4373",
+							confirmColor: "#FFA000",
 							success: function(res) {
 								if (res.confirm) {
 									console.log(that.formGender)
@@ -444,7 +444,7 @@
 					content: '您所选朝代没有可用角色。若继续，将以【无名氏】身份进入。建议您选择别的朝代进入。仍然要继续吗？',
 					confirmText: "确定", //这块是确定按钮的文字
 					cancelText: "取消", //这块是取消的文字
-					confirmColor: "#FE4373",
+					confirmColor: "#FFA000",
 					success: function(res) {
 						if (res.confirm) {
 							that.$api('user.only_choose_gender', data).then(res => {

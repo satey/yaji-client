@@ -12,7 +12,7 @@
 		</u-navbar>
 		<!-- 关注弹窗 -->
 		<view v-if="followModule">
-			<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+			<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FFA000"
 				confirmText="确定" cancelText="取消" @cancel="followModule=false" @confirm='unfollow'>
 				<view style="display: flex;flex-direction: column;">
 					<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
@@ -94,7 +94,7 @@
 								<view style="display: flex;flex-direction: row;align-items: center;"
 									@click="handlePostDig(item,index)">
 									<text v-if="item.is_zan == 1" class="ri-heart-fill"
-										style="font-size: 40rpx;margin-right: 10rpx;color: #fe4373;"></text>
+										style="font-size: 40rpx;margin-right: 10rpx;color: #FFA000;"></text>
 									<text v-show='item.is_zan==0' class="ri-heart-line"
 										style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
 									<text
@@ -281,7 +281,7 @@
 	.follow {
 		width: 100rpx;
 		height: 42rpx;
-		background: #FE4373;
+		background: #FFA000;
 		font-size: 24rpx;
 		color: #fff;
 		border-radius: 30rpx;
@@ -378,7 +378,7 @@
 	}
 
 	.okBtn {
-		background: #FE4373;
+		background: #FFA000;
 		border-radius: 43px;
 		height: 80rpx;
 		text-align: center;
@@ -389,7 +389,7 @@
 	}
 
 	.okBtn1 {
-		background: #FE4373;
+		background: #FFA000;
 		border-radius: 43px;
 		height: 60rpx;
 		text-align: center;

@@ -83,7 +83,7 @@
 
 		.cancel {
 			margin-top: 50rpx;
-			color: #FE4373;
+			color: #FFA000;
 		}
 	}
 
@@ -109,7 +109,7 @@
 		width: 650rpx;
 		height: 85rpx;
 		background: inherit;
-		background-color: #FE4373;
+		background-color: #FFA000;
 		border-radius: 43px;
 		color: #fff;
 		text-align: center;

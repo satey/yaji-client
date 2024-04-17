@@ -104,6 +104,6 @@
 	}
 
 	.resultActive {
-		color: #FE4373;
+		color: #FFA000;
 	}
 </style>

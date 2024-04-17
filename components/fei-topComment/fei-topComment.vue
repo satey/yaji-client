@@ -13,7 +13,7 @@
 				</view>
 				<view class="flex items-center">
 					<view @touchstart.prevent="doComment"
-						style="width: 116rpx;height: 72rpx;text-align: center;line-height: 72rpx;border-radius: 50rpx;background:#FE4373 ;font-size: 28rpx;color: #fff;">
+						style="width: 116rpx;height: 72rpx;text-align: center;line-height: 72rpx;border-radius: 50rpx;background:#FFA000 ;font-size: 28rpx;color: #fff;">
 						发布</view>
 				</view>
 			</view>
@@ -54,7 +54,7 @@
 							</block>
 							<block v-else>
 								<text @click="zan(item,index,'1')" class="ri-heart-fill"
-									style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+									style="font-size: 35rpx;color: #FFA000;margin-right: 8rpx;"></text>
 							</block>
 							<text v-if="item.diggnums!=0"
 								style="font-size: 28rpx;color: #808080;">{{item.diggnums}}</text>
@@ -104,7 +104,7 @@
 									</block>
 									<block v-else>
 										<text @click="zan(replyItem,index,'2')" class="ri-heart-fill"
-											style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+											style="font-size: 35rpx;color: #FFA000;margin-right: 8rpx;"></text>
 									</block>
 									<text v-if="replyItem.diggnums!=0"
 										style="font-size: 28rpx;color: #808080;">{{replyItem.diggnums}}</text>
@@ -118,7 +118,7 @@
 						</view>
 					</view>
 					<view v-if="item.children_count > 0" @click="moreComment(item,index)"
-						style="color: #FE4373;margin-top: 20rpx;font-size: 28rpx;">
+						style="color: #FFA000;margin-top: 20rpx;font-size: 28rpx;">
 						展开{{ item.children_count}}条回复 <text class="ri-arrow-down-s-line"
 							style="font-size: 30rpx;"></text>
 					</view>

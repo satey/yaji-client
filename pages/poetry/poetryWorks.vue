@@ -27,7 +27,8 @@
 						mode=""></image>
 				</view>
 				<view style="display: flex;align-items: center;justify-content: center;margin-top: 15rpx;">
-					<view style="font-size: 26rpx;color:#666666 ;margin-right: 9rpx;">{{item.user_info.role_name_str}}
+					<view @click="$u.route('/pages/user/home',{user_id:item.user_info.user_id})"
+						style="font-size: 26rpx;color:#666666 ;margin-right: 9rpx;">{{item.user_info.role_name_str}}
 					</view>
 					<block v-if="item.user_info.gender ==1">
 						<i class="iconfont icon-nan1" style="font-size: 22rpx;color: #00C2FF;"></i>

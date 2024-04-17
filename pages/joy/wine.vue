@@ -259,7 +259,7 @@
 	}
 
 	.okBtn {
-		background: #FE4373;
+		background: #FFA000;
 		border-radius: 43px;
 		height: 85rpx;
 		text-align: center;
@@ -268,7 +268,7 @@
 	}
 
 	.next {
-		color: #FE4373;
+		color: #FFA000;
 		text-align: center;
 		font-size: 26rpx;
 	}

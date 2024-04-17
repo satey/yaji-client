@@ -79,7 +79,7 @@
 		data() {
 			return {
 				role: [],
-				colors: ["red", "pink", "blue", "yellow", "#FE4373"],
+				colors: ["red", "pink", "blue", "yellow", "#FFA000"],
 				data: [],
 				choose_num: '',
 				isClick: true,
@@ -235,7 +235,7 @@
 					right: 38rpx;
 					background: #fff;
 					padding-left: 20rpx;
-					color: #FE4373;
+					color: #FFA000;
 				}
 			}
 
@@ -276,7 +276,7 @@
 	}
 
 	.dynastyItemActive {
-		background: #FE4373 !important;
+		background: #FFA000 !important;
 		color: #fff !important;
 		border: none !important;
 	}

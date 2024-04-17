@@ -7,7 +7,7 @@
 			</view>
 			<view slot="right">
 				<view @click="publish"
-					style="width: 92rpx;height: 52rpx;color: #fff;border-radius: 50rpx;background: #FE4373;text-align: center;line-height: 50rpx;font-size: 26rpx;">
+					style="width: 92rpx;height: 52rpx;color: #fff;border-radius: 50rpx;background: #FFA000;text-align: center;line-height: 50rpx;font-size: 26rpx;">
 					发布</view>
 			</view>
 		</u-navbar>
@@ -39,7 +39,7 @@
 		</view>
 		<view style="padding: 0 53rpx 0 53rpx;margin-top: 56rpx;">
 			<view style="display: flex;font-size: 36rpx;color: #3D3D3D;">歌声<text
-					style="color: #FE4373;font-size: 39rpx;margin-left: 10rpx;">*</text></view>
+					style="color: #FFA000;font-size: 39rpx;margin-left: 10rpx;">*</text></view>
 			<view v-if="recordUrl!= ''" style="display: flex;align-items: center;margin-left: 46rpx;margin-top: 36rpx;">
 				<view class="yuyin" @click="bofang">
 					<view style="display: flex;align-items: center;">
@@ -212,7 +212,8 @@
 	.yuyin {
 		width: 275rpx;
 		height: 65rpx;
-		background: #FF6D93;
+		// background: #FF6D93;
+		background: #FFA000;
 		border-radius: 38rpx 38rpx 38rpx 38rpx;
 		opacity: 1;
 

@@ -15,7 +15,7 @@
 				<view style="color: #3D3D3D;font-size: 36rpx;margin-left: 26rpx;flex: 1;">{{item.poetry}}</view>
 			</view>
 			<u-loadmore v-if="myLists.length" :loadmoreText="loadmoreText" color="#a1a1a1" marginTop="20" />
-			<u-empty v-if="!myLists.length" icon="/static/empty2.png" text="数据为空" textColor="#a1a1a1"
+			<u-empty v-if="!myLists.length" icon="/static/xingqiu.png" text="数据为空" textColor="#a1a1a1"
 				marginTop="100"></u-empty>
 		</view>
 		<!-- <view style="padding:0rpx 30rpx 30rpx 30rpx;">

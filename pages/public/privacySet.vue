@@ -9,7 +9,7 @@
 		<view style="padding: 30rpx 30rpx 30rpx 50rpx;">
 			<view class="item">
 				<view>个性化推荐</view>
-				<switch checked="true" @change="" color="#FE4373" style="transform: scale(0.8);" />
+				<switch checked="true" @change="" color="#FFA000" style="transform: scale(0.8);" />
 			</view>
 		</view>
 	</view>

@@ -13,7 +13,7 @@
 				</view>
 				<view class="flex items-center">
 					<view @touchstart.prevent="doComment"
-						style="width: 116rpx;height: 72rpx;text-align: center;line-height: 72rpx;border-radius: 50rpx;background:#FE4373 ;font-size: 28rpx;color: #fff;">
+						style="width: 116rpx;height: 72rpx;text-align: center;line-height: 72rpx;border-radius: 50rpx;background:#FFA000 ;font-size: 28rpx;color: #fff;">
 						发送</view>
 				</view>
 			</view>
@@ -56,7 +56,7 @@
 								</block>
 								<block v-else>
 									<text @click="zan(item,'1',index)" class="ri-heart-fill"
-										style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+										style="font-size: 35rpx;color: red;margin-right: 8rpx;"></text>
 								</block>
 								<text :style="{visibility:item.zan_nums >0?'':'hidden'}"
 									style="color: #808080;font-size: 28rpx;visibility: ;">{{item.zan_nums}}</text>
@@ -101,7 +101,7 @@
 										</block>
 										<block v-else>
 											<text @click="zan(subItem,'2',index)" class="ri-heart-fill"
-												style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+												style="font-size: 35rpx;color: red;margin-right: 8rpx;"></text>
 										</block>
 										<text :style="{visibility:subItem.zan_nums >0?'':'hidden'}"
 											style="color: #808080;font-size: 28rpx;visibility: ;">{{subItem.zan_nums}}</text>
@@ -148,7 +148,7 @@
 										</block>
 										<block v-else>
 											<text @click="zan(newItem,'3',index)" class="ri-heart-fill"
-												style="font-size: 35rpx;color: #FE4373;margin-right: 8rpx;"></text>
+												style="font-size: 35rpx;color: red;margin-right: 8rpx;"></text>
 										</block>
 										<text :style="{visibility:newItem.zan_nums >0?'':'hidden'}"
 											style="color: #808080;font-size: 28rpx;visibility: ;">{{newItem.zan_nums}}</text>
@@ -161,7 +161,7 @@
 								</view>
 							</view>
 						</view>
-						<view v-if="item.children_count > 0" style="color: #FE4373;margin-top: 5rpx;font-size: 28rpx;"
+						<view v-if="item.children_count > 0" style="color: #FFA000;margin-top: 5rpx;font-size: 28rpx;"
 							@click="clickMort(item,index)">
 							~~~ 展开{{ item.children_count}}条回复 <text class="ri-arrow-down-s-line"
 								style="font-size: 30rpx;"></text>

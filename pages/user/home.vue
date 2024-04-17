@@ -143,7 +143,7 @@
 			</view>
 		</view>
 		<view style="text-align: center;color: #999999;font-size: 28rpx;">~没有更多了~</view>
-		<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+		<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FFA000"
 			confirmText="确定" cancelText="取消" @cancel="followModule=false" @confirm="unfollow">
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>

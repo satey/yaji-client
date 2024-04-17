@@ -169,9 +169,9 @@
 	.qiu {
 		width: 88rpx;
 		height: 88rpx;
-		background: #FE4373;
+		background: #FFA000;
 		opacity: 1;
-		border: 1rpx solid #EB056D;
+		border: 1rpx solid #FFA000;
 		border-radius: 50%;
 		display: flex;
 		align-items: center;

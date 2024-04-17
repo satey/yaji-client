@@ -30,7 +30,7 @@
 							<text v-show='item.is_zan==0' class="ri-heart-line"
 								style="font-size: 32rpx;margin-right: 10rpx;color: #999999;"></text>
 							<text v-show='item.is_zan==1' class="ri-heart-fill"
-								style="font-size: 32rpx;margin-right: 10rpx;color: #fe4373;"></text>
+								style="font-size: 32rpx;margin-right: 10rpx;color: #FFA000;"></text>
 							<text <text
 								style="font-size: 22rpx;color: #999;">{{ item.diggnums==0?'':item.diggnums }}</text>
 						</view>
@@ -81,7 +81,7 @@
 												<text v-show='sonItem.is_zan==0' class="ri-heart-line"
 													style="font-size: 32rpx;margin-right: 10rpx;color: #999999;"></text>
 												<text v-show='sonItem.is_zan==1' class="ri-heart-fill"
-													style="font-size: 32rpx;margin-right: 10rpx;color: #fe4373;"></text>
+													style="font-size: 32rpx;margin-right: 10rpx;color: #FFA000;"></text>
 												<text <text
 													style="font-size: 22rpx;color: #999;">{{sonItem.diggnums==0?'':sonItem.diggnums}}</text>
 											</view>
@@ -128,7 +128,7 @@
 												<text v-show='sonItem.is_zan==0' class="ri-heart-line"
 													style="font-size: 32rpx;margin-right: 10rpx;color: #999999;"></text>
 												<text v-show='sonItem.is_zan==1' class="ri-heart-fill"
-													style="font-size: 32rpx;margin-right: 10rpx;color: #fe4373;"></text>
+													style="font-size: 32rpx;margin-right: 10rpx;color: #FFA000;"></text>
 												<text <text
 													style="font-size: 22rpx;color: #999;">{{sonItem.diggnums==0?'':sonItem.diggnums}}</text>
 											</view>
@@ -137,7 +137,7 @@
 								</view>
 							</block>
 						</view>
-						<view v-if="item.children_count > 0" style="color: #FE4373;margin-top: 5rpx;"
+						<view v-if="item.children_count > 0" style="color: #FFA000;margin-top: 5rpx;"
 							@click="clickMort(item,index)">
 							~~~ 展开{{ item.children_count}}条回复 <text class="ri-arrow-down-s-line"
 								style="font-size: 30rpx;"></text>

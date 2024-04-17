@@ -157,11 +157,27 @@
 					</swiper>
 				</view>
 				<view style="padding: 20rpx 15rpx 5rpx 15rpx;box-sizing: border-box;">
-					<view class="blackBox" style="display: flex;align-items: center;">
-						<image @click="$u.route('pages/user/famousRole')" src="../../static/mingrentang.png"
-							style="height: 127rpx;" mode="widthFix"></image>
-						<image @click="$u.route('pages/talent/talent')" src="../../static/caihuaceshi.png"
-							style="height: 127rpx;" mode="widthFix"></image>
+					<view class="blackBox">
+						<view style="display: flex;align-items: center;margin-top: 19rpx;">
+							<image @click="$u.route('pages/user/famousRole')" src="../../static/mingrentang.png"
+								style="height: 127rpx;" mode="widthFix"></image>
+							<image @click="$u.route('pages/talent/talent')" src="../../static/caihuaceshi.png"
+								style="height: 127rpx;" mode="widthFix"></image>
+						</view>
+						<view
+							style="display: flex;align-items: center;justify-content: space-between;margin-top: 21rpx;margin-bottom: 20rpx;">
+							<image @click="$u.route('pages/joy/archeryStart')" src="@/static/shefu.png"
+								style="height: 198rpx;width: 210rpx;" mode="widthFix"></image>
+							<image @click="$u.route('pages/song/songStart')" src="@/static/duige.png"
+								style="height: 198rpx;width: 210rpx;" mode="widthFix"></image>
+							<image @click="$u.route('/pages/joy/poem')" src="@/static/jieyuan.png"
+								style="height: 198rpx;width: 210rpx;" mode="widthFix"></image>
+						</view>
+					</view>
+				</view>
+				<view style="padding: 0rpx 15rpx 15rpx 15rpx;box-sizing: border-box;" v-if="adLength">
+					<view style="width: 100%;height: 166rpx;">
+						<feiAd type='4' @changeAd="changeAd"></feiAd>
 					</view>
 				</view>
 				<view class="recommend">
@@ -171,7 +187,7 @@
 							<view>
 								<view style="display: flex;align-items: center;">
 									<text class="fontFamily" style="color: #123329;font-size: 30rpx;"
-										v-if="homeDate != null">{{homeDate.recommend_room_list[0].type_str}}</text>
+										v-if="homeDate != null">{{homeDate.recommend_room_list[0].room_name}}</text>
 									<text v-if="homeDate != null"
 										style="font-size: 20rpx;padding-left: 10rpx;border-left: 1px solid #9DA9A5;margin-left: 10rpx;color: #9DA9A5;">{{homeDate.recommend_room_list[0].public_type_str}}</text>
 								</view>
@@ -179,7 +195,7 @@
 									<image style="width: 40rpx;height: 40rpx;border-radius: 50%;" v-if="homeDate !=null"
 										:src="homeDate.recommend_room_list[0].room_image" mode=""></image>
 									<view class="subText" style="color: #000;" v-if="homeDate !=null">
-										{{homeDate.recommend_room_list[0].room_name}}
+										{{homeDate.recommend_room_list[0].type_str}}
 									</view>
 								</view>
 							</view>
@@ -201,14 +217,14 @@
 								@click="jump(homeDate.recommend_room_list[1])">
 								<view style="display: flex;align-items: center;">
 									<text class="fontFamily" style="color: #501812;font-size: 30rpx;"
-										v-if="homeDate != null">{{homeDate.recommend_room_list[1].type_str}}</text>
+										v-if="homeDate != null">{{homeDate.recommend_room_list[1].room_name}}</text>
 									<text
 										style="font-size: 20rpx;padding-left: 10rpx;border-left: 1px solid #9DA9A5;margin-left: 10rpx;color: #9DA9A5;"
 										v-if="homeDate != null">{{homeDate.recommend_room_list[1].public_type_str}}</text>
 								</view>
 								<view style="display: flex;align-items: center;justify-content: space-between;">
 									<text style="font-size: 25rpx;color: #501812;"
-										v-if="homeDate != null">{{homeDate.recommend_room_list[1].room_name}}</text>
+										v-if="homeDate != null">{{homeDate.recommend_room_list[1].type_str}}</text>
 									<block v-if="homeDate !=null">
 										<view class="userImages" v-if="homeDate.recommend_room_list[1].nums !=0">
 											<block
@@ -229,14 +245,14 @@
 								@click="jump(homeDate.recommend_room_list[3])">
 								<view style="display: flex;align-items: center;">
 									<text class="fontFamily" style="color: #543A1D;font-size: 30rpx;"
-										v-if="homeDate != null">{{homeDate.recommend_room_list[3].type_str}}</text>
+										v-if="homeDate != null">{{homeDate.recommend_room_list[3].room_name}}</text>
 									<text
 										style="font-size: 20rpx;padding-left: 10rpx;border-left: 1px solid #9DA9A5;margin-left: 10rpx;color: #9DA9A5;"
 										v-if="homeDate != null">{{homeDate.recommend_room_list[3].public_type_str}}</text>
 								</view>
 								<view style="display: flex;align-items: center;justify-content: space-between;">
 									<text style="font-size: 25rpx;color: #543A1D;"
-										v-if="homeDate != null">{{homeDate.recommend_room_list[3].room_name}}</text>
+										v-if="homeDate != null">{{homeDate.recommend_room_list[3].type_str}}</text>
 									<block v-if="homeDate !=null">
 										<view class="userImages" v-if="homeDate.recommend_room_list[3].nums !=0">
 											<block
@@ -261,7 +277,7 @@
 						<view>
 							<view style="display: flex;align-items: center;">
 								<text class="fontFamily" style="color: #123329;font-size: 30rpx;"
-									v-if="homeDate !=null">{{homeDate.recommend_room_list[2].type_str}}</text>
+									v-if="homeDate !=null">{{homeDate.recommend_room_list[2].room_name}}</text>
 								<text
 									style="font-size: 23rpx;padding-left: 10rpx;border-left: 1px solid #9DA9A5;margin-left: 10rpx;color: #9DA9A5;"
 									v-if="homeDate !=null">{{homeDate.recommend_room_list[2].public_type_str}}</text>
@@ -269,7 +285,7 @@
 							<view
 								style="display: flex;align-items: center;justify-content: space-between;margin-top: 30rpx;">
 								<view style="font-size:23rpx ;color: #000;" v-if="homeDate !=null">
-									{{homeDate.recommend_room_list[2].room_name}}
+									{{homeDate.recommend_room_list[2].type_str}}
 								</view>
 								<block v-if="homeDate !=null">
 									<view class="userImages" v-if="homeDate.recommend_room_list[2].nums !=0">
@@ -296,14 +312,14 @@
 							<view>
 								<view style="display: flex;align-items: center;">
 									<text class="fontFamily"
-										style="color: #123329;font-size: 30rpx;">{{item.type_str}}</text>
+										style="color: #123329;font-size: 30rpx;">{{item.room_name}}</text>
 									<text
 										style="font-size: 23rpx;padding-left: 10rpx;border-left: 1px solid #9DA9A5;margin-left: 10rpx;color: #9DA9A5;">{{item.public_type_str}}</text>
 								</view>
 								<view
 									style="display: flex;align-items: center;justify-content: space-between;margin-top: 30rpx;">
 									<view style="font-size:23rpx ;color: #000;">
-										{{item.room_name}}
+										{{item.type_str}}
 									</view>
 									<block>
 										<view class="userImages" v-if="item.nums !=0">
@@ -358,11 +374,13 @@
 <script>
 	import feiRenew from "@/components/fei-renew/fei-renew.vue"
 	import feiQsls from "@/components/fei-qsls/fei-qsls.vue"
+	import feiAd from "@/components/fei-ad/fei-ad.vue"
 	export default {
 		name: 'index',
 		components: {
 			feiRenew,
 			feiQsls,
+			feiAd
 		},
 		data() {
 			return {
@@ -386,6 +404,7 @@
 				zhiyuanData: [],
 				userInfo: uni.getStorageSync("userInfo"),
 				ttt: null,
+				adLength: true
 			}
 		},
 
@@ -420,6 +439,9 @@
 			this.zhiyuanNewArr = [];
 		},
 		methods: {
+			changeAd(e) {
+				this.adLength = e.length == 0 ? false : true
+			},
 			callCall() {
 				this.$api("call.sayHello", {
 					to_user_id: this.zhiyuanData.user_info.user_id,
@@ -555,8 +577,8 @@
 			},
 			//青少年模式
 			youngModelInfo() {
-				this.$api("teenageMode.youngModelInfo",{
-					type:1
+				this.$api("teenageMode.youngModelInfo", {
+					type: 1
 				}).then(res => {
 					if (res.code == 1) {
 						if (res.data.young_model_switch == 1) {

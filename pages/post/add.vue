@@ -2,7 +2,7 @@
 	<page-meta :root-font-size="'13px'"></page-meta>
 	<view class="">
 		<u-navbar :safeAreaInsetTop="true" :placeholder="true">
-			<view slot="left" @click="">
+			<view slot="left">
 				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 			<view slot="right" style="display: flex;align-items: center;">
@@ -81,8 +81,44 @@
 							page-gesture="true" controls="false"></video>
 					</view>
 				</view>
+				<view @click="categoryShow=true"
+					style="margin-top: 25rpx;width: 226rpx;height: 67rpx;line-height: 67rpx;border-radius: 50rpx;border: 1px solid #FFA000;text-align: center;display: flex;align-items: center;justify-content: center;">
+					<text style="color: #FFA000;font-size: 30rpx;">{{category.length==0?'发布到类目':category.title}} </text>
+					<i style="color: #FFA000;font-size: 30rpx;" class="iconfont icon-right"></i>
+				</view>
 			</view>
 		</view>
+
+		<u-popup :show="categoryShow" @close="categoryShow = false" mode="bottom" :closeable="false" :round="20">
+			<view class="categoryContainer">
+				<view style="display: flex;align-items: center;justify-content: center;margin-top: 32rpx;">
+					<view style="position: relative;text-align: center;display: inline;margin: 0 auto;">
+						<text
+							style="color: #333;font-size:32rpx ;position: relative;z-index: 1;font-family: font-test !important;">选择类目</text>
+						<text
+							style="width: 100%;height: 13rpx;background: #9EFF00;position: absolute;left: 0;bottom: 0;"></text>
+					</view>
+				</view>
+				<scroll-view scroll-y="true"
+					style="height: 0;flex: 1;box-sizing: border-box;padding: 0rpx 40rpx;margin-top: 50rpx;">
+					<block v-for="(item,index) in topTab" :key="index">
+						<view @click="clickCategory(item,index)"
+							:style="{color:categoryIndex == index?'#FFA000':'#333333'}" class="tabsItem">{{item.title}}
+						</view>
+					</block>
+				</scroll-view>
+				<view style="display: flex;align-items: center;padding: 0rpx 40rpx;padding-bottom: 40rpx;">
+					<view @click="category = [],categoryShow = false,categoryIndex=-1"
+						style="width: 50%;height: 86rpx;line-height: 86rpx;border: 1px solid #FFA000;text-align: center;color: #FFA000;font-size: 32rpx;border-radius: 10rpx;margin-right: 10rpx;">
+						重置
+					</view>
+					<view @click="categoryShow = false"
+						style="width: 50%;height: 86rpx;line-height: 86rpx;border: 1px solid #D9D9D9;text-align: center;color: #999;font-size: 32rpx;border-radius: 10rpx;margin-left: 10rpx;">
+						取消
+					</view>
+				</view>
+			</view>
+		</u-popup>
 		<!-- <view style="height: 25rpx;background: #f7f7f7;"></view> -->
 		<!-- <view class="bgImgs">
 			<view style="display: flex;align-items: center;">
@@ -412,7 +448,11 @@
 				showTopic: true,
 				bgImg: [],
 				yalingTitle: '',
-				yalingId: ''
+				yalingId: '',
+				categoryShow: false,
+				topTab: [],
+				category: [],
+				categoryIndex: -1,
 			}
 		},
 		onLoad(e) {
@@ -440,6 +480,7 @@
 			that.watchKeyboard();
 			that.getBgImg()
 			that.setFontFamily()
+			that.getPostTag()
 		},
 
 		computed: {
@@ -451,6 +492,21 @@
 			uni.removeStorageSync('post_cate_id')
 		},
 		methods: {
+			//点击类目
+			clickCategory(item, index) {
+				console.log(item)
+				this.category = item;
+				this.categoryIndex = index;
+				this.categoryShow = false
+				console.log(this.category)
+			},
+			getPostTag() {
+				this.$api("post.getPostTag").then(res => {
+					if (res.code == 1) {
+						this.topTab = res.data
+					}
+				})
+			},
 			openPreview() {
 				var that = this;
 				// if (that.form.content == '' && that.form.story == '') {
@@ -799,7 +855,7 @@
 				console.log(that.form)
 				let careIdArr = []
 				that.fei_cate.forEach((item, index) => {
-					careIdArr.push(item.id)
+					careIdArr.push(item.id.post_cate_id)
 				})
 				that.$api("post.createPost", {
 					story: that.form.story,
@@ -810,7 +866,8 @@
 					images: that.form.images,
 					audio: that.form.audio,
 					duration_time: that.form.timer,
-					yaling_id: that.yalingId
+					yaling_id: that.yalingId,
+					tag_id: [this.category.tag_id]
 				}).then(res => {
 					console.log(res)
 					if (res.code == 1) {
@@ -1040,6 +1097,28 @@
 	}
 </script>
 <style lang="scss" scoped>
+	.tabsItem {
+		width: 100%;
+		height: 86rpx;
+		background-image: url(@/static/Subtract.png);
+		background-position: 100% 100%;
+		background-size: 100% 100%;
+		margin-top: 25rpx;
+		text-align: center;
+		line-height: 86rpx;
+		color: #333;
+		font-size: 32rpx;
+	}
+
+	.categoryContainer {
+		background: #fff;
+		width: 100%;
+		height: 950rpx;
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+	}
+
 	.fabu {
 		width: 108rpx;
 		height: 55rpx;

@@ -143,6 +143,6 @@
 		position: absolute;
 		right: 15rpx;
 		top: 15rpx;
-		color: #FE4373;
+		color: #FFA000;
 	}
 </style>

@@ -81,7 +81,7 @@
 					<text v-show='is_zan==0' class="ri-heart-line"
 						style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
 					<text v-show='is_zan==1' class="ri-heart-fill"
-						style="font-size: 40rpx;margin-right: 10rpx;color: #fe4373;"></text>
+						style="font-size: 40rpx;margin-right: 10rpx;color: red;"></text>
 					<text
 						style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 100rpx;">{{ item.diggnums ==0?'出彩':item.diggnums }}</text>
 				</view>
@@ -91,14 +91,14 @@
 					<text v-show='is_cai==0' class="ri-emotion-normal-line"
 						style="font-size: 40rpx;margin-right: 10rpx;color: #999999;"></text>
 					<text v-show='is_cai==1' class="ri-emotion-normal-fill"
-						style="font-size: 40rpx;margin-right: 10rpx;color: #fe4373;"></text>
+						style="font-size: 40rpx;margin-right: 10rpx;color: #FFA000;"></text>
 					<!-- <image v-show='is_cai==0' src="../../static/nolove.png"
 						style="width: 40rpx;margin-top: 10rpx; height: 40rpx;margin-right: 10rpx;" mode=""></image>
 					<image v-show='is_cai==1' src="../../static/nolove-red.png"
 						style="width: 40rpx;margin-top: 10rpx;height: 40rpx;margin-right: 10rpx;" mode=""></image> -->
 					<text style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 80rpx;color: #999999;"
 						v-show='is_cai==0'>无聊</text>
-					<text style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 80rpx;color: #fe4373;"
+					<text style="font-size: 24rpx;color: #999999;white-space: nowrap;width: 80rpx;color: #FFA000;"
 						v-show='is_cai==1'>无聊</text>
 				</view>
 			</view>

@@ -240,7 +240,7 @@
 		components: {},
 		data() {
 			return {
-				colors: ["red", "pink", "blue", "yellow", "#FE4373"],
+				colors: ["red", "pink", "blue", "yellow", "#FFA000"],
 				userRole: {},
 				role: {},
 				dynasty: {},
@@ -780,7 +780,7 @@
 					right: 38rpx;
 					background: #fff;
 					padding-left: 20rpx;
-					color: #FE4373;
+					color: #FFA000;
 				}
 			}
 

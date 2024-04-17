@@ -172,7 +172,7 @@
 			display: flex;
 			align-items: center;
 			z-index: 999;
-			border: 1px solid #FE4373;
+			border: 1px solid #FFA000;
 			margin-top: 50rpx;
 
 			.searchIcon {

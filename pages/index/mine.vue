@@ -39,7 +39,12 @@
 					<view style="color: #333333;font-size: 36rpx;font-weight: bold;">
 						{{userInfo.realname}}·{{userInfo.dynasty}}
 					</view>
-					<view style="color: #333333;font-size: 25rpx;">雅集号：{{userInfo.uid}}</view>
+					<view style="display: flex;align-items: center;">
+						<view style="color: #333333;font-size: 25rpx;">雅集号：{{userInfo.uid}}</view>
+						<i @click="copy" class="iconfont icon-fuzhi"
+							style="color:#333 ;font-size: 28rpx;margin-left: 20rpx;"></i>
+					</view>
+
 					<view style="display: flex;align-items: center;	">
 						<view style="display: flex;align-items: center;" @click="$u.route('/pages/public/reputation')">
 							<view class="reputation">名望：{{userInfo.total_mw}}
@@ -69,7 +74,12 @@
 					<view style="color:#333 ;font-size: 30rpx;margin-top: 20rpx;">钱包</view>
 				</view>
 			</view>
-			<view style="padding:50rpx 30rpx 0rpx 30rpx;">
+			<view style="padding: 15rpx 30rpx 0rpx 30rpx;box-sizing: border-box;" v-if="adLength">
+				<view style="width: 100%;height: 166rpx;">
+					<feiAd type='3' @changeAd="changeAd"></feiAd>
+				</view>
+			</view>
+			<view style="padding:15rpx 30rpx 0rpx 30rpx;">
 				<view class="menu">
 					<view class="menuItem" @click="$u.route('/pages/mine/works')">动态作品</view>
 					<view class="menuItem" @click="$u.route('/pages/mine/room')">我的房间</view>
@@ -87,14 +97,19 @@
 	</view>
 </template>
 <script>
+	import feiAd from "@/components/fei-ad/fei-ad.vue"
 	import permision from "@/js_sdk/wa-permission/permission.js"
 	export default {
 		name: 'mine',
+		components: {
+			feiAd
+		},
 		data() {
 			return {
 				userImg: '',
 				userInfo: [],
-				background_image: ""
+				background_image: "",
+				adLength: true
 			}
 		},
 
@@ -104,6 +119,9 @@
 			uni.showTabBar()
 		},
 		methods: {
+			changeAd(e) {
+				this.adLength = e.length == 0 ? false : true
+			},
 			//初始化
 			init() {
 				let that = this;
@@ -174,7 +192,21 @@
 						})
 					}
 				})
-			}
+			},
+			//复制雅集号
+			copy() {
+				var that = this;
+				uni.setClipboardData({
+					data: String(this.userInfo.uid),
+					success: function() {
+						//调用方法成功
+						console.log('success');
+					},
+					fail(err) {
+						console.log(err)
+					}
+				})
+			},
 		}
 	}
 </script>

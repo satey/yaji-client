@@ -12,7 +12,7 @@
 			</view>
 		</u-navbar>
 		<view>
-			<u-tabs :list="tablist" lineColor="#FE4373" lineWidth="70rpx" lineHeight="16rpx" itemStyle="height: 72rpx;"
+			<u-tabs :list="tablist" lineColor="#FFA000" lineWidth="70rpx" lineHeight="16rpx" itemStyle="height: 72rpx;"
 				inactiveStyle="color: #787878; transform: scale(1);"
 				activeStyle="color: #333333; font-weight: blod; transform: scale(1.2);" @change="changeTab"
 				@click="click">

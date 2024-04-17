@@ -21,6 +21,29 @@
 				</view>
 			</view>
 		</u-popup>
+		<u-popup :show="contactShow" @close="contactShow = false" mode="center" :closeable="false" :round="30">
+			<view
+				style="padding: 50rpx 30rpx;background: #fff;border-radius: 10rpx;width: 626rpx;height: 506rpx;box-sizing: border-box;">
+				<view style="font-size: 36rpx;text-align: center;color: #333;">联系客服</view>
+				<view style="font-size: 28rpx;color: #666;margin-top: 38rpx;">如果您收不到验证码，请联系我们</view>
+				<view style="display: flex;align-items: center;color: #333;font-size: 28rpx;margin-top: 35rpx;">
+					<text>客服QQ：6428882</text>
+					<i @click="copy('6428882')" class="iconfont icon-fuzhi"
+						style="color:#333 ;font-size: 28rpx;margin-left: 20rpx;"></i>
+				</view>
+				<view style="display: flex;align-items: center;color: #333;font-size: 28rpx;margin-top: 35rpx;">
+					<text>微信：yajixiaoya</text>
+					<i @click="copy('yajixiaoya')" class="iconfont icon-fuzhi"
+						style="color:#333 ;font-size: 28rpx;margin-left: 20rpx;"></i>
+				</view>
+				<view @click="contactShow = false"
+					style="display: flex;align-items: center;justify-content: center;margin-top: 72rpx;">
+					<view
+						style="color: #fff;font-size: 32rpx;background: #FFA000;border-radius: 50rpx;width: 196rpx;height: 82rpx;text-align: center;line-height: 82rpx;">
+						关闭</view>
+				</view>
+			</view>
+		</u-popup>
 		<!-- 主题 -->
 		<view class="loginContainer">
 			<view class="loginText">
@@ -43,6 +66,9 @@
 			</view>
 			<view class="loginBtn" @click="onLogin()">
 				登录
+			</view>
+			<view style="color: #C4A486;font-size: 28rpx;text-align: center;padding-top: 20rpx;">
+				<text @click="contactShow=true">收不到验证码？</text>
 			</view>
 			<view class="flex flex-row-right"
 				style="margin-top: 136rpx;margin-bottom: 162rpx;font-size: 23rpx;display: flex;align-items: center;">
@@ -73,6 +99,7 @@
 				mobile: '',
 				code: "",
 				isClick: false,
+				contactShow: false
 			}
 		},
 		methods: {
@@ -197,6 +224,20 @@
 			handleAgree(e) {
 				let that = this;
 				that.protocol = e;
+			},
+			//复制雅集号
+			copy(content) {
+				var that = this;
+				uni.setClipboardData({
+					data: String(content),
+					success: function() {
+						//调用方法成功
+						console.log('success');
+					},
+					fail(err) {
+						console.log(err)
+					}
+				})
 			},
 		}
 	}

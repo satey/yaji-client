@@ -2,7 +2,7 @@
 	<view>
 		<!-- 充值 -->
 		<view v-if="recharge">
-			<u-modal :show="recharge" :showConfirmButton="false" :showCancelButton="false" confirmColor="#FE4373"
+			<u-modal :show="recharge" :showConfirmButton="false" :showCancelButton="false" confirmColor="#FFA000"
 				confirmText="充值" cancelText="放弃" @cancel="recharge=false">
 				<view>
 					<view style="display: flex;flex-direction: column;">
@@ -55,7 +55,7 @@
 						<image style="width: 20rpx;height: 20rpx;" src="@/static/qian.png" mode=""></image>
 						<text style="font-size: 20rpx;color: #808080;margin-left: 5rpx;">{{userInfoData.money}}</text>
 					</view>
-					<view style="display: flex;align-items: center;font-size: 23rpx;color: #FE4373;"
+					<view style="display: flex;align-items: center;font-size: 23rpx;color: #FFA000;"
 						@click="$u.route('/pages/mine/recharge')">
 						<text>马上充值</text>
 						<text class="ri-arrow-right-s-line" style="font-size: 35rpx;"></text>

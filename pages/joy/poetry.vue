@@ -89,14 +89,14 @@
 						</block>
 						<!-- 加入房间提示 -->
 						<view v-if="item.type == 'game_room'">
-							系统提示：<text style="color: #FE4373;">{{item.user.realname}}·{{item.user.dynasty}}</text>
+							系统提示：<text style="color: #FFA000;">{{item.user.realname}}·{{item.user.dynasty}}</text>
 							<text v-if="item.selectType =='add_game_room'">加入房间！</text>
 							<text v-if="item.selectType =='leave_game_room'">离开房间！</text>
 						</view>
 						<!-- 命中 -->
 						<view v-if="item.type == 'hit'">
 							系统提示：本轮命中<text
-								style="color: #FE4373;">{{item.user.role.realname}}·{{item.user.role.dynasty}}</text>，请在120秒内完成
+								style="color: #FFA000;">{{item.user.role.realname}}·{{item.user.role.dynasty}}</text>，请在120秒内完成
 							<text v-if="item.taskType ==1">【唱歌】</text>
 							<text v-if="item.taskType ==2">【吟诗】</text>
 							<text v-if="item.taskType ==3">【读口令】</text>
@@ -104,14 +104,14 @@
 						<!-- 开始 -->
 						<view v-if="item.type == 'start'">
 							系统提示：本轮由 <text
-								style="color: #FE4373;">{{item.user.role.realname}}·{{item.user.role.dynasty}}</text>{{item.msg}}
+								style="color: #FFA000;">{{item.user.role.realname}}·{{item.user.role.dynasty}}</text>{{item.msg}}
 						</view>
 						<!-- 礼物 -->
 						<view v-if="item.type == 'gift'" style="display: flex;align-items: center;flex-wrap: wrap;">
 							<text>系统提示：</text><text
-								style="color: #FE4373;">{{item.data.sender_role_realname}}·{{item.data.sender_role_dynasty}}</text><text>送给</text>
+								style="color: #FFA000;">{{item.data.sender_role_realname}}·{{item.data.sender_role_dynasty}}</text><text>送给</text>
 							<text
-								style="color: #FE4373;">{{item.data.recipient_role_realname}}·{{item.data.recipient_role_dynasty}}</text><text>礼物【{{item.data.gift_title}}】</text>
+								style="color: #FFA000;">{{item.data.recipient_role_realname}}·{{item.data.recipient_role_dynasty}}</text><text>礼物【{{item.data.gift_title}}】</text>
 							<image :src='item.data.gift_image' style="width: 50rpx;height: 50rpx;" mode="aspectFill">
 							</image>
 						</view>
@@ -119,31 +119,31 @@
 						<view v-if="item.type == 'ok'">
 							<text>系统提示：恭喜</text>
 							<text
-								style="color: #FE4373;">{{item.role_realname}}·{{item.role_dynasty}}</text>完成了任务！任务口令为：【{{item.content}}】
+								style="color: #FFA000;">{{item.role_realname}}·{{item.role_dynasty}}</text>完成了任务！任务口令为：【{{item.content}}】
 						</view>
 						<!-- zan -->
 						<view v-if="item.type == 'zan'">
 							<text>系统提示：</text>
 							<text
-								style="color: #FE4373;">{{item.data.user_role_realname}}·{{item.data.user_role_dynasty}}</text>
+								style="color: #FFA000;">{{item.data.user_role_realname}}·{{item.data.user_role_dynasty}}</text>
 							<text>给</text>
 							<text
-								style="color: #FE4373;">{{item.data.to_user_role_realname}}·{{item.data.to_user_role_dynasty}}</text>
+								style="color: #FFA000;">{{item.data.to_user_role_realname}}·{{item.data.to_user_role_dynasty}}</text>
 							<text>点赞了！</text>
 						</view>
 						<!-- cai -->
 						<view v-if="item.type == 'cai'">
 							<text>系统提示：</text>
 							<text
-								style="color: #FE4373;">{{item.data.user_role_realname}}·{{item.data.user_role_dynasty}}</text>
+								style="color: #FFA000;">{{item.data.user_role_realname}}·{{item.data.user_role_dynasty}}</text>
 							<text>给</text>
 							<text
-								style="color: #FE4373;">{{item.data.to_user_role_realname}}·{{item.data.to_user_role_dynasty}}</text>
+								style="color: #FFA000;">{{item.data.to_user_role_realname}}·{{item.data.to_user_role_dynasty}}</text>
 							<text>点踩了！</text>
 						</view>
 						<view v-if="item.type == 'overtime_penalty'">
 							<text>系统提示：</text>
-							<text style="color: #FE4373;">{{item.user_role_realname}}·{{item.user_role_dynasty}}</text>
+							<text style="color: #FFA000;">{{item.user_role_realname}}·{{item.user_role_dynasty}}</text>
 							<text>{{item.msg}}</text>
 						</view>
 						<!-- 聊天文字 -->
@@ -231,12 +231,12 @@
 						@touchmove.stop.prevent="handleRecordDoing" @touchend="handleRecordStop(2)">
 						<view class="relative flex justify-center items-center rounded-full">
 							<view class="flex justify-center items-center rounded-full w-20 h-20 bg-fuchsia-500 z-10"
-								style="background: #FE4373 !important;">
+								style="background: #FFA000 !important;">
 								<i class="ri-mic-fill text-4xl leading-none text-white"></i>
 							</view>
 							<view v-if="recording"
 								class="animate-ping absolute rounded-full p-2 bg-fuchsia-200 opacity-50"
-								style="background: #FE4373 !important;">
+								style="background: #FFA000 !important;">
 								<view class="rounded-full w-20 h-20 p-2 bg-fuchsia-500 opacity-50">
 								</view>
 							</view>
@@ -294,11 +294,11 @@
 						@touchmove.stop.prevent="handleRecordDoing" @touchend="handleRecordStop(1)">
 						<view class="relative flex justify-center items-center rounded-full">
 							<view class="flex justify-center items-center rounded-full w-20 h-20  z-10"
-								style="background: #FE4373;">
+								style="background: #FFA000;">
 								<i class="ri-mic-fill text-4xl leading-none text-white"></i>
 							</view>
 							<view v-if="recording" class="animate-ping absolute rounded-full p-2 opacity-50"
-								style="background: #FE4373;">
+								style="background: #FFA000;">
 								<view class="rounded-full w-20 h-20 p-2 bg-fuchsia-500 opacity-50">
 								</view>
 							</view>
@@ -309,7 +309,7 @@
 			</view>
 		</u-popup>
 		<!-- 弹窗 -->
-		<u-modal :show="animationsModule" :showConfirmButton="true" :showCancelButton="false" confirmColor="#FE4373"
+		<u-modal :show="animationsModule" :showConfirmButton="true" :showCancelButton="false" confirmColor="#FFA000"
 			confirmText="好的" @confirm="animationsModule=false" style="z-index: 9999999;">
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
@@ -318,7 +318,7 @@
 				</view>
 			</view>
 		</u-modal>
-		<u-modal :show="disconnect" :showConfirmButton="true" :showCancelButton="false" confirmColor="#FE4373"
+		<u-modal :show="disconnect" :showConfirmButton="true" :showCancelButton="false" confirmColor="#FFA000"
 			confirmText="好的" @confirm="$u.route({type: 'navigateBack',delta: 1})" style="z-index: 9999999;">
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
@@ -327,7 +327,7 @@
 				</view>
 			</view>
 		</u-modal>
-		<u-modal :show="exitModul" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+		<u-modal :show="exitModul" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FFA000"
 			confirmText="确定" cancelText="取消" @cancel="exit" @confirm="exit2" style="z-index: 9999999;">
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
@@ -336,7 +336,7 @@
 				</view>
 			</view>
 		</u-modal>
-		<u-modal :show="taskModul" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+		<u-modal :show="taskModul" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FFA000"
 			confirmText="放弃" cancelText="取消" @cancel="taskModul=false" @confirm="closeTask" style="z-index: 9999999;">
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
@@ -345,7 +345,7 @@
 				</view>
 			</view>
 		</u-modal>
-		<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FE4373"
+		<u-modal :show="followModule" :showConfirmButton="true" :showCancelButton="true" confirmColor="#FFA000"
 			confirmText="确定" cancelText="取消" @cancel="followModule=false" @confirm="unfollow" style="z-index: 9999999;">
 			<view style="display: flex;flex-direction: column;">
 				<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">提示</view>
@@ -1681,7 +1681,7 @@
 
 		.sendBtn {
 			height: 80rpx;
-			background: #FE4373;
+			background: #FFA000;
 			border-radius: 10rpx;
 			text-align: center;
 			line-height: 80rpx;
@@ -1693,7 +1693,7 @@
 	.recording {
 		width: 320rpx;
 		height: 65rpx;
-		background: #FE4373;
+		background: #FFA000;
 		border-radius: 10rpx;
 		display: flex;
 		align-items: center;
@@ -1767,7 +1767,7 @@
 				text-align: center;
 				line-height: 66rpx;
 				border-radius: 10rpx;
-				background: #FE4373;
+				background: #FFA000;
 				color: #fff;
 			}
 		}
@@ -1891,7 +1891,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #FE4373;
+		color: #FFA000;
 		background: rgba(255, 255, 255, 0.5);
 	}
 
