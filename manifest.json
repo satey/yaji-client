@@ -2,8 +2,8 @@
     "name" : "雅集",
     "appid" : "__UNI__5018490",
     "description" : "雅集",
-    "versionName" : "2.0.9",
-    "versionCode" : 209,
+    "versionName" : "2.1.0",
+    "versionCode" : 210,
     "transformPx" : false,
     "app" : {
         "launch_path" : "/pages/auth/login"
@@ -67,7 +67,7 @@
                     "request" : "none",
                     "prompt" : "为保证您正常、安全地使用，需要获取设备识别码（部分手机提示为获取手机号码）使用权限，请允许。"
                 },
-                "abiFilters" : [ "arm64-v8a" ],
+                "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ],
                 "schemes" : "com.suoeryoude.yaji",
                 "targetSdkVersion" : 30
             },
@@ -92,14 +92,7 @@
             "sdkConfigs" : {
                 "ad" : {},
                 "payment" : {
-                    "alipay" : {
-                        "__platform__" : [ "ios", "android" ]
-                    },
-                    "weixin" : {
-                        "__platform__" : [ "ios", "android" ],
-                        "appid" : "wx946846daf718d666",
-                        "UniversalLinks" : "https://yaji.suoeryoude.cn/uni-universallinks/__UNI__5018490/"
-                    }
+                    "appleiap" : {}
                 },
                 "push" : {
                     "unipush" : {
