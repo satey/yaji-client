@@ -855,7 +855,7 @@
 				console.log(that.form)
 				let careIdArr = []
 				that.fei_cate.forEach((item, index) => {
-					careIdArr.push(item.id.post_cate_id)
+					careIdArr.push(item.id)
 				})
 				that.$api("post.createPost", {
 					story: that.form.story,
