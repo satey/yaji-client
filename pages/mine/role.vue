@@ -3,7 +3,7 @@
 	<view class="px-4" style="height: 100%;">
 		<u-navbar bgColor="transparent" :safeAreaInsetTop="true" :placeholder="true">
 			<view slot="left">
-				<i class="ri-arrow-left-s-line text-3xl" @click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
+				<i class="ri-arrow-left-s-line text-3xl" @click="backUrl"></i>
 			</view>
 		</u-navbar>
 		<view class="content" style="position: relative;">
@@ -214,7 +214,8 @@
 				</view>
 			</view>
 		</u-popup>
-		<u-popup :show="showNone" @close="showNone = false" mode="center" :customStyle="{background:'transparent'}" :closeable="false" :round="20">
+		<u-popup :show="showNone" @close="showNone = false" mode="center" :customStyle="{background:'transparent'}"
+			:closeable="false" :round="20">
 			<view class="report">
 				<view class="reportBgBox">
 					<view style="text-align: center;font-size: 32rpx;color: #FFA000;font-family: font-test !important;">
@@ -299,6 +300,20 @@
 			that.init()
 		},
 		methods: {
+			backUrl() {
+				// $u.route({ type: 'navigateBack', delta: 1 })
+				console.log(this.$Route.query.from)
+				if (this.$Route.query.from == "payRole") {
+					uni.switchTab({
+						url: '/pages/index/mine'
+					});
+				} else {
+					this.$u.route({
+						type: 'navigateBack',
+						delta: 1
+					})
+				}
+			},
 			getpreMatch() {
 				this.$api("role.preMatch").then(res => {
 					if (res.code == 1) {

@@ -12,7 +12,7 @@
 			<view class="myInput" @click="$u.route('pages/user/newSearch')">
 				<view class="searchIcon">
 					<text class="ri-search-line " style="font-size: 35rpx;color: #999999;"></text>
-					<text style="color: #999999;font-size: 23rpx;margin-left: 5rpx;">搜索</text>
+					<text style="color: #999999;font-size: 23rpx;margin-left: 5rpx;">搜索人物角色</text>
 				</view>
 			</view>
 			<view

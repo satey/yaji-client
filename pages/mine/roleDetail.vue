@@ -6,6 +6,22 @@
 					@click="$u.route({ type: 'navigateBack', delta: 1 })"></i>
 			</view>
 		</u-navbar>
+		<!-- 获取角色 -->
+		<u-popup :show="bindingRolePopup" @close="bindingRolePopup = false" mode="center" :closeable="false"
+			:round="20">
+			<view class="log">
+				<view style="text-align: center;font-size: 30rpx;color: #333;">获取角色</view>
+				<view style="font-size: 28rpx;color: #333;margin-top: 89rpx;">获得新角色后将替换掉原有角色，原角色将被回收。确定获取角色？</view>
+				<view style="display: flex;align-items: center;justify-content: center;margin-top: 137rpx;">
+					<view @click="bindingRolePopup = false"
+						style="margin-right: 21rpx;width: 210rpx;height: 68rpx;background: #FFDDA4;border-radius: 8rpx;text-align: center;line-height: 68rpx;color: #FFA000;font-size: 30rpx;">
+						取消</view>
+					<view @click="bindingRoleShowPopup"
+						style="margin-left: 21rpx;width: 210rpx;height: 68rpx;background: #FFA000;border-radius: 8rpx;text-align: center;line-height: 68rpx;color: #fff;font-size: 30rpx;">
+						确认</view>
+				</view>
+			</view>
+		</u-popup>
 		<view style="padding: 30rpx 35rpx 350rpx 35rpx;box-sizing: border-box;">
 			<view style="display: flex;align-items: center;border-bottom: 1px dashed #DDDDDD;padding-bottom: 10rpx;">
 				<view style="width: 8rpx;height: 35rpx;background: #BDFF00;border-radius: 25rpx;"></view>
@@ -52,17 +68,51 @@
 				<text style="color: #FFA000;font-size: 32rpx;">{{role.level_str}}</text>
 			</view>
 		</view>
-		<view class="getRoleBtn" @click="$u.route('pages/mine/getRole')">
-			获取角色
+		<view class="getRoleBtn" @click="bindingRolePopup = true">
+			<text>获取角色</text>
+			<image src="../../static/qian.png" style="width: 20rpx;height: 20rpx;margin-left: 20rpx;" mode=""></image>
+			<text>{{role.price}}</text>
 		</view>
+		<view v-if="recharge">
+			<u-modal :show="recharge" :showConfirmButton="false" :showCancelButton="false" confirmColor="#FFA000"
+				confirmText="充值" cancelText="放弃" @cancel="recharge=false">
+				<view>
+					<view style="display: flex;flex-direction: column;">
+						<view style="text-align: center;font-size: 32rpx;color: #323232;font-weight: bold;">铜钱不足</view>
+						<view style="color:#999;font-size: 26rpx;margin-top: 30rpx;">
+							<text>当前没有足够的铜钱，需要前往购买吗？</text>
+						</view>
+					</view>
+					<view style="display: flex;align-items: center;justify-content: space-between;margin-top: 125rpx;">
+						<view @click="recharge=false"
+							style="margin-right: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;border: 1px solid #C7C7C7;text-align: center;line-height: 65rpx;color: #808080;border-radius: 10rpx;font-size: 28rpx;">
+							取消</view>
+						<view v-if="platform=='ios'" @click="$u.route('/pages/mine/recharge')"
+							style="margin-left: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;background:#FFA000;text-align: center;line-height: 65rpx;color: #FFFFFF;border-radius: 10rpx;font-size: 28rpx;">
+							去充值</view>
+						<view v-if="platform=='android'" @click="recharge=false;$refs.feiRecharge.show()"
+							style="margin-left: 20rpx;width: 228rpx;height: 65rpx;opacity: 1;background:#FFA000;text-align: center;line-height: 65rpx;color: #FFFFFF;border-radius: 10rpx;font-size: 28rpx;">
+							小额充值</view>
+					</view>
+				</view>
+			</u-modal>
+		</view>
+		<feiRecharge ref="feiRecharge"></feiRecharge>
 	</view>
 </template>
 
 <script>
+	import feiRecharge from "@/components/fei-recharge/fei-recharge.vue"
 	export default {
+		components: {
+			feiRecharge
+		},
 		data() {
 			return {
-				role: []
+				role: [],
+				bindingRolePopup: false,
+				recharge: false,
+				platform: uni.getSystemInfoSync().platform,
 			}
 		},
 		onLoad() {
@@ -72,11 +122,9 @@
 		methods: {
 			getUserProfile() {
 				let that = this
-				// console.log(that.$Route.query.user_id);
 				that.$api('role.detail', {
 					role_id: that.$Route.query.role_id
 				}).then(res => {
-					console.log(res)
 					if (res.code === 1) {
 						that.role = res.data
 					} else {
@@ -87,7 +135,38 @@
 					}
 				})
 			},
-
+			bindingRoleShowPopup() {
+				var that = this;
+				that.$api("user.info").then(res => {
+					if (res.code == 1) {
+						if (res.data.money <= this.role.price) {
+							this.bindingRole()
+						} else {
+							this.bindingRolePopup = false;
+							this.recharge = true
+						}
+					}
+				})
+			},
+			bindingRole() {
+				var that = this;
+				that.$api('role.payRole', {
+					"role_id": this.role.id
+				}).then(res => {
+					this.bindingRolePopup = false;
+					if (res.code === 1) {
+						this.$u.route("/pages/mine/role", {
+							from: "payRole"
+						})
+					} else {
+						this.bindingRolePopup = false;
+						uni.showToast({
+							icon: "none",
+							title: res.msg
+						})
+					}
+				})
+			},
 			//设置字体
 			setFontFamily() {
 				// #ifdef APP-PLUS
@@ -140,5 +219,14 @@
 		left: 50%;
 		bottom: 245rpx;
 		transform: translateX(-50%);
+	}
+
+	.log {
+		width: 578rpx;
+		height: 525rpx;
+		border-radius: 16rpx;
+		padding: 50rpx 27rpx 62rpx 37rpx;
+		background: #fff;
+		box-sizing: border-box;
 	}
 </style>
