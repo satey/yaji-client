@@ -60,10 +60,8 @@
 				<view class="mt-4">{{ item.bio }}</view>
 			</view>
 			<view class="ml-4">
-				<view @click="$u.route('/pages/mine/roleDetail',{
-					role_id:item.id
-				})" style="line-height: 46rpx;text-align: center;border-radius: 6rpx;color: #999;font-size: 23rpx;">
-					未激活</view>
+				<view style="line-height: 46rpx;text-align: center;border-radius: 50rpx;color: #fff;font-size: 23rpx;background: rgb(255, 160, 0);padding: 0rpx 30rpx;">
+					获取</view>
 			</view>
 		</view>
 	</view>
