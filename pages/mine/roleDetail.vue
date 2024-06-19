@@ -139,7 +139,7 @@
 				var that = this;
 				that.$api("user.info").then(res => {
 					if (res.code == 1) {
-						if (res.data.money <= this.role.price) {
+						if (res.data.money >= this.role.price) {
 							this.bindingRole()
 						} else {
 							this.bindingRolePopup = false;
