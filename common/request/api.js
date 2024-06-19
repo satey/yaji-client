@@ -862,6 +862,12 @@ export default {
 		},
 	},
 	role: {
+		payRole: {
+			url: 'role/payRole',
+			auth: false,
+			method: 'POST',
+			desc: '购买角色',
+		},
 		identity_list: {
 			url: 'role/identity_list',
 			auth: false,
