@@ -1,6 +1,7 @@
 <template>
 	<view class="start">
 		<image src="@/static/start/start.png" class="lodding" mode=""></image>
+		<view class="timeNumBox" @click="skip">跳过 {{timeNum}}</view>
 	</view>
 </template>
 
@@ -10,11 +11,18 @@
 		data() {
 			return {
 				phoneMode: uni.getSystemInfoSync().platform,
-				startImg: ""
+				startImg: "",
+				timeNum: 2
 			}
 		},
 		onReady() {
 			var that = this;
+			var interval = setInterval(function() {
+				that.timeNum = --that.timeNum
+				if (that.timeNum <= 0) {
+					clearInterval(interval)
+				}
+			}, 1000)
 			var timeOut = setTimeout(() => {
 				let token = uni.getStorageSync('token');
 				if (token) {
@@ -34,7 +42,7 @@
 					});
 				}
 				clearTimeout(timeOut)
-			}, 2000)
+			}, 2200)
 			if (that.phoneMode == 'ios') {
 				that.$api("pay.getApplePayProductList").then(res => {
 					that.product = res.data;
@@ -74,6 +82,27 @@
 					}
 				})
 			}
+		},
+		methods: {
+			skip() {
+				let token = uni.getStorageSync('token');
+				if (token) {
+					let userInfo = uni.getStorageSync('userInfo');
+					if (userInfo.gender == 0) {
+						uni.reLaunch({
+							url: '/pages/auth/s1'
+						});
+					} else {
+						uni.reLaunch({
+							url: '/pages/index/index'
+						});
+					}
+				} else {
+					uni.reLaunch({
+						url: '/pages/auth/login'
+					});
+				}
+			}
 		}
 	}
 </script>
@@ -95,5 +124,18 @@
 	.lodding {
 		width: 100vw;
 		height: 100vh;
+	}
+
+	.timeNumBox {
+		position: fixed;
+		top: 80rpx;
+		right: 25rpx;
+		z-index: 9;
+		background: rgba(255, 255, 255, 0.8);
+		padding: 8rpx 15rpx;
+		box-sizing: border-box;
+		font-size: 25rpx;
+		border-radius: 50rpx;
+		margin-top: var(--status-bar-height);
 	}
 </style>
