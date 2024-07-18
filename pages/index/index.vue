@@ -131,7 +131,7 @@
 					<view class="fabei" @click="homeJump">
 						发杯
 					</view>
-					<view class="activity" style="margin-left:35rpx ;" @click="zhiyuanShow = true">放纸鸢</view>
+					<view class="activity" style="margin-left:35rpx ;" @click="zhiyuanShow = true">寄语</view>
 				</view>
 			</view>
 			<view style="background: #fff;margin-top: -5rpx;">

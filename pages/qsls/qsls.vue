@@ -1964,7 +1964,7 @@
 		position: relative;
 
 		.headContainerFooter {
-			height: 165rpx;
+			height: 125rpx;
 			width: 100%;
 			background-image: url(/static/qslsCupBg.png);
 			background-position: 100% 100%;

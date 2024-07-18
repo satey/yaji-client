@@ -1,7 +1,9 @@
 <template>
 	<view class="start">
-		<image src="@/static/start/start.png" class="lodding" mode=""></image>
-		<view class="timeNumBox" @click="skip">跳过 {{timeNum}}</view>
+		<iframe src="https://static.suoeryoude.cn/app_file/activity/qidongtu.html" class="lodding" mode="aspectFill"></iframe>
+		<!-- <image src="@/static/start/start.png" class="lodding" mode="aspectFill"></image> -->
+		<!-- @click="openUrl" -->
+	<!-- 	<view class="timeNumBox" @click="skip">跳过 {{timeNum}}</view> -->
 	</view>
 </template>
 
@@ -12,7 +14,8 @@
 			return {
 				phoneMode: uni.getSystemInfoSync().platform,
 				startImg: "",
-				timeNum: 2
+				timeNum: 2,
+				isSkip:false
 			}
 		},
 		onReady() {
@@ -25,21 +28,24 @@
 			}, 1000)
 			var timeOut = setTimeout(() => {
 				let token = uni.getStorageSync('token');
-				if (token) {
-					let userInfo = uni.getStorageSync('userInfo');
-					if (userInfo.gender == 0) {
-						uni.reLaunch({
-							url: '/pages/auth/s1'
-						});
+				console.log(that.isSkip)
+				if(that.isSkip == false){
+					if (token) {
+						let userInfo = uni.getStorageSync('userInfo');
+						if (userInfo.gender == 0) {
+							uni.reLaunch({
+								url: '/pages/auth/s1'
+							});
+						} else {
+							uni.reLaunch({
+								url: '/pages/index/index'
+							});
+						}
 					} else {
 						uni.reLaunch({
-							url: '/pages/index/index'
+							url: '/pages/auth/login'
 						});
 					}
-				} else {
-					uni.reLaunch({
-						url: '/pages/auth/login'
-					});
 				}
 				clearTimeout(timeOut)
 			}, 2200)
@@ -86,6 +92,7 @@
 		methods: {
 			skip() {
 				let token = uni.getStorageSync('token');
+				this.isSkip = true;
 				if (token) {
 					let userInfo = uni.getStorageSync('userInfo');
 					if (userInfo.gender == 0) {
@@ -102,7 +109,14 @@
 						url: '/pages/auth/login'
 					});
 				}
-			}
+			},
+			// openUrl() {
+			// 	// #ifdef APP-PLUS
+			// 	plus.runtime.openURL(
+			// 		"https://o.youku.com/m/6xlbqybldi?unic_co=pha&hideNavigatorBar=true&unicLoading=null&shouldHideNavigationBar=1&isNeedBaseImage=1&bc_fl_src=youku&refer=shaonianbaimazuichunfeng_market_platform.milo.yg_0"
+			// 	)
+			// 	// #endif
+			// }
 		}
 	}
 </script>
