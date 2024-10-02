@@ -1,9 +1,14 @@
 <template>
 	<view class="start">
+<<<<<<< HEAD
 		<iframe src="https://static.suoeryoude.cn/app_file/activity/qidongtu.html" class="lodding" mode="aspectFill"></iframe>
 		<!-- <image src="@/static/start/start.png" class="lodding" mode="aspectFill"></image> -->
 		<!-- @click="openUrl" -->
 	<!-- 	<view class="timeNumBox" @click="skip">跳过 {{timeNum}}</view> -->
+=======
+		<image src="@/static/start/start.png" class="lodding" mode="" @click="openUrl"></image>
+		<view class="timeNumBox" @click="skip">跳过 {{timeNum}}</view>
+>>>>>>> 08a885bd2b4e1313bec6cef4356a54081788e304
 	</view>
 </template>
 
@@ -110,6 +115,7 @@
 					});
 				}
 			},
+<<<<<<< HEAD
 			// openUrl() {
 			// 	// #ifdef APP-PLUS
 			// 	plus.runtime.openURL(
@@ -117,6 +123,15 @@
 			// 	)
 			// 	// #endif
 			// }
+=======
+			openUrl() {
+				// #ifdef APP-PLUS
+				plus.runtime.openURL(
+					"https://o.youku.com/m/6xlbqybldi?unic_co=pha&hideNavigatorBar=true&unicLoading=null&shouldHideNavigationBar=1&isNeedBaseImage=1&bc_fl_src=youku&refer=shaonianbaimazuichunfeng_market_platform.milo.yg_0"
+				)
+				// #endif
+			}
+>>>>>>> 08a885bd2b4e1313bec6cef4356a54081788e304
 		}
 	}
 </script>
